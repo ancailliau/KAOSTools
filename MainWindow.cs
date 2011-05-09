@@ -13,10 +13,10 @@ public partial class MainWindow: Gtk.Window
 		Application.Quit ();
 		a.RetVal = true;
 	}
+	
 	protected virtual void OnQuitActionActivated (object sender, System.EventArgs e)
 	{
 		Application.Quit();
 	}
-	
-	
+		
 }
