@@ -8,6 +8,9 @@ namespace Editor
 {
 	public class GoalGraph : EventBox
 	{
+		private RectangleShape selectedRectangle;
+		private PointD selectionPositionDelta;
+		
 		public Color BackgroundColor {
 			get;
 			set;
@@ -23,7 +26,7 @@ namespace Editor
 			BackgroundColor = new Color(1, 1, 1);
 			Rectangles = new List<RectangleShape>();
 			Rectangles.Add(new RectangleShape() {
-				BottomLeft = new PointD(100, 100),
+				TopLeft = new PointD(50, 50),
 				Width = 100,
 				Height = 40,
 				Label = "Rectangle 1"
@@ -34,16 +37,15 @@ namespace Editor
 		{
 			int width, height;
 			evnt.Window.GetSize(out width, out height);
-			Console.WriteLine ("{0} {1}", width, height);
 			
 			using (Context context = Gdk.CairoHelper.Create(evnt.Window)) {
 				PaintBackground(context);
 				
 				// Y-Axis is inverted 
-				context.Transform(new Matrix(1,0,0,-1,0,0));
+				// context.Transform(new Matrix(1,0,0,-1,0,0));
 				
 				// Re-adjust center
-				context.Translate(0, -height);
+				// context.Translate(0, -height);
 				
 				// For crisp lines
 				context.Translate(0.5, 0.5);				
@@ -69,16 +71,32 @@ namespace Editor
 		
 		protected override bool OnMotionNotifyEvent (Gdk.EventMotion evnt)
 		{
+			if (selectedRectangle != null) {
+				selectedRectangle.TopLeft = new PointD(evnt.X + selectionPositionDelta.X, evnt.Y + selectionPositionDelta.Y);
+				evnt.Window.InvalidateRect(new Gdk.Rectangle(0,0,Allocation.Width, Allocation.Height), true);
+			}
+			return true;
+		}
+		
+		protected override bool OnButtonReleaseEvent (Gdk.EventButton evnt)
+		{
+			// Clear selected rectangle
+			selectedRectangle = null;
+			return base.OnButtonReleaseEvent (evnt);
+		}
+
+		protected override bool OnButtonPressEvent (Gdk.EventButton evnt)
+		{
 			// Find the rectangle to move
-			RectangleShape selectedRect = null;
+			selectedRectangle = null;
+			selectionPositionDelta = new PointD(0,0);
 			foreach (var rect in Rectangles) {
-				if (rect.InBoundingBox(evnt.X, evnt.Y)) {
-					selectedRect = rect;
+				if (rect.InBoundingBox(evnt.X, evnt.Y, out selectionPositionDelta)) {
+					selectedRectangle = rect;
 					break;
 				}
 			}
-			
-			return true;
+			return base.OnButtonPressEvent (evnt);
 		}
 		
 	}
