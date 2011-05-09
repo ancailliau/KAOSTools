@@ -10,7 +10,7 @@ namespace Shapes
 			set;
 		}
 		
-		public PointD TopLeft {
+		public PointD Position {
 			get;
 			set;
 		}
@@ -38,7 +38,7 @@ namespace Shapes
 		public Shape ()
 		{
 			Label = "";
-			TopLeft = new PointD(0,0);
+			Position = new PointD(0,0);
 			BorderColor = new Color(0,0,0);
 			BackgroundColor = new Color(1,1,1);
 		}

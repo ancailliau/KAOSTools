@@ -6,8 +6,8 @@ namespace Shapes
 {
 	public class RectangleShape : Shape
 	{
-		private double lastWidth;
-		private double lastHeight;
+		private double width;
+		private double height;
 		
 		public RectangleShape () : base () 
 		{
@@ -26,13 +26,10 @@ namespace Shapes
 			int textWidth, textHeight;
 			pangoLayout.GetPixelSize(out textWidth, out textHeight);
 			
-			double Width = textWidth + 2 * XPadding;
-			double Height = textHeight + 2 * YPadding;
-			lastWidth = Width;
-			lastHeight = Height;
+			width = textWidth + 2 * XPadding;
+			height = textHeight + 2 * YPadding;
 			
-			context.MoveTo(TopLeft);
-			context.Rectangle(TopLeft, Width, Height);
+			context.Rectangle(Position.X - width / 2, Position.Y - height / 2, width, height);
 			
 			context.SetSourceRGBA(BackgroundColor.R,
 				BackgroundColor.G,
@@ -46,9 +43,7 @@ namespace Shapes
 				BorderColor.A);
 			context.Stroke();
 			
-			
-			
-			context.MoveTo(TopLeft.X + Width/2 - textWidth/2, TopLeft.Y + Height/2 - textHeight/2);
+			context.MoveTo(Position.X - textWidth/2, Position.Y - textHeight/2);
 			Pango.CairoHelper.ShowLayout(context, pangoLayout);
 			
 			context.Source = oldSource;
@@ -56,10 +51,10 @@ namespace Shapes
 		
 		public override bool InBoundingBox (double x, double y, out PointD delta)
 		{
-			if ((x > TopLeft.X && x < TopLeft.X + lastWidth)
-				& (y > TopLeft.Y && y < TopLeft.Y + lastHeight)) {
-				delta.X = TopLeft.X - x;
-				delta.Y = TopLeft.Y - y;
+			if ((x > Position.X && x < Position.X + width)
+				& (y > Position.Y && y < Position.Y + height)) {
+				delta.X = Position.X - x;
+				delta.Y = Position.Y - y;
 				return true;
 			} 
 			return false;

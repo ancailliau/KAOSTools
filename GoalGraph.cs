@@ -34,34 +34,17 @@ namespace Editor
 			Arrows = new List<FilledArrow>();
 			
 			Shapes.Add(new RectangleShape() {
-				TopLeft = new PointD(50, 50),
-				Label = "Rectangle\n1"
-			});
-			Shapes.Add(new RectangleShape() {
-				TopLeft = new PointD(100, 50),
-				Label = "Rectangle 2"
-			});
-			Shapes.Add(new RectangleShape() {
-				TopLeft = new PointD(50, 100),
-				Label = "Rectangle 3"
+				Position = new PointD(50, 50),
+				Label = "Rectangle"
 			});
 			Shapes.Add(new CircleShape() {
-				Label = "Ci\nrcl\ne\n1",
-				TopLeft = new PointD(50, 50)
+				Label = "Circle",
+				Position = new PointD(150, 50)
 			});
 			
 			Arrows.Add(new FilledArrow() {
 				Start = Shapes[0],
 				End = Shapes[1]
-			});
-			Arrows.Add(new FilledArrow() {
-				Start = Shapes[0],
-				End = Shapes[2]
-			});
-			
-			Arrows.Add(new FilledArrow() {
-				Start = Shapes[2],
-				End = Shapes[3]
 			});
 			
 			this.AddEvents((int) Gdk.EventMask.PointerMotionMask
@@ -108,7 +91,7 @@ namespace Editor
 		protected override bool OnMotionNotifyEvent (Gdk.EventMotion evnt)
 		{
 			if (selectedShape != null) {
-				selectedShape.TopLeft = new PointD(evnt.X + selectionPositionDelta.X, evnt.Y + selectionPositionDelta.Y);
+				selectedShape.Position = new PointD(evnt.X + selectionPositionDelta.X, evnt.Y + selectionPositionDelta.Y);
 				evnt.Window.InvalidateRect(new Gdk.Rectangle(0,0,Allocation.Width, Allocation.Height), true);
 			}
 			return true;

@@ -6,8 +6,7 @@ namespace Shapes
 {
 	public class CircleShape : Shape
 	{
-		private double lastWidth;
-		private double lastHeight;
+		private double radius;
 		
 		public CircleShape () : base ()
 		{
@@ -26,15 +25,12 @@ namespace Shapes
 			int textWidth, textHeight;
 			pangoLayout.GetPixelSize(out textWidth, out textHeight);
 			
-			double Width = textWidth + 2 * XPadding;
-			double Height = textHeight + 2 * YPadding;
+			double width = textWidth + 2 * XPadding;
+			double height = textHeight + 2 * YPadding;			
+			radius = Math.Max(width, height)/2;
 			
-			double radius = Math.Max(Width, Height)/2;
-			lastWidth = 2 * radius;
-			lastHeight = 2 * radius;
-			
-			context.MoveTo(TopLeft.X + radius * 2, TopLeft.Y + radius);
-			context.Arc(TopLeft.X + radius, TopLeft.Y + radius, radius, 0, Math.PI * 2);
+			context.MoveTo(Position.X + radius, Position.Y);
+			context.Arc(Position.X, Position.Y, radius, 0, Math.PI * 2);
 			
 			context.SetSourceRGBA(BackgroundColor.R,
 				BackgroundColor.G,
@@ -48,7 +44,7 @@ namespace Shapes
 				BorderColor.A);
 			context.Stroke();
 			
-			context.MoveTo(TopLeft.X + radius - textWidth/2, TopLeft.Y + radius - textHeight/2);
+			context.MoveTo(Position.X - textWidth/2, Position.Y - textHeight/2);
 			Pango.CairoHelper.ShowLayout(context, pangoLayout);
 			
 			context.Source = oldSource;
@@ -57,13 +53,13 @@ namespace Shapes
 		
 		public override bool InBoundingBox (double x, double y, out PointD delta)
 		{
-			double centerX = TopLeft.X + lastWidth/2;
-			double centerY = TopLeft.Y + lastHeight/2;
+			double centerX = Position.X;
+			double centerY = Position.Y;
 			double xx = (x - centerX);
 			double yy = (y - centerY);
-			if (Math.Sqrt(xx * xx + yy * yy) <= lastWidth/2) {
-				delta.X = TopLeft.X - x;
-				delta.Y = TopLeft.Y - y;
+			if (Math.Sqrt(xx * xx + yy * yy) <= radius) {
+				delta.X = Position.X - x;
+				delta.Y = Position.Y - y;
 				return true;
 			}
 			return false;

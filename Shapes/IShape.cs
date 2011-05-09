@@ -15,12 +15,12 @@ namespace Shapes
 		string Label { get ; set ; }
 		
 		/// <summary>
-		/// Gets or sets the top left point of the shape.
+		/// Gets or sets the position of the shape.
 		/// </summary>
 		/// <value>
 		/// The top left.
 		/// </value>
-		PointD TopLeft { get ; set ; }
+		PointD Position { get ; set ; }
 		
 		/// <summary>
 		/// Gets or sets the color of the border.
