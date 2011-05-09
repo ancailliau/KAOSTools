@@ -27,7 +27,12 @@ namespace Shapes
 			
 			double width = textWidth + 2 * XPadding;
 			double height = textHeight + 2 * YPadding;			
-			radius = Math.Max(width, height)/2;
+			if (Label != "") {
+				radius = Math.Max(width, height)/2;
+			} else {
+				radius = 4;
+			}
+			
 			
 			context.MoveTo(Position.X + radius, Position.Y);
 			context.Arc(Position.X, Position.Y, radius, 0, Math.PI * 2);
@@ -44,8 +49,10 @@ namespace Shapes
 				BorderColor.A);
 			context.Stroke();
 			
-			context.MoveTo(Position.X - textWidth/2, Position.Y - textHeight/2);
-			Pango.CairoHelper.ShowLayout(context, pangoLayout);
+			if (Label != "") {
+				context.MoveTo(Position.X - textWidth/2, Position.Y - textHeight/2);
+				Pango.CairoHelper.ShowLayout(context, pangoLayout);
+			}
 			
 			context.Source = oldSource;
 		}
@@ -64,6 +71,14 @@ namespace Shapes
 			}
 			return false;
 		}
+		
+		public override PointD GetAnchor (PointD point)
+		{
+			// Compute the angle between point and center
+			double angle = Math.Atan2(Position.Y - point.Y, Position.X - point.X);
+			return new PointD(Position.X - radius * Math.Cos(angle), Position.Y - radius * Math.Sin(angle));
+		}
+		
 	}
 }
 

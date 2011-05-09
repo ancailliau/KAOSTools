@@ -38,13 +38,13 @@ namespace Editor
 				Label = "Rectangle"
 			});
 			Shapes.Add(new CircleShape() {
-				Label = "Circle",
+				Label = "",
 				Position = new PointD(150, 50)
 			});
 			
 			Arrows.Add(new FilledArrow() {
-				Start = Shapes[0],
-				End = Shapes[1]
+				Start = Shapes[1],
+				End = Shapes[0]
 			});
 			
 			this.AddEvents((int) Gdk.EventMask.PointerMotionMask
@@ -64,15 +64,17 @@ namespace Editor
 				context.Translate(0.5, 0.5);				
 				context.LineWidth = 1;				
 				
+				// Draw all shapes
+				foreach (var rect in Shapes) {
+					rect.Display(context, this);
+				}
+				
 				// Draw all arrows
 				foreach (var arrow in Arrows) {
 					arrow.Display(context, this);
 				}
 				
-				// Draw all shapes
-				foreach (var rect in Shapes) {
-					rect.Display(context, this);
-				}
+				
 			}
 			return true;
 		}

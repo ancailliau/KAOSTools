@@ -51,13 +51,37 @@ namespace Shapes
 		
 		public override bool InBoundingBox (double x, double y, out PointD delta)
 		{
-			if ((x > Position.X && x < Position.X + width)
-				& (y > Position.Y && y < Position.Y + height)) {
+			if ((x > Position.X - width/2 && x < Position.X + width/2)
+				& (y > Position.Y - height /2 && y < Position.Y + height/2)) {
 				delta.X = Position.X - x;
 				delta.Y = Position.Y - y;
 				return true;
 			} 
 			return false;
+		}
+		
+		public override PointD GetAnchor (PointD point)
+		{
+			double refAngle = Math.Atan2(height,width);
+			double angle = Math.Atan2(Position.Y - point.Y, Position.X - point.X);
+			
+			if (angle < refAngle & angle > - refAngle) {
+				// left
+				return new PointD(Position.X - width/2, Position.Y);
+				
+			} else if (angle > - Math.PI + refAngle & angle < - refAngle) {
+				// bottom
+				return new PointD(Position.X, Position.Y + height / 2);
+				
+			} else if (angle > refAngle & angle < Math.PI - refAngle) {
+				// top
+				return new PointD(Position.X, Position.Y - height / 2);
+				
+			} else {
+				// right
+				return new PointD(Position.X + width / 2, Position.Y);
+				
+			}
 		}
 		
 	}

@@ -45,6 +45,7 @@ namespace Shapes
 
 		public abstract void Display (Context context, Gtk.DrawingArea drawingArea);
 		public abstract bool InBoundingBox (double x, double y, out PointD delta);
+		public abstract PointD GetAnchor (PointD point);
 	}
 }
 

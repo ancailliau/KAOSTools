@@ -82,7 +82,18 @@ namespace Shapes
 		/// The distance between the point and top-left anchor.
 		/// </param>
 		bool InBoundingBox (double x, double y, out PointD delta);
-
+		
+		/// <summary>
+		/// Returns the most natural anchor to the shape for a line coming from a given point.
+		/// </summary>
+		/// <returns>
+		/// The anchor.
+		/// </returns>
+		/// <param name='point'>
+		/// Point.
+		/// </param>
+		PointD GetAnchor(PointD point);
+		
 	}
 }
 
