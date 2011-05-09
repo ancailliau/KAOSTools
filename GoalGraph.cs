@@ -6,7 +6,7 @@ using Gtk;
 
 namespace Editor
 {
-	public class GoalGraph : EventBox
+	public class GoalGraph : DrawingArea
 	{
 		private RectangleShape selectedRectangle;
 		private PointD selectionPositionDelta;
@@ -27,22 +27,20 @@ namespace Editor
 			Rectangles = new List<RectangleShape>();
 			Rectangles.Add(new RectangleShape() {
 				TopLeft = new PointD(50, 50),
-				Width = 100,
-				Height = 40,
-				Label = "Rectangle 1"
+				Label = "Rectangle\n1"
 			});
 			Rectangles.Add(new RectangleShape() {
 				TopLeft = new PointD(100, 50),
-				Width = 30,
-				Height = 140,
 				Label = "Rectangle 2"
 			});
 			Rectangles.Add(new RectangleShape() {
 				TopLeft = new PointD(50, 100),
-				Width = 40,
-				Height = 100,
 				Label = "Rectangle 3"
 			});
+			
+			this.AddEvents((int) Gdk.EventMask.PointerMotionMask
+				| (int) Gdk.EventMask.ButtonPressMask
+				| (int) Gdk.EventMask.ButtonReleaseMask);
 		}
 		
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
@@ -53,18 +51,12 @@ namespace Editor
 			using (Context context = Gdk.CairoHelper.Create(evnt.Window)) {
 				PaintBackground(context);
 				
-				// Y-Axis is inverted 
-				// context.Transform(new Matrix(1,0,0,-1,0,0));
-				
-				// Re-adjust center
-				// context.Translate(0, -height);
-				
 				// For crisp lines
 				context.Translate(0.5, 0.5);				
 				context.LineWidth = 1;				
 				
 				foreach (var rect in Rectangles) {
-					rect.Display(context);
+					rect.Display(context, this);
 				}
 			}
 			return true;
