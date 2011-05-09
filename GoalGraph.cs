@@ -2,10 +2,11 @@ using System;
 using Cairo;
 using System.Collections.Generic;
 using Shapes;
+using Gtk;
 
 namespace Editor
 {
-	public class GoalGraph : Gtk.DrawingArea
+	public class GoalGraph : EventBox
 	{
 		public Color BackgroundColor {
 			get;
@@ -22,9 +23,10 @@ namespace Editor
 			BackgroundColor = new Color(1, 1, 1);
 			Rectangles = new List<RectangleShape>();
 			Rectangles.Add(new RectangleShape() {
-				TopLeft = new PointD(100, 100),
+				BottomLeft = new PointD(100, 100),
 				Width = 100,
-				Height = 40
+				Height = 40,
+				Label = "Rectangle 1"
 			});
 		}
 		
@@ -63,6 +65,20 @@ namespace Editor
 				BackgroundColor.A);
 			context.Paint();
 			context.Source = oldSource;
+		}
+		
+		protected override bool OnMotionNotifyEvent (Gdk.EventMotion evnt)
+		{
+			// Find the rectangle to move
+			RectangleShape selectedRect = null;
+			foreach (var rect in Rectangles) {
+				if (rect.InBoundingBox(evnt.X, evnt.Y)) {
+					selectedRect = rect;
+					break;
+				}
+			}
+			
+			return true;
 		}
 		
 	}
