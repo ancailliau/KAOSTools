@@ -31,6 +31,18 @@ namespace Editor
 				Height = 40,
 				Label = "Rectangle 1"
 			});
+			Rectangles.Add(new RectangleShape() {
+				TopLeft = new PointD(100, 50),
+				Width = 30,
+				Height = 140,
+				Label = "Rectangle 2"
+			});
+			Rectangles.Add(new RectangleShape() {
+				TopLeft = new PointD(50, 100),
+				Width = 40,
+				Height = 100,
+				Label = "Rectangle 3"
+			});
 		}
 		
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
@@ -90,7 +102,8 @@ namespace Editor
 			// Find the rectangle to move
 			selectedRectangle = null;
 			selectionPositionDelta = new PointD(0,0);
-			foreach (var rect in Rectangles) {
+			for (int i = Rectangles.Count - 1; i >= 0; i--) {
+				var rect = Rectangles[i];
 				if (rect.InBoundingBox(evnt.X, evnt.Y, out selectionPositionDelta)) {
 					selectedRectangle = rect;
 					break;
