@@ -6,9 +6,9 @@ public partial class MainWindow
 	private global::Gtk.UIManager UIManager;
 	private global::Gtk.Action ApplicationAction;
 	private global::Gtk.Action quitAction;
-	private global::Gtk.VBox vbox2;
+	private global::Gtk.VBox mainVBox;
 	private global::Gtk.MenuBar mainMenu;
-	private global::Gtk.DrawingArea drawingArea;
+	private global::Gtk.ScrolledWindow scrolledWindow;
 	private global::Gtk.Statusbar statusBar;
 
 	protected virtual void Build ()
@@ -29,34 +29,36 @@ public partial class MainWindow
 		this.Title = global::Mono.Unix.Catalog.GetString ("MainWindow");
 		this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 		// Container child MainWindow.Gtk.Container+ContainerChild
-		this.vbox2 = new global::Gtk.VBox ();
-		this.vbox2.Name = "vbox2";
-		this.vbox2.Spacing = 6;
-		// Container child vbox2.Gtk.Box+BoxChild
+		this.mainVBox = new global::Gtk.VBox ();
+		this.mainVBox.Name = "mainVBox";
+		this.mainVBox.Spacing = 6;
+		// Container child mainVBox.Gtk.Box+BoxChild
 		this.UIManager.AddUiFromString ("<ui><menubar name='mainMenu'><menu name='ApplicationAction' action='ApplicationAction'><menuitem name='quitAction' action='quitAction'/></menu></menubar></ui>");
 		this.mainMenu = ((global::Gtk.MenuBar)(this.UIManager.GetWidget ("/mainMenu")));
 		this.mainMenu.Name = "mainMenu";
-		this.vbox2.Add (this.mainMenu);
-		global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.mainMenu]));
+		this.mainVBox.Add (this.mainMenu);
+		global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.mainVBox [this.mainMenu]));
 		w2.Position = 0;
 		w2.Expand = false;
 		w2.Fill = false;
-		// Container child vbox2.Gtk.Box+BoxChild
-		this.drawingArea = new global::Gtk.DrawingArea ();
-		this.drawingArea.Name = "drawingArea";
-		this.vbox2.Add (this.drawingArea);
-		global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.drawingArea]));
+		// Container child mainVBox.Gtk.Box+BoxChild
+		this.scrolledWindow = new global::Gtk.ScrolledWindow ();
+		this.scrolledWindow.CanFocus = true;
+		this.scrolledWindow.Name = "scrolledWindow";
+		this.scrolledWindow.ShadowType = ((global::Gtk.ShadowType)(1));
+		this.mainVBox.Add (this.scrolledWindow);
+		global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.mainVBox [this.scrolledWindow]));
 		w3.Position = 1;
-		// Container child vbox2.Gtk.Box+BoxChild
+		// Container child mainVBox.Gtk.Box+BoxChild
 		this.statusBar = new global::Gtk.Statusbar ();
 		this.statusBar.Name = "statusBar";
 		this.statusBar.Spacing = 6;
-		this.vbox2.Add (this.statusBar);
-		global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.vbox2 [this.statusBar]));
+		this.mainVBox.Add (this.statusBar);
+		global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.mainVBox [this.statusBar]));
 		w4.Position = 2;
 		w4.Expand = false;
 		w4.Fill = false;
-		this.Add (this.vbox2);
+		this.Add (this.mainVBox);
 		if ((this.Child != null)) {
 			this.Child.ShowAll ();
 		}
