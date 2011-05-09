@@ -38,8 +38,8 @@ namespace Editor
 				Label = "Rectangle 3"
 			});
 			Shapes.Add(new CircleShape() {
-				Label = "Circle 1",
-				TopLeft = new PointD(100, 100)
+				Label = "Ci\nrcl\ne\n1",
+				TopLeft = new PointD(50, 50)
 			});
 			
 			this.AddEvents((int) Gdk.EventMask.PointerMotionMask

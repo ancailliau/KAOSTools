@@ -31,8 +31,9 @@ namespace Shapes
 			lastWidth = Width;
 			lastHeight = Height;
 			
-			context.MoveTo(TopLeft.X + Width, TopLeft.Y + Height/2);
-			context.Arc(TopLeft.X + Width/2, TopLeft.Y + Height/2, Math.Max(Width, Height)/2, 0, Math.PI * 2);
+			double radius = Math.Max(Width, Height)/2;
+			context.MoveTo(TopLeft.X + radius * 2, TopLeft.Y + radius);
+			context.Arc(TopLeft.X + radius, TopLeft.Y + radius, radius, 0, Math.PI * 2);
 			
 			context.SetSourceRGBA(BackgroundColor.R,
 				BackgroundColor.G,
@@ -46,7 +47,7 @@ namespace Shapes
 				BorderColor.A);
 			context.Stroke();
 			
-			context.MoveTo(TopLeft.X + Width/2 - textWidth/2, TopLeft.Y + Height/2 - textHeight/2);
+			context.MoveTo(TopLeft.X + radius - textWidth/2, TopLeft.Y + radius - textHeight/2);
 			Pango.CairoHelper.ShowLayout(context, pangoLayout);
 			
 			context.Source = oldSource;
