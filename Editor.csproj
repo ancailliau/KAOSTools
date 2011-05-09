@@ -53,6 +53,9 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="GoalGraph.cs" />
     <Compile Include="Shapes\Rectangle.cs" />
+    <Compile Include="Shapes\IShape.cs" />
+    <Compile Include="Shapes\Shape.cs" />
+    <Compile Include="Shapes\CircleShape.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

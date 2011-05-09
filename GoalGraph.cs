@@ -8,7 +8,7 @@ namespace Editor
 {
 	public class GoalGraph : DrawingArea
 	{
-		private RectangleShape selectedRectangle;
+		private IShape selectedShape;
 		private PointD selectionPositionDelta;
 		
 		public Color BackgroundColor {
@@ -16,7 +16,7 @@ namespace Editor
 			set;
 		}
 		
-		public List<RectangleShape> Rectangles {
+		public List<IShape> Shapes {
 			get;
 			set;
 		}
@@ -24,18 +24,22 @@ namespace Editor
 		public GoalGraph ()
 		{
 			BackgroundColor = new Color(1, 1, 1);
-			Rectangles = new List<RectangleShape>();
-			Rectangles.Add(new RectangleShape() {
+			Shapes = new List<IShape>();
+			Shapes.Add(new RectangleShape() {
 				TopLeft = new PointD(50, 50),
 				Label = "Rectangle\n1"
 			});
-			Rectangles.Add(new RectangleShape() {
+			Shapes.Add(new RectangleShape() {
 				TopLeft = new PointD(100, 50),
 				Label = "Rectangle 2"
 			});
-			Rectangles.Add(new RectangleShape() {
+			Shapes.Add(new RectangleShape() {
 				TopLeft = new PointD(50, 100),
 				Label = "Rectangle 3"
+			});
+			Shapes.Add(new CircleShape() {
+				Label = "Circle 1",
+				TopLeft = new PointD(100, 100)
 			});
 			
 			this.AddEvents((int) Gdk.EventMask.PointerMotionMask
@@ -55,7 +59,7 @@ namespace Editor
 				context.Translate(0.5, 0.5);				
 				context.LineWidth = 1;				
 				
-				foreach (var rect in Rectangles) {
+				foreach (var rect in Shapes) {
 					rect.Display(context, this);
 				}
 			}
@@ -75,8 +79,8 @@ namespace Editor
 		
 		protected override bool OnMotionNotifyEvent (Gdk.EventMotion evnt)
 		{
-			if (selectedRectangle != null) {
-				selectedRectangle.TopLeft = new PointD(evnt.X + selectionPositionDelta.X, evnt.Y + selectionPositionDelta.Y);
+			if (selectedShape != null) {
+				selectedShape.TopLeft = new PointD(evnt.X + selectionPositionDelta.X, evnt.Y + selectionPositionDelta.Y);
 				evnt.Window.InvalidateRect(new Gdk.Rectangle(0,0,Allocation.Width, Allocation.Height), true);
 			}
 			return true;
@@ -85,19 +89,19 @@ namespace Editor
 		protected override bool OnButtonReleaseEvent (Gdk.EventButton evnt)
 		{
 			// Clear selected rectangle
-			selectedRectangle = null;
+			selectedShape = null;
 			return base.OnButtonReleaseEvent (evnt);
 		}
 
 		protected override bool OnButtonPressEvent (Gdk.EventButton evnt)
 		{
 			// Find the rectangle to move
-			selectedRectangle = null;
+			selectedShape = null;
 			selectionPositionDelta = new PointD(0,0);
-			for (int i = Rectangles.Count - 1; i >= 0; i--) {
-				var rect = Rectangles[i];
+			for (int i = Shapes.Count - 1; i >= 0; i--) {
+				var rect = Shapes[i];
 				if (rect.InBoundingBox(evnt.X, evnt.Y, out selectionPositionDelta)) {
-					selectedRectangle = rect;
+					selectedShape = rect;
 					break;
 				}
 			}
