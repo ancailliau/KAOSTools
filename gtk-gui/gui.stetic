@@ -8,7 +8,7 @@
     <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <widget-library name="../bin/Debug/Editor.exe" internal="true" />
   </import>
-  <widget class="Gtk.Window" id="MainWindow" design-size="400 300">
+  <widget class="Gtk.Window" id="MainWindow" design-size="412 300">
     <action-group name="Default">
       <action id="ApplicationAction">
         <property name="Type">Action</property>
@@ -21,6 +21,25 @@
         <property name="ShortLabel" translatable="yes">Quit</property>
         <property name="StockId">gtk-quit</property>
         <signal name="Activated" handler="OnQuitActionActivated" />
+      </action>
+      <action id="ModelAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Model</property>
+        <property name="ShortLabel" translatable="yes">Model</property>
+      </action>
+      <action id="saveAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">_Save</property>
+        <property name="ShortLabel" translatable="yes">_Save</property>
+        <property name="StockId">gtk-save</property>
+        <signal name="Activated" handler="OnSaveActionActivated" />
+      </action>
+      <action id="openAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">_Open</property>
+        <property name="ShortLabel" translatable="yes">_Open</property>
+        <property name="StockId">gtk-open</property>
+        <signal name="Activated" handler="OnOpenActionActivated" />
       </action>
     </action-group>
     <property name="MemberName" />
@@ -37,6 +56,10 @@
             <node name="mainMenu" type="Menubar">
               <node type="Menu" action="ApplicationAction">
                 <node type="Menuitem" action="quitAction" />
+              </node>
+              <node type="Menu" action="ModelAction">
+                <node type="Menuitem" action="openAction" />
+                <node type="Menuitem" action="saveAction" />
               </node>
             </node>
           </widget>

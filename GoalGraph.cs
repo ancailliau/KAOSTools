@@ -38,6 +38,11 @@ namespace Editor
 			this.Model = model;
 		}
 		
+		public void Update (Graph model) 
+		{
+			this.Model = model;
+		}
+		
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
 		{
 			int width, height;
