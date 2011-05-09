@@ -28,10 +28,11 @@ namespace Shapes
 			
 			double Width = textWidth + 2 * XPadding;
 			double Height = textHeight + 2 * YPadding;
-			lastWidth = Width;
-			lastHeight = Height;
 			
 			double radius = Math.Max(Width, Height)/2;
+			lastWidth = 2 * radius;
+			lastHeight = 2 * radius;
+			
 			context.MoveTo(TopLeft.X + radius * 2, TopLeft.Y + radius);
 			context.Arc(TopLeft.X + radius, TopLeft.Y + radius, radius, 0, Math.PI * 2);
 			
@@ -60,7 +61,7 @@ namespace Shapes
 			double centerY = TopLeft.Y + lastHeight/2;
 			double xx = (x - centerX);
 			double yy = (y - centerY);
-			if (Math.Sqrt(xx * xx + yy * yy) <= Math.Max(lastWidth, lastHeight)) {
+			if (Math.Sqrt(xx * xx + yy * yy) <= lastWidth/2) {
 				delta.X = TopLeft.X - x;
 				delta.Y = TopLeft.Y - y;
 				return true;

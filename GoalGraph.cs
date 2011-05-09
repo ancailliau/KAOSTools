@@ -3,6 +3,7 @@ using Cairo;
 using System.Collections.Generic;
 using Shapes;
 using Gtk;
+using Arrows;
 
 namespace Editor
 {
@@ -21,10 +22,17 @@ namespace Editor
 			set;
 		}
 		
+		public List<FilledArrow> Arrows {
+			get;
+			set;
+		}
+		
 		public GoalGraph ()
 		{
 			BackgroundColor = new Color(1, 1, 1);
 			Shapes = new List<IShape>();
+			Arrows = new List<FilledArrow>();
+			
 			Shapes.Add(new RectangleShape() {
 				TopLeft = new PointD(50, 50),
 				Label = "Rectangle\n1"
@@ -40,6 +48,20 @@ namespace Editor
 			Shapes.Add(new CircleShape() {
 				Label = "Ci\nrcl\ne\n1",
 				TopLeft = new PointD(50, 50)
+			});
+			
+			Arrows.Add(new FilledArrow() {
+				Start = Shapes[0],
+				End = Shapes[1]
+			});
+			Arrows.Add(new FilledArrow() {
+				Start = Shapes[0],
+				End = Shapes[2]
+			});
+			
+			Arrows.Add(new FilledArrow() {
+				Start = Shapes[2],
+				End = Shapes[3]
 			});
 			
 			this.AddEvents((int) Gdk.EventMask.PointerMotionMask
@@ -59,6 +81,12 @@ namespace Editor
 				context.Translate(0.5, 0.5);				
 				context.LineWidth = 1;				
 				
+				// Draw all arrows
+				foreach (var arrow in Arrows) {
+					arrow.Display(context, this);
+				}
+				
+				// Draw all shapes
 				foreach (var rect in Shapes) {
 					rect.Display(context, this);
 				}
