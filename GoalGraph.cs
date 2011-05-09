@@ -17,12 +17,7 @@ namespace Editor
 			set;
 		}
 		
-		public List<IShape> Shapes {
-			get;
-			set;
-		}
-		
-		public List<FilledArrow> Arrows {
+		public Graph Model {
 			get;
 			set;
 		}
@@ -30,26 +25,17 @@ namespace Editor
 		public GoalGraph ()
 		{
 			BackgroundColor = new Color(1, 1, 1);
-			Shapes = new List<IShape>();
-			Arrows = new List<FilledArrow>();
-			
-			Shapes.Add(new RectangleShape() {
-				Position = new PointD(50, 50),
-				Label = "Rectangle"
-			});
-			Shapes.Add(new CircleShape() {
-				Label = "",
-				Position = new PointD(150, 50)
-			});
-			
-			Arrows.Add(new FilledArrow() {
-				Start = Shapes[1],
-				End = Shapes[0]
-			});
+			Model = new Graph();
 			
 			this.AddEvents((int) Gdk.EventMask.PointerMotionMask
 				| (int) Gdk.EventMask.ButtonPressMask
 				| (int) Gdk.EventMask.ButtonReleaseMask);
+		}
+		
+		public GoalGraph (Graph model) 
+			: this ()
+		{
+			this.Model = model;
 		}
 		
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)
@@ -64,16 +50,15 @@ namespace Editor
 				context.Translate(0.5, 0.5);				
 				context.LineWidth = 1;				
 				
-				// Draw all shapes
-				foreach (var rect in Shapes) {
-					rect.Display(context, this);
-				}
-				
 				// Draw all arrows
-				foreach (var arrow in Arrows) {
+				foreach (var arrow in Model.Arrows) {
 					arrow.Display(context, this);
 				}
 				
+				// Draw all shapes
+				foreach (var rect in Model.Shapes) {
+					rect.Display(context, this);
+				}
 				
 			}
 			return true;
@@ -111,8 +96,8 @@ namespace Editor
 			// Find the rectangle to move
 			selectedShape = null;
 			selectionPositionDelta = new PointD(0,0);
-			for (int i = Shapes.Count - 1; i >= 0; i--) {
-				var rect = Shapes[i];
+			for (int i = Model.Shapes.Count - 1; i >= 0; i--) {
+				var rect = Model.Shapes[i];
 				if (rect.InBoundingBox(evnt.X, evnt.Y, out selectionPositionDelta)) {
 					selectedShape = rect;
 					break;

@@ -1,13 +1,19 @@
 using System;
 using Gtk;
 using Editor;
+using Model;
 
 public partial class MainWindow: Gtk.Window
 {	
-	public MainWindow (): base (Gtk.WindowType.Toplevel)
+	
+	private GoalModel model;
+	
+	public MainWindow (GoalModel model): base (Gtk.WindowType.Toplevel)
 	{
+		this.model = model;
+		
 		Build ();
-		scrolledWindow.Add(new GoalGraph());
+		scrolledWindow.Add(new GoalGraph(new Graph(model)));
 		ShowAll();
 	}
 

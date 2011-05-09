@@ -57,11 +57,15 @@
     <Compile Include="Shapes\Shape.cs" />
     <Compile Include="Shapes\CircleShape.cs" />
     <Compile Include="Arrows\FilledArrow.cs" />
+    <Compile Include="Model\Goal.cs" />
+    <Compile Include="Model\GoalModel.cs" />
+    <Compile Include="Graph.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Shapes\" />
     <Folder Include="Arrows\" />
+    <Folder Include="Model\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
