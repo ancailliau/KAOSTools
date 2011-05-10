@@ -11,6 +11,8 @@ public partial class MainWindow: Gtk.Window
 	private GoalModel model;
 	private List<View> views;
 	
+	private DiagramArea da;
+	
 	public MainWindow (GoalModel model): base (Gtk.WindowType.Toplevel)
 	{
 		this.model = model;
@@ -19,7 +21,8 @@ public partial class MainWindow: Gtk.Window
 		views.Add(new View());
 		
 		Build ();
-		scrolledWindow.Add(new DiagramArea (views[0]));
+		da = new DiagramArea (views[0]);
+		scrolledWindow.Add(da);
 		
 		ShowAll();
 	}
@@ -42,67 +45,15 @@ public partial class MainWindow: Gtk.Window
 	
 	protected virtual void OnOpenActionActivated (object sender, System.EventArgs e)
 	{
-		var refinements = new Dictionary<string, List<string>>();
-		model = new GoalModel();
-		using (var reader = XmlReader.Create("example.xml")) {
-			while (reader.Read()) {
-				if (reader.IsStartElement("goal")) {
-					string id = "", name = "";
-					List<string> children = new List<string>();
-					
-					// Read all nodes of <goal>
-					while (reader.Read()) {
-						if (reader.IsStartElement("id")) {
-							reader.Read();
-							id = reader.Value.Trim();
-							
-						} else if (reader.IsStartElement("name")) {
-							reader.Read();
-							name = reader.Value.Trim();
-							
-						} else if (reader.IsStartElement("children")) {
-							
-							// Read all nodes of <children>
-							while(reader.Read()) {
-								if (reader.IsStartElement("child")) {
-									reader.Read();
-									string childId = reader.Value.Trim();
-									children.Add(childId);
-									
-								} else if (reader.IsEndElement("children")) {
-									break;
-								}
-							}
-							
-						} else if (reader.IsEndElement("goal")) {
-							break;	
-						}
-					}
-					
-					model.Add(new Goal() { Name = name, Id = id });
-					refinements.Add(id, children);
-				}
-			}
-		}
+		var importer = new XmlImporter("example2.xml");
+		importer.Import();
+		this.model = importer.Model;
+		this.views = importer.Views;
 		
-		foreach (string k in refinements.Keys) {
-			var refinement = new Refinement() { Id = "refinement1" };
-			var g2 = model.Goals.Find(l => l.Id == k);
-			if (g2 != null) {
-				foreach (var childId in refinements[k]) {
-					var g3 = model.Goals.Find(l2 => l2.Id == childId);
-					if (g3 != null) {
-						refinement.Add(g3);
-					}
-				}
-				if (refinement.Refinees.Count > 0) { g2.Refinements.Add(refinement); }
-			}
-		}
-		
-		foreach (var view in views) {
-			foreach (var goal in model.Goals) {
-				view.Add(goal);
-			}
+		if (this.views.Count > 0) {
+			this.da.UpdateCurrentView(this.views[0]);		
+		} else {
+			Console.WriteLine ("Something went wrong");
 		}
 	}
 	

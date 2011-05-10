@@ -40,6 +40,8 @@ namespace Editor
 		public void UpdateCurrentView (View view) 
 		{
 			this.CurrentView = view;
+			view.DrawingArea = this;
+			this.QueueDraw();
 		}
 		
 		protected override bool OnExposeEvent (Gdk.EventExpose evnt)

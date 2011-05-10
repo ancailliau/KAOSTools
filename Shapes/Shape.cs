@@ -36,7 +36,7 @@ namespace Shapes
 			set;
 		}
 		
-		public Goal RepresentedElement {
+		public IModelElement RepresentedElement {
 			get;
 			set;
 		}

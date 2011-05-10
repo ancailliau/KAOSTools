@@ -68,7 +68,7 @@ namespace Editor
 				writer.WriteAttributeString("id", refinement.Id);
 				
 				foreach (var child in refinement.Refinees) {
-					writer.WriteStartElement(child.TypeName);
+					writer.WriteStartElement("refinee");
 					writer.WriteAttributeString("id", child.Id);
 					writer.WriteEndElement();
 				}
@@ -85,7 +85,7 @@ namespace Editor
 				writer.WriteStartElement("view");
 				writer.WriteAttributeString("name", view.Name);
 				foreach (var shape in view.Shapes) {
-					writer.WriteStartElement(shape.RepresentedElement.TypeName);
+					writer.WriteStartElement("element");
 					writer.WriteAttributeString("id", shape.RepresentedElement.Id);
 					writer.WriteAttributeString("x", shape.Position.X.ToString());
 					writer.WriteAttributeString("y", shape.Position.Y.ToString());

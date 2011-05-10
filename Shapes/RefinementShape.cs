@@ -1,17 +1,19 @@
 using System;
 using Cairo;
 using Gtk;
+using Model;
 
 namespace Shapes
 {
-	public class CircleShape : Shape
+	public class RefinementShape : Shape
 	{
 		private double radius;
 		
-		public CircleShape () : base ()
+		public RefinementShape (Refinement refinement) : base ()
 		{
 			XPadding = 4;
 			YPadding = 4;
+			RepresentedElement = refinement;
 		}
 		
 		public override void Display (Context context, DrawingArea drawingArea)
@@ -32,8 +34,7 @@ namespace Shapes
 			} else {
 				radius = 4;
 			}
-			
-			
+						
 			context.MoveTo(Position.X + radius, Position.Y);
 			context.Arc(Position.X, Position.Y, radius, 0, Math.PI * 2);
 			

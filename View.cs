@@ -69,6 +69,11 @@ namespace Editor
 			}
 		}
 		
+		public void Add (IShape shape)
+		{
+			Shapes.Add (shape);
+		}
+		
 		public bool OnMotionNotifyEvent (Gdk.EventMotion args)
 		{
 			if (this.SelectedShape != null) {

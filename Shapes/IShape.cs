@@ -95,7 +95,7 @@ namespace Shapes
 		/// </param>
 		PointD GetAnchor(PointD point);
 		
-		Goal RepresentedElement {
+		IModelElement RepresentedElement {
 			get;
 			set;
 		}

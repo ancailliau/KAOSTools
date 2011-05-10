@@ -1,25 +1,31 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Model
 {
 	public class GoalModel
 	{
+		
+		private List<IModelElement> Elements;
+		
 		public List<Goal> Goals {
-			get;
-			set;
+			get { return Elements.FindAll(e => e is Goal).ConvertAll<Goal>(t => t as Goal); }
 		}
 		
 		public GoalModel ()
 		{
-			Goals = new List<Goal>();
+			Elements = new List<IModelElement>();
 		}
 		
 		public void Add (IModelElement element) 
 		{
-			if (element is Goal) {
-				Goals.Add(element as Goal);
-			}
+			Elements.Add(element);
+		}
+		
+		public IModelElement Get (string id)
+		{
+			return Elements.Find(t => t.Id == id);
 		}
 		
 	}
