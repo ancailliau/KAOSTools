@@ -44,19 +44,19 @@ public partial class MainWindow: Gtk.Window
 			writer.WriteStartDocument();
 			
 			writer.WriteStartElement("goals");
-			foreach (var g in model.Goals) {
+			foreach (var g in model.Elements) {
 				writer.WriteStartElement("goal");
 				
 				writer.WriteAttributeString("id", g.Id);
-				writer.WriteAttributeString("name", g.Name);
+				// writer.WriteAttributeString("name", g.Name);
 				
-				if (g.Children.Count > 0) {
-					writer.WriteStartElement("children");
-					foreach (var g2 in g.Children) {
-						writer.WriteElementString("child", g2.Id);
-					}
-					writer.WriteEndElement();
-				}
+				//if (g.Children.Count > 0) {
+				//	writer.WriteStartElement("children");
+				//	foreach (var g2 in g.Children) {
+				//		writer.WriteElementString("child", g2.Id);
+				//	}
+				//	writer.WriteEndElement();
+				//}
 				writer.WriteEndElement();
 			}
 			writer.WriteEndElement();
@@ -67,6 +67,7 @@ public partial class MainWindow: Gtk.Window
 				writer.WriteAttributeString("name", view.Name);
 				foreach (var shape in view.Shapes) {
 					writer.WriteStartElement("goal");
+					writer.WriteAttributeString("id", shape.RepresentedElement.Id);
 					writer.WriteAttributeString("x", shape.Position.X.ToString());
 					writer.WriteAttributeString("y", shape.Position.Y.ToString());
 					writer.WriteEndElement();
@@ -118,21 +119,27 @@ public partial class MainWindow: Gtk.Window
 						}
 					}
 					
-					model.Goals.Add(new Goal() { Name = name, Id = id });
+					model.Elements.Add(new Goal() { Name = name, Id = id });
 					refinements.Add(id, children);
 				}
 			}
 		}
-		
+		/*
 		foreach (string k in refinements.Keys) {
-			var g2 = model.Goals.Find(l => l.Id == k);
+			var g2 = model.Elements.Find(l => l.Id == k);
 			if (g2 != null) {
 				foreach (var childId in refinements[k]) {
-					var g3 = model.Goals.Find(l2 => l2.Id == childId);
+					var g3 = model.Elements.Find(l2 => l2.Id == childId);
 					if (g3 != null) {
 						g2.Children.Add(g3);
 					}
 				}
+			}
+		}
+		*/
+		foreach (var view in views) {
+			foreach (var goal in model.Elements) {
+				view.Add(goal);
 			}
 		}
 	}

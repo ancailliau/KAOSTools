@@ -1,6 +1,7 @@
 using System;
 using Cairo;
 using Gtk;
+using Model;
 
 namespace Shapes
 {
@@ -94,6 +95,10 @@ namespace Shapes
 		/// </param>
 		PointD GetAnchor(PointD point);
 		
+		Goal RepresentedElement {
+			get;
+			set;
+		}
 	}
 }
 

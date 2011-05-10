@@ -61,11 +61,12 @@ namespace Editor
 			}
 		}
 		
-		public void AddGoal (Goal goal) 
+		public void Add (IModelElement element) 
 		{
-			Shapes.Add (new RectangleShape() {
-				Label = goal.Name
-			});
+			IShape shape = ShapeFactory.Create (element);
+			if (shape != null) {
+				Shapes.Add (shape);
+			}
 		}
 		
 		public bool OnMotionNotifyEvent (Gdk.EventMotion args)

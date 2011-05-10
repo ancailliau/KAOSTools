@@ -5,20 +5,16 @@ namespace Model
 {
 	public class GoalModel
 	{
-		public List<Goal> Goals {
+		public List<IModelElement> Elements {
 			get;
 			set;
 		}
 		
 		public GoalModel ()
 		{
-			Goals = new List<Goal>();
+			Elements = new List<IModelElement>();
 		}
 		
-		public void AddGoals (IEnumerable<Goal> goals)
-		{
-			Goals.AddRange(goals);
-		}
 	}
 }
 

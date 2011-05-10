@@ -1,20 +1,23 @@
 using System;
 using Cairo;
 using Gtk;
+using Model;
 
 namespace Shapes
 {
-	public class RectangleShape : Shape
+	public class GoalShape : Shape
 	{
 		private double width;
 		private double height;
 		
-		public RectangleShape () : base () 
+		public GoalShape (Goal goal) : base () 
 		{
 			XPadding = 10;
 			YPadding = 4;
+			Label = goal.Name;
+			RepresentedElement = goal;
 		}
-				
+		
 		public override void Display (Context context, DrawingArea drawingArea)
 		{
 			var oldSource = context.Source;

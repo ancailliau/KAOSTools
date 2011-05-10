@@ -52,17 +52,18 @@
     <Compile Include="gtk-gui\MainWindow.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Shapes\Rectangle.cs" />
     <Compile Include="Shapes\IShape.cs" />
     <Compile Include="Shapes\Shape.cs" />
     <Compile Include="Shapes\CircleShape.cs" />
     <Compile Include="Arrows\FilledArrow.cs" />
     <Compile Include="Model\Goal.cs" />
     <Compile Include="Model\GoalModel.cs" />
-    <Compile Include="Graph.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="View.cs" />
     <Compile Include="DiagramArea.cs" />
+    <Compile Include="Shapes\GoalShape.cs" />
+    <Compile Include="Shapes\ShapeFactory.cs" />
+    <Compile Include="Model\IModelElement.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
