@@ -9,15 +9,18 @@ public partial class MainWindow: Gtk.Window
 {	
 	
 	private GoalModel model;
-	private GoalGraph graph;
+	private List<View> views;
 	
 	public MainWindow (GoalModel model): base (Gtk.WindowType.Toplevel)
 	{
 		this.model = model;
 		
+		views = new List<View>();
+		views.Add(new View());
+		
 		Build ();
-		graph = new GoalGraph (new Graph (model));
-		scrolledWindow.Add(graph);
+		scrolledWindow.Add(new DiagramArea (views[0]));
+		
 		ShowAll();
 	}
 
@@ -37,15 +40,16 @@ public partial class MainWindow: Gtk.Window
 		var settings = new XmlWriterSettings();
 		settings.Indent = true;
 		
-		using (var writer = XmlWriter.Create("example.xml", settings)) {
+		using (var writer = XmlWriter.Create("example2.xml", settings)) {
 			writer.WriteStartDocument();
+			
 			writer.WriteStartElement("goals");
 			foreach (var g in model.Goals) {
 				writer.WriteStartElement("goal");
-				writer.WriteElementString("id", g.Id);
-				writer.WriteStartElement("name");
-				writer.WriteCData(g.Name);
-				writer.WriteEndElement();
+				
+				writer.WriteAttributeString("id", g.Id);
+				writer.WriteAttributeString("name", g.Name);
+				
 				if (g.Children.Count > 0) {
 					writer.WriteStartElement("children");
 					foreach (var g2 in g.Children) {
@@ -56,6 +60,21 @@ public partial class MainWindow: Gtk.Window
 				writer.WriteEndElement();
 			}
 			writer.WriteEndElement();
+			
+			writer.WriteStartElement("views");
+			foreach (var view in views) {
+				writer.WriteStartElement("view");
+				writer.WriteAttributeString("name", view.Name);
+				foreach (var shape in view.Shapes) {
+					writer.WriteStartElement("goal");
+					writer.WriteAttributeString("x", shape.Position.X.ToString());
+					writer.WriteAttributeString("y", shape.Position.Y.ToString());
+					writer.WriteEndElement();
+				}
+				writer.WriteEndElement();
+			}
+			writer.WriteEndElement();
+			
 			writer.WriteEndDocument();
 		}
 	}
@@ -116,8 +135,6 @@ public partial class MainWindow: Gtk.Window
 				}
 			}
 		}
-		
-		graph.Update(new Graph(model));
 	}
 	
 	

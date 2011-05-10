@@ -52,7 +52,6 @@
     <Compile Include="gtk-gui\MainWindow.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="GoalGraph.cs" />
     <Compile Include="Shapes\Rectangle.cs" />
     <Compile Include="Shapes\IShape.cs" />
     <Compile Include="Shapes\Shape.cs" />
@@ -62,6 +61,8 @@
     <Compile Include="Model\GoalModel.cs" />
     <Compile Include="Graph.cs" />
     <Compile Include="Helpers.cs" />
+    <Compile Include="View.cs" />
+    <Compile Include="DiagramArea.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

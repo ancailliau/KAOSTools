@@ -1,5 +1,6 @@
 using System;
 using Cairo;
+using Model;
 
 namespace Shapes
 {
@@ -31,6 +32,11 @@ namespace Shapes
 		}
 		
 		public double YPadding {
+			get;
+			set;
+		}
+		
+		public Goal RepresentedElement {
 			get;
 			set;
 		}
