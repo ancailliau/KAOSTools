@@ -7,7 +7,7 @@ namespace Editor
 {
 	public class XmlExporter
 	{
-		
+		private Version version = new Version(0, 1);
 		private string filename;
 		
 		private GoalModel model;
@@ -30,8 +30,13 @@ namespace Editor
 			using (var writer = XmlWriter.Create(filename, settings)) {
 				writer.WriteStartDocument();
 				
+				writer.WriteStartElement("kaoseditor");
+				writer.WriteAttributeString("version", version.ToString());
+			
 				WriteModel (writer);
 				WriteViews (writer);
+				
+				writer.WriteEndElement();
 				
 				writer.WriteEndDocument();
 			}
@@ -39,12 +44,15 @@ namespace Editor
 		
 		public void WriteModel (XmlWriter writer)
 		{
-			writer.WriteStartElement("model");
+			
+			writer.WriteStartElement("models");
+			
 			writer.WriteStartElement("goals");
 			foreach (var goal in model.Goals) {
 				WriteGoal(writer, goal);
 			}
 			writer.WriteEndElement();
+			
 			writer.WriteEndElement();
 		}
 		
@@ -55,10 +63,14 @@ namespace Editor
 			writer.WriteAttributeString("id", goal.Id);
 			writer.WriteAttributeString("name", goal.Name);
 				
-			if (goal.Children.Count > 0) {
-				writer.WriteStartElement("children");
-				foreach (var child in goal.Children) {
-					writer.WriteElementString("child", child.Id);
+			foreach (var refinement in goal.Refinements) {
+				writer.WriteStartElement("refinement");
+				writer.WriteAttributeString("id", refinement.Id);
+				
+				foreach (var child in refinement.Refinees) {
+					writer.WriteStartElement(child.TypeName);
+					writer.WriteAttributeString("id", child.Id);
+					writer.WriteEndElement();
 				}
 				writer.WriteEndElement();
 			}
@@ -73,7 +85,7 @@ namespace Editor
 				writer.WriteStartElement("view");
 				writer.WriteAttributeString("name", view.Name);
 				foreach (var shape in view.Shapes) {
-					writer.WriteStartElement("goal");
+					writer.WriteStartElement(shape.RepresentedElement.TypeName);
 					writer.WriteAttributeString("id", shape.RepresentedElement.Id);
 					writer.WriteAttributeString("x", shape.Position.X.ToString());
 					writer.WriteAttributeString("y", shape.Position.Y.ToString());

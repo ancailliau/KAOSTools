@@ -88,6 +88,7 @@ namespace Editor
 		
 		public bool OnButtonReleaseEvent (Gdk.EventButton args)
 		{
+			SelectedShape = null;
 			return true;
 		}
 

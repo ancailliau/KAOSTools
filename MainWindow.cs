@@ -37,7 +37,7 @@ public partial class MainWindow: Gtk.Window
 		
 	protected virtual void OnSaveActionActivated (object sender, System.EventArgs e)
 	{
-		new XmlExporter("example2.xml", model, views);
+		new XmlExporter("example2.xml", model, views).Export();
 	}
 	
 	protected virtual void OnOpenActionActivated (object sender, System.EventArgs e)
@@ -84,19 +84,21 @@ public partial class MainWindow: Gtk.Window
 				}
 			}
 		}
-		/*
+		
 		foreach (string k in refinements.Keys) {
-			var g2 = model.Elements.Find(l => l.Id == k);
+			var refinement = new Refinement() { Id = "refinement1" };
+			var g2 = model.Goals.Find(l => l.Id == k);
 			if (g2 != null) {
 				foreach (var childId in refinements[k]) {
-					var g3 = model.Elements.Find(l2 => l2.Id == childId);
+					var g3 = model.Goals.Find(l2 => l2.Id == childId);
 					if (g3 != null) {
-						g2.Children.Add(g3);
+						refinement.Add(g3);
 					}
 				}
+				if (refinement.Refinees.Count > 0) { g2.Refinements.Add(refinement); }
 			}
 		}
-		*/
+		
 		foreach (var view in views) {
 			foreach (var goal in model.Goals) {
 				view.Add(goal);
