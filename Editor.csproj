@@ -64,6 +64,8 @@
     <Compile Include="Shapes\GoalShape.cs" />
     <Compile Include="Shapes\ShapeFactory.cs" />
     <Compile Include="Model\IModelElement.cs" />
+    <Compile Include="XmlExporter.cs" />
+    <Compile Include="XmlImporter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
