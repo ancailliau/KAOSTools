@@ -13,6 +13,8 @@ public partial class MainWindow: Gtk.Window
 	
 	private DiagramArea da;
 	
+	private TreeStore ls;
+	
 	private string filename;
 	
 	public MainWindow (GoalModel model): base (Gtk.WindowType.Toplevel)
@@ -26,9 +28,34 @@ public partial class MainWindow: Gtk.Window
 		da = new DiagramArea (views[0]);
 		scrolledWindow.Add(da);
 		
+		// Build tree view		
+		var conceptCol = new TreeViewColumn ();
+		conceptCol.Title = "Concepts";
+		modelTreeView.AppendColumn (conceptCol);
+		
+		var goalNameCell = new CellRendererText();
+		conceptCol.PackStart(goalNameCell, true);
+		conceptCol.AddAttribute(goalNameCell, "text", 0);
+		
+		ls = new TreeStore(typeof(string));
+		modelTreeView.Model = ls;
+		UpdateListStore();
+		
 		ShowAll();
 	}
-
+	
+	protected void UpdateListStore()
+	{
+		ls.Clear();
+		
+		if (model.Goals.Count > 0) {
+			var iter = ls.AppendValues("Goals");
+			foreach (var element in model.Goals) {
+				ls.AppendValues(iter, element.Name);
+			}
+		}
+	}
+	
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
 	{
 		Application.Quit ();
@@ -69,7 +96,9 @@ public partial class MainWindow: Gtk.Window
 			this.views = importer.Views;
 			
 			if (this.views.Count > 0) {
-				this.da.UpdateCurrentView(this.views[0]);		
+				this.da.UpdateCurrentView(this.views[0]);
+				UpdateListStore();
+				
 			} else {
 				var errorDialog = new MessageDialog(this, DialogFlags.DestroyWithParent, MessageType.Error,
 					ButtonsType.Ok, false, "File is malformed.");
