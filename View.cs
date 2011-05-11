@@ -47,7 +47,7 @@ namespace Editor
 		{
 			// Draw all shapes
 			foreach (var rect in Shapes.Values) {
-				rect.Display(context, DrawingArea);
+				rect.Display(context, this);
 			}
 		}
 		
@@ -104,6 +104,13 @@ namespace Editor
 			return true;
 		}
 		
+		public IShape ContainsShapeFor (IModelElement element)
+		{
+			if (Shapes.ContainsKey(element.Id)) {
+				return Shapes[element.Id];
+			}
+			return null;
+		}
 		
 	}
 }

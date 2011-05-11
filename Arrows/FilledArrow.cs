@@ -2,6 +2,7 @@ using System;
 using Shapes;
 using Cairo;
 using Gtk;
+using Editor;
 
 namespace Arrows
 {
@@ -37,8 +38,9 @@ namespace Arrows
 			arrowSideWith = Math.Sqrt(125);
 		}
 		
-		public void Display (Context context, DrawingArea drawingArea)
+		public void Display (Context context, View view)
 		{
+			var drawingArea = view.DrawingArea;
 			var startPosition = Start.GetAnchor(End.Position);
 			var endPosition = End.GetAnchor(Start.Position);
 			

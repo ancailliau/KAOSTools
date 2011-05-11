@@ -2,6 +2,7 @@ using System;
 using Cairo;
 using Gtk;
 using Model;
+using Editor;
 
 namespace Shapes
 {
@@ -18,8 +19,9 @@ namespace Shapes
 			RepresentedElement = goal;
 		}
 		
-		public override void Display (Context context, DrawingArea drawingArea)
+		public override void Display (Context context, View view)
 		{
+			var drawingArea = view.DrawingArea;
 			var oldSource = context.Source;
 			
 			var pangoLayout = new Pango.Layout(drawingArea.PangoContext);

@@ -14,6 +14,11 @@ namespace Model
 		
 		public string TypeName { get { return "refinement"; } }
 		
+		public IModelElement Refined {
+			get;
+			set;
+		}
+		
 		public List<IModelElement> Refinees {
 			get;
 			set;

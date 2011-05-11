@@ -1,6 +1,7 @@
 using System;
 using Cairo;
 using Model;
+using Editor;
 
 namespace Shapes
 {
@@ -54,7 +55,7 @@ namespace Shapes
 			BackgroundColor = new Color(1,1,1);
 		}
 
-		public abstract void Display (Context context, Gtk.DrawingArea drawingArea);
+		public abstract void Display (Context context, View view);
 		public abstract bool InBoundingBox (double x, double y, out PointD delta);
 		public abstract PointD GetAnchor (PointD point);
 	}

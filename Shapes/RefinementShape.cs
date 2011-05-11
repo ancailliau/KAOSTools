@@ -2,6 +2,8 @@ using System;
 using Cairo;
 using Gtk;
 using Model;
+using Editor;
+using Arrows;
 
 namespace Shapes
 {
@@ -16,8 +18,9 @@ namespace Shapes
 			RepresentedElement = refinement;
 		}
 		
-		public override void Display (Context context, DrawingArea drawingArea)
+		public override void Display (Context context, View view)
 		{
+			var drawingArea = view.DrawingArea;
 			var oldSource = context.Source;
 			
 			var pangoLayout = new Pango.Layout(drawingArea.PangoContext);
@@ -53,6 +56,27 @@ namespace Shapes
 			if (Label != "") {
 				context.MoveTo(Position.X - textWidth/2, Position.Y - textHeight/2);
 				Pango.CairoHelper.ShowLayout(context, pangoLayout);
+			}
+			
+			// If the refined goal is present as a shape in the view, draw the arrow to.
+			IShape refinedShape = null;
+			if ((refinedShape = view.ContainsShapeFor(((Refinement) RepresentedElement).Refined)) != null) {
+				var arrow = new FilledArrow() {
+					Start = this,
+					End = refinedShape
+				};
+				arrow.Display(context, view);
+			}
+			
+			// If refinees are present as shapes, draw the arrows to.
+			foreach (var refinee in ((Refinement) RepresentedElement).Refinees) {
+				if ((refinedShape = view.ContainsShapeFor(refinee)) != null) {
+					var arrow = new FilledArrow() {
+						Start = refinedShape,
+						End = this
+					};
+					arrow.Display(context, view);
+				}
 			}
 			
 			context.Source = oldSource;

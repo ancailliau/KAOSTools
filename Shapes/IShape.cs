@@ -2,6 +2,7 @@ using System;
 using Cairo;
 using Gtk;
 using Model;
+using Editor;
 
 namespace Shapes
 {
@@ -64,7 +65,7 @@ namespace Shapes
 		/// <param name='drawingArea'>
 		/// Drawing area.
 		/// </param>
-		void Display (Context context, DrawingArea drawingArea);
+		void Display (Context context, View view);
 		
 		/// <summary>
 		/// Returns whether the point determined by the coordinates (x,y)
