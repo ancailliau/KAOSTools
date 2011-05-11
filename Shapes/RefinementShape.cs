@@ -71,7 +71,7 @@ namespace Shapes
 			// If refinees are present as shapes, draw the arrows to.
 			foreach (var refinee in ((Refinement) RepresentedElement).Refinees) {
 				if ((refinedShape = view.ContainsShapeFor(refinee)) != null) {
-					var arrow = new FilledArrow() {
+					var arrow = new Arrows.Arrow() {
 						Start = refinedShape,
 						End = this
 					};

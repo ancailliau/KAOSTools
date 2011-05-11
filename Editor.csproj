@@ -68,6 +68,8 @@
     <Compile Include="XmlImporter.cs" />
     <Compile Include="Model\Refinement.cs" />
     <Compile Include="Shapes\RefinementShape.cs" />
+    <Compile Include="Arrows\IArrow.cs" />
+    <Compile Include="Arrows\Arrow.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
