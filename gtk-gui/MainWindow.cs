@@ -9,6 +9,7 @@ public partial class MainWindow
 	private global::Gtk.Action ModelAction;
 	private global::Gtk.Action saveAction;
 	private global::Gtk.Action openAction;
+	private global::Gtk.Action saveAsAction;
 	private global::Gtk.VBox mainVBox;
 	private global::Gtk.MenuBar mainMenu;
 	private global::Gtk.ScrolledWindow scrolledWindow;
@@ -35,6 +36,9 @@ public partial class MainWindow
 		this.openAction = new global::Gtk.Action ("openAction", global::Mono.Unix.Catalog.GetString ("_Open"), null, "gtk-open");
 		this.openAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("_Open");
 		w1.Add (this.openAction, null);
+		this.saveAsAction = new global::Gtk.Action ("saveAsAction", global::Mono.Unix.Catalog.GetString ("Save _As"), null, "gtk-save-as");
+		this.saveAsAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Save _As");
+		w1.Add (this.saveAsAction, null);
 		this.UIManager.InsertActionGroup (w1, 0);
 		this.AddAccelGroup (this.UIManager.AccelGroup);
 		this.Name = "MainWindow";
@@ -45,7 +49,7 @@ public partial class MainWindow
 		this.mainVBox.Name = "mainVBox";
 		this.mainVBox.Spacing = 6;
 		// Container child mainVBox.Gtk.Box+BoxChild
-		this.UIManager.AddUiFromString ("<ui><menubar name='mainMenu'><menu name='ApplicationAction' action='ApplicationAction'><menuitem name='quitAction' action='quitAction'/></menu><menu name='ModelAction' action='ModelAction'><menuitem name='openAction' action='openAction'/><menuitem name='saveAction' action='saveAction'/></menu></menubar></ui>");
+		this.UIManager.AddUiFromString ("<ui><menubar name='mainMenu'><menu name='ApplicationAction' action='ApplicationAction'><menuitem name='quitAction' action='quitAction'/></menu><menu name='ModelAction' action='ModelAction'><menuitem name='openAction' action='openAction'/><separator/><menuitem name='saveAction' action='saveAction'/><menuitem name='saveAsAction' action='saveAsAction'/></menu></menubar></ui>");
 		this.mainMenu = ((global::Gtk.MenuBar)(this.UIManager.GetWidget ("/mainMenu")));
 		this.mainMenu.Name = "mainMenu";
 		this.mainVBox.Add (this.mainMenu);
@@ -81,5 +85,6 @@ public partial class MainWindow
 		this.quitAction.Activated += new global::System.EventHandler (this.OnQuitActionActivated);
 		this.saveAction.Activated += new global::System.EventHandler (this.OnSaveActionActivated);
 		this.openAction.Activated += new global::System.EventHandler (this.OnOpenActionActivated);
+		this.saveAsAction.Activated += new global::System.EventHandler (this.OnSaveAsActionActivated);
 	}
 }
