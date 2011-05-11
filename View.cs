@@ -4,6 +4,7 @@ using Arrows;
 using System.Collections.Generic;
 using Cairo;
 using Gtk;
+using System.Linq;
 using Model;
 
 namespace Editor
@@ -16,12 +17,7 @@ namespace Editor
 			set;
 		}
 		
-		public List<IShape> Shapes {
-			get;
-			set;
-		}
-		
-		public List<FilledArrow> Arrows {
+		public Dictionary<string, IShape> Shapes {
 			get;
 			set;
 		}
@@ -44,19 +40,13 @@ namespace Editor
 		public View ()
 		{
 			Name = "(default)";
-			Shapes = new List<IShape>();
-			Arrows = new List<FilledArrow>();
+			Shapes = new Dictionary<string, IShape>();
 		}
 		
 		public void Display (Context context) 
 		{
-			// Draw all arrows
-			foreach (var arrow in Arrows) {
-				arrow.Display(context, DrawingArea);
-			}
-			
 			// Draw all shapes
-			foreach (var rect in Shapes) {
+			foreach (var rect in Shapes.Values) {
 				rect.Display(context, DrawingArea);
 			}
 		}
@@ -65,13 +55,13 @@ namespace Editor
 		{
 			IShape shape = ShapeFactory.Create (element);
 			if (shape != null) {
-				Shapes.Add (shape);
+				Shapes.Add (element.Id, shape);
 			}
 		}
 		
 		public void Add (IShape shape)
 		{
-			Shapes.Add (shape);
+			Shapes.Add (shape.RepresentedElement.Id, shape);
 		}
 		
 		public bool OnMotionNotifyEvent (Gdk.EventMotion args)
@@ -100,14 +90,13 @@ namespace Editor
 		public bool OnButtonPressEvent (Gdk.EventButton args)
 		{
 			// Find the rectangle to move
-			SelectedShape = null;
+			SelectedShape = Shapes.Values.FirstOrDefault();
 			var selectedPoint = new PointD(0,0);
-			for (int i = Shapes.Count - 1; i >= 0; i--) {
-				var shape = Shapes[i];
-				
+			foreach (var shape in Shapes.Values) {
 				if (shape.InBoundingBox(args.X, args.Y, out selectedPoint)) {
-					SelectedShape = shape;
-					break;
+					if (shape.Depth > SelectedShape.Depth) { 
+						SelectedShape = shape;
+					}
 				}
 			}
 			SelectedPoint = selectedPoint;

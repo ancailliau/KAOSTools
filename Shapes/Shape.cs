@@ -41,6 +41,11 @@ namespace Shapes
 			set;
 		}
 		
+		public int Depth {
+			get;
+			set;
+		}
+		
 		public Shape ()
 		{
 			Label = "";

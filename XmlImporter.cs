@@ -39,6 +39,7 @@ namespace Editor
 		private class FutureShape {
 			public string id;
 			public PointD position;
+			public int depth;
 		}
 		
 		public XmlImporter (string filename)
@@ -124,9 +125,11 @@ namespace Editor
 							string id = reader.GetAttribute("id");
 							string x = reader.GetAttribute("x");
 							string y = reader.GetAttribute("y");
+							string depth = reader.GetAttribute("depth");
 							view.elements.Add(new FutureShape() { 
 								id = id, 
-								position = new PointD(Double.Parse(x), Double.Parse(y))
+								position = new PointD(Double.Parse(x), Double.Parse(y)),
+								depth = int.Parse(depth)
 							});
 							
 						} else if (reader.IsEndElement ("view")) {
@@ -169,6 +172,7 @@ namespace Editor
 					var element = ShapeFactory.Create(Model.Get(futureElement.id));
 					if (element != null) {
 						element.Position = futureElement.position;
+						element.Depth = futureElement.depth;
 						view.Add(element);
 					} else {
 						Console.WriteLine ("Ignoring " + Model.Get(futureElement.id));

@@ -84,11 +84,12 @@ namespace Editor
 			foreach (var view in views) {
 				writer.WriteStartElement("view");
 				writer.WriteAttributeString("name", view.Name);
-				foreach (var shape in view.Shapes) {
+				foreach (var shape in view.Shapes.Values) {
 					writer.WriteStartElement("element");
 					writer.WriteAttributeString("id", shape.RepresentedElement.Id);
 					writer.WriteAttributeString("x", shape.Position.X.ToString());
 					writer.WriteAttributeString("y", shape.Position.Y.ToString());
+					writer.WriteAttributeString("depth", shape.Depth.ToString());
 					writer.WriteEndElement();
 				}
 				writer.WriteEndElement();

@@ -99,6 +99,8 @@ namespace Shapes
 			get;
 			set;
 		}
+		
+		int Depth { get ; set ; }
 	}
 }
 
