@@ -7,32 +7,28 @@ namespace Shapes
 {
 	public abstract class Shape : IShape
 	{
-		public string Label {
-			get;
-			set;
-		}
 		
 		public PointD Position {
 			get;
 			set;
 		}
 				
-		public Color BorderColor {
+		protected Color BorderColor {
 			get;
 			set;
 		}
 		
-		public Color BackgroundColor {
+		protected Color BackgroundColor {
 			get;
 			set;
 		}
 		
-		public double XPadding {
+		protected double XPadding {
 			get;
 			set;
 		}
 		
-		public double YPadding {
+		protected double YPadding {
 			get;
 			set;
 		}
@@ -47,9 +43,10 @@ namespace Shapes
 			set;
 		}
 		
+		public bool Selected { get ; set ; }
+		
 		public Shape ()
 		{
-			Label = "";
 			Position = new PointD(0,0);
 			BorderColor = new Color(0,0,0);
 			BackgroundColor = new Color(1,1,1);

@@ -83,7 +83,9 @@ namespace Editor
 		
 		public bool OnButtonReleaseEvent (Gdk.EventButton args)
 		{
+			SelectedShape.Selected = false;
 			SelectedShape = null;
+			this.DrawingArea.QueueDraw();
 			return true;
 		}
 
@@ -100,6 +102,7 @@ namespace Editor
 				}
 			}
 			SelectedPoint = selectedPoint;
+			SelectedShape.Selected = true;
 			
 			return true;
 		}

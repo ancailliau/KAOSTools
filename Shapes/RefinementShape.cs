@@ -16,28 +16,13 @@ namespace Shapes
 			XPadding = 4;
 			YPadding = 4;
 			RepresentedElement = refinement;
+			radius = 4;
 		}
 		
 		public override void Display (Context context, View view)
 		{
-			var drawingArea = view.DrawingArea;
 			var oldSource = context.Source;
 			
-			var pangoLayout = new Pango.Layout(drawingArea.PangoContext);
-			pangoLayout.SetText(this.Label);
-			pangoLayout.Alignment = Pango.Alignment.Center;
-			
-			int textWidth, textHeight;
-			pangoLayout.GetPixelSize(out textWidth, out textHeight);
-			
-			double width = textWidth + 2 * XPadding;
-			double height = textHeight + 2 * YPadding;			
-			if (Label != "") {
-				radius = Math.Max(width, height)/2;
-			} else {
-				radius = 4;
-			}
-						
 			context.MoveTo(Position.X + radius, Position.Y);
 			context.Arc(Position.X, Position.Y, radius, 0, Math.PI * 2);
 			
@@ -52,11 +37,6 @@ namespace Shapes
 				BorderColor.B,
 				BorderColor.A);
 			context.Stroke();
-			
-			if (Label != "") {
-				context.MoveTo(Position.X - textWidth/2, Position.Y - textHeight/2);
-				Pango.CairoHelper.ShowLayout(context, pangoLayout);
-			}
 			
 			// If the refined goal is present as a shape in the view, draw the arrow to.
 			IShape refinedShape = null;

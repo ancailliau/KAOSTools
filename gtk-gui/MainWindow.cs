@@ -64,7 +64,7 @@ public partial class MainWindow
 		this.hpaned1.CanFocus = true;
 		this.hpaned1.Name = "hpaned1";
 		this.hpaned1.Position = 144;
-		this.hpaned1.BorderWidth = ((uint)(4));
+		this.hpaned1.BorderWidth = ((uint)(6));
 		// Container child hpaned1.Gtk.Paned+PanedChild
 		this.GtkScrolledWindow = new global::Gtk.ScrolledWindow ();
 		this.GtkScrolledWindow.Name = "GtkScrolledWindow";

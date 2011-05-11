@@ -8,14 +8,13 @@ namespace Shapes
 {
 	public class GoalShape : Shape
 	{
-		private double width;
-		private double height;
+		private int width;
+		private int height;
 		
 		public GoalShape (Goal goal) : base () 
 		{
 			XPadding = 10;
 			YPadding = 4;
-			Label = goal.Name;
 			RepresentedElement = goal;
 		}
 		
@@ -25,14 +24,14 @@ namespace Shapes
 			var oldSource = context.Source;
 			
 			var pangoLayout = new Pango.Layout(drawingArea.PangoContext);
-			pangoLayout.SetText(this.Label);
+			pangoLayout.SetText(((Goal) this.RepresentedElement).Name);
 			pangoLayout.Alignment = Pango.Alignment.Center;
 			
 			int textWidth, textHeight;
 			pangoLayout.GetPixelSize(out textWidth, out textHeight);
 			
-			width = textWidth + 2 * XPadding;
-			height = textHeight + 2 * YPadding;
+			width = (int) ( textWidth + 2 * XPadding );
+			height = (int) ( textHeight + 2 * YPadding );
 			
 			context.Rectangle(Position.X - width / 2, Position.Y - height / 2, width, height);
 			
@@ -42,11 +41,16 @@ namespace Shapes
 				BackgroundColor.A);
 			context.FillPreserve();
 			
+			var oldLineWidth = context.LineWidth;
 			context.SetSourceRGBA(BorderColor.R,
 				BorderColor.G,
 				BorderColor.B,
 				BorderColor.A);
+			if (Selected) {
+				context.LineWidth = 2.5;
+			}
 			context.Stroke();
+			context.LineWidth = oldLineWidth;
 			
 			context.MoveTo(Position.X - textWidth/2, Position.Y - textHeight/2);
 			Pango.CairoHelper.ShowLayout(context, pangoLayout);
