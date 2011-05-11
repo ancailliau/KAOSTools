@@ -56,7 +56,6 @@
     <child>
       <widget class="Gtk.VBox" id="mainVBox">
         <property name="MemberName" />
-        <property name="Spacing">6</property>
         <child>
           <widget class="Gtk.MenuBar" id="mainMenu">
             <property name="MemberName" />
@@ -83,7 +82,8 @@
           <widget class="Gtk.HPaned" id="hpaned1">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
-            <property name="Position">105</property>
+            <property name="Position">144</property>
+            <property name="BorderWidth">6</property>
             <child>
               <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
                 <property name="MemberName" />

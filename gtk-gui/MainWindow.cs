@@ -50,7 +50,6 @@ public partial class MainWindow
 		// Container child MainWindow.Gtk.Container+ContainerChild
 		this.mainVBox = new global::Gtk.VBox ();
 		this.mainVBox.Name = "mainVBox";
-		this.mainVBox.Spacing = 6;
 		// Container child mainVBox.Gtk.Box+BoxChild
 		this.UIManager.AddUiFromString ("<ui><menubar name='mainMenu'><menu name='ApplicationAction' action='ApplicationAction'><menuitem name='quitAction' action='quitAction'/></menu><menu name='ModelAction' action='ModelAction'><menuitem name='openAction' action='openAction'/><separator/><menuitem name='saveAction' action='saveAction'/><menuitem name='saveAsAction' action='saveAsAction'/></menu></menubar></ui>");
 		this.mainMenu = ((global::Gtk.MenuBar)(this.UIManager.GetWidget ("/mainMenu")));
@@ -64,7 +63,8 @@ public partial class MainWindow
 		this.hpaned1 = new global::Gtk.HPaned ();
 		this.hpaned1.CanFocus = true;
 		this.hpaned1.Name = "hpaned1";
-		this.hpaned1.Position = 105;
+		this.hpaned1.Position = 144;
+		this.hpaned1.BorderWidth = ((uint)(4));
 		// Container child hpaned1.Gtk.Paned+PanedChild
 		this.GtkScrolledWindow = new global::Gtk.ScrolledWindow ();
 		this.GtkScrolledWindow.Name = "GtkScrolledWindow";
