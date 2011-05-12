@@ -10,6 +10,7 @@
     <RootNamespace>Editor</RootNamespace>
     <AssemblyName>Editor</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <StartupObject>Editor.MainClass</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

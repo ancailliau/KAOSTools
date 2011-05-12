@@ -4,6 +4,7 @@ using Editor;
 using Model;
 using System.Xml;
 using System.Collections.Generic;
+using Shapes;
 
 public partial class MainWindow: Gtk.Window
 {	
@@ -37,11 +38,49 @@ public partial class MainWindow: Gtk.Window
 		conceptCol.PackStart(goalNameCell, true);
 		conceptCol.AddAttribute(goalNameCell, "text", 0);
 		
-		ls = new TreeStore(typeof(string));
+		ls = new TreeStore(typeof(string), typeof(object));
 		modelTreeView.Model = ls;
 		UpdateListStore();
 		
+		modelTreeView.AddEvents((int) Gdk.EventMask.ButtonPressMask);
+		
+		modelTreeView.ButtonPressEvent += new ButtonPressEventHandler(OnItemButtonPressed);
+		
+		// Maximize();
 		ShowAll();
+		Present();
+	}
+	
+	[GLib.ConnectBeforeAttribute]
+	protected void OnItemButtonPressed (object sender, ButtonPressEventArgs args) 
+	{
+		if (args.Event.Button == 3) {
+			var path = new TreePath();
+			modelTreeView.GetPathAtPos(System.Convert.ToInt16(args.Event.X), 
+				System.Convert.ToInt16(args.Event.Y), out path);
+			
+			TreeIter iter;
+			if (ls.GetIter(out iter, path)) {
+				string id = (string) ls.GetValue(iter, 0);
+				object o = ls.GetValue(iter, 1);
+				if (o != null) {
+					var m = new Menu();
+					var addToView = new MenuItem("Add to current view");
+					addToView.Activated += delegate(object sender2, EventArgs e) {
+						HandleAddToViewActivated(o as Goal);
+					};
+					m.Add(addToView);
+					m.ShowAll();
+					m.Popup();
+				}
+			}
+		}
+	}
+
+	void HandleAddToViewActivated (Goal g)
+	{
+		views[0].Add(g);
+		views[0].DrawingArea.QueueDraw();
 	}
 	
 	protected void UpdateListStore()
@@ -49,9 +88,9 @@ public partial class MainWindow: Gtk.Window
 		ls.Clear();
 		
 		if (model.Goals.Count > 0) {
-			var iter = ls.AppendValues("Goals");
+			var iter = ls.AppendValues("Goals", null);
 			foreach (var element in model.Goals) {
-				ls.AppendValues(iter, element.Name);
+				ls.AppendValues(iter, element.Name.Replace("\n", ""), element);
 			}
 		}
 	}

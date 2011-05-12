@@ -55,6 +55,7 @@ namespace Editor
 		{
 			IShape shape = ShapeFactory.Create (element);
 			if (shape != null) {
+				Console.WriteLine ("Add '{0}' to view '{1}'", element.Id, this.Name);
 				Shapes.Add (element.Id, shape);
 			}
 		}
@@ -83,7 +84,9 @@ namespace Editor
 		
 		public bool OnButtonReleaseEvent (Gdk.EventButton args)
 		{
-			SelectedShape.Selected = false;
+			if (SelectedShape != null) {
+				SelectedShape.Selected = false;
+			}
 			SelectedShape = null;
 			this.DrawingArea.QueueDraw();
 			return true;
@@ -92,17 +95,22 @@ namespace Editor
 		public bool OnButtonPressEvent (Gdk.EventButton args)
 		{
 			// Find the rectangle to move
-			SelectedShape = Shapes.Values.FirstOrDefault();
+			SelectedShape = null;
 			var selectedPoint = new PointD(0,0);
 			foreach (var shape in Shapes.Values) {
 				if (shape.InBoundingBox(args.X, args.Y, out selectedPoint)) {
-					if (shape.Depth > SelectedShape.Depth) { 
+					if (SelectedShape == null || shape.Depth > SelectedShape.Depth) { 
 						SelectedShape = shape;
 					}
 				}
 			}
 			SelectedPoint = selectedPoint;
-			SelectedShape.Selected = true;
+			if (SelectedShape != null) {
+				SelectedShape.Selected = true;
+				Console.WriteLine ("Selected '{0}' in '{1}'", SelectedShape.RepresentedElement.Id, this.Name);
+			} else {
+				Console.WriteLine ("No element selected");
+			}
 			
 			return true;
 		}
