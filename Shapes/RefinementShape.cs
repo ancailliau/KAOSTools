@@ -4,6 +4,7 @@ using Gtk;
 using Model;
 using Editor;
 using Arrows;
+using Editor.Model;
 
 namespace Shapes
 {

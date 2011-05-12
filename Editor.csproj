@@ -47,11 +47,10 @@
     <EmbeddedResource Include="gtk-gui\gui.stetic">
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Images\Close.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gtk-gui\generated.cs" />
-    <Compile Include="MainWindow.cs" />
-    <Compile Include="gtk-gui\MainWindow.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Shapes\IShape.cs" />
@@ -60,8 +59,6 @@
     <Compile Include="Model\Goal.cs" />
     <Compile Include="Model\GoalModel.cs" />
     <Compile Include="Helpers.cs" />
-    <Compile Include="View.cs" />
-    <Compile Include="DiagramArea.cs" />
     <Compile Include="Shapes\GoalShape.cs" />
     <Compile Include="Shapes\ShapeFactory.cs" />
     <Compile Include="Model\IModelElement.cs" />
@@ -71,14 +68,28 @@
     <Compile Include="Shapes\RefinementShape.cs" />
     <Compile Include="Arrows\IArrow.cs" />
     <Compile Include="Arrows\Arrow.cs" />
-    <Compile Include="AddGoal.cs" />
-    <Compile Include="gtk-gui\Editor.AddGoal.cs" />
+    <Compile Include="Widgets\TabLabel.cs" />
+    <Compile Include="Dialogs\AddGoal.cs" />
+    <Compile Include="Dialogs\AddView.cs" />
+    <Compile Include="gtk-gui\Editor.Dialogs.AddGoal.cs" />
+    <Compile Include="gtk-gui\Editor.Dialogs.AddView.cs" />
+    <Compile Include="Widgets\DiagramArea.cs" />
+    <Compile Include="Windows\MainWindow.cs" />
+    <Compile Include="gtk-gui\Editor.Windows.MainWindow.cs" />
+    <Compile Include="Controllers\MainController.cs" />
+    <Compile Include="Model\View.cs" />
+    <Compile Include="Model\Views.cs" />
+    <Compile Include="Widgets\ViewsNotebook.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Shapes\" />
     <Folder Include="Arrows\" />
     <Folder Include="Model\" />
+    <Folder Include="Widgets\" />
+    <Folder Include="Dialogs\" />
+    <Folder Include="Windows\" />
+    <Folder Include="Controllers\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

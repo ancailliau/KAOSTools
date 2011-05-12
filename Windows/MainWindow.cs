@@ -5,30 +5,49 @@ using Model;
 using System.Xml;
 using System.Collections.Generic;
 using Shapes;
+using Editor.Dialogs;
+using Editor.Widgets;
+using Editor.Controllers;
+using Editor.Model;
+
+namespace Editor.Windows {
 
 public partial class MainWindow: Gtk.Window
 {	
 	
-	private GoalModel model;
-	private List<View> views;
+	public GoalModel Model {
+		get;
+		set;
+	}
 	
-	private DiagramArea da;
+	public MainController Controller {
+		get;
+		set;
+	}
+	
+	public Views Views {
+		get;
+		set;
+	}
+	
+	private ViewsNotebook viewsNotebook;
+	
+	private View currentView;
 	
 	private TreeStore ls;
 	
 	private string filename;
 	
-	public MainWindow (GoalModel model): base (Gtk.WindowType.Toplevel)
+	public MainWindow (GoalModel model, Views views): base (Gtk.WindowType.Toplevel)
 	{
-		this.model = model;
-		
-		views = new List<View>();
-		views.Add(new View());
-		
 		Build ();
-		da = new DiagramArea (views[0]);
-		scrolledWindow.Add(da);
 		
+		viewsNotebook = new ViewsNotebook();
+		hpaned1.Add2(viewsNotebook);
+		
+		this.Model = model;
+		this.Views = views;
+				
 		// Build tree view		
 		var conceptCol = new TreeViewColumn ();
 		conceptCol.Title = "Concepts";
@@ -46,12 +65,32 @@ public partial class MainWindow: Gtk.Window
 		
 		modelTreeView.ButtonPressEvent += new ButtonPressEventHandler(OnItemButtonPressed);
 		
-		// Maximize();
-		ShowAll();
-		Present();
+		modelTreeView.RowActivated += delegate(object o, RowActivatedArgs args) {
+			TreeIter iter;
+			ls.GetIter(out iter, args.Path);
+			
+			bool inViews = false;
+			if (args.Path.Depth > 1 && args.Path.Up()) {
+				TreeIter iterParent;
+				Console.WriteLine ();
+				ls.GetIter(out iterParent, args.Path);
+				if (((string) ls.GetValue(iterParent, 0)) == "Views") {
+					inViews = true;
+				}
+			}
+			
+			if (inViews) {
+				string name = (string) ls.GetValue(iter, 0);
+				viewsNotebook.DisplayView (Views.Get(name));
+			}
+		};
 		
-		model.Changed += delegate(object sender, EventArgs e) {
-			UpdateListStore();
+		Model.Changed += delegate(object sender, EventArgs e) {
+			UpdateListStore ();
+		};
+		
+		Views.AddedView += delegate(object sender, EventArgs e) {
+			UpdateListStore ();
 		};
 	}
 	
@@ -79,10 +118,20 @@ public partial class MainWindow: Gtk.Window
 					var m = new Menu();
 					var addGoal = new MenuItem("Add goal");
 					addGoal.Activated += delegate(object sender2, EventArgs e) {
-						var ag = new AddGoal(model);
+						var ag = new AddGoal(Model);
 						ag.Present();
 					};
 					m.Add(addGoal);
+					m.ShowAll();
+					m.Popup();
+				} else if (((string) ls.GetValue(iter, 0)) == "Views") {
+					var m = new Menu();
+					var addView = new MenuItem("Add view");
+					addView.Activated += delegate(object sender2, EventArgs e) {
+						var ag = new AddView(Model, Views);
+						ag.Present();
+					};
+					m.Add(addView);
 					m.ShowAll();
 					m.Popup();
 				}
@@ -92,8 +141,7 @@ public partial class MainWindow: Gtk.Window
 
 	void HandleAddToViewActivated (Goal g)
 	{
-		views[0].Add(g);
-		views[0].DrawingArea.QueueDraw();
+		currentView.Add(g);
 	}
 	
 	protected void UpdateListStore()
@@ -101,9 +149,16 @@ public partial class MainWindow: Gtk.Window
 		ls.Clear();
 		
 		var iter = ls.AppendValues("Goals", null);
-		if (model.Goals.Count > 0) {
-			foreach (var element in model.Goals) {
+		if (Model.Goals.Count > 0) {
+			foreach (var element in Model.Goals) {
 				ls.AppendValues(iter, element.Name.Replace("\n", ""), element);
+			}
+		}
+		
+		iter = ls.AppendValues("Views", null);
+		if (Views.Count > 0) {
+			foreach (var view in Views) {
+				ls.AppendValues(iter, view.Name, view);
 			}
 		}
 	}
@@ -130,7 +185,7 @@ public partial class MainWindow: Gtk.Window
 	
 	protected void Save ()
 	{
-		new XmlExporter(this.filename, model, views).Export();
+		new XmlExporter(this.filename, Model, Views).Export();
 	}
 	
 	protected virtual void OnOpenActionActivated (object sender, System.EventArgs e)
@@ -144,12 +199,13 @@ public partial class MainWindow: Gtk.Window
 			var importer = new XmlImporter(dialog.Filename);
 			importer.Import();
 			
-			this.model = importer.Model;
-			this.views = importer.Views;
+			this.Model = importer.Model;
+			this.Views = importer.Views;
 			
-			if (this.views.Count > 0) {
-				this.da.UpdateCurrentView(this.views[0]);
-				UpdateListStore();
+			if (this.Views.Count > 0) {
+				foreach (var v in importer.Views) {
+					Views.Add(v);
+				}
 				
 			} else {
 				var errorDialog = new MessageDialog(this, DialogFlags.DestroyWithParent, MessageType.Error,
@@ -181,4 +237,5 @@ public partial class MainWindow: Gtk.Window
 		dialog.Destroy();		
 	}
 	
+}
 }

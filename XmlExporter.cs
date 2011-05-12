@@ -2,6 +2,7 @@ using System;
 using System.Xml;
 using Model;
 using System.Collections.Generic;
+using Editor.Model;
 
 namespace Editor
 {
@@ -11,11 +12,11 @@ namespace Editor
 		private string filename;
 		
 		private GoalModel model;
-		private List<View> views;
+		private Views views;
 		
 		private XmlWriterSettings settings;
 		
-		public XmlExporter (string filename, GoalModel model, List<View> views)
+		public XmlExporter (string filename, GoalModel model, Views views)
 		{
 			this.filename = filename;
 			this.views = views;

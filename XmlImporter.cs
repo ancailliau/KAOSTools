@@ -4,6 +4,7 @@ using Model;
 using System.Collections.Generic;
 using Cairo;
 using Shapes;
+using Editor.Model;
 
 namespace Editor
 {
@@ -14,8 +15,8 @@ namespace Editor
 		private GoalModel model;
 		public GoalModel Model { get { return model ; } }
 		
-		private List<View> views;
-		public List<View> Views { get { return views ; } }
+		private Views views;
+		public Views Views { get { return views ; } }
 		
 		private List<FutureGoal> futureGoals;
 		private List<FutureView> futureViews;
@@ -47,7 +48,7 @@ namespace Editor
 		{
 			this.filename = filename;
 			this.model = new GoalModel();
-			this.views = new List<View>();
+			this.views = new Views();
 			
 			this.futureGoals = new List<FutureGoal>();
 			this.futureViews = new List<FutureView>();

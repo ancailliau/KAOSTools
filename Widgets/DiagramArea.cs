@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using Shapes;
 using Gtk;
 using Arrows;
+using Editor.Model;
 
-namespace Editor
+namespace Editor.Widgets
 {
 	public class DiagramArea : DrawingArea
 	{

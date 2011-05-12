@@ -1,6 +1,10 @@
 using System;
 using Gtk;
 using Model;
+using System.Collections.Generic;
+using Editor.Windows;
+using Editor.Model;
+using Editor.Controllers;
 
 namespace Editor
 {
@@ -10,17 +14,17 @@ namespace Editor
 		{
 			Application.Init ();
 			
-			//var g1 = new Goal ("Achieve\n[IncidentResolved]") { Id = "goal1" };
-			//var g2 = new Goal ("Achieve\n[IncidentReported]") { Id = "goal2" };
-			//var g3 = new Goal ("Achieve\n[ReportedIncidentResolved]") { Id = "goal3" };
-			//g1.Children.Add(g2);
-			//g1.Children.Add(g3);
+			var model = new GoalModel ();
+			var views = new Views ();
 			
-			var model = new GoalModel();
-			//model.AddGoals(new [] { g1, g2, g3 });
+			var window = new MainWindow (model, views);
 			
-			MainWindow win = new MainWindow (model);
-			win.Show ();
+			var controller = new MainController() {
+				Model = model, Views = views, Window = window
+			};
+			
+			controller.Show ();
+			
 			Application.Run ();
 		}
 	}

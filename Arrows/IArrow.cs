@@ -2,6 +2,7 @@ using System;
 using Shapes;
 using Editor;
 using Cairo;
+using Editor.Model;
 
 namespace Arrows
 {

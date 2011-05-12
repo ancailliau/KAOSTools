@@ -3,6 +3,7 @@ using Shapes;
 using Cairo;
 using Gtk;
 using Editor;
+using Editor.Model;
 
 namespace Arrows
 {

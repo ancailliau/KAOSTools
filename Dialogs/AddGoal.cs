@@ -1,7 +1,7 @@
 using System;
 using Model;
 
-namespace Editor
+namespace Editor.Dialogs
 {
 	public partial class AddGoal : Gtk.Dialog
 	{

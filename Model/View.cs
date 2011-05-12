@@ -7,7 +7,7 @@ using Gtk;
 using System.Linq;
 using Model;
 
-namespace Editor
+namespace Editor.Model
 {
 	public class View
 	{
@@ -38,9 +38,14 @@ namespace Editor
 			set;
 		}
 		
-		public View ()
+		public View () 
+			: this ("Untitled view")
 		{
-			Name = "(default)";
+		}
+		
+		public View (string name)
+		{
+			Name = name;
 			Shapes = new Dictionary<string, IShape>();
 		}
 		
