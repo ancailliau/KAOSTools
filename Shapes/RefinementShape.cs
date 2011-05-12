@@ -12,7 +12,7 @@ namespace Shapes
 	{
 		private double radius;
 		
-		public RefinementShape (string id, Refinement refinement) : base (id)
+		public RefinementShape (Refinement refinement) : base ()
 		{
 			XPadding = 4;
 			YPadding = 4;

@@ -21,7 +21,7 @@ namespace Editor.Model
 			set;
 		}
 		
-		public Dictionary<string, IShape> Shapes {
+		public List<IShape> Shapes {
 			get;
 			set;
 		}
@@ -49,20 +49,20 @@ namespace Editor.Model
 		public View (string name)
 		{
 			Name = name;
-			Shapes = new Dictionary<string, IShape>();
+			Shapes = new List<IShape>();
 		}
 		
 		public void Display (Context context) 
 		{
 			// Draw all shapes
-			foreach (var rect in Shapes.Values) {
+			foreach (var rect in Shapes) {
 				rect.Display(context, this);
 			}
 		}
 		
 		public void Add (IModelElement element) 
 		{
-			IShape shape = ShapeFactory.Create (Guid.NewGuid().ToString(), element);
+			IShape shape = ShapeFactory.Create (element);
 			if (shape != null) {
 				Add (shape);
 			}
@@ -70,8 +70,8 @@ namespace Editor.Model
 		
 		public void Add (IShape shape)
 		{
-			if (shape != null && shape.Id != null) {
-				Shapes.Add (shape.Id, shape);
+			if (shape != null) {
+				Shapes.Add (shape);
 				if (ViewsChanged != null) {
 					ViewsChanged (this, EventArgs.Empty);
 				}
@@ -118,7 +118,7 @@ namespace Editor.Model
 				if (selectedShape != null && selectedShape.RepresentedElement is Goal) {
 					var deleteItem = new MenuItem("Remove from view");
 					deleteItem.Activated += delegate(object sender, EventArgs e) {
-						this.Shapes.Remove(selectedShape.Id);
+						this.Shapes.Remove(selectedShape);
 						this.DrawingArea.QueueDraw();
 					};
 					var menu = new Menu();
@@ -149,7 +149,7 @@ namespace Editor.Model
 		protected IShape FindShape(double x, double y, out PointD selectedPoint)
 		{
 			IShape selectedShape = null;
-			foreach (var shape in Shapes.Values) {
+			foreach (var shape in Shapes) {
 				if (shape.InBoundingBox(x, y, out selectedPoint)) {
 					if (selectedShape == null || shape.Depth > selectedShape.Depth) { 
 						selectedShape = shape;
@@ -161,7 +161,7 @@ namespace Editor.Model
 		
 		public IShape ContainsShapeFor (IModelElement element)
 		{
-			return Shapes.Values.ToList().Find(v => { 
+			return Shapes.Find(v => { 
 				return v.RepresentedElement.Equals(element);
 			});
 		}
@@ -170,7 +170,7 @@ namespace Editor.Model
 		{
 			double squaredDistance = double.PositiveInfinity;
 			IShape shapeToReturn = null;
-			var consideredShapes = Shapes.Values.ToList().FindAll(v => { 
+			var consideredShapes = Shapes.FindAll(v => { 
 				return v.RepresentedElement.Equals(element);
 			});
 			foreach (IShape shape in consideredShapes) {
