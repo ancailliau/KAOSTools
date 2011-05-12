@@ -28,7 +28,7 @@ namespace Editor.Dialogs
 		
 		protected virtual void OnButtonCancelClicked (object sender, System.EventArgs e)
 		{
-			this.Destroy();
+			this.Destroy ();
 		}
 		
 	}

@@ -202,6 +202,7 @@
             <property name="StockId">gtk-cancel</property>
             <property name="ResponseId">-6</property>
             <signal name="Clicked" handler="OnButtonCancelClicked" />
+            <signal name="Activated" handler="OnButtonCancelClicked" />
             <property name="label">gtk-cancel</property>
           </widget>
           <packing>
@@ -219,6 +220,7 @@
             <property name="StockId">gtk-ok</property>
             <property name="ResponseId">-5</property>
             <signal name="Clicked" handler="OnButtonOkClicked" />
+            <signal name="Activated" handler="OnButtonOkClicked" />
             <property name="label">gtk-ok</property>
           </widget>
           <packing>

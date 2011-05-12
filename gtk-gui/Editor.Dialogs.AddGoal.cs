@@ -15,7 +15,9 @@ namespace Editor.Dialogs
 			global::Stetic.Gui.Initialize (this);
 			// Widget Editor.Dialogs.AddGoal
 			this.Name = "Editor.Dialogs.AddGoal";
+			this.Title = global::Mono.Unix.Catalog.GetString ("Add new goal...");
 			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
+			this.Modal = true;
 			// Internal child Editor.Dialogs.AddGoal.VBox
 			global::Gtk.VBox w1 = this.VBox;
 			w1.Name = "dialog1_VBox";
@@ -25,6 +27,7 @@ namespace Editor.Dialogs
 			this.table1.Name = "table1";
 			this.table1.RowSpacing = ((uint)(6));
 			this.table1.ColumnSpacing = ((uint)(6));
+			this.table1.BorderWidth = ((uint)(6));
 			// Container child table1.Gtk.Table+TableChild
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
@@ -84,7 +87,7 @@ namespace Editor.Dialogs
 				this.Child.ShowAll ();
 			}
 			this.DefaultWidth = 400;
-			this.DefaultHeight = 300;
+			this.DefaultHeight = 81;
 			this.Show ();
 			this.buttonCancel.Activated += new global::System.EventHandler (this.OnButtonCancelActivated);
 			this.buttonCancel.Clicked += new global::System.EventHandler (this.OnButtonCancelActivated);
