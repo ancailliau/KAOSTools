@@ -35,7 +35,26 @@ namespace Model
 			Refinees.Add(element);
 		}
 		
-		
+		public override bool Equals (object obj)
+		{
+			if (obj == null)
+				return false;
+			if (ReferenceEquals (this, obj))
+				return true;
+			if (obj.GetType () != typeof(Refinement))
+				return false;
+			Model.Refinement other = (Model.Refinement)obj;
+			return Id == other.Id;
+		}
+
+
+		public override int GetHashCode ()
+		{
+			unchecked {
+				return (Id != null ? Id.GetHashCode () : 0);
+			}
+		}
+
 	}
 }
 

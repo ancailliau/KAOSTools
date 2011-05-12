@@ -11,7 +11,7 @@ namespace Shapes
 		private int width;
 		private int height;
 		
-		public GoalShape (Goal goal) : base () 
+		public GoalShape (string id, Goal goal) : base (id) 
 		{
 			XPadding = 10;
 			YPadding = 4;

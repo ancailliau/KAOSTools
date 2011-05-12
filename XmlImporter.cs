@@ -38,6 +38,7 @@ namespace Editor
 		
 		private class FutureShape {
 			public string id;
+			public string elementId;
 			public PointD position;
 			public int depth;
 		}
@@ -123,11 +124,13 @@ namespace Editor
 					while (reader.Read()) {
 						if (reader.IsStartElement ()) {
 							string id = reader.GetAttribute("id");
+							string elementId = reader.GetAttribute("element-id");
 							string x = reader.GetAttribute("x");
 							string y = reader.GetAttribute("y");
 							string depth = reader.GetAttribute("depth");
 							view.elements.Add(new FutureShape() { 
 								id = id, 
+								elementId = elementId,
 								position = new PointD(Double.Parse(x), Double.Parse(y)),
 								depth = int.Parse(depth)
 							});
@@ -170,13 +173,13 @@ namespace Editor
 			foreach (var futureView in futureViews) {
 				var view = new View() { Name = futureView.name };
 				foreach (var futureElement in futureView.elements) {
-					var element = ShapeFactory.Create(Model.Get(futureElement.id));
+					var element = ShapeFactory.Create(futureElement.id, Model.Get(futureElement.elementId));
 					if (element != null) {
 						element.Position = futureElement.position;
 						element.Depth = futureElement.depth;
 						view.Add(element);
 					} else {
-						Console.WriteLine ("Ignoring " + Model.Get(futureElement.id));
+						Console.WriteLine ("Ignoring " + Model.Get(futureElement.elementId));
 					}
 				}
 				Views.Add(view);

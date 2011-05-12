@@ -8,6 +8,8 @@ namespace Shapes
 {
 	public interface IShape
 	{
+		string Id { get ; set ; }
+		
 		PointD Position { get ; set ; }
 		
 		void Display (Context context, View view);

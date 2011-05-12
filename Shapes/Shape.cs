@@ -43,10 +43,16 @@ namespace Shapes
 			set;
 		}
 		
+		public string Id {
+			get;
+			set;
+		}
+		
 		public bool Selected { get ; set ; }
 		
-		public Shape ()
+		public Shape (string id)
 		{
+			Id = id;
 			Position = new PointD(0,0);
 			BorderColor = new Color(0,0,0);
 			BackgroundColor = new Color(1,1,1);

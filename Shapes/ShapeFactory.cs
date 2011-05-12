@@ -5,13 +5,13 @@ namespace Shapes
 {
 	public class ShapeFactory
 	{
-		public static IShape Create(IModelElement element)
+		public static IShape Create(string id, IModelElement element)
 		{
 			if (element is Goal) {
-				return new GoalShape(element as Goal);
+				return new GoalShape(id, element as Goal);
 			
 			} else if (element is Refinement) {
-				return new RefinementShape(element as Refinement);
+				return new RefinementShape(id, element as Refinement);
 				
 			} else {
 				return null;

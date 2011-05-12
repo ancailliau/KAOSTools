@@ -53,16 +53,20 @@ namespace Editor
 		
 		public void Add (IModelElement element) 
 		{
-			IShape shape = ShapeFactory.Create (element);
+			IShape shape = ShapeFactory.Create ("shape" + Shapes.Count, element);
 			if (shape != null) {
-				Console.WriteLine ("Add '{0}' to view '{1}'", element.Id, this.Name);
-				Shapes.Add (element.Id, shape);
+				Console.WriteLine ("Add '{0}' to view '{1}'", shape.Id, this.Name);
+				Shapes.Add (shape.Id, shape);
 			}
 		}
 		
 		public void Add (IShape shape)
 		{
-			Shapes.Add (shape.RepresentedElement.Id, shape);
+			if (shape != null && shape.Id != null) {
+				Shapes.Add (shape.Id, shape);
+			} else {
+				Console.WriteLine ("Ignoring a shape");
+			}
 		}
 		
 		public bool OnMotionNotifyEvent (Gdk.EventMotion args)
@@ -117,10 +121,9 @@ namespace Editor
 		
 		public IShape ContainsShapeFor (IModelElement element)
 		{
-			if (Shapes.ContainsKey(element.Id)) {
-				return Shapes[element.Id];
-			}
-			return null;
+			return Shapes.Values.ToList().Find(v => { 
+				return v.RepresentedElement.Equals(element);
+			});
 		}
 		
 	}

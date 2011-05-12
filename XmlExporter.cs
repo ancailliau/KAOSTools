@@ -86,7 +86,7 @@ namespace Editor
 				writer.WriteAttributeString("name", view.Name);
 				foreach (var shape in view.Shapes.Values) {
 					writer.WriteStartElement("element");
-					writer.WriteAttributeString("id", shape.RepresentedElement.Id);
+					writer.WriteAttributeString("element-id", shape.RepresentedElement.Id);
 					writer.WriteAttributeString("x", shape.Position.X.ToString());
 					writer.WriteAttributeString("y", shape.Position.Y.ToString());
 					writer.WriteAttributeString("depth", shape.Depth.ToString());
