@@ -90,7 +90,9 @@ namespace Editor.Dialogs
 			this.DefaultHeight = 79;
 			this.Show ();
 			this.buttonCancel.Clicked += new global::System.EventHandler (this.OnButtonCancelClicked);
+			this.buttonCancel.Activated += new global::System.EventHandler (this.OnButtonCancelClicked);
 			this.buttonOk.Clicked += new global::System.EventHandler (this.OnButtonOkClicked);
+			this.buttonOk.Activated += new global::System.EventHandler (this.OnButtonOkClicked);
 		}
 	}
 }

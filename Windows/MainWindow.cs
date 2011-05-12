@@ -32,8 +32,6 @@ public partial class MainWindow: Gtk.Window
 	
 	private ViewsNotebook viewsNotebook;
 	
-	private View currentView;
-	
 	private TreeStore ls;
 	
 	private string filename;
@@ -89,6 +87,10 @@ public partial class MainWindow: Gtk.Window
 			UpdateListStore ();
 		};
 		
+		Views.ViewsChanged += delegate(object sender, EventArgs e) {
+			UpdateListStore();
+		};
+			
 		Views.AddedView += delegate(object sender, EventArgs e) {
 			UpdateListStore ();
 		};
@@ -141,7 +143,7 @@ public partial class MainWindow: Gtk.Window
 
 	void HandleAddToViewActivated (Goal g)
 	{
-		currentView.Add(g);
+		viewsNotebook.CurrentView.Add(g);
 	}
 	
 	protected void UpdateListStore()
@@ -160,6 +162,12 @@ public partial class MainWindow: Gtk.Window
 			foreach (var view in Views) {
 				ls.AppendValues(iter, view.Name, view);
 			}
+		}
+		
+		if (this.viewsNotebook != null && this.viewsNotebook.CurrentView != null) {
+			this.viewsNotebook.CurrentView.Redraw();
+		} else {
+			Console.WriteLine (this.viewsNotebook + " " + this.viewsNotebook.CurrentView);	
 		}
 	}
 	

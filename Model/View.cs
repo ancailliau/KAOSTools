@@ -13,6 +13,9 @@ namespace Editor.Model
 	{
 		private int counter = 0;
 		
+		public delegate void ViewChangedHandler (object sender, EventArgs e);
+		public event ViewChangedHandler ViewsChanged;
+	
 		public string Name {
 			get;
 			set;
@@ -61,8 +64,7 @@ namespace Editor.Model
 		{
 			IShape shape = ShapeFactory.Create (Guid.NewGuid().ToString(), element);
 			if (shape != null) {
-				Console.WriteLine ("Add '{0}' to view '{1}'", shape.Id, this.Name);
-				Shapes.Add (shape.Id, shape);
+				Add (shape);
 			}
 		}
 		
@@ -70,8 +72,9 @@ namespace Editor.Model
 		{
 			if (shape != null && shape.Id != null) {
 				Shapes.Add (shape.Id, shape);
-			} else {
-				Console.WriteLine ("Ignoring a shape");
+				if (ViewsChanged != null) {
+					ViewsChanged (this, EventArgs.Empty);
+				}
 			}
 		}
 		
@@ -98,7 +101,11 @@ namespace Editor.Model
 				SelectedShape.Selected = false;
 			}
 			SelectedShape = null;
-			this.DrawingArea.QueueDraw();
+			
+			if (ViewsChanged != null) {
+				ViewsChanged (this, EventArgs.Empty);
+			}
+			
 			return true;
 		}
 
@@ -176,6 +183,17 @@ namespace Editor.Model
 				}
 			}
 			return shapeToReturn;
+		}
+		
+		public void Redraw ()
+		{
+			// Drawing area is set only if the view is displayed
+			if (this.DrawingArea != null) {
+				this.DrawingArea.QueueDraw();
+				
+			} else {
+				Console.WriteLine ("oups");
+			}
 		}
 		
 	}

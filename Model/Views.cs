@@ -9,6 +9,9 @@ namespace Editor.Model
 		public delegate void AddedViewHandler (object sender, EventArgs e);
 		public event AddedViewHandler AddedView;
 		
+		public delegate void ViewsChangedHandler (object sender, EventArgs e);
+		public event ViewsChangedHandler ViewsChanged;
+		
 		private List<View> views;
 		
 		public int Count {
@@ -23,6 +26,11 @@ namespace Editor.Model
 		public void Add (View view)
 		{
 			views.Add(view);
+			view.ViewsChanged += delegate(object sender, EventArgs e) {
+				if (ViewsChanged != null) {
+					ViewsChanged(sender, e);
+				}
+			};
 			if (AddedView != null) {
 				AddedView(this, EventArgs.Empty);
 			}
