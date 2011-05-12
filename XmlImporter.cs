@@ -80,7 +80,7 @@ namespace Editor
 		{
 			while (reader.Read ()) {
 				if (reader.IsStartElement ("goal")) {
-					string id = reader.GetAttribute ("id");
+					string id = reader.GetAttribute ("id") ?? Guid.NewGuid().ToString();
 					string name = reader.GetAttribute ("name");
 					var futurGoal = new FutureGoal () { id = id, name = name };
 					this.futureGoals.Add (futurGoal);
@@ -123,7 +123,7 @@ namespace Editor
 					futureViews.Add(view);
 					while (reader.Read()) {
 						if (reader.IsStartElement ()) {
-							string id = reader.GetAttribute("id");
+							string id = reader.GetAttribute("id") ?? Guid.NewGuid().ToString();
 							string elementId = reader.GetAttribute("element-id");
 							string x = reader.GetAttribute("x");
 							string y = reader.GetAttribute("y");
