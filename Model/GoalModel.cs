@@ -7,6 +7,9 @@ namespace Model
 	public class GoalModel
 	{
 		
+		public delegate void ChangedModelHandler (object sender, EventArgs e);
+		public event ChangedModelHandler Changed;
+		
 		private List<IModelElement> Elements;
 		
 		public List<Goal> Goals {
@@ -21,6 +24,9 @@ namespace Model
 		public void Add (IModelElement element) 
 		{
 			Elements.Add(element);
+			if (Changed != null) {
+				Changed(this, EventArgs.Empty);
+			}
 		}
 		
 		public IModelElement Get (string id)

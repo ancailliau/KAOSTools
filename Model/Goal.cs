@@ -30,6 +30,7 @@ namespace Model
 		public Goal (string name) 
 			: this()
 		{
+			Id = Guid.NewGuid().ToString();
 			Name = name;
 		}
 		

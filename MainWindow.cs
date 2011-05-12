@@ -49,6 +49,10 @@ public partial class MainWindow: Gtk.Window
 		// Maximize();
 		ShowAll();
 		Present();
+		
+		model.Changed += delegate(object sender, EventArgs e) {
+			UpdateListStore();
+		};
 	}
 	
 	[GLib.ConnectBeforeAttribute]
@@ -61,7 +65,6 @@ public partial class MainWindow: Gtk.Window
 			
 			TreeIter iter;
 			if (ls.GetIter(out iter, path)) {
-				string id = (string) ls.GetValue(iter, 0);
 				object o = ls.GetValue(iter, 1);
 				if (o != null) {
 					var m = new Menu();
@@ -70,6 +73,16 @@ public partial class MainWindow: Gtk.Window
 						HandleAddToViewActivated(o as Goal);
 					};
 					m.Add(addToView);
+					m.ShowAll();
+					m.Popup();
+				} else if (((string) ls.GetValue(iter, 0)) == "Goals") {
+					var m = new Menu();
+					var addGoal = new MenuItem("Add goal");
+					addGoal.Activated += delegate(object sender2, EventArgs e) {
+						var ag = new AddGoal(model);
+						ag.Present();
+					};
+					m.Add(addGoal);
 					m.ShowAll();
 					m.Popup();
 				}
@@ -87,8 +100,8 @@ public partial class MainWindow: Gtk.Window
 	{
 		ls.Clear();
 		
+		var iter = ls.AppendValues("Goals", null);
 		if (model.Goals.Count > 0) {
-			var iter = ls.AppendValues("Goals", null);
 			foreach (var element in model.Goals) {
 				ls.AppendValues(iter, element.Name.Replace("\n", ""), element);
 			}

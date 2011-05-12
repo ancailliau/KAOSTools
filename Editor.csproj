@@ -71,6 +71,8 @@
     <Compile Include="Shapes\RefinementShape.cs" />
     <Compile Include="Arrows\IArrow.cs" />
     <Compile Include="Arrows\Arrow.cs" />
+    <Compile Include="AddGoal.cs" />
+    <Compile Include="gtk-gui\Editor.AddGoal.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
