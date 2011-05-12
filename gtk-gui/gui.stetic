@@ -117,9 +117,11 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="Editor.Dialogs.AddView" design-size="400 300">
+  <widget class="Gtk.Dialog" id="Editor.Dialogs.AddView" design-size="400 79">
     <property name="MemberName" />
+    <property name="Title" translatable="yes">Add new view...</property>
     <property name="WindowPosition">CenterOnParent</property>
+    <property name="Modal">True</property>
     <property name="Buttons">2</property>
     <property name="HelpButton">False</property>
     <child internal-child="VBox">
@@ -132,6 +134,7 @@
             <property name="NColumns">2</property>
             <property name="RowSpacing">6</property>
             <property name="ColumnSpacing">6</property>
+            <property name="BorderWidth">6</property>
             <child>
               <widget class="Gtk.Label" id="label4">
                 <property name="MemberName" />
