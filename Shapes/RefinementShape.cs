@@ -40,7 +40,7 @@ namespace Shapes
 			
 			// If the refined goal is present as a shape in the view, draw the arrow to.
 			IShape refinedShape = null;
-			if ((refinedShape = view.ContainsShapeFor(((Refinement) RepresentedElement).Refined)) != null) {
+			if ((refinedShape = view.GetNearestShapeFor(((Refinement) RepresentedElement).Refined, this.Position)) != null) {
 				var arrow = new FilledArrow() {
 					Start = this,
 					End = refinedShape
@@ -50,7 +50,7 @@ namespace Shapes
 			
 			// If refinees are present as shapes, draw the arrows to.
 			foreach (var refinee in ((Refinement) RepresentedElement).Refinees) {
-				if ((refinedShape = view.ContainsShapeFor(refinee)) != null) {
+				if ((refinedShape = view.GetNearestShapeFor(refinee, this.Position)) != null) {
 					var arrow = new Arrows.Arrow() {
 						Start = refinedShape,
 						End = this

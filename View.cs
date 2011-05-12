@@ -126,6 +126,25 @@ namespace Editor
 			});
 		}
 		
+		public IShape GetNearestShapeFor (IModelElement element, PointD origin)
+		{
+			double squaredDistance = double.PositiveInfinity;
+			IShape shapeToReturn = null;
+			var consideredShapes = Shapes.Values.ToList().FindAll(v => { 
+				return v.RepresentedElement.Equals(element);
+			});
+			foreach (IShape shape in consideredShapes) {
+				double xx = shape.GetAnchor(origin).X - origin.X;
+				double yy = shape.GetAnchor(origin).Y - origin.Y;
+				double dist = (xx * xx + yy * yy);
+				if (dist < squaredDistance) {
+					shapeToReturn = shape;
+					squaredDistance = dist;
+				}
+			}
+			return shapeToReturn;
+		}
+		
 	}
 }
 
