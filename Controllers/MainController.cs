@@ -49,12 +49,16 @@ namespace Editor.Controllers
 				var directory = Path.GetDirectoryName(this.filename);
 				var filename = Path.GetFileName(this.filename);
 				var watcher = new FileSystemWatcher (directory, filename);
-				watcher.NotifyFilter =  NotifyFilters.LastWrite;
+				watcher.NotifyFilter =  NotifyFilters.LastWrite ;
 				watcher.Changed += delegate(object sender, FileSystemEventArgs e) {
 					if (e.ChangeType == WatcherChangeTypes.Changed) {
 						Console.WriteLine ("File '{0}' changed, reloading.", e.FullPath);
 						this.Reload ();
 					}
+				};
+				watcher.Renamed += delegate(object sender, RenamedEventArgs e) {
+					Console.WriteLine ("File '{0}' moved to '{1}'.", e.OldFullPath, e.FullPath);
+					this.filename = e.FullPath;
 				};
 				watcher.EnableRaisingEvents = true;
 				
