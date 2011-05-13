@@ -115,12 +115,27 @@ namespace Editor.Widgets
 			
 			var iter = store.AppendValues("Goals", null);
 			foreach (var element in this.window.Model.Goals) {
-				store.AppendValues(iter, element.Name.Replace("\n", ""), element);
+				AddGoalElement (iter, element);
 			}
 			
 			iter = store.AppendValues("Views", null);
 			foreach (var view in this.window.Views) {
 				store.AppendValues(iter, view.Name, view);
+			}
+		}
+		
+		private void AddGoalElement (TreeIter iter, Goal g)
+		{
+			var iiter = store.AppendValues(iter, g.Name.Replace("\n", ""), g);
+			foreach (var refinement in g.Refinements) {
+				var iiiter = store.AppendValues(iiter, refinement.Id, refinement);
+				foreach (var g2 in refinement.Refinees) {
+					if (g2 is Goal) {
+						AddGoalElement (iiiter, g2 as Goal);
+					} else {
+						store.AppendValues (iiiter, g2.Id, g2);
+					}
+				}
 			}
 		}
 		
