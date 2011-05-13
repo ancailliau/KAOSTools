@@ -2,25 +2,26 @@ using System;
 using Model;
 using Editor.Model;
 using Editor.Windows;
+using Editor.Controllers;
 
 namespace Editor.Dialogs
 {
 	public partial class AddView : Gtk.Dialog
 	{
-		private MainWindow window;
+		private MainController controller;
 		
-		public AddView (MainWindow window)
+		public AddView (MainController controller)
 		{
 			this.Build ();
 			
-			this.window = window;
+			this.controller = controller;
 		}
 		
 		protected virtual void OnButtonOkClicked (object sender, System.EventArgs e)
 		{
 			string name = nameEntry.Text;
 			if (name != null && name != "") {
-				this.window.Views.Add (name);
+				this.controller.Views.Add (name);
 				this.Destroy();
 			}
 		}

@@ -33,7 +33,6 @@ namespace Editor.Controllers
 		{
 			Window.Present();
 		}
-		
 	}
 }
 

@@ -81,11 +81,12 @@ namespace Editor.Widgets
 						m.Add(addToView);
 						m.ShowAll();
 						m.Popup();
+						
 					} else if (((string) store.GetValue(iter, 0)) == "Goals") {
 						var m = new Menu();
 						var addGoal = new MenuItem("Add goal");
 						addGoal.Activated += delegate(object sender2, EventArgs e) {
-							var ag = new AddGoal(window);
+							var ag = new AddGoal(window.Controller);
 							ag.Present();
 						};
 						m.Add(addGoal);
@@ -96,7 +97,7 @@ namespace Editor.Widgets
 						var m = new Menu();
 						var addView = new MenuItem("Add view");
 						addView.Activated += delegate(object sender2, EventArgs e) {
-							var ag = new AddView(window);
+							var ag = new AddView(window.Controller);
 							ag.Present();
 						};
 						m.Add(addView);
