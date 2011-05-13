@@ -33,8 +33,6 @@ public partial class MainWindow: Gtk.Window
 	private ViewsNotebook viewsNotebook;
 	private ConceptsTreeView conceptTreeView;
 	
-	private string filename;
-	
 	public MainWindow (GoalModel model, Views views): base (Gtk.WindowType.Toplevel)
 	{
 		this.Model = model;

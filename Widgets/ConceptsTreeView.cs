@@ -110,6 +110,7 @@ namespace Editor.Widgets
 		
 		public void Update()
 		{
+			Console.WriteLine ("Update list");
 			store.Clear();
 			
 			var iter = store.AppendValues("Goals", null);

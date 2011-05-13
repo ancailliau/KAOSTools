@@ -14,7 +14,7 @@ namespace Editor.Model
 		private int counter = 0;
 		
 		public delegate void ViewChangedHandler (object sender, EventArgs e);
-		public event ViewChangedHandler ViewsChanged;
+		public event ViewChangedHandler ViewChanged;
 	
 		public string Name {
 			get;
@@ -72,8 +72,8 @@ namespace Editor.Model
 		{
 			if (shape != null) {
 				Shapes.Add (shape);
-				if (ViewsChanged != null) {
-					ViewsChanged (this, EventArgs.Empty);
+				if (ViewChanged != null) {
+					ViewChanged (this, EventArgs.Empty);
 				}
 			}
 		}
@@ -102,8 +102,8 @@ namespace Editor.Model
 			}
 			SelectedShape = null;
 			
-			if (ViewsChanged != null) {
-				ViewsChanged (this, EventArgs.Empty);
+			if (ViewChanged != null) {
+				ViewChanged (this, EventArgs.Empty);
 			}
 			
 			return true;

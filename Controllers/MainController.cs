@@ -4,6 +4,7 @@ using Model;
 using Editor.Windows;
 using Editor.Model;
 using Gtk;
+using System.IO;
 
 namespace Editor.Controllers
 {
@@ -43,8 +44,19 @@ namespace Editor.Controllers
 		
 		public void Save ()
 		{
-			if (this.filename == "") {
+			if (this.filename == null | this.filename == "") {
 				this.SaveAs ();
+				var directory = Path.GetDirectoryName(this.filename);
+				var filename = Path.GetFileName(this.filename);
+				var watcher = new FileSystemWatcher (directory, filename);
+				watcher.NotifyFilter =  NotifyFilters.LastWrite;
+				watcher.Changed += delegate(object sender, FileSystemEventArgs e) {
+					if (e.ChangeType == WatcherChangeTypes.Changed) {
+						Console.WriteLine ("File '{0}' changed, reloading.", e.FullPath);
+						this.Reload ();
+					}
+				};
+				watcher.EnableRaisingEvents = true;
 				
 			} else {
 				new XmlExporter(this.filename, Model, Views).Export();
@@ -71,28 +83,29 @@ namespace Editor.Controllers
 			
 			if (dialog.Run() == (int) ResponseType.Accept) {
 				this.filename = dialog.Filename;
-				var importer = new XmlImporter(dialog.Filename);
-				importer.Import();
-				
-				this.Model = importer.Model;
-				this.Views = importer.Views;
-				
-				if (this.Views.Count > 0) {
-					foreach (var v in importer.Views) {
-						Views.Add(v);
-					}
-					
-				} else {
-					var errorDialog = new MessageDialog(this.window, DialogFlags.DestroyWithParent, MessageType.Error,
-						ButtonsType.Ok, false, "File is malformed.");
-					
-					if (errorDialog.Run() > 0) {
-						errorDialog.Destroy();
-					}
-				}
+				Reload ();
 			}
 			
 			dialog.Destroy();
+		}
+		
+		public void Reload ()
+		{
+			if (this.filename == null | this.filename == "") {
+				Load ();
+			}
+			
+			var importer = new XmlImporter(this.filename);
+			importer.Import();
+			
+			this.Model.Set(importer.Model);
+			this.Views.Set(importer.Views);
+			
+			if (this.Views.Count > 0) {
+				foreach (var v in importer.Views) {
+					Views.Add(v);
+				}					
+			}
 		}
 		
 	}

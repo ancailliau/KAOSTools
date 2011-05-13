@@ -26,10 +26,8 @@ namespace Editor.Model
 		public void Add (View view)
 		{
 			views.Add(view);
-			view.ViewsChanged += delegate(object sender, EventArgs e) {
-				if (ViewsChanged != null) {
-					ViewsChanged(sender, e);
-				}
+			view.ViewChanged += delegate(object sender, EventArgs e) {
+				NotifyViewsChanged();
 			};
 			if (AddedView != null) {
 				AddedView(this, EventArgs.Empty);
@@ -57,6 +55,25 @@ namespace Editor.Model
 		{
 			return views.GetEnumerator ();
 		}
+		
+		private void NotifyViewsChanged ()
+		{
+			if (ViewsChanged != null) {
+				ViewsChanged(this, EventArgs.Empty);
+			}
+		}
+		
+		public void Set (Views newView)
+		{
+			views = newView.views;
+			foreach (var v in views) {
+				v.ViewChanged += delegate(object sender, EventArgs e) {
+					NotifyViewsChanged();
+				};
+			}
+			NotifyViewsChanged();
+		}
+		
 	}
 }
 

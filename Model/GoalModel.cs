@@ -24,14 +24,25 @@ namespace Model
 		public void Add (IModelElement element) 
 		{
 			Elements.Add(element);
-			if (Changed != null) {
-				Changed(this, EventArgs.Empty);
-			}
+			NotifyChange ();
 		}
 		
 		public IModelElement Get (string id)
 		{
 			return Elements.Find(t => t.Id == id);
+		}
+		
+		private void NotifyChange ()
+		{
+			if (Changed != null) {
+				Changed(this, EventArgs.Empty);
+			}
+		}
+		
+		public void Set (Model.GoalModel model)
+		{
+			this.Elements = model.Elements;
+			NotifyChange ();
 		}
 		
 	}
