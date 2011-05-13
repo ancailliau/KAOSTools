@@ -67,6 +67,13 @@ namespace Editor.Widgets
 			this.displayedViews.RemoveAt(pageNum);
 			this.RemovePage(pageNum);
 		}
+		
+		public void Update ()
+		{
+			if (this.CurrentView != null) {
+				this.CurrentView.Redraw();
+			}
+		}
 	}
 }
 

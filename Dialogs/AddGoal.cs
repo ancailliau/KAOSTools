@@ -1,23 +1,24 @@
 using System;
 using Model;
+using Editor.Windows;
 
 namespace Editor.Dialogs
 {
 	public partial class AddGoal : Gtk.Dialog
 	{
-		private GoalModel model;		
+		private MainWindow window;		
 		
-		public AddGoal (GoalModel model)
+		public AddGoal (MainWindow window)
 		{
 			this.Build ();
-			this.model = model;
+			this.window = window;
 		}
 		
 		protected virtual void OnButtonOkActivated (object sender, System.EventArgs e)
 		{
 			string name = nameEntry.Text;
 			if (name != null && name != "") {
-				this.model.Add(new Goal(name));
+				this.window.Model.Add(new Goal(name));
 				this.Destroy();
 			}
 		}

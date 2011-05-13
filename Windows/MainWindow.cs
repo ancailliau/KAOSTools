@@ -31,144 +31,43 @@ public partial class MainWindow: Gtk.Window
 	}
 	
 	private ViewsNotebook viewsNotebook;
-	
-	private TreeStore ls;
+	private ConceptsTreeView conceptTreeView;
 	
 	private string filename;
 	
 	public MainWindow (GoalModel model, Views views): base (Gtk.WindowType.Toplevel)
 	{
+		this.Model = model;
+		this.Views = views;
 		Build ();
 		
 		viewsNotebook = new ViewsNotebook();
-		hpaned1.Add2(viewsNotebook);
+		conceptTreeView = new ConceptsTreeView (this);
 		
-		this.Model = model;
-		this.Views = views;
+		hpaned1.Add1 (conceptTreeView);
+		hpaned1.Add2 (viewsNotebook);
+		hpaned1.ShowAll();
 				
-		// Build tree view		
-		var conceptCol = new TreeViewColumn ();
-		conceptCol.Title = "Concepts";
-		modelTreeView.AppendColumn (conceptCol);
-		
-		var goalNameCell = new CellRendererText();
-		conceptCol.PackStart(goalNameCell, true);
-		conceptCol.AddAttribute(goalNameCell, "text", 0);
-		
-		ls = new TreeStore(typeof(string), typeof(object));
-		modelTreeView.Model = ls;
-		UpdateListStore();
-		
-		modelTreeView.AddEvents((int) Gdk.EventMask.ButtonPressMask);
-		
-		modelTreeView.ButtonPressEvent += new ButtonPressEventHandler(OnItemButtonPressed);
-		
-		modelTreeView.RowActivated += delegate(object o, RowActivatedArgs args) {
-			TreeIter iter;
-			ls.GetIter(out iter, args.Path);
+		Model.Changed += UpdateWidgets;
+		Views.ViewsChanged += UpdateWidgets;
+		Views.AddedView += UpdateWidgets;
 			
-			bool inViews = false;
-			if (args.Path.Depth > 1 && args.Path.Up()) {
-				TreeIter iterParent;
-				Console.WriteLine ();
-				ls.GetIter(out iterParent, args.Path);
-				if (((string) ls.GetValue(iterParent, 0)) == "Views") {
-					inViews = true;
-				}
-			}
-			
-			if (inViews) {
-				string name = (string) ls.GetValue(iter, 0);
-				viewsNotebook.DisplayView (Views.Get(name));
-			}
-		};
-		
-		Model.Changed += delegate(object sender, EventArgs e) {
-			UpdateListStore ();
-		};
-		
-		Views.ViewsChanged += delegate(object sender, EventArgs e) {
-			UpdateListStore();
-		};
-			
-		Views.AddedView += delegate(object sender, EventArgs e) {
-			UpdateListStore ();
-		};
 	}
 	
-	[GLib.ConnectBeforeAttribute]
-	protected void OnItemButtonPressed (object sender, ButtonPressEventArgs args) 
+	private void UpdateWidgets (object sender, EventArgs args)
 	{
-		if (args.Event.Button == 3) {
-			var path = new TreePath();
-			modelTreeView.GetPathAtPos(System.Convert.ToInt16(args.Event.X), 
-				System.Convert.ToInt16(args.Event.Y), out path);
-			
-			TreeIter iter;
-			if (ls.GetIter(out iter, path)) {
-				object o = ls.GetValue(iter, 1);
-				if (o != null) {
-					var m = new Menu();
-					var addToView = new MenuItem("Add to current view");
-					addToView.Activated += delegate(object sender2, EventArgs e) {
-						HandleAddToViewActivated(o as Goal);
-					};
-					m.Add(addToView);
-					m.ShowAll();
-					m.Popup();
-				} else if (((string) ls.GetValue(iter, 0)) == "Goals") {
-					var m = new Menu();
-					var addGoal = new MenuItem("Add goal");
-					addGoal.Activated += delegate(object sender2, EventArgs e) {
-						var ag = new AddGoal(Model);
-						ag.Present();
-					};
-					m.Add(addGoal);
-					m.ShowAll();
-					m.Popup();
-				} else if (((string) ls.GetValue(iter, 0)) == "Views") {
-					var m = new Menu();
-					var addView = new MenuItem("Add view");
-					addView.Activated += delegate(object sender2, EventArgs e) {
-						var ag = new AddView(Model, Views);
-						ag.Present();
-					};
-					m.Add(addView);
-					m.ShowAll();
-					m.Popup();
-				}
-			}
-		}
+		viewsNotebook.Update();
+		conceptTreeView.Update();
 	}
-
-	void HandleAddToViewActivated (Goal g)
+	
+	public void DisplayView (string name)
+	{
+		viewsNotebook.DisplayView (Views.Get(name));
+	}
+		
+	public void AddToCurrentView (Goal g)
 	{
 		viewsNotebook.CurrentView.Add(g);
-	}
-	
-	protected void UpdateListStore()
-	{
-		ls.Clear();
-		
-		var iter = ls.AppendValues("Goals", null);
-		if (Model.Goals.Count > 0) {
-			foreach (var element in Model.Goals) {
-				ls.AppendValues(iter, element.Name.Replace("\n", ""), element);
-			}
-		}
-		
-		iter = ls.AppendValues("Views", null);
-		if (Views.Count > 0) {
-			foreach (var view in Views) {
-				ls.AppendValues(iter, view.Name, view);
-			}
-		}
-		
-		if (this.viewsNotebook != null && this.viewsNotebook.CurrentView != null) {
-			this.viewsNotebook.CurrentView.Redraw();
-		} else {
-			Console.WriteLine (this.viewsNotebook + " " + this.viewsNotebook.CurrentView);	
-		}
 	}
 	
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
