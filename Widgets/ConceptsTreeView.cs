@@ -76,7 +76,7 @@ namespace Editor.Widgets
 						var m = new Menu();
 						var addToView = new MenuItem("Add to current view");
 						addToView.Activated += delegate(object sender2, EventArgs e) {
-							this.window.AddToCurrentView (o as Goal);
+							this.window.AddToCurrentView (o as IModelElement);
 						};
 						m.Add(addToView);
 						m.ShowAll();
@@ -138,7 +138,6 @@ namespace Editor.Widgets
 				}
 			}
 		}
-		
 		
 	}
 }

@@ -63,9 +63,13 @@ public partial class MainWindow: Gtk.Window
 		viewsNotebook.DisplayView (Views.Get(name));
 	}
 		
-	public void AddToCurrentView (Goal g)
+	public void AddToCurrentView (IModelElement g)
 	{
-		viewsNotebook.CurrentView.Add(g);
+		if (g != null) {
+			viewsNotebook.CurrentView.Add(g);
+		} else {
+			Console.WriteLine ("Ignoring element '{0}'", g.Id);
+		}
 	}
 	
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
