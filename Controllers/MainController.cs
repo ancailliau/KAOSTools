@@ -46,25 +46,31 @@ namespace Editor.Controllers
 		{
 			if (this.filename == null | this.filename == "") {
 				this.SaveAs ();
-				var directory = Path.GetDirectoryName(this.filename);
-				var filename = Path.GetFileName(this.filename);
-				var watcher = new FileSystemWatcher (directory, filename);
-				watcher.NotifyFilter =  NotifyFilters.LastWrite ;
-				watcher.Changed += delegate(object sender, FileSystemEventArgs e) {
-					if (e.ChangeType == WatcherChangeTypes.Changed) {
-						Console.WriteLine ("File '{0}' changed, reloading.", e.FullPath);
-						this.Reload ();
-					}
-				};
-				watcher.Renamed += delegate(object sender, RenamedEventArgs e) {
-					Console.WriteLine ("File '{0}' moved to '{1}'.", e.OldFullPath, e.FullPath);
-					this.filename = e.FullPath;
-				};
-				watcher.EnableRaisingEvents = true;
+				ConnectWatcher ();
 				
 			} else {
 				new XmlExporter(this.filename, Model, Views).Export();
 			}
+		}
+		
+		private void ConnectWatcher ()
+		{
+			Console.WriteLine ("File watching enabled.");
+			var directory = Path.GetDirectoryName(this.filename);
+			var filename = Path.GetFileName(this.filename);
+			var watcher = new FileSystemWatcher (directory, filename);
+			watcher.NotifyFilter =  NotifyFilters.LastWrite ;
+			watcher.Changed += delegate(object sender, FileSystemEventArgs e) {
+				if (e.ChangeType == WatcherChangeTypes.Changed) {
+					Console.WriteLine ("File '{0}' changed, reloading.", e.FullPath);
+					this.Reload ();
+				}
+			};
+			watcher.Renamed += delegate(object sender, RenamedEventArgs e) {
+				Console.WriteLine ("File '{0}' moved to '{1}'.", e.OldFullPath, e.FullPath);
+				this.filename = e.FullPath;
+			};
+			watcher.EnableRaisingEvents = true;
 		}
 		
 		public void SaveAs ()
@@ -88,6 +94,7 @@ namespace Editor.Controllers
 			if (dialog.Run() == (int) ResponseType.Accept) {
 				this.filename = dialog.Filename;
 				Reload ();
+				ConnectWatcher ();
 			}
 			
 			dialog.Destroy();
