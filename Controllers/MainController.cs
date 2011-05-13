@@ -111,12 +111,6 @@ namespace Editor.Controllers
 			
 			this.Model.Set(importer.Model);
 			this.Views.Set(importer.Views);
-			
-			if (this.Views.Count > 0) {
-				foreach (var v in importer.Views) {
-					Views.Add(v);
-				}					
-			}
 		}
 		
 	}
