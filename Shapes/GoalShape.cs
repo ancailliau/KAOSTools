@@ -34,12 +34,17 @@ namespace Shapes
 			width = (int) ( textWidth + 2 * XPadding );
 			height = (int) ( textHeight + 2 * YPadding );
 			
-			context.Rectangle(Position.X - width / 2, Position.Y - height / 2, width, height);
+			//context.Rectangle(Position.X - width / 2, Position.Y - height / 2, width, height);
+			var shear = 4;
 			
-			context.SetSourceRGBA(BackgroundColor.R,
-				BackgroundColor.G,
-				BackgroundColor.B,
-				BackgroundColor.A);
+			context.MoveTo(Position.X - width / 2 + shear / 2,
+				Position.Y - height/2);
+			context.RelLineTo(width, 0);
+			context.RelLineTo(-shear, height);
+			context.RelLineTo(- width, 0);
+			context.ClosePath();
+			
+			context.SetColor("#bdcbe0");
 			context.FillPreserve();
 			
 			var oldLineWidth = context.LineWidth;

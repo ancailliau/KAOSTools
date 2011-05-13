@@ -10,7 +10,7 @@ namespace Arrows
 	public class FilledArrow : Arrow
 	{
 		
-		public Color FillColor {
+		public string FillColor {
 			get;
 			set;
 		}
@@ -45,7 +45,14 @@ namespace Arrows
 			
 			double gamma2 = alpha + arrowHalfAngle;
 			context.LineTo(endPosition.X + arrowSideWith * Math.Cos(gamma2), endPosition.Y + arrowSideWith * Math.Sin(gamma2));
+			context.ClosePath();
 			
+			context.SetColor ("#000");
+			context.LineWidth = 1.5;
+			context.StrokePreserve();
+			context.LineWidth = 1;
+			
+			context.SetColor (FillColor);
 			context.Fill();
 			
 			context.Source = oldSource;

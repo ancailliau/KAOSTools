@@ -27,10 +27,7 @@ namespace Shapes
 			context.MoveTo(Position.X + radius, Position.Y);
 			context.Arc(Position.X, Position.Y, radius, 0, Math.PI * 2);
 			
-			context.SetSourceRGBA(BackgroundColor.R,
-				BackgroundColor.G,
-				BackgroundColor.B,
-				BackgroundColor.A);
+			context.SetColor("#fffb49");
 			context.FillPreserve();
 			
 			context.SetSourceRGBA(BorderColor.R,
@@ -44,7 +41,8 @@ namespace Shapes
 			if ((refinedShape = view.GetNearestShapeFor(((Refinement) RepresentedElement).Refined, this.Position)) != null) {
 				var arrow = new FilledArrow() {
 					Start = this,
-					End = refinedShape
+					End = refinedShape,
+					FillColor = "#fffb49"
 				};
 				arrow.Display(context, view);
 			}
