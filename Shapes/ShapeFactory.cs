@@ -12,7 +12,10 @@ namespace Shapes
 			
 			} else if (element is Refinement) {
 				return new RefinementShape(element as Refinement);
-				
+			
+			} else if (element is Agent) {
+				return new AgentShape(element as Agent);
+			
 			} else {
 				return null;
 			}

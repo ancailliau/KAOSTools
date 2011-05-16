@@ -79,6 +79,13 @@ namespace Editor.Widgets
 							this.window.AddToCurrentView (o as IModelElement);
 						};
 						m.Add(addToView);
+						var addRefinement = new MenuItem("Refine...");
+						addRefinement.Activated += delegate(object sender2, EventArgs e) {
+							var ar = new AddRefinement(window.Controller, o as Goal
+							);
+							ar.Present();
+						};
+						m.Add(addRefinement);
 						m.ShowAll();
 						m.Popup();
 						
@@ -103,6 +110,17 @@ namespace Editor.Widgets
 						m.Add(addView);
 						m.ShowAll();
 						m.Popup();
+					
+					} else if (((string) store.GetValue(iter, 0)) == "Agents") {
+						var m = new Menu();
+						var addAgent = new MenuItem("Add agent");
+						addAgent.Activated += delegate(object sender2, EventArgs e) {
+							var ag = new AddAgent(window.Controller);
+							ag.Present();
+						};
+						m.Add(addAgent);
+						m.ShowAll();
+						m.Popup();
 					}
 				}
 			}
@@ -116,6 +134,11 @@ namespace Editor.Widgets
 			var iter = store.AppendValues("Goals", null);
 			foreach (var element in this.window.Model.Goals) {
 				AddGoalElement (iter, element);
+			}
+			
+			iter = store.AppendValues("Agents", null);
+			foreach (var element in this.window.Model.Agents) {
+				store.AppendValues(iter, element.Name, element);
 			}
 			
 			iter = store.AppendValues("Views", null);

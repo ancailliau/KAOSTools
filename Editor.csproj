@@ -81,6 +81,12 @@
     <Compile Include="Model\Views.cs" />
     <Compile Include="Widgets\ViewsNotebook.cs" />
     <Compile Include="Widgets\ConceptsTreeView.cs" />
+    <Compile Include="Model\Agent.cs" />
+    <Compile Include="Shapes\AgentShape.cs" />
+    <Compile Include="Dialogs\AddAgent.cs" />
+    <Compile Include="gtk-gui\Editor.Dialogs.AddAgent.cs" />
+    <Compile Include="Dialogs\AddRefinement.cs" />
+    <Compile Include="gtk-gui\Editor.Dialogs.AddRefinement.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

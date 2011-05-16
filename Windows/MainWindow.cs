@@ -66,7 +66,7 @@ public partial class MainWindow: Gtk.Window
 	public void AddToCurrentView (IModelElement g)
 	{
 		if (g != null) {
-			viewsNotebook.CurrentView.Add(g);
+			viewsNotebook.CurrentView.Add (g);
 		} else {
 			Console.WriteLine ("Ignoring element '{0}'", g.Id);
 		}

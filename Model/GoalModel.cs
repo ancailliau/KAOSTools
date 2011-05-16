@@ -16,6 +16,10 @@ namespace Model
 			get { return Elements.FindAll(e => e is Goal).ConvertAll<Goal>(t => t as Goal); }
 		}
 		
+		public List<Agent> Agents {
+			get { return Elements.FindAll(e => e is Agent).ConvertAll<Agent>(t => t as Agent); }
+		}
+		
 		public GoalModel ()
 		{
 			Elements = new List<IModelElement>();
