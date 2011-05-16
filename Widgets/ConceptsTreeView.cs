@@ -4,6 +4,7 @@ using Editor.Windows;
 using Editor.Dialogs;
 using Model;
 using System.Collections.Generic;
+using Editor.Model;
 
 namespace Editor.Widgets
 {
@@ -98,6 +99,20 @@ namespace Editor.Widgets
 							ar.Present();
 						};
 						m.Add(editGoal);
+						var renameView = new MenuItem("Rename...");
+						renameView.Activated += delegate(object sender2, EventArgs e) {
+							var ar = new TextEntryDialog("New name:", delegate (string a) {
+								if (a != "") {
+									View v = (o as View);
+									v.Name = a;
+									this.window.Model.NotifyChange();
+									return true;
+								}
+								return false;
+							});
+							ar.Present();
+						};
+						m.Add(renameView);
 						m.ShowAll();
 						m.Popup();
 						
@@ -227,7 +242,7 @@ namespace Editor.Widgets
 		{
 			var iiter = store.AppendValues(iter, g.Name.Replace("\n", ""), g);
 			foreach (var refinement in g.Refinements) {
-				var iiiter = store.AppendValues(iiter, refinement.Id, refinement);
+				var iiiter = store.AppendValues(iiter, refinement.Name, refinement);
 				foreach (var g2 in refinement.Refinees) {
 					if (g2 is Goal) {
 						AddGoalElement (iiiter, g2 as Goal, expandedNodes);

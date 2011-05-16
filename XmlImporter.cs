@@ -30,6 +30,7 @@ namespace Editor
 		
 		private class FutureRefinement {
 			public string id = "";
+			public string name = "";
 			public List<string> refinees = new List<string>();
 		}
 		
@@ -93,7 +94,8 @@ namespace Editor
 					while (!reader.IsEmptyElement && reader.Read()) {
 						if (reader.IsStartElement("refinement")) {
 							var refinement = new FutureRefinement() {
-								id = reader.GetAttribute("id")
+								id = reader.GetAttribute("id"),
+								name = reader.GetAttribute("name")
 							};
 							while (reader.Read()) {
 								if (reader.IsStartElement("refinee")) {
@@ -160,7 +162,7 @@ namespace Editor
 			
 			foreach (var futureGoal in futureGoals) {
 				foreach (var futureRefinement in futureGoal.refinements) {
-					var refinement = new Refinement() { Id = futureRefinement.id };
+					var refinement = new Refinement() { Id = futureRefinement.id, Name = futureRefinement.name };
 					foreach (var futureElement in futureRefinement.refinees) {
 						refinement.Add(Model.Get(futureElement));
 					}

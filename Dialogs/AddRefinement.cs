@@ -70,8 +70,10 @@ namespace Editor.Dialogs
 		
 		protected virtual void OnButtonOkClicked (object sender, System.EventArgs e)
 		{
-			if (this.refinees.Count > 0) {
+			string name = nameTextView.Buffer.Text.Trim();
+			if (this.refinees.Count > 0 && name != "") {
 				var refinement = new Refinement();
+				refinement.Name = name;
 				refinement.Refined = this.parentGoal;
 				this.parentGoal.Refinements.Add(refinement);
 				foreach (var refinee in this.refinees) {

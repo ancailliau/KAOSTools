@@ -12,7 +12,7 @@ namespace Model
 			set;
 		}		
 		
-		public string TypeName { get { return "refinement"; } }
+		public string Name { get; set; }
 		
 		public IModelElement Refined {
 			get;

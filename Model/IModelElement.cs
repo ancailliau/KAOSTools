@@ -10,8 +10,9 @@ namespace Model
 			set;
 		}
 		
-		string TypeName {
+		string Name {
 			get;
+			set;
 		}
 		
 	}

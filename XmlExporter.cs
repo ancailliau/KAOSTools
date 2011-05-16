@@ -67,12 +67,11 @@ namespace Editor
 			foreach (var refinement in goal.Refinements) {
 				writer.WriteStartElement("refinement");
 				writer.WriteAttributeString("id", refinement.Id);
+				writer.WriteAttributeString("name", refinement.Name);
 				
 				foreach (var child in refinement.Refinees) {
 					writer.WriteStartElement("refinee");
-					if (child.Id != null) {
-						writer.WriteAttributeString("id", child.Id);
-					}
+					writer.WriteAttributeString("id", child.Id);
 					writer.WriteEndElement();
 				}
 				writer.WriteEndElement();
