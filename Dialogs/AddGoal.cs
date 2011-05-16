@@ -17,7 +17,7 @@ namespace Editor.Dialogs
 		
 		protected virtual void OnButtonOkActivated (object sender, System.EventArgs e)
 		{
-			string name = nameEntry.Text;
+			string name = nameTextView.Buffer.Text;
 			if (name != null && name != "") {
 				this.controller.Model.Add(new Goal(name));
 				this.Destroy();
