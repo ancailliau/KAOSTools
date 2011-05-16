@@ -28,6 +28,7 @@ namespace Model
 		public Refinement ()
 		{
 			Refinees = new List<IModelElement>();
+			Id = Guid.NewGuid().ToString();
 		}
 		
 		public void Add (IModelElement element) 

@@ -3,6 +3,7 @@ using Gtk;
 using Editor.Windows;
 using Editor.Dialogs;
 using Model;
+using System.Collections.Generic;
 
 namespace Editor.Widgets
 {
@@ -11,9 +12,14 @@ namespace Editor.Widgets
 		private MainWindow window;
 		private TreeStore store;
 		
+		private class TreeItemStatus {
+			public bool opened = false;
+		}
+		
 		public ConceptsTreeView (MainWindow window)
 		{
-			// Bind main window
+		
+				// Bind main window
 			this.window = window;
 			
 			// Build column and renderers	
@@ -126,14 +132,76 @@ namespace Editor.Widgets
 			}
 		}
 		
+		private void SaveState (List<string> expandedNodes)
+		{
+			var iter = new TreeIter();
+			int i = 0;
+			Stack<TreeIter> stack = new Stack<TreeIter>();
+			if(store.GetIterFirst(out iter)) {
+				stack.Push(iter);
+			}
+			while (stack.Count > 0) {
+				iter = stack.Pop();
+				var path = store.GetPath(iter);
+				bool expanded = this.GetRowExpanded(path);
+				if (expanded) {
+					expandedNodes.Add((string) store.GetValue(iter, 0));
+				}
+				
+				if (store.IterHasChild(iter)) {
+					var childIter = new TreeIter();
+					store.IterChildren(out childIter, iter);
+					stack.Push (childIter);
+				}
+				
+				if (store.IterNext(ref iter)) {
+					stack.Push(iter);
+				}
+				i++;
+			}
+		}
+		
+		private void RestoreState (List<string> expandedNodes)
+		{
+			this.CollapseAll();
+			var iter = new TreeIter();
+			int i = 0;
+			Stack<TreeIter> stack = new Stack<TreeIter>();
+			if(store.GetIterFirst(out iter)) {
+				stack.Push(iter);
+			}
+			while (stack.Count > 0) {
+				iter = stack.Pop();
+				var path = store.GetPath(iter);
+				var str = (string) store.GetValue(iter, 0);
+				if (expandedNodes.Contains(str)) {
+					this.ExpandRow(path, false);
+				}
+				
+				if (store.IterHasChild(iter)) {
+					var childIter = new TreeIter();
+					store.IterChildren(out childIter, iter);
+					stack.Push (childIter);
+				}
+				
+				if (store.IterNext(ref iter)) {
+					stack.Push(iter);
+				}
+				i++;
+			}
+		}
+		
 		public void Update()
 		{
-			Console.WriteLine ("Update list");
+			// Save expand/collapse state
+			List<string> expandedNodes = new List<string>();
+			SaveState(expandedNodes);
+			
 			store.Clear();
 			
 			var iter = store.AppendValues("Goals", null);
 			foreach (var element in this.window.Model.Goals) {
-				AddGoalElement (iter, element);
+				AddGoalElement (iter, element, expandedNodes);
 			}
 			
 			iter = store.AppendValues("Agents", null);
@@ -145,16 +213,18 @@ namespace Editor.Widgets
 			foreach (var view in this.window.Views) {
 				store.AppendValues(iter, view.Name, view);
 			}
+			
+			RestoreState(expandedNodes);
 		}
 		
-		private void AddGoalElement (TreeIter iter, Goal g)
+		private void AddGoalElement (TreeIter iter, Goal g, List<string> expandedNodes)
 		{
 			var iiter = store.AppendValues(iter, g.Name.Replace("\n", ""), g);
 			foreach (var refinement in g.Refinements) {
 				var iiiter = store.AppendValues(iiter, refinement.Id, refinement);
 				foreach (var g2 in refinement.Refinees) {
 					if (g2 is Goal) {
-						AddGoalElement (iiiter, g2 as Goal);
+						AddGoalElement (iiiter, g2 as Goal, expandedNodes);
 					} else {
 						store.AppendValues (iiiter, g2.Id, g2);
 					}
