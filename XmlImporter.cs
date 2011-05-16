@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Cairo;
 using Shapes;
 using Editor.Model;
+using Editor.Controllers;
 
 namespace Editor
 {
@@ -43,7 +44,9 @@ namespace Editor
 			public int depth;
 		}
 		
-		public XmlImporter (string filename)
+		private MainController controller;
+		
+		public XmlImporter (string filename, MainController controller)
 		{
 			this.filename = filename;
 			this.model = new GoalModel();
@@ -51,6 +54,8 @@ namespace Editor
 			
 			this.futureGoals = new List<FutureGoal>();
 			this.futureViews = new List<FutureView>();
+			
+			this.controller = controller;
 		}
 		
 		public void Import ()
@@ -169,7 +174,7 @@ namespace Editor
 			}
 			
 			foreach (var futureView in futureViews) {
-				var view = new View() { Name = futureView.name };
+				var view = new View(controller) { Name = futureView.name };
 				foreach (var futureElement in futureView.elements) {
 					var element = ShapeFactory.Create(Model.Get(futureElement.elementId));
 					if (element != null) {

@@ -87,6 +87,8 @@
     <Compile Include="gtk-gui\Editor.Dialogs.AddAgent.cs" />
     <Compile Include="Dialogs\AddRefinement.cs" />
     <Compile Include="gtk-gui\Editor.Dialogs.AddRefinement.cs" />
+    <Compile Include="Dialogs\EditGoal.cs" />
+    <Compile Include="gtk-gui\Editor.Dialogs.EditGoal.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -61,7 +61,7 @@ namespace Editor.Windows
 			this.hpaned1 = new global::Gtk.HPaned ();
 			this.hpaned1.CanFocus = true;
 			this.hpaned1.Name = "hpaned1";
-			this.hpaned1.Position = 144;
+			this.hpaned1.Position = 250;
 			this.hpaned1.BorderWidth = ((uint)(6));
 			this.mainVBox.Add (this.hpaned1);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.mainVBox [this.hpaned1]));

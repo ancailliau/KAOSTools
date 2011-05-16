@@ -34,6 +34,7 @@ namespace Editor.Controllers
 		
 		public void Show ()
 		{
+			Window.Maximize();
 			Window.Present();
 		}
 		
@@ -106,7 +107,7 @@ namespace Editor.Controllers
 				Load ();
 			}
 			
-			var importer = new XmlImporter(this.filename);
+			var importer = new XmlImporter(this.filename, this);
 			importer.Import();
 			
 			this.Model.Set(importer.Model);

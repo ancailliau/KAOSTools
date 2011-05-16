@@ -92,6 +92,12 @@ namespace Editor.Widgets
 							ar.Present();
 						};
 						m.Add(addRefinement);
+						var editGoal = new MenuItem("Edit...");
+						editGoal.Activated += delegate(object sender2, EventArgs e) {
+							var ar = new EditGoal(window.Controller, o as Goal);
+							ar.Present();
+						};
+						m.Add(editGoal);
 						m.ShowAll();
 						m.Popup();
 						

@@ -36,7 +36,7 @@ namespace Model
 			return Elements.Find(t => t.Id == id);
 		}
 		
-		private void NotifyChange ()
+		public void NotifyChange ()
 		{
 			if (Changed != null) {
 				Changed(this, EventArgs.Empty);

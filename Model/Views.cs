@@ -56,7 +56,7 @@ namespace Editor.Model
 			return views.GetEnumerator ();
 		}
 		
-		private void NotifyViewsChanged ()
+		public void NotifyViewsChanged ()
 		{
 			if (ViewsChanged != null) {
 				ViewsChanged(this, EventArgs.Empty);

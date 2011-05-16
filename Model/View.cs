@@ -6,6 +6,8 @@ using Cairo;
 using Gtk;
 using System.Linq;
 using Model;
+using Editor.Controllers;
+using Editor.Dialogs;
 
 namespace Editor.Model
 {
@@ -41,9 +43,12 @@ namespace Editor.Model
 			set;
 		}
 		
-		public View () 
+		private MainController controller;
+		
+		public View (MainController controller) 
 			: this ("Untitled view")
 		{
+			this.controller = controller;
 		}
 		
 		public View (string name)
@@ -72,9 +77,14 @@ namespace Editor.Model
 		{
 			if (shape != null) {
 				Shapes.Add (shape);
-				if (ViewChanged != null) {
-					ViewChanged (this, EventArgs.Empty);
-				}
+				NotifyChange ();
+			}
+		}
+		
+		public void NotifyChange ()
+		{
+			if (ViewChanged != null) {
+				ViewChanged (this, EventArgs.Empty);
 			}
 		}
 		
@@ -121,8 +131,14 @@ namespace Editor.Model
 						this.Shapes.Remove(selectedShape);
 						this.DrawingArea.QueueDraw();
 					};
+					var editItem = new MenuItem("Edit");
+					editItem.Activated += delegate(object sender, EventArgs e) {
+						var eg = new EditGoal(this.controller, selectedShape.RepresentedElement as Goal);
+						eg.Present();
+					};
 					var menu = new Menu();
 					menu.Add(deleteItem);
+					menu.Add(editItem);
 					menu.ShowAll();
 					menu.Popup();
 				}

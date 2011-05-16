@@ -24,7 +24,6 @@ namespace Editor.Widgets
 		public DiagramArea ()
 		{
 			BackgroundColor = new Color(1, 1, 1);
-			CurrentView = new View() { DrawingArea = this };
 			
 			this.AddEvents((int) Gdk.EventMask.PointerMotionMask
 				| (int) Gdk.EventMask.ButtonPressMask
