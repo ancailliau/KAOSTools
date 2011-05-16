@@ -1,16 +1,14 @@
 using System;
-using Model;
-using Editor.Model;
-using Editor.Windows;
-using Editor.Controllers;
+using KaosEditor.Controllers;
+using KaosEditor.Model;
 
 namespace Editor.Dialogs
 {
-	public partial class AddView : Gtk.Dialog
+	public partial class AddAgent : Gtk.Dialog
 	{
 		private MainController controller;
 		
-		public AddView (MainController controller)
+		public AddAgent  (MainController controller)
 		{
 			this.Build ();
 			
@@ -21,7 +19,7 @@ namespace Editor.Dialogs
 		{
 			string name = nameEntry.Text;
 			if (name != null && name != "") {
-				this.controller.Views.Add (name);
+				this.controller.Model.Add (new Agent(name));
 				this.Destroy();
 			}
 		}
@@ -30,7 +28,6 @@ namespace Editor.Dialogs
 		{
 			this.Destroy ();
 		}
-		
 	}
 }
 

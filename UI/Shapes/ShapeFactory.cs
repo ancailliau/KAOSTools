@@ -1,5 +1,4 @@
-using System;
-using Model;
+using KaosEditor.Model;
 
 namespace Shapes
 {

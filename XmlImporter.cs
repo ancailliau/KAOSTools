@@ -1,11 +1,10 @@
 using System;
-using System.Xml;
-using Model;
 using System.Collections.Generic;
+using System.Xml;
 using Cairo;
+using KaosEditor.Controllers;
+using KaosEditor.Model;
 using Shapes;
-using Editor.Model;
-using Editor.Controllers;
 
 namespace Editor
 {
@@ -13,11 +12,8 @@ namespace Editor
 	{
 		private string filename;
 		
-		private GoalModel model;
-		public GoalModel Model { get { return model ; } }
-		
-		private Views views;
-		public Views Views { get { return views ; } }
+		private EditorModel model;
+		public EditorModel Model { get { return model ; } }
 		
 		private List<FutureGoal> futureGoals;
 		private List<FutureView> futureViews;
@@ -50,8 +46,7 @@ namespace Editor
 		public XmlImporter (string filename, MainController controller)
 		{
 			this.filename = filename;
-			this.model = new GoalModel();
-			this.views = new Views();
+			this.model = new EditorModel();
 			
 			this.futureGoals = new List<FutureGoal>();
 			this.futureViews = new List<FutureView>();
@@ -154,15 +149,15 @@ namespace Editor
 		public void Compile ()
 		{
 			foreach (var futureGoal in futureGoals) {
-				var goal = new Goal() {
-					Id = futureGoal.id, Name = futureGoal.name
+				var goal = new Goal(futureGoal.name) {
+					Id = futureGoal.id
 				};
 				Model.Add(goal);
 			}
 			
 			foreach (var futureGoal in futureGoals) {
 				foreach (var futureRefinement in futureGoal.refinements) {
-					var refinement = new Refinement() { Id = futureRefinement.id, Name = futureRefinement.name };
+					var refinement = new Refinement(futureRefinement.name) { Id = futureRefinement.id };
 					foreach (var futureElement in futureRefinement.refinees) {
 						refinement.Add(Model.Get(futureElement));
 					}
@@ -176,7 +171,7 @@ namespace Editor
 			}
 			
 			foreach (var futureView in futureViews) {
-				var view = new View(controller) { Name = futureView.name };
+				var view = new View(futureView.name, controller);
 				foreach (var futureElement in futureView.elements) {
 					var element = ShapeFactory.Create(Model.Get(futureElement.elementId));
 					if (element != null) {
@@ -187,7 +182,7 @@ namespace Editor
 						Console.WriteLine ("Ignoring " + Model.Get(futureElement.elementId));
 					}
 				}
-				Views.Add(view);
+				Model.Views.Add(view);
 			}
 			
 		}

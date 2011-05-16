@@ -1,10 +1,7 @@
-using System;
-using Gtk;
-using Model;
-using System.Collections.Generic;
 using Editor.Windows;
-using Editor.Model;
-using Editor.Controllers;
+using Gtk;
+using KaosEditor.Controllers;
+using KaosEditor.Model;
 
 namespace Editor
 {
@@ -14,18 +11,14 @@ namespace Editor
 		{
 			Application.Init ();
 			
-			var model = new GoalModel ();
-			var views = new Views ();
-			
-			var window = new MainWindow (model, views);
-			
-			var controller = new MainController() {
-				Model = model, Views = views, Window = window
-			};
-			
+			var model = new EditorModel ();
+			var views = new Views (null);
+			var window = new MainWindow (model);
+			var controller = new MainController(model, window);
 			controller.Show ();
 			
 			Application.Run ();
 		}
+		
 	}
 }

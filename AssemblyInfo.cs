@@ -4,12 +4,12 @@ using System.Runtime.CompilerServices;
 // Information about this assembly is defined by the following attributes. 
 // Change them to the values specific to your project.
 
-[assembly: AssemblyTitle("Editor")]
+[assembly: AssemblyTitle("KaosEditor")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Université catholique de Louvain")]
 [assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("acailliau")]
+[assembly: AssemblyCopyright("Université catholique de Louvain and Antoine Cailliau")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

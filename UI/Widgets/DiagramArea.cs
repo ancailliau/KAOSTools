@@ -1,10 +1,6 @@
-using System;
 using Cairo;
-using System.Collections.Generic;
-using Shapes;
 using Gtk;
-using Arrows;
-using Editor.Model;
+using KaosEditor.Model;
 
 namespace Editor.Widgets
 {

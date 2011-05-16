@@ -1,5 +1,5 @@
 // 
-// Refinement.cs
+// EditorModel.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -26,117 +26,119 @@
 
 using System;
 using System.Collections.Generic;
+using KaosEditor.Controllers;
 
 namespace KaosEditor.Model
 {
 	
 	/// <summary>
-	/// Represents a refinement.
+	/// Represents the model behind the editor. The model is broadly divided in
+	/// two parts: 
+	/// - instances of object from the meta-model of KAOS,
+	/// - and the views (graphical representation of a subset of these elements)
 	/// </summary>
-	public class Refinement : IModelElement
+	public class EditorModel
 	{
 		
 		/// <summary>
-		/// Gets or sets the identifier.
+		/// Handler activated when the model changed
 		/// </summary>
-		/// <value>
-		/// The identifier.
-		/// </value>
-		public string Id {
-			get;
-			set;
-		}		
+		public delegate void ChangedModelHandler (object sender, EventArgs e);
 		
 		/// <summary>
-		/// Gets or sets the name.
+		/// Occurs when model changed.
 		/// </summary>
-		/// <value>
-		/// The name.
-		/// </value>
-		public string Name {
+		public event ChangedModelHandler Changed;
+		
+		/// <summary>
+		/// The list of element representing the model.
+		/// </summary>
+		public List<IModelElement> Elements {
 			get;
 			set;
 		}
 		
 		/// <summary>
-		/// Gets or sets the goal refined.
+		/// Gets or sets the views.
 		/// </summary>
 		/// <value>
-		/// The refined.
+		/// The views.
 		/// </value>
-		public IModelElement Refined {
+		public Views Views {
 			get;
 			set;
 		}
 		
+		
+		private MainController controller;
+		
 		/// <summary>
-		/// Gets or sets the refinees.
+		/// Gets or sets the controller.
 		/// </summary>
 		/// <value>
-		/// The refinees.
+		/// The controller.
 		/// </value>
-		public List<IModelElement> Refinees {
-			get;
-			private set;
+		public MainController Controller {
+			get { return controller; }
+			set { controller = value; Views.Controller = value; }
 		}
 		
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Model.Refinement"/> class.
+		/// Initializes a new instance of the <see cref="KaosEditor.Model.EditorModel"/> class.
 		/// </summary>
-		public Refinement (string name)
+		public EditorModel ()
 		{
-			Id = Guid.NewGuid().ToString();
-			Refinees = new List<IModelElement>();
-			
-			Name = name;
+			Elements = new List<IModelElement>();
+			Views = new Views(null);
 		}
 		
 		/// <summary>
-		/// Add the specified element to the refinees
+		/// Add the specified element.
 		/// </summary>
 		/// <param name='element'>
 		/// Element.
 		/// </param>
 		public void Add (IModelElement element) 
 		{
-			Refinees.Add(element);
+			Elements.Add(element);
+			NotifyChange ();
 		}
 		
 		/// <summary>
-		/// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="Model.Refinement"/>.
+		/// Get the specified id.
 		/// </summary>
-		/// <param name='obj'>
-		/// The <see cref="System.Object"/> to compare with the current <see cref="Model.Refinement"/>.
+		/// <param name='id'>
+		/// Identifier.
 		/// </param>
-		/// <returns>
-		/// <c>true</c> if the specified <see cref="System.Object"/> is equal to the current <see cref="Model.Refinement"/>;
-		/// otherwise, <c>false</c>.
-		/// </returns>
-		public override bool Equals (object obj)
+		public IModelElement Get (string id)
 		{
-			if (obj == null)
-				return false;
-			if (ReferenceEquals (this, obj))
-				return true;
-			if (obj.GetType () != typeof(Refinement))
-				return false;
-			Model.Refinement other = (Model.Refinement)obj;
-			return Id == other.Id;
+			return Elements.Find(t => t.Id == id);
 		}
-
+		
 		/// <summary>
-		/// Serves as a hash function for a <see cref="Model.Refinement"/> object.
+		/// Notifies a change in the model
 		/// </summary>
-		/// <returns>
-		/// A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.
-		/// </returns>
-		public override int GetHashCode ()
+		public void NotifyChange ()
 		{
-			unchecked {
-				return (Id != null ? Id.GetHashCode () : 0);
+			if (Changed != null) {
+				Changed(this, EventArgs.Empty);
 			}
 		}
-
+		
+		/// <summary>
+		/// Set the specified model as the current model.
+		/// </summary>
+		/// <param name='model'>
+		/// Model.
+		/// </param>
+		public void Set (Model.EditorModel model)
+		{
+			this.Elements = model.Elements;
+			this.Views.Set(model.Views);
+			
+			NotifyChange ();
+		}
+		
 	}
 }
 

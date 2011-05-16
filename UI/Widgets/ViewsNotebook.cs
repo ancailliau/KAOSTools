@@ -1,9 +1,8 @@
 using System;
-using Gtk;
-using Editor;
-using Editor.Widgets;
-using Editor.Model;
 using System.Collections.Generic;
+using Editor.Widgets;
+using Gtk;
+using KaosEditor.Model;
 
 namespace Editor.Widgets
 {

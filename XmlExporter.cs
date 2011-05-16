@@ -1,8 +1,6 @@
 using System;
 using System.Xml;
-using Model;
-using System.Collections.Generic;
-using Editor.Model;
+using KaosEditor.Model;
 
 namespace Editor
 {
@@ -11,15 +9,13 @@ namespace Editor
 		private Version version = new Version(0, 1);
 		private string filename;
 		
-		private GoalModel model;
-		private Views views;
+		private EditorModel model;
 		
 		private XmlWriterSettings settings;
 		
-		public XmlExporter (string filename, GoalModel model, Views views)
+		public XmlExporter (string filename, EditorModel model)
 		{
 			this.filename = filename;
-			this.views = views;
 			this.model = model;
 			
 			settings = new XmlWriterSettings();
@@ -27,7 +23,7 @@ namespace Editor
 		}
 		
 		public void Export ()
-		{		
+		{	
 			using (var writer = XmlWriter.Create(filename, settings)) {
 				writer.WriteStartDocument();
 				
@@ -49,8 +45,8 @@ namespace Editor
 			writer.WriteStartElement("models");
 			
 			writer.WriteStartElement("goals");
-			foreach (var goal in model.Goals) {
-				WriteGoal(writer, goal);
+			foreach (var goal in model.Elements.FindAll(e => e is Goal)) {
+				WriteGoal(writer, goal as Goal);
 			}
 			writer.WriteEndElement();
 			
@@ -83,7 +79,7 @@ namespace Editor
 		public void WriteViews (XmlWriter writer)
 		{
 			writer.WriteStartElement("views");
-			foreach (var view in views) {
+			foreach (var view in model.Views) {
 				writer.WriteStartElement("view");
 				writer.WriteAttributeString("name", view.Name);
 				foreach (var shape in view.Shapes) {

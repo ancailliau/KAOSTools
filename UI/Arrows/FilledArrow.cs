@@ -1,9 +1,7 @@
 using System;
-using Shapes;
 using Cairo;
-using Gtk;
 using Editor;
-using Editor.Model;
+using KaosEditor.Model;
 
 namespace Arrows
 {

@@ -1,8 +1,8 @@
 using System;
-using Editor.Controllers;
-using Gtk;
-using Model;
 using System.Collections.Generic;
+using Gtk;
+using KaosEditor.Controllers;
+using KaosEditor.Model;
 
 namespace Editor.Dialogs
 {
@@ -46,9 +46,9 @@ namespace Editor.Dialogs
 			childrenComboBox.PackStart(cell, false);
 			childrenComboBox.AddAttribute(cell, "text", 0);
 			
-			foreach (var g in controller.Model.Goals) {
+			foreach (var g in controller.Model.Elements.FindAll(e => e is Goal)) {
 				if (g != parent) {
-					childrenComboStore.AppendValues(g.Name, g);
+					childrenComboStore.AppendValues(g.Name, g as Goal);
 				}
 			}
 		}
@@ -72,8 +72,7 @@ namespace Editor.Dialogs
 		{
 			string name = nameTextView.Buffer.Text.Trim();
 			if (this.refinees.Count > 0 && name != "") {
-				var refinement = new Refinement();
-				refinement.Name = name;
+				var refinement = new Refinement(name);
 				refinement.Refined = this.parentGoal;
 				this.parentGoal.Refinements.Add(refinement);
 				foreach (var refinee in this.refinees) {

@@ -1,17 +1,21 @@
 using System;
-using Gtk;
-using Editor.Windows;
-using Editor.Dialogs;
-using Model;
 using System.Collections.Generic;
-using Editor.Model;
+using Editor.Dialogs;
+using Editor.Windows;
+using Gtk;
+using KaosEditor.Events;
+using KaosEditor.Model;
 
 namespace Editor.Widgets
 {
 	public class ConceptsTreeView : TreeView
 	{
+		
+		public delegate void OnPopulateListHandler (object sender, PopulateStoreEventArgs args);
+		public event OnPopulateListHandler PopulateList;
+	
 		private MainWindow window;
-		private TreeStore store;
+		public TreeStore store;
 		
 		private class TreeItemStatus {
 			public bool opened = false;
@@ -221,19 +225,21 @@ namespace Editor.Widgets
 			store.Clear();
 			
 			var iter = store.AppendValues("Goals", null);
-			foreach (var element in this.window.Model.Goals) {
-				AddGoalElement (iter, element, expandedNodes);
+			foreach (var element in this.window.Model.Elements.FindAll(e => e is Goal)) {
+				AddGoalElement (iter, element as Goal, expandedNodes);
 			}
 			
 			iter = store.AppendValues("Agents", null);
-			foreach (var element in this.window.Model.Agents) {
+			foreach (var element in this.window.Model.Elements.FindAll(e => e is Agent)) {
 				store.AppendValues(iter, element.Name, element);
 			}
 			
 			iter = store.AppendValues("Views", null);
-			foreach (var view in this.window.Views) {
+			foreach (var view in this.window.Model.Views) {
 				store.AppendValues(iter, view.Name, view);
 			}
+			
+			NotifyPopulateList();
 			
 			RestoreState(expandedNodes);
 		}
@@ -250,6 +256,14 @@ namespace Editor.Widgets
 						store.AppendValues (iiiter, g2.Id, g2);
 					}
 				}
+			}
+		}
+		
+		
+		private void NotifyPopulateList ()
+		{
+			if (PopulateList != null) {
+				PopulateList(this, new PopulateStoreEventArgs(this, this.store));
 			}
 		}
 		

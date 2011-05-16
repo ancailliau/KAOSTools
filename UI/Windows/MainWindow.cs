@@ -1,21 +1,19 @@
 using System;
-using Gtk;
-using Editor;
-using Model;
-using System.Xml;
-using System.Collections.Generic;
-using Shapes;
-using Editor.Dialogs;
 using Editor.Widgets;
-using Editor.Controllers;
-using Editor.Model;
+using Gtk;
+using KaosEditor.Controllers;
+using KaosEditor.Events;
+using KaosEditor.Model;
+using Shapes;
 
 namespace Editor.Windows {
 
 public partial class MainWindow: Gtk.Window
 {	
+	public delegate void OnPopulateConceptListHandler (object sender, PopulateStoreEventArgs args);
+	public event OnPopulateConceptListHandler PopulateConceptList;
 	
-	public GoalModel Model {
+	public EditorModel Model {
 		get;
 		set;
 	}
@@ -25,18 +23,12 @@ public partial class MainWindow: Gtk.Window
 		set;
 	}
 	
-	public Views Views {
-		get;
-		set;
-	}
-	
 	private ViewsNotebook viewsNotebook;
 	private ConceptsTreeView conceptTreeView;
 	
-	public MainWindow (GoalModel model, Views views): base (Gtk.WindowType.Toplevel)
+	public MainWindow (EditorModel model): base (Gtk.WindowType.Toplevel)
 	{
 		this.Model = model;
-		this.Views = views;
 		Build ();
 		
 		viewsNotebook = new ViewsNotebook();
@@ -47,9 +39,14 @@ public partial class MainWindow: Gtk.Window
 		hpaned1.ShowAll();
 				
 		Model.Changed += UpdateWidgets;
-		Views.ViewsChanged += UpdateWidgets;
-		Views.AddedView += UpdateWidgets;
+		Model.Views.ViewsChanged += UpdateWidgets;
+		Model.Views.AddedView += UpdateWidgets;
 			
+		conceptTreeView.PopulateList += delegate(object sender, PopulateStoreEventArgs args) {
+				if (PopulateConceptList != null) {
+					PopulateConceptList(sender, args);
+				}
+			};
 	}
 	
 	private void UpdateWidgets (object sender, EventArgs args)
@@ -60,13 +57,13 @@ public partial class MainWindow: Gtk.Window
 	
 	public void DisplayView (string name)
 	{
-		viewsNotebook.DisplayView (Views.Get(name));
+		viewsNotebook.DisplayView (Model.Views.Get(name));
 	}
 		
 	public void AddToCurrentView (IModelElement g)
 	{
 		if (g != null) {
-			viewsNotebook.CurrentView.Add (g);
+			viewsNotebook.CurrentView.Add ( ShapeFactory.Create(g) );
 		} else {
 			Console.WriteLine ("Ignoring element '{0}'", g.Id);
 		}
@@ -85,17 +82,18 @@ public partial class MainWindow: Gtk.Window
 		
 	protected virtual void OnSaveActionActivated (object sender, System.EventArgs e)
 	{
-		this.Controller.Save ();
+		this.Controller.SaveProject ();
 	}
 	
 	protected virtual void OnOpenActionActivated (object sender, System.EventArgs e)
 	{
-		this.Controller.Load ();
+		this.Controller.LoadProject ();
 	}
 	
 	protected virtual void OnSaveAsActionActivated (object sender, System.EventArgs e)
 	{
-		this.Controller.SaveAs ();
+		this.Controller.SaveProjectAs ();
 	}
+		
 }
 }

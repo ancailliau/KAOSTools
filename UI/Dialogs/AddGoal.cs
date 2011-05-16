@@ -1,7 +1,6 @@
 using System;
-using Model;
-using Editor.Windows;
-using Editor.Controllers;
+using KaosEditor.Controllers;
+using KaosEditor.Model;
 
 namespace Editor.Dialogs
 {

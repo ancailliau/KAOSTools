@@ -1,5 +1,5 @@
 // 
-// IModelElement.cs
+// PopulateStoreEventArgs.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -25,38 +25,53 @@
 // THE SOFTWARE.
 
 using System;
+using Editor.Widgets;
+using Gtk;
 
-namespace KaosEditor.Model
+namespace KaosEditor.Events
 {
 	
 	/// <summary>
-	/// Represents an abstract element from the kaos model
+	/// Represents the argument for the event raised with store is populated.
 	/// </summary>
-	public interface IModelElement
+	public class PopulateStoreEventArgs : EventArgs
 	{
-		
 		/// <summary>
-		/// Gets or sets the identifier.
+		/// Gets or sets the tree view bind to the store
 		/// </summary>
 		/// <value>
-		/// The identifier.
+		/// The view.
 		/// </value>
-		string Id {
+		public TreeView View {
 			get;
-			set;
+			private set;
 		}
 		
 		/// <summary>
-		/// Gets or sets the name.
+		/// Gets or sets the store.
 		/// </summary>
 		/// <value>
-		/// The name.
+		/// The store.
 		/// </value>
-		string Name {
+		public TreeStore Store {
 			get;
-			set;
+			private set;
 		}
 		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Editor.Events.PopulateStoreEventArgs"/> class.
+		/// </summary>
+		/// <param name='view'>
+		/// View.
+		/// </param>
+		/// <param name='store'>
+		/// Store.
+		/// </param>
+		public PopulateStoreEventArgs (TreeView view, TreeStore store)
+		{
+			View = view;
+			Store = store;
+		}
 	}
 }
 

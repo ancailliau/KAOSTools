@@ -1,16 +1,27 @@
 using System;
 using Gtk;
+using KaosEditor.Logging;
 
 namespace Editor.Widgets
 {
 	public class TabLabel : HBox
 	{
+		private static Gdk.Pixbuf closePixbuf;
+		
+		static TabLabel () {
+			try {
+				closePixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Close.png");
+			} catch (Exception e) {
+				Logger.Warning ("Cannot load 'KaosEditor.Images.Close.png' from ressources", e);
+			}
+		}
+		
 		public delegate void CloseClickedHandler (object sender, EventArgs args);
 		public event CloseClickedHandler CloseClicked;
 		
-		public string Name {
+		public string Text {
 			get;
-			set;
+			private set;
 		}
 		
 		private Label label;
@@ -18,7 +29,7 @@ namespace Editor.Widgets
 		
 		public TabLabel (string name)
 		{
-			this.Name = name;
+			this.Text = name;
 			label = new Label(name);
 			
 			// Ugly stuff to get rid of some noisy padding
@@ -27,7 +38,7 @@ namespace Editor.Widgets
 			
 			button = new Button();
 			button.Relief = ReliefStyle.None;
-			button.Image = new Image(Gdk.Pixbuf.LoadFromResource("Editor.Images.Close.png"));
+			button.Image = new Image(closePixbuf);
 			button.Name = "KaosEditor.ViewsNotebook.CloseButton";
 			button.Clicked += delegate(object sender, EventArgs e) {
 				if (CloseClicked != null) {

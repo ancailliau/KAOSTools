@@ -1,9 +1,7 @@
 using System;
 using Cairo;
-using Gtk;
-using Model;
 using Editor;
-using Editor.Model;
+using KaosEditor.Model;
 
 namespace Shapes
 {

@@ -1,10 +1,8 @@
 using System;
-using Cairo;
-using Gtk;
-using Model;
-using Editor;
 using Arrows;
-using Editor.Model;
+using Cairo;
+using Editor;
+using KaosEditor.Model;
 
 namespace Shapes
 {

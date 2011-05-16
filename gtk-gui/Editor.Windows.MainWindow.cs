@@ -44,7 +44,9 @@ namespace Editor.Windows
 			this.AddAccelGroup (this.UIManager.AccelGroup);
 			this.Name = "Editor.Windows.MainWindow";
 			this.Title = global::Mono.Unix.Catalog.GetString ("A simple Kaos Editor");
-			this.WindowPosition = ((global::Gtk.WindowPosition)(4));
+			this.WindowPosition = ((global::Gtk.WindowPosition)(3));
+			this.DefaultWidth = 800;
+			this.DefaultHeight = 600;
 			// Container child Editor.Windows.MainWindow.Gtk.Container+ContainerChild
 			this.mainVBox = new global::Gtk.VBox ();
 			this.mainVBox.Name = "mainVBox";
@@ -79,8 +81,6 @@ namespace Editor.Windows
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
-			this.DefaultWidth = 412;
-			this.DefaultHeight = 300;
 			this.Show ();
 			this.DeleteEvent += new global::Gtk.DeleteEventHandler (this.OnDeleteEvent);
 			this.quitAction.Activated += new global::System.EventHandler (this.OnQuitActionActivated);

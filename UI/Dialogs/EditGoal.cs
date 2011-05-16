@@ -1,6 +1,6 @@
 using System;
-using Editor.Controllers;
-using Model;
+using KaosEditor.Controllers;
+using KaosEditor.Model;
 
 namespace Editor.Dialogs
 {
@@ -25,7 +25,7 @@ namespace Editor.Dialogs
 			if (nameTextView.Buffer.Text != "") {
 				this.goal.Name = nameTextView.Buffer.Text;
 				this.controller.Model.NotifyChange();
-				this.controller.Views.NotifyViewsChanged();
+				this.controller.Model.Views.NotifyViewsChanged();
 				this.Destroy();
 			}
 		}

@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{37258525-7422-4A08-937B-6828058BDF6C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Editor</RootNamespace>
+    <RootNamespace>KaosEditor</RootNamespace>
     <AssemblyName>Editor</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <StartupObject>Editor.MainClass</StartupObject>
@@ -53,60 +53,63 @@
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Shapes\IShape.cs" />
-    <Compile Include="Shapes\Shape.cs" />
-    <Compile Include="Arrows\FilledArrow.cs" />
     <Compile Include="Model\Goal.cs" />
-    <Compile Include="Model\GoalModel.cs" />
     <Compile Include="Helpers.cs" />
-    <Compile Include="Shapes\GoalShape.cs" />
-    <Compile Include="Shapes\ShapeFactory.cs" />
     <Compile Include="Model\IModelElement.cs" />
     <Compile Include="XmlExporter.cs" />
     <Compile Include="XmlImporter.cs" />
     <Compile Include="Model\Refinement.cs" />
-    <Compile Include="Shapes\RefinementShape.cs" />
-    <Compile Include="Arrows\IArrow.cs" />
-    <Compile Include="Arrows\Arrow.cs" />
-    <Compile Include="Widgets\TabLabel.cs" />
-    <Compile Include="Dialogs\AddGoal.cs" />
-    <Compile Include="Dialogs\AddView.cs" />
     <Compile Include="gtk-gui\Editor.Dialogs.AddGoal.cs" />
     <Compile Include="gtk-gui\Editor.Dialogs.AddView.cs" />
-    <Compile Include="Widgets\DiagramArea.cs" />
-    <Compile Include="Windows\MainWindow.cs" />
     <Compile Include="gtk-gui\Editor.Windows.MainWindow.cs" />
     <Compile Include="Controllers\MainController.cs" />
     <Compile Include="Model\View.cs" />
     <Compile Include="Model\Views.cs" />
-    <Compile Include="Widgets\ViewsNotebook.cs" />
-    <Compile Include="Widgets\ConceptsTreeView.cs" />
     <Compile Include="Model\Agent.cs" />
-    <Compile Include="Shapes\AgentShape.cs" />
-    <Compile Include="Dialogs\AddAgent.cs" />
     <Compile Include="gtk-gui\Editor.Dialogs.AddAgent.cs" />
-    <Compile Include="Dialogs\AddRefinement.cs" />
     <Compile Include="gtk-gui\Editor.Dialogs.AddRefinement.cs" />
-    <Compile Include="Dialogs\EditGoal.cs" />
     <Compile Include="gtk-gui\Editor.Dialogs.EditGoal.cs" />
-    <Compile Include="TextEntryDialog.cs" />
     <Compile Include="gtk-gui\Editor.TextEntryDialog.cs" />
+    <Compile Include="Events\PopulateStoreEventArgs.cs" />
+    <Compile Include="EditorConfiguration.cs" />
+    <Compile Include="Plugin.cs" />
+    <Compile Include="Logging\Logger.cs" />
+    <Compile Include="UI\Shapes\IShape.cs" />
+    <Compile Include="UI\Shapes\Shape.cs" />
+    <Compile Include="UI\Shapes\GoalShape.cs" />
+    <Compile Include="UI\Shapes\ShapeFactory.cs" />
+    <Compile Include="UI\Shapes\RefinementShape.cs" />
+    <Compile Include="UI\Shapes\AgentShape.cs" />
+    <Compile Include="UI\Arrows\FilledArrow.cs" />
+    <Compile Include="UI\Arrows\IArrow.cs" />
+    <Compile Include="UI\Arrows\Arrow.cs" />
+    <Compile Include="UI\Dialogs\AddGoal.cs" />
+    <Compile Include="UI\Dialogs\AddView.cs" />
+    <Compile Include="UI\Dialogs\AddAgent.cs" />
+    <Compile Include="UI\Dialogs\AddRefinement.cs" />
+    <Compile Include="UI\Dialogs\EditGoal.cs" />
+    <Compile Include="UI\Dialogs\TextEntryDialog.cs" />
+    <Compile Include="UI\Windows\MainWindow.cs" />
+    <Compile Include="UI\Widgets\TabLabel.cs" />
+    <Compile Include="UI\Widgets\DiagramArea.cs" />
+    <Compile Include="UI\Widgets\ViewsNotebook.cs" />
+    <Compile Include="UI\Widgets\ConceptsTreeView.cs" />
+    <Compile Include="Model\EditorModel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Folder Include="Shapes\" />
-    <Folder Include="Arrows\" />
     <Folder Include="Model\" />
-    <Folder Include="Widgets\" />
-    <Folder Include="Dialogs\" />
-    <Folder Include="Windows\" />
     <Folder Include="Controllers\" />
+    <Folder Include="Events\" />
+    <Folder Include="Logging\" />
+    <Folder Include="UI\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
         <Policies>
           <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="FileFormatDefault" />
+          <StandardHeader Text="&#xA;${FileName}&#xA; &#xA;Author:&#xA;      ${AuthorName} &lt;${AuthorEmail}&gt;&#xA;&#xA;Copyright (c) ${Year} ${CopyrightHolder}&#xA;&#xA;Permission is hereby granted, free of charge, to any person obtaining a copy&#xA;of this software and associated documentation files (the &quot;Software&quot;), to deal&#xA;in the Software without restriction, including without limitation the rights&#xA;to use, copy, modify, merge, publish, distribute, sublicense, and/or sell&#xA;copies of the Software, and to permit persons to whom the Software is&#xA;furnished to do so, subject to the following conditions:&#xA;&#xA;The above copyright notice and this permission notice shall be included in&#xA;all copies or substantial portions of the Software.&#xA;&#xA;THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR&#xA;IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,&#xA;FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE&#xA;AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER&#xA;LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,&#xA;OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN&#xA;THE SOFTWARE." IncludeInNewFiles="True" />
         </Policies>
       </Properties>
     </MonoDevelop>
