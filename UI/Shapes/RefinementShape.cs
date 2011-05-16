@@ -1,8 +1,9 @@
 using System;
-using Arrows;
 using Cairo;
 using Editor;
 using KaosEditor.Model;
+using KaosEditor.Arrows;
+using KaosEditor;
 
 namespace Shapes
 {
@@ -48,7 +49,7 @@ namespace Shapes
 			// If refinees are present as shapes, draw the arrows to.
 			foreach (var refinee in ((Refinement) RepresentedElement).Refinees) {
 				if ((refinedShape = view.GetNearestShapeFor(refinee, this.Position)) != null) {
-					var arrow = new Arrows.Arrow() {
+					var arrow = new Arrow () {
 						Start = refinedShape,
 						End = this
 					};

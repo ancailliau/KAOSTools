@@ -2,7 +2,7 @@ using System;
 using System.Xml;
 using Cairo;
 
-namespace Editor
+namespace KaosEditor
 {
 	public static class Helpers
 	{

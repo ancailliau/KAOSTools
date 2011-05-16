@@ -2,6 +2,7 @@ using System;
 using Cairo;
 using Editor;
 using KaosEditor.Model;
+using KaosEditor;
 
 namespace Shapes
 {

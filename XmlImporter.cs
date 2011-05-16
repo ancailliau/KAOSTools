@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml;
 using Cairo;
 using KaosEditor.Controllers;
+using KaosEditor;
 using KaosEditor.Model;
 using Shapes;
 
