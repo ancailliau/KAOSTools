@@ -145,7 +145,7 @@ namespace KaosEditor.UI.Widgets
 						var m = new Menu();
 						var addGoal = new MenuItem("Add goal");
 						addGoal.Activated += delegate(object sender2, EventArgs e) {
-							var ag = new AddGoal(window);
+							var ag = new AddGoal(window, new MenuContext (this, this.window.Controller));
 							ag.Present();
 						};
 						m.Add(addGoal);
@@ -167,7 +167,7 @@ namespace KaosEditor.UI.Widgets
 						var m = new Menu();
 						var addAgent = new MenuItem("Add agent");
 						addAgent.Activated += delegate(object sender2, EventArgs e) {
-							var ag = new AddAgent(window);
+							var ag = new AddAgent(window, new MenuContext (this, this.window.Controller));
 							ag.Present();
 						};
 						m.Add(addAgent);

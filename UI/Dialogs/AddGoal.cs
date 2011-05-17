@@ -28,6 +28,7 @@ using System;
 using KaosEditor.Controllers;
 using KaosEditor.Model;
 using KaosEditor.UI.Windows;
+using Gtk;
 
 namespace KaosEditor.UI.Dialogs
 {
@@ -43,16 +44,19 @@ namespace KaosEditor.UI.Dialogs
 		/// </summary>
 		private MainWindow window;		
 		
+		private MenuContext context;
+		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KaosEditor.UI.Dialogs.AddGoal"/> class.
 		/// </summary>
 		/// <param name='window'>
 		/// Parent window.
 		/// </param>
-		public AddGoal (MainWindow window)
+		public AddGoal (MainWindow window, MenuContext context)
 		{
 			this.Build ();
 			this.window = window;
+			this.context = context;
 		}
 		
 		/// <summary>
@@ -68,7 +72,10 @@ namespace KaosEditor.UI.Dialogs
 		{
 			string name = nameTextView.Buffer.Text;
 			if (name != null && name != "") {
-				this.window.Controller.Model.Add(new Goal(name));
+				Goal goal = new Goal (name);
+				this.window.Controller.Model.Add(goal);
+				if (context.Initiator is DrawingArea) 
+					this.window.AddToCurrentView (goal);
 				this.Destroy();
 			}
 		}

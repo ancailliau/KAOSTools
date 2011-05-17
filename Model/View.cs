@@ -248,16 +248,36 @@ namespace KaosEditor.Model
 			
 			if (args.Button == 3) { // Right click
 				
-				if (SelectedShape != null && SelectedShape is IContextMenu) {
-					
+				if (SelectedShape != null) {
+					if (SelectedShape is IContextMenu) {
+						var menu = new Menu();
+						
+						// Populate menu with items related to the shape
+						((IContextMenu) SelectedShape).PopulateContextMenu(menu, new MenuContext(this.DrawingArea, this.Controller));
+						
+						// Populate menu with items related to the represented element
+						if (SelectedShape.RepresentedElement is IContextMenu) 
+							((IContextMenu) SelectedShape.RepresentedElement).PopulateContextMenu(menu, new MenuContext(this.DrawingArea, this.Controller));
+						
+						menu.ShowAll();
+						menu.Popup();
+					}
+				} else {
 					var menu = new Menu();
 					
-					// Populate menu with items related to the shape
-					((IContextMenu) SelectedShape).PopulateContextMenu(menu, new MenuContext(this.DrawingArea, this.Controller));
+					var addgoal = new MenuItem ("Add goal...");
+					addgoal.Activated += delegate(object sender, EventArgs e) {
+						var ag = new AddGoal (this.Controller.Window, new MenuContext (this.DrawingArea, this.Controller));
+						ag.Present ();
+					};
+					menu.Add (addgoal);
 					
-					// Populate menu with items related to the represented element
-					if (SelectedShape.RepresentedElement is IContextMenu) 
-						((IContextMenu) SelectedShape.RepresentedElement).PopulateContextMenu(menu, new MenuContext(this.DrawingArea, this.Controller));
+					var addagent = new MenuItem ("Add agent...");
+					addagent.Activated += delegate(object sender, EventArgs e) {
+						var ag = new AddAgent (this.Controller.Window, new MenuContext (this.DrawingArea, this.Controller));
+						ag.Present ();
+					};
+					menu.Add (addagent);
 					
 					menu.ShowAll();
 					menu.Popup();
