@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Editor.Dialogs;
-using Editor.Windows;
 using Gtk;
 using KaosEditor.Events;
 using KaosEditor.Model;
+using KaosEditor.UI.Windows;
+using KaosEditor.UI.Dialogs;
 
-namespace Editor.Widgets
+namespace KaosEditor.UI.Widgets
 {
 	public class ConceptsTreeView : TreeView
 	{
@@ -92,14 +92,14 @@ namespace Editor.Widgets
 						m.Add(addToView);
 						var addRefinement = new MenuItem("Refine...");
 						addRefinement.Activated += delegate(object sender2, EventArgs e) {
-							var ar = new AddRefinement(window.Controller, o as Goal
+							var ar = new AddRefinement(window, o as Goal
 							);
 							ar.Present();
 						};
 						m.Add(addRefinement);
 						var editGoal = new MenuItem("Edit...");
 						editGoal.Activated += delegate(object sender2, EventArgs e) {
-							var ar = new EditGoal(window.Controller, o as Goal);
+							var ar = new EditGoal(window, o as Goal);
 							ar.Present();
 						};
 						m.Add(editGoal);
@@ -124,7 +124,7 @@ namespace Editor.Widgets
 						var m = new Menu();
 						var addGoal = new MenuItem("Add goal");
 						addGoal.Activated += delegate(object sender2, EventArgs e) {
-							var ag = new AddGoal(window.Controller);
+							var ag = new AddGoal(window);
 							ag.Present();
 						};
 						m.Add(addGoal);
@@ -135,7 +135,7 @@ namespace Editor.Widgets
 						var m = new Menu();
 						var addView = new MenuItem("Add view");
 						addView.Activated += delegate(object sender2, EventArgs e) {
-							var ag = new AddView(window.Controller);
+							var ag = new AddView(window);
 							ag.Present();
 						};
 						m.Add(addView);
@@ -146,7 +146,7 @@ namespace Editor.Widgets
 						var m = new Menu();
 						var addAgent = new MenuItem("Add agent");
 						addAgent.Activated += delegate(object sender2, EventArgs e) {
-							var ag = new AddAgent(window.Controller);
+							var ag = new AddAgent(window);
 							ag.Present();
 						};
 						m.Add(addAgent);

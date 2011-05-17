@@ -27,11 +27,10 @@
 using System;
 using System.IO;
 using System.Reflection;
-using Editor;
-using Editor.Windows;
 using Gtk;
 using KaosEditor.Logging;
 using KaosEditor.Model;
+using KaosEditor.UI.Windows;
 
 namespace KaosEditor.Controllers
 {

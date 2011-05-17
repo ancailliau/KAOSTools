@@ -27,11 +27,11 @@
 using System;
 using System.Collections.Generic;
 using Cairo;
-using Editor.Dialogs;
 using Gtk;
 using KaosEditor.Controllers;
 using KaosEditor.Model;
-using Shapes;
+using KaosEditor.UI.Shapes;
+using KaosEditor.UI.Dialogs;
 
 namespace KaosEditor.Model
 {
@@ -235,7 +235,7 @@ namespace KaosEditor.Model
 					};
 					var editItem = new MenuItem("Edit");
 					editItem.Activated += delegate(object sender, EventArgs e) {
-						var eg = new EditGoal(Controller, selectedShape.RepresentedElement as Goal);
+						var eg = new EditGoal(this.Controller.Window, selectedShape.RepresentedElement as Goal);
 						eg.Present();
 					};
 					var menu = new Menu();

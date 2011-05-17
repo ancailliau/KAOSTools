@@ -29,7 +29,6 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using KaosEditor.Logging;
-using Editor;
 
 namespace KaosEditor
 {

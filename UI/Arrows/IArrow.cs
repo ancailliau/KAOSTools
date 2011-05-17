@@ -25,10 +25,10 @@
 // THE SOFTWARE.
 
 using Cairo;
-using Shapes;
 using KaosEditor.Model;
+using KaosEditor.UI.Shapes;
 
-namespace KaosEditor.Arrows
+namespace KaosEditor.UI.Arrows
 {
 	
 	/// <summary>

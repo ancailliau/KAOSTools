@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using Cairo;
-using KaosEditor.Controllers;
 using KaosEditor;
+using KaosEditor.Controllers;
 using KaosEditor.Model;
-using Shapes;
+using KaosEditor.UI.Shapes;
 
-namespace Editor
+namespace KaosEditor
 {
 	public class XmlImporter
 	{

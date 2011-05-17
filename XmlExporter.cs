@@ -2,7 +2,7 @@ using System;
 using System.Xml;
 using KaosEditor.Model;
 
-namespace Editor
+namespace KaosEditor
 {
 	public class XmlExporter
 	{

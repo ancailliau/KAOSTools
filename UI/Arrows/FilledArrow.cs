@@ -26,10 +26,9 @@
 
 using System;
 using Cairo;
-using Editor;
 using KaosEditor.Model;
 
-namespace KaosEditor.Arrows
+namespace KaosEditor.UI.Arrows
 {
 	
 	/// <summary>

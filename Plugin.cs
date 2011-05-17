@@ -1,6 +1,6 @@
 using System;
 
-namespace Editor
+namespace KaosEditor
 {
 	public class Plugin
 	{

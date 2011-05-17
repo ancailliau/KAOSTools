@@ -8,7 +8,7 @@
     <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <widget-library name="../bin/Debug/Editor.exe" internal="true" />
   </import>
-  <widget class="Gtk.Dialog" id="Editor.Dialogs.AddGoal" design-size="400 137">
+  <widget class="Gtk.Dialog" id="KaosEditor.UI.Dialogs.AddGoal" design-size="400 137">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Add new goal...</property>
     <property name="WindowPosition">CenterOnParent</property>
@@ -128,7 +128,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="Editor.Dialogs.AddView" design-size="400 79">
+  <widget class="Gtk.Dialog" id="KaosEditor.UI.Dialogs.AddView" design-size="400 79">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Add new view...</property>
     <property name="WindowPosition">CenterOnParent</property>
@@ -240,7 +240,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Window" id="Editor.Windows.MainWindow" design-size="412 300">
+  <widget class="Gtk.Window" id="KaosEditor.UI.Windows.MainWindow" design-size="412 300">
     <action-group name="Default">
       <action id="ApplicationAction">
         <property name="Type">Action</property>
@@ -351,7 +351,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="Editor.Dialogs.AddAgent" design-size="400 79">
+  <widget class="Gtk.Dialog" id="KaosEditor.UI.Dialogs.AddAgent" design-size="400 79">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Add new agent...</property>
     <property name="WindowPosition">CenterOnParent</property>
@@ -461,7 +461,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="Editor.Dialogs.AddRefinement" design-size="400 313">
+  <widget class="Gtk.Dialog" id="KaosEditor.UI.Dialogs.AddRefinement" design-size="400 313">
     <property name="MemberName" />
     <property name="WindowPosition">CenterOnParent</property>
     <property name="Buttons">2</property>
@@ -644,7 +644,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="Editor.Dialogs.EditGoal" design-size="400 225">
+  <widget class="Gtk.Dialog" id="KaosEditor.UI.Dialogs.EditGoal" design-size="400 225">
     <property name="MemberName" />
     <property name="WindowPosition">CenterOnParent</property>
     <property name="Buttons">2</property>
@@ -810,7 +810,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="Editor.TextEntryDialog" design-size="274 99">
+  <widget class="Gtk.Dialog" id="KaosEditor.UI.Dialogs.TextEntryDialog" design-size="274 99">
     <property name="MemberName" />
     <property name="WindowPosition">CenterOnParent</property>
     <property name="DestroyWithParent">True</property>

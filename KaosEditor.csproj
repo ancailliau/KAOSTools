@@ -10,7 +10,7 @@
     <RootNamespace>KaosEditor</RootNamespace>
     <AssemblyName>Editor</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <StartupObject>Editor.MainClass</StartupObject>
+    <StartupObject>KaosEditor.MainClass</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -59,17 +59,10 @@
     <Compile Include="XmlExporter.cs" />
     <Compile Include="XmlImporter.cs" />
     <Compile Include="Model\Refinement.cs" />
-    <Compile Include="gtk-gui\Editor.Dialogs.AddGoal.cs" />
-    <Compile Include="gtk-gui\Editor.Dialogs.AddView.cs" />
-    <Compile Include="gtk-gui\Editor.Windows.MainWindow.cs" />
     <Compile Include="Controllers\MainController.cs" />
     <Compile Include="Model\View.cs" />
     <Compile Include="Model\Views.cs" />
     <Compile Include="Model\Agent.cs" />
-    <Compile Include="gtk-gui\Editor.Dialogs.AddAgent.cs" />
-    <Compile Include="gtk-gui\Editor.Dialogs.AddRefinement.cs" />
-    <Compile Include="gtk-gui\Editor.Dialogs.EditGoal.cs" />
-    <Compile Include="gtk-gui\Editor.TextEntryDialog.cs" />
     <Compile Include="Events\PopulateStoreEventArgs.cs" />
     <Compile Include="EditorConfiguration.cs" />
     <Compile Include="Plugin.cs" />
@@ -95,6 +88,13 @@
     <Compile Include="UI\Widgets\ViewsNotebook.cs" />
     <Compile Include="UI\Widgets\ConceptsTreeView.cs" />
     <Compile Include="Model\EditorModel.cs" />
+    <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.AddAgent.cs" />
+    <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.AddRefinement.cs" />
+    <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.AddGoal.cs" />
+    <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.AddView.cs" />
+    <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.EditGoal.cs" />
+    <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.TextEntryDialog.cs" />
+    <Compile Include="gtk-gui\KaosEditor.UI.Windows.MainWindow.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

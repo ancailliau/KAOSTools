@@ -2,7 +2,7 @@ using System;
 using Gtk;
 using KaosEditor.Logging;
 
-namespace Editor.Widgets
+namespace KaosEditor.UI.Widgets
 {
 	public class TabLabel : HBox
 	{

@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Editor.Widgets;
 using Gtk;
 using KaosEditor.Model;
 
-namespace Editor.Widgets
+namespace KaosEditor.UI.Widgets
 {
 	public class ViewsNotebook : Notebook
 	{

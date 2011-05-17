@@ -2,7 +2,7 @@ using Cairo;
 using Gtk;
 using KaosEditor.Model;
 
-namespace Editor.Widgets
+namespace KaosEditor.UI.Widgets
 {
 	public class DiagramArea : DrawingArea
 	{

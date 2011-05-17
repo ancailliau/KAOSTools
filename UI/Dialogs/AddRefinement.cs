@@ -1,22 +1,80 @@
+// 
+// AddRefinement.cs
+//  
+// Author:
+//       Antoine Cailliau <antoine.cailliau@uclouvain.be>
+// 
+// Copyright (c) 2011 2011 Université Catholique de Louvain and Antoine Cailliau
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
 using System;
 using System.Collections.Generic;
 using Gtk;
 using KaosEditor.Controllers;
 using KaosEditor.Model;
+using KaosEditor.UI.Windows;
 
-namespace Editor.Dialogs
+namespace KaosEditor.UI.Dialogs
 {
+	
+	/// <summary>
+	/// Represents the dialog to add a new refinement
+	/// </summary>
 	public partial class AddRefinement : Gtk.Dialog
 	{
+	
+		/// <summary>
+		/// The parent window.
+		/// </summary>
+		private MainWindow window;
 		
-		private MainController controller;
+		/// <summary>
+		/// The store for the combobox containing potential children
+		/// </summary>
 		private ListStore childrenComboStore;
+		
+		/// <summary>
+		/// The store for the node view.
+		/// </summary>
 		private ListStore childrenNodeStore;
 		
+		/// <summary>
+		/// The list of refinees.
+		/// </summary>
 		private List<Goal> refinees;
+		
+		/// <summary>
+		/// The parent goal.
+		/// </summary>
 		private Goal parentGoal;
 		
-		public AddRefinement (MainController controller, Goal parent)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KaosEditor.UI.Dialogs.AddRefinement"/> class.
+		/// </summary>
+		/// <param name='window'>
+		/// Window.
+		/// </param>
+		/// <param name='parent'>
+		/// Parent.
+		/// </param>
+		public AddRefinement (MainWindow window, Goal parent)
 		{
 			this.Build ();
 			
@@ -25,7 +83,7 @@ namespace Editor.Dialogs
 			
 			this.Title = string.Format("Refine goal {0}", parent.Name);
 			
-			this.controller = controller;
+			this.window = window;
 			
 			childrenComboStore = new ListStore(typeof(string), typeof(object));
 			childrenComboBox.Model = childrenComboStore;
@@ -46,13 +104,22 @@ namespace Editor.Dialogs
 			childrenComboBox.PackStart(cell, false);
 			childrenComboBox.AddAttribute(cell, "text", 0);
 			
-			foreach (var g in controller.Model.Elements.FindAll(e => e is Goal)) {
+			foreach (var g in window.Model.Elements.FindAll(e => e is Goal)) {
 				if (g != parent) {
 					childrenComboStore.AppendValues(g.Name, g as Goal);
 				}
 			}
 		}
 		
+		/// <summary>
+		/// Handles the add button activated event.
+		/// </summary>
+		/// <param name='sender'>
+		/// Sender.
+		/// </param>
+		/// <param name='e'>
+		/// E.
+		/// </param>
 		protected virtual void OnAddButtonActivated (object sender, System.EventArgs e)
 		{
 			TreeIter iter = new TreeIter();
@@ -68,6 +135,15 @@ namespace Editor.Dialogs
 			}
 		}
 		
+		/// <summary>
+		/// Handles the button ok clicked event.
+		/// </summary>
+		/// <param name='sender'>
+		/// Sender.
+		/// </param>
+		/// <param name='e'>
+		/// E.
+		/// </param>
 		protected virtual void OnButtonOkClicked (object sender, System.EventArgs e)
 		{
 			string name = nameTextView.Buffer.Text.Trim();
@@ -78,17 +154,25 @@ namespace Editor.Dialogs
 				foreach (var refinee in this.refinees) {
 					refinement.Refinees.Add(refinee);
 				}
-				this.controller.Model.Add(refinement);
+				this.window.Model.Add(refinement);
 				
 				this.Destroy();
 			}
 		}
 		
+		/// <summary>
+		/// Handles the button cancel clicked event.
+		/// </summary>
+		/// <param name='sender'>
+		/// Sender.
+		/// </param>
+		/// <param name='e'>
+		/// E.
+		/// </param>
 		protected virtual void OnButtonCancelClicked (object sender, System.EventArgs e)
 		{
 			this.Destroy();
 		}
-		
 	}
 }
 

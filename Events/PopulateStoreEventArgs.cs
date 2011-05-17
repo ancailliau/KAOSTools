@@ -25,7 +25,6 @@
 // THE SOFTWARE.
 
 using System;
-using Editor.Widgets;
 using Gtk;
 
 namespace KaosEditor.Events

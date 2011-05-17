@@ -1,9 +1,9 @@
-using Editor.Windows;
 using Gtk;
 using KaosEditor.Controllers;
 using KaosEditor.Model;
+using KaosEditor.UI.Windows;
 
-namespace Editor
+namespace KaosEditor
 {
 	class MainClass
 	{
