@@ -28,6 +28,8 @@ using System;
 using Cairo;
 using KaosEditor;
 using KaosEditor.Model;
+using Gtk;
+using KaosEditor.UI.Windows;
 
 namespace KaosEditor.UI.Shapes
 {
@@ -35,7 +37,7 @@ namespace KaosEditor.UI.Shapes
 	/// <summary>
 	/// Represents the shape for goals.
 	/// </summary>
-	public class GoalShape : Shape
+	public class GoalShape : Shape, IContextMenu
 	{
 		
 		/// <summary>
@@ -169,6 +171,15 @@ namespace KaosEditor.UI.Shapes
 				return new PointD(Position.X + width / 2, Position.Y);
 				
 			}
+		}
+		
+		public void PopulateContextMenu (Menu menu, MainWindow window)
+		{
+			var deleteItem = new MenuItem("Remove from view");
+			deleteItem.Activated += delegate(object sender, EventArgs e) {
+				window.RemoveFromCurrentView (this);
+			};
+			menu.Add(deleteItem);
 		}
 		
 	}

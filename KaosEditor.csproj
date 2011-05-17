@@ -95,6 +95,7 @@
     <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.EditGoal.cs" />
     <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.TextEntryDialog.cs" />
     <Compile Include="gtk-gui\KaosEditor.UI.Windows.MainWindow.cs" />
+    <Compile Include="UI\IContextMenu.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

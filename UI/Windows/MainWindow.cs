@@ -106,7 +106,7 @@ namespace KaosEditor.UI.Windows {
 		/// </param>
 		private void UpdateWidgets (object sender, EventArgs args)
 		{
-			viewsNotebook.Update();
+			viewsNotebook.RedrawCurrentView();
 			conceptTreeView.Update();
 		}
 		
@@ -134,6 +134,18 @@ namespace KaosEditor.UI.Windows {
 			} else {
 				Logger.Warning ("Ignoring element '{0}'", element.Id);
 			}
+		}
+			
+		/// <summary>
+		/// Removes from current view.
+		/// </summary>
+		/// <param name='element'>
+		/// Element.
+		/// </param>
+		public void RemoveFromCurrentView (IShape element)
+		{
+			viewsNotebook.CurrentView.Shapes.Remove ( element );
+			viewsNotebook.RedrawCurrentView ();
 		}
 		
 		/// <summary>

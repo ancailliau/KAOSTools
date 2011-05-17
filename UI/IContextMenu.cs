@@ -1,5 +1,5 @@
 // 
-// IModelElement.cs
+// IContextMenu.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -23,40 +23,23 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using KaosEditor.UI.Windows;
 
-namespace KaosEditor.Model
+namespace KaosEditor.UI
 {
-	
-	/// <summary>
-	/// Represents an abstract element from the kaos model
-	/// </summary>
-	public interface IModelElement
+	public interface IContextMenu
 	{
 		
 		/// <summary>
-		/// Gets or sets the identifier.
+		/// Populates the context menu.
 		/// </summary>
-		/// <value>
-		/// The identifier.
-		/// </value>
-		string Id {
-			get;
-			set;
-		}
-		
-		/// <summary>
-		/// Gets or sets the name.
-		/// </summary>
-		/// <value>
-		/// The name.
-		/// </value>
-		string Name {
-			get;
-			set;
-		}
+		/// <param name='menu'>
+		/// Menu.
+		/// </param>
+		/// <param name='window'>
+		/// Window.
+		/// </param>
+		void PopulateContextMenu (Gtk.Menu menu, KaosEditor.UI.Windows.MainWindow window) ;
 		
 	}
 }

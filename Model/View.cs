@@ -32,6 +32,8 @@ using KaosEditor.Controllers;
 using KaosEditor.Model;
 using KaosEditor.UI.Shapes;
 using KaosEditor.UI.Dialogs;
+using KaosEditor.UI;
+using KaosEditor.UI.Windows;
 
 namespace KaosEditor.Model
 {
@@ -39,7 +41,7 @@ namespace KaosEditor.Model
 	/// <summary>
 	/// Represents a view.
 	/// </summary>
-	public class View
+	public class View : IContextMenu
 	{
 		/// <summary>
 		/// Handler executed when the view changed
@@ -227,20 +229,17 @@ namespace KaosEditor.Model
 				
 				var selectedPoint = new PointD();
 				var selectedShape = FindShapeAtPosition(args.X, args.Y, out selectedPoint);
-				if (selectedShape != null && selectedShape.RepresentedElement is Goal) {
-					var deleteItem = new MenuItem("Remove from view");
-					deleteItem.Activated += delegate(object sender, EventArgs e) {
-						this.Shapes.Remove(selectedShape);
-						this.DrawingArea.QueueDraw();
-					};
-					var editItem = new MenuItem("Edit");
-					editItem.Activated += delegate(object sender, EventArgs e) {
-						var eg = new EditGoal(this.Controller.Window, selectedShape.RepresentedElement as Goal);
-						eg.Present();
-					};
+				if (selectedShape != null && selectedShape is IContextMenu) {
+					
 					var menu = new Menu();
-					menu.Add(deleteItem);
-					menu.Add(editItem);
+					
+					// Populate menu with items related to the shape
+					((IContextMenu) selectedShape).PopulateContextMenu(menu, this.Controller.Window);
+					
+					// Populate menu with items related to the represented element
+					if (selectedShape.RepresentedElement is IContextMenu) 
+						((IContextMenu) selectedShape.RepresentedElement).PopulateContextMenu(menu, this.Controller.Window);
+					
 					menu.ShowAll();
 					menu.Popup();
 				}
@@ -335,6 +334,32 @@ namespace KaosEditor.Model
 			} else {
 				Console.WriteLine ("oups");
 			}
+		}
+		
+		/// <summary>
+		/// Populates the context menu.
+		/// </summary>
+		/// <param name='menu'>
+		/// Menu.
+		/// </param>
+		/// <param name='window'>
+		/// Window.
+		/// </param>
+		public void PopulateContextMenu (Menu menu, MainWindow window)
+		{
+			var renameView = new MenuItem("Rename...");
+			renameView.Activated += delegate(object sender2, EventArgs e) {
+				var ar = new TextEntryDialog("New name:", this.Name, delegate (string a) {
+					if (a != "") {
+						this.Name = a;
+						window.Model.NotifyChange();
+						return true;
+					}
+					return false;
+				});
+				ar.Present();
+			};
+			menu.Add(renameView);
 		}
 		
 	}

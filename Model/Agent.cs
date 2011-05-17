@@ -25,6 +25,8 @@
 // THE SOFTWARE.
 
 using System;
+using KaosEditor.UI.Windows;
+using KaosEditor.UI;
 
 namespace KaosEditor.Model
 {
@@ -32,7 +34,7 @@ namespace KaosEditor.Model
 	/// <summary>
 	/// Represents an agent for the system.
 	/// </summary>
-	public class Agent : IModelElement
+	public class Agent : IModelElement, IContextMenu
 	{
 		
 		/// <summary>
@@ -75,6 +77,20 @@ namespace KaosEditor.Model
 			: this()
 		{
 			Name = name;
+		}
+		
+		/// <summary>
+		/// Populates the context menu.
+		/// </summary>
+		/// <param name='menu'>
+		/// Menu.
+		/// </param>
+		/// <exception cref='NotImplementedException'>
+		/// Is thrown when a requested operation is not implemented for a given type.
+		/// </exception>
+		public void PopulateContextMenu (Gtk.Menu menu, MainWindow window)
+		{
+			throw new NotImplementedException ();
 		}
 		
 		/// <summary>

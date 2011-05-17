@@ -26,6 +26,8 @@
 
 using System;
 using System.Collections.Generic;
+using KaosEditor.UI.Windows;
+using KaosEditor.UI;
 
 namespace KaosEditor.Model
 {
@@ -33,7 +35,7 @@ namespace KaosEditor.Model
 	/// <summary>
 	/// Represents a refinement.
 	/// </summary>
-	public class Refinement : IModelElement
+	public class Refinement : IModelElement, IContextMenu
 	{
 		
 		/// <summary>
@@ -100,6 +102,20 @@ namespace KaosEditor.Model
 		public void Add (IModelElement element) 
 		{
 			Refinees.Add(element);
+		}
+		
+		/// <summary>
+		/// Populates the given context menu.
+		/// </summary>
+		/// <param name='menu'>
+		/// Menu.
+		/// </param>
+		/// <exception cref='NotImplementedException'>
+		/// Is thrown when a requested operation is not implemented for a given type.
+		/// </exception>
+		public void PopulateContextMenu (Gtk.Menu menu, MainWindow window)
+		{
+			throw new NotImplementedException ();
 		}
 		
 		/// <summary>

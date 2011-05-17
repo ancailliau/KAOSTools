@@ -118,7 +118,7 @@ namespace KaosEditor.UI.Widgets
 		/// <summary>
 		/// Redraw current view.
 		/// </summary>
-		public void Update ()
+		public void RedrawCurrentView ()
 		{
 			if (this.CurrentView != null) {
 				this.CurrentView.Redraw();

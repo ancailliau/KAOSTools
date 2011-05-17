@@ -26,6 +26,10 @@
 
 using System;
 using System.Collections.Generic;
+using Gtk;
+using KaosEditor.UI.Windows;
+using KaosEditor.UI.Dialogs;
+using KaosEditor.UI;
 
 namespace KaosEditor.Model
 {
@@ -33,7 +37,7 @@ namespace KaosEditor.Model
 	/// <summary>
 	/// Represents a goal.
 	/// </summary>
-	public class Goal : IModelElement
+	public class Goal : IModelElement, IContextMenu
 	{
 		
 		/// <summary>
@@ -81,6 +85,43 @@ namespace KaosEditor.Model
 			Refinements = new List<Refinement>();
 			
 			Name = name;
+		}
+		
+		/// <summary>
+		/// Populates the context menu.
+		/// </summary>
+		/// <param name='menu'>
+		/// Menu.
+		/// </param>
+		/// <param name="window">
+		/// Window
+		/// </param>
+		/// <exception cref='NotImplementedException'>
+		/// Is thrown when a requested operation is not implemented for a given type.
+		/// </exception>
+		public void PopulateContextMenu (Menu menu, MainWindow window)
+		{
+			var addToCurrentView = new MenuItem("Add to current view");
+			addToCurrentView.Activated += delegate(object sender2, EventArgs e) {
+				window.AddToCurrentView (this);
+			};
+			menu.Add(addToCurrentView);
+			
+			menu.Add(new SeparatorMenuItem());
+			
+			var refine = new MenuItem("Refine...");
+			refine.Activated += delegate(object sender2, EventArgs e) {
+				var ar = new AddRefinement(window, this);
+				ar.Present();
+			};
+			menu.Add(refine);
+			
+			var edit = new MenuItem("Edit...");
+			edit.Activated += delegate(object sender2, EventArgs e) {
+				var ar = new EditGoal(window, this);
+				ar.Present();
+			};
+			menu.Add(edit);
 		}
 		
 		/// <summary>

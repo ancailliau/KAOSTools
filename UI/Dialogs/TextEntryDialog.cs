@@ -42,7 +42,7 @@ namespace KaosEditor.UI.Dialogs
 		/// <summary>
 		/// The handler.
 		/// </summary>
-		private OnConfirm handler;		
+		private OnConfirm handler;
 		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KaosEditor.UI.Dialogs.TextEntryDialog"/> class.
@@ -54,10 +54,28 @@ namespace KaosEditor.UI.Dialogs
 		/// Handler.
 		/// </param>
 		public TextEntryDialog (string question, OnConfirm handler)
+			: this (question, "", handler)
+		{
+		}
+		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KaosEditor.UI.Dialogs.TextEntryDialog"/> class.
+		/// </summary>
+		/// <param name='question'>
+		/// Question.
+		/// </param>
+		/// <param name='defaultValue'>
+		/// Default value.
+		/// </param>
+		/// <param name='handler'>
+		/// Handler.
+		/// </param>
+		public TextEntryDialog (string question, string defaultValue, OnConfirm handler)
 		{
 			this.Build ();
 			this.handler = handler;
 			questionLabel.Text = question;
+			answerEntry.Text = defaultValue;
 		}
 		
 		/// <summary>

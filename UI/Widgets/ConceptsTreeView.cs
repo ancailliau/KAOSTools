@@ -135,40 +135,9 @@ namespace KaosEditor.UI.Widgets
 				TreeIter iter;
 				if (store.GetIter(out iter, path)) {
 					object o = store.GetValue(iter, 1);
-					if (o != null) {
+					if (o != null & o is IContextMenu) {
 						var m = new Menu();
-						var addToView = new MenuItem("Add to current view");
-						addToView.Activated += delegate(object sender2, EventArgs e) {
-							this.window.AddToCurrentView (o as IModelElement);
-						};
-						m.Add(addToView);
-						var addRefinement = new MenuItem("Refine...");
-						addRefinement.Activated += delegate(object sender2, EventArgs e) {
-							var ar = new AddRefinement(window, o as Goal
-							);
-							ar.Present();
-						};
-						m.Add(addRefinement);
-						var editGoal = new MenuItem("Edit...");
-						editGoal.Activated += delegate(object sender2, EventArgs e) {
-							var ar = new EditGoal(window, o as Goal);
-							ar.Present();
-						};
-						m.Add(editGoal);
-						var renameView = new MenuItem("Rename...");
-						renameView.Activated += delegate(object sender2, EventArgs e) {
-							var ar = new TextEntryDialog("New name:", delegate (string a) {
-								if (a != "") {
-									View v = (o as View);
-									v.Name = a;
-									this.window.Model.NotifyChange();
-									return true;
-								}
-								return false;
-							});
-							ar.Present();
-						};
-						m.Add(renameView);
+						((IContextMenu) o).PopulateContextMenu(m, this.window);
 						m.ShowAll();
 						m.Popup();
 						
