@@ -93,12 +93,6 @@ namespace KaosEditor.UI.Windows {
 			Model.Changed += UpdateWidgets;
 			Model.Views.ViewsChanged += UpdateWidgets;
 			Model.Views.AddedView += UpdateWidgets;
-				
-			conceptTreeView.PopulateList += delegate(object sender, PopulateStoreEventArgs args) {
-					if (PopulateConceptList != null) {
-						PopulateConceptList(sender, args);
-					}
-				};
 		}
 		
 		/// <summary>
@@ -135,10 +129,10 @@ namespace KaosEditor.UI.Windows {
 		/// </param>
 		public void AddToCurrentView (IModelElement element)
 		{
-			if (g != null) {
-				viewsNotebook.CurrentView.Add ( ShapeFactory.Create(g) );
+			if (element != null) {
+				viewsNotebook.CurrentView.Add ( ShapeFactory.Create(element) );
 			} else {
-				Logger.Warning ("Ignoring element '{0}'", g.Id);
+				Logger.Warning ("Ignoring element '{0}'", element.Id);
 			}
 		}
 		
