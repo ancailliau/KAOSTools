@@ -50,6 +50,12 @@ namespace KaosEditor
 			}
 			writer.WriteEndElement();
 			
+			writer.WriteStartElement("agents");
+			foreach (var agent in model.Elements.FindAll(e => e is Agent)) {
+				WriteAgent (writer, agent as Agent);
+			}
+			writer.WriteEndElement();
+			
 			writer.WriteEndElement();
 		}
 		
@@ -72,6 +78,16 @@ namespace KaosEditor
 				}
 				writer.WriteEndElement();
 			}
+			
+			writer.WriteEndElement();
+		}
+		
+		public void WriteAgent (XmlWriter writer, Agent agent)
+		{	
+			writer.WriteStartElement("agent");
+				
+			writer.WriteAttributeString("id", agent.Id);
+			writer.WriteAttributeString("name", agent.Name);
 			
 			writer.WriteEndElement();
 		}

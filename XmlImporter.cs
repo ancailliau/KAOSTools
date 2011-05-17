@@ -17,12 +17,18 @@ namespace KaosEditor
 		public EditorModel Model { get { return model ; } }
 		
 		private List<FutureGoal> futureGoals;
+		private List<FutureAgent> futureAgents;
 		private List<FutureView> futureViews;
 		
 		private class FutureGoal {
 			public string id = "";
 			public string name = "";
 			public List<FutureRefinement> refinements = new List<FutureRefinement>();
+		}
+		
+		private class FutureAgent {
+			public string id = "";
+			public string name = "";
 		}
 		
 		private class FutureRefinement {
@@ -51,6 +57,7 @@ namespace KaosEditor
 			
 			this.futureGoals = new List<FutureGoal>();
 			this.futureViews = new List<FutureView>();
+			this.futureAgents = new List<FutureAgent>();
 			
 			this.controller = controller;
 		}
@@ -110,6 +117,12 @@ namespace KaosEditor
 						}
 					}
 					
+				} else if (reader.IsStartElement ("agent")) {
+					string id = reader.GetAttribute ("id") ?? Guid.NewGuid().ToString();
+					string name = reader.GetAttribute ("name");
+					var futurAgent = new FutureAgent () { id = id, name = name };
+					this.futureAgents.Add (futurAgent);					
+					
 				} else if (reader.IsEndElement ("models")) {
 					break;
 				}
@@ -154,6 +167,10 @@ namespace KaosEditor
 					Id = futureGoal.id
 				};
 				Model.Add(goal);
+			}
+			
+			foreach (var futureAgent in futureAgents) {
+				Model.Add(new Agent (futureAgent.id, futureAgent.name));
 			}
 			
 			foreach (var futureGoal in futureGoals) {
