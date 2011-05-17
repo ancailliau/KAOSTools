@@ -76,7 +76,7 @@ namespace KaosEditor.UI.Dialogs
 				Agent agent = new Agent(name);
 				this.window.Controller.Model.Add (agent);
 				if (context.Initiator is DrawingArea) 
-					this.window.AddToCurrentView (agent);
+					this.window.AddToCurrentView (agent, context.ClickedPoint.X, context.ClickedPoint.Y);
 				this.Destroy();
 			}
 		}

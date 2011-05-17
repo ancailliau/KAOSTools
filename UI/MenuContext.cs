@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using KaosEditor.Controllers;
+using Cairo;
 
 namespace KaosEditor.UI
 {
@@ -41,10 +42,20 @@ namespace KaosEditor.UI
 			set;
 		}
 		
+		public PointD ClickedPoint {
+			get;
+			set;
+		}
+		
 		public MenuContext (object initiator, MainController controller)
+			: this (initiator, controller, new PointD (10, 10))
+		{}
+		
+		public MenuContext (object initiator, MainController controller, PointD clickedPoint)
 		{
 			Initiator = initiator;
 			Controller = controller;
+			ClickedPoint = clickedPoint;
 		}
 		
 	}

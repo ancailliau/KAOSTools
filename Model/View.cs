@@ -267,14 +267,14 @@ namespace KaosEditor.Model
 					
 					var addgoal = new MenuItem ("Add goal...");
 					addgoal.Activated += delegate(object sender, EventArgs e) {
-						var ag = new AddGoal (this.Controller.Window, new MenuContext (this.DrawingArea, this.Controller));
+						var ag = new AddGoal (this.Controller.Window, new MenuContext (this.DrawingArea, this.Controller, new PointD (args.X, args.Y)));
 						ag.Present ();
 					};
 					menu.Add (addgoal);
 					
 					var addagent = new MenuItem ("Add agent...");
 					addagent.Activated += delegate(object sender, EventArgs e) {
-						var ag = new AddAgent (this.Controller.Window, new MenuContext (this.DrawingArea, this.Controller));
+						var ag = new AddAgent (this.Controller.Window, new MenuContext (this.DrawingArea, this.Controller, new PointD (args.X, args.Y)));
 						ag.Present ();
 					};
 					menu.Add (addagent);

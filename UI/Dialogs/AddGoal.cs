@@ -75,7 +75,7 @@ namespace KaosEditor.UI.Dialogs
 				Goal goal = new Goal (name);
 				this.window.Controller.Model.Add(goal);
 				if (context.Initiator is DrawingArea) 
-					this.window.AddToCurrentView (goal);
+					this.window.AddToCurrentView (goal, context.ClickedPoint.X, context.ClickedPoint.Y);
 				this.Destroy();
 			}
 		}
