@@ -27,6 +27,7 @@
 using System;
 using KaosEditor.UI.Windows;
 using KaosEditor.UI;
+using Gtk;
 
 namespace KaosEditor.Model
 {
@@ -104,7 +105,11 @@ namespace KaosEditor.Model
 		/// </exception>
 		public void PopulateContextMenu (Gtk.Menu menu, MainWindow window)
 		{
-			throw new NotImplementedException ();
+			var addToCurrentView = new MenuItem("Add to current view");
+			addToCurrentView.Activated += delegate(object sender2, EventArgs e) {
+				window.AddToCurrentView (this);
+			};
+			menu.Add(addToCurrentView);
 		}
 		
 		/// <summary>

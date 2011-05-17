@@ -54,6 +54,7 @@ namespace KaosEditor.UI.Shapes
 		{
 			RepresentedElement = responsibility;
 			radius = 4;
+			Position = new PointD(10, 10);
 		}
 				
 		/// <summary>
@@ -83,18 +84,22 @@ namespace KaosEditor.UI.Shapes
 			IShape goalShape = view.GetNearestShapeFor(element.Goal, this.Position);
 			IShape agentShape = view.GetNearestShapeFor(element.Agent, this.Position);
 			
-			IArrow arrow = new FilledArrow() {
-				Start = goalShape,
-				End = this,
-				FillColor = "#f70104"
-			};
-			arrow.Display(context, view);
+			if (goalShape != null) {
+				FilledArrow arrow = new FilledArrow() {
+					Start = this,
+					End = goalShape,
+					FillColor = "#f70104"
+				};
+				arrow.Display(context, view);
+			}
 			
-			arrow = new Arrow () {
-				Start = this,
-				End = agentShape
-			};
-			arrow.Display(context, view);
+			if (goalShape != null) {
+				Arrow arrow2 = new Arrow () {
+					Start = agentShape,
+					End = this
+				};
+				arrow2.Display(context, view);
+			}
 			
 			context.Source = oldSource;
 		}

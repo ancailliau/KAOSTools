@@ -134,6 +134,11 @@ namespace KaosEditor.Model
 		/// </param>
 		public void PopulateContextMenu (Menu menu, MainWindow window)
 		{
+			var addToCurrentView = new MenuItem("Add to current view");
+			addToCurrentView.Activated += delegate(object sender2, EventArgs e) {
+				window.AddToCurrentView (this);
+			};
+			menu.Add(addToCurrentView);
 		}
 	}
 }

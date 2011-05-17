@@ -6,6 +6,7 @@ using KaosEditor;
 using KaosEditor.Controllers;
 using KaosEditor.Model;
 using KaosEditor.UI.Shapes;
+using KaosEditor.Logging;
 
 namespace KaosEditor
 {
@@ -204,9 +205,9 @@ namespace KaosEditor
 					}
 				}
 				foreach (var futureResponsibility in futureGoal.futureResponsibilities) {
-					new Responsibility (futureResponsibility.id, futureResponsibility.name,
+					Model.Add(new Responsibility (futureResponsibility.id, futureResponsibility.name,
 						(Goal) Model.Get(futureResponsibility.goalId),
-						(Agent) Model.Get(futureResponsibility.agentId));
+						(Agent) Model.Get(futureResponsibility.agentId)));
 				}
 			}
 			
@@ -218,8 +219,6 @@ namespace KaosEditor
 						element.Position = futureElement.position;
 						element.Depth = futureElement.depth;
 						view.Add(element);
-					} else {
-						Console.WriteLine ("Ignoring " + Model.Get(futureElement.elementId));
 					}
 				}
 				Model.Views.Add(view);

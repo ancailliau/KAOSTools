@@ -56,6 +56,7 @@ namespace KaosEditor.UI.Shapes
 			YPadding = 4;
 			RepresentedElement = refinement;
 			radius = 4;
+			Position = new PointD(10, 10);
 		}
 				
 		/// <summary>

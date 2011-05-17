@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using KaosEditor.Model;
+using KaosEditor.Logging;
 
 namespace KaosEditor.UI.Shapes
 {
@@ -52,7 +53,13 @@ namespace KaosEditor.UI.Shapes
 			} else if (element is Agent) {
 				return new AgentShape(element as Agent);
 			
+			} else if (element is Responsibility) {
+				return new ResponsibilityShape(element as Responsibility);
+				
 			} else {
+				if (element != null)
+					Logger.Warning ("Shape does not exists for element '{0}'", element.GetType());
+				
 				return null;
 			}
 		}
