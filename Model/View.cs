@@ -87,6 +87,11 @@ namespace KaosEditor.Model
 			set;
 		}
 		
+		public IShape ShapeToMove {
+			get;
+			set;
+		}
+		
 		/// <summary>
 		/// Gets or sets the selected point.
 		/// </summary>
@@ -183,13 +188,12 @@ namespace KaosEditor.Model
 		/// </param>
 		public bool OnMotionNotifyEvent (Gdk.EventMotion args)
 		{
-			if (this.SelectedShape != null) {
-				SelectedShape.Position = new PointD(
+			if (this.ShapeToMove != null) {
+				ShapeToMove.Position = new PointD(
 					args.X + SelectedPoint.X, 
 					args.Y + SelectedPoint.Y);
 				
 				this.DrawingArea.Update();
-				
 			}
 			
 			return true;
@@ -203,13 +207,12 @@ namespace KaosEditor.Model
 		/// </param>
 		public bool OnButtonReleaseEvent (Gdk.EventButton args)
 		{
-			if (SelectedShape != null) {
-				SelectedShape.Selected = false;
+			if (ShapeToMove != null) {
 				if (ViewChanged != null) {
 					ViewChanged (this, EventArgs.Empty);
 				}
 			}
-			SelectedShape = null;
+			ShapeToMove = null;
 			
 			int widthPrevious, heightPrevious;
 			this.DrawingArea.GetSizeRequest (out widthPrevious, out heightPrevious);
@@ -233,20 +236,28 @@ namespace KaosEditor.Model
 		/// </param>
 		public bool OnButtonPressEvent (Gdk.EventButton args)
 		{
+			if (SelectedShape != null) {
+				SelectedShape.Selected = false;
+				SelectedShape = null;
+				this.DrawingArea.QueueDraw();
+			}
+			
+			// Find the rectangle to move
+			var selectedPoint = new PointD();
+			SelectedShape = FindShapeAtPosition(args.X, args.Y, out selectedPoint);
+			
 			if (args.Button == 3) { // Right click
 				
-				var selectedPoint = new PointD();
-				var selectedShape = FindShapeAtPosition(args.X, args.Y, out selectedPoint);
-				if (selectedShape != null && selectedShape is IContextMenu) {
+				if (SelectedShape != null && SelectedShape is IContextMenu) {
 					
 					var menu = new Menu();
 					
 					// Populate menu with items related to the shape
-					((IContextMenu) selectedShape).PopulateContextMenu(menu, new MenuContext(this.DrawingArea, this.Controller));
+					((IContextMenu) SelectedShape).PopulateContextMenu(menu, new MenuContext(this.DrawingArea, this.Controller));
 					
 					// Populate menu with items related to the represented element
-					if (selectedShape.RepresentedElement is IContextMenu) 
-						((IContextMenu) selectedShape.RepresentedElement).PopulateContextMenu(menu, new MenuContext(this.DrawingArea, this.Controller));
+					if (SelectedShape.RepresentedElement is IContextMenu) 
+						((IContextMenu) SelectedShape.RepresentedElement).PopulateContextMenu(menu, new MenuContext(this.DrawingArea, this.Controller));
 					
 					menu.ShowAll();
 					menu.Popup();
@@ -254,17 +265,11 @@ namespace KaosEditor.Model
 				
 				
 			} else if (args.Button == 1) { // Left click
-				
-				// Find the rectangle to move
-				var selectedPoint = new PointD();
-				SelectedShape = FindShapeAtPosition(args.X, args.Y, out selectedPoint);
+				ShapeToMove = SelectedShape;
 				SelectedPoint = selectedPoint;
 				
 				if (SelectedShape != null) {
-					SelectedShape.Selected = true;
-					Console.WriteLine ("Selected '{0}' in '{1}'", SelectedShape.RepresentedElement.Id, this.Name);
-				} else {
-					Console.WriteLine ("No element selected");
+					SelectedShape.Selected = true;	
 				}
 			}
 			
