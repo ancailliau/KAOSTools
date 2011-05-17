@@ -1,3 +1,29 @@
+// 
+// MainWindow.cs
+//  
+// Author:
+//       Antoine Cailliau <antoine.cailliau@uclouvain.be>
+// 
+// Copyright (c) 2011 2011 Université Catholique de Louvain and Antoine Cailliau
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
 using System;
 using Gtk;
 using KaosEditor.Controllers;
@@ -5,27 +31,53 @@ using KaosEditor.Events;
 using KaosEditor.Model;
 using KaosEditor.UI.Widgets;
 using KaosEditor.UI.Shapes;
+using KaosEditor.Logging;
 
 namespace KaosEditor.UI.Windows {
-
+	
+	/// <summary>
+	/// Main window.
+	/// </summary>
 	public partial class MainWindow: Gtk.Window
 	{	
-		public delegate void OnPopulateConceptListHandler (object sender, PopulateStoreEventArgs args);
-		public event OnPopulateConceptListHandler PopulateConceptList;
-		
+		/// <summary>
+		/// Gets or sets the model.
+		/// </summary>
+		/// <value>
+		/// The model.
+		/// </value>
 		public EditorModel Model {
 			get;
 			set;
 		}
 		
+		/// <summary>
+		/// Gets or sets the controller.
+		/// </summary>
+		/// <value>
+		/// The controller.
+		/// </value>
 		public MainController Controller {
 			get;
 			set;
 		}
 		
+		/// <summary>
+		/// The views notebook.
+		/// </summary>
 		private ViewsNotebook viewsNotebook;
+		
+		/// <summary>
+		/// The concept tree view.
+		/// </summary>
 		private ConceptsTreeView conceptTreeView;
 		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KaosEditor.UI.Windows.MainWindow"/> class.
+		/// </summary>
+		/// <param name='model'>
+		/// Model.
+		/// </param>
 		public MainWindow (EditorModel model): base (Gtk.WindowType.Toplevel)
 		{
 			this.Model = model;
@@ -49,47 +101,113 @@ namespace KaosEditor.UI.Windows {
 				};
 		}
 		
+		/// <summary>
+		/// Updates the widgets.
+		/// </summary>
+		/// <param name='sender'>
+		/// Sender.
+		/// </param>
+		/// <param name='args'>
+		/// Arguments.
+		/// </param>
 		private void UpdateWidgets (object sender, EventArgs args)
 		{
 			viewsNotebook.Update();
 			conceptTreeView.Update();
 		}
 		
+		/// <summary>
+		/// Displaies the view specified by the given name
+		/// </summary>
+		/// <param name='name'>
+		/// Name of the view to display.
+		/// </param>
 		public void DisplayView (string name)
 		{
 			viewsNotebook.DisplayView (Model.Views.Get(name));
 		}
 			
-		public void AddToCurrentView (IModelElement g)
+		/// <summary>
+		/// Adds given model element to current view.
+		/// </summary>
+		/// <param name='element'>
+		/// Element to add
+		/// </param>
+		public void AddToCurrentView (IModelElement element)
 		{
 			if (g != null) {
 				viewsNotebook.CurrentView.Add ( ShapeFactory.Create(g) );
 			} else {
-				Console.WriteLine ("Ignoring element '{0}'", g.Id);
+				Logger.Warning ("Ignoring element '{0}'", g.Id);
 			}
 		}
 		
+		/// <summary>
+		/// Handles the delete event.
+		/// </summary>
+		/// <param name='sender'>
+		/// Sender.
+		/// </param>
+		/// <param name='a'>
+		/// A.
+		/// </param>
 		protected void OnDeleteEvent (object sender, DeleteEventArgs a)
 		{
 			this.Controller.Quit ();
 			a.RetVal = true;
 		}
 		
+		/// <summary>
+		/// Handles the quit action activated event.
+		/// </summary>
+		/// <param name='sender'>
+		/// Sender.
+		/// </param>
+		/// <param name='e'>
+		/// E.
+		/// </param>
 		protected virtual void OnQuitActionActivated (object sender, System.EventArgs e)
 		{
 			this.Controller.Quit ();
 		}
-			
+		
+		/// <summary>
+		/// Handles the save action activated event.
+		/// </summary>
+		/// <param name='sender'>
+		/// Sender.
+		/// </param>
+		/// <param name='e'>
+		/// E.
+		/// </param>
 		protected virtual void OnSaveActionActivated (object sender, System.EventArgs e)
 		{
 			this.Controller.SaveProject ();
 		}
 		
+		/// <summary>
+		/// Handles the open action activated event.
+		/// </summary>
+		/// <param name='sender'>
+		/// Sender.
+		/// </param>
+		/// <param name='e'>
+		/// E.
+		/// </param>
 		protected virtual void OnOpenActionActivated (object sender, System.EventArgs e)
 		{
 			this.Controller.LoadProject ();
 		}
 		
+		/// <summary>
+		/// Handles the save as action activated event.
+		/// </summary>
+		/// <param name='sender'>
+		/// Sender.
+		/// </param>
+		/// <param name='e'>
+		/// E.
+		/// </param>
 		protected virtual void OnSaveAsActionActivated (object sender, System.EventArgs e)
 		{
 			this.Controller.SaveProjectAs ();
