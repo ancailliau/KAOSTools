@@ -51,6 +51,17 @@ namespace KaosEditor
 		}
 		
 		/// <summary>
+		/// Gets or sets the last opened file
+		/// </summary>
+		/// <value>
+		/// The last opened.
+		/// </value>
+		public string LastOpenedFilename {
+			get;
+			set;
+		}
+		
+		/// <summary>
 		/// Gets or sets the plugins.
 		/// </summary>
 		/// <value>
@@ -68,6 +79,7 @@ namespace KaosEditor
 		{
 			Maximized = false;
 			Plugins = new List<Plugin> ();
+			LastOpenedFilename = "";
 		}
 		
 		/// <summary>

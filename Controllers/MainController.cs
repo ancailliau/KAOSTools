@@ -172,6 +172,7 @@ namespace KaosEditor.Controllers
 			
 			if (dialog.Run() == (int) ResponseType.Accept) {
 				this.currentFilename = dialog.Filename;
+				this.Configuration.LastOpenedFilename = dialog.Filename;
 				SaveProject();
 			}
 			
@@ -188,6 +189,7 @@ namespace KaosEditor.Controllers
 			
 			if (dialog.Run() == (int) ResponseType.Accept) {
 				this.currentFilename = dialog.Filename;
+				this.Configuration.LastOpenedFilename = dialog.Filename;
 				ReloadCurrentProject ();
 				ConnectWatcher ();
 			}
@@ -247,6 +249,12 @@ namespace KaosEditor.Controllers
 				if (File.Exists(configPath)) {
 					this.Configuration = EditorConfiguration.LoadFromFile(configPath);
 				}
+			}
+			
+			if (Configuration.LastOpenedFilename != ""
+				&& File.Exists(Configuration.LastOpenedFilename)) {
+				this.currentFilename = Configuration.LastOpenedFilename;
+				ReloadCurrentProject ();
 			}
 		}
 		
