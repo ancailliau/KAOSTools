@@ -77,10 +77,7 @@ namespace KaosEditor.UI.Shapes
 			context.SetColor("#fffb49");
 			context.FillPreserve();
 			
-			context.SetSourceRGBA(BorderColor.R,
-				BorderColor.G,
-				BorderColor.B,
-				BorderColor.A);
+			context.SetColor ("#000");
 			context.Stroke();
 			
 			// If the refined goal is present as a shape in the view, draw the arrow to.

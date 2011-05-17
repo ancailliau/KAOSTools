@@ -90,10 +90,7 @@ namespace KaosEditor.UI.Shapes
 			context.FillPreserve();
 			
 			var oldLineWidth = context.LineWidth;
-			context.SetSourceRGBA(BorderColor.R,
-				BorderColor.G,
-				BorderColor.B,
-				BorderColor.A);
+			context.SetColor ("#000");
 			if (Selected) {
 				context.LineWidth = 2.5;
 			}
