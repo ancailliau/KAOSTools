@@ -1,5 +1,5 @@
 // 
-// Agent.cs
+// Responsibility.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -23,18 +23,18 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using KaosEditor.UI.Windows;
 using KaosEditor.UI;
+using Gtk;
+using KaosEditor.UI.Windows;
 
 namespace KaosEditor.Model
 {
 	
 	/// <summary>
-	/// Represents an agent for the system.
+	/// Represents a responsibility link.
 	/// </summary>
-	public class Agent : IModelElement, IContextMenu
+	public class Responsibility : IModelElement, IContextMenu
 	{
 		
 		/// <summary>
@@ -60,88 +60,81 @@ namespace KaosEditor.Model
 		}
 		
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KaosEditor.Model.Agent"/> class.
+		/// Gets or sets the goal.
 		/// </summary>
-		public Agent ()
-			: this ("")
-		{
+		/// <value>
+		/// The goal.
+		/// </value>
+		public Goal Goal {
+			get;
+			set;
 		}
 		
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KaosEditor.Model.Agent"/> class.
+		/// Gets or sets the agent.
+		/// </summary>
+		/// <value>
+		/// The agent.
+		/// </value>
+		public Agent Agent {
+			get;
+			set;
+		}
+		
+		/// <summary>
+		/// Initializes a new instance of the <see cref="KaosEditor.Model.Responsibility"/> class.
 		/// </summary>
 		/// <param name='name'>
 		/// Name.
 		/// </param>
-		public Agent (string name) 
-			: this(name, Guid.NewGuid().ToString())
+		/// <param name='goal'>
+		/// Goal.
+		/// </param>
+		/// <param name='agent'>
+		/// Agent.
+		/// </param>
+		public Responsibility (string name, Goal goal, Agent agent)
+			: this (Guid.NewGuid().ToString(), name, goal, agent)
 		{
 		}
 		
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KaosEditor.Model.Agent"/> class.
+		/// Initializes a new instance of the <see cref="KaosEditor.Model.Responsibility"/> class.
 		/// </summary>
-		/// <param name='name'>
-		/// Name.
-		/// </param>
 		/// <param name='id'>
 		/// Identifier.
 		/// </param>
-		public Agent (string name, string id)
+		/// <param name='name'>
+		/// Name.
+		/// </param>
+		/// <param name='goal'>
+		/// Goal.
+		/// </param>
+		/// <param name='agent'>
+		/// Agent.
+		/// </param>
+		public Responsibility (string id, string name, Goal goal, Agent agent)
 		{
-			Name = name;
 			Id = id;
+			Name = name;
+			Goal = goal;
+			Agent = agent;
+			
+			Goal.Responsibilities.Add (this);
 		}
 		
 		/// <summary>
-		/// Populates the context menu.
+		/// Populates the given context menu.
 		/// </summary>
 		/// <param name='menu'>
 		/// Menu.
 		/// </param>
-		/// <exception cref='NotImplementedException'>
-		/// Is thrown when a requested operation is not implemented for a given type.
-		/// </exception>
-		public void PopulateContextMenu (Gtk.Menu menu, MainWindow window)
-		{
-			throw new NotImplementedException ();
-		}
-		
-		/// <summary>
-		/// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="KaosEditor.Model.Agent"/>.
-		/// </summary>
-		/// <param name='obj'>
-		/// The <see cref="System.Object"/> to compare with the current <see cref="KaosEditor.Model.Agent"/>.
+		/// <param name='window'>
+		/// Window.
 		/// </param>
-		/// <returns>
-		/// <c>true</c> if the specified <see cref="System.Object"/> is equal to the current
-		/// <see cref="KaosEditor.Model.Agent"/>; otherwise, <c>false</c>.
-		/// </returns>
-		public override bool Equals (object obj)
+		public void PopulateContextMenu (Menu menu, MainWindow window)
 		{
-			if (obj == null)
-				return false;
-			if (ReferenceEquals (this, obj))
-				return true;
-			if (obj.GetType () != typeof(Agent))
-				return false;
-			Model.Agent other = (Model.Agent)obj;
-			return Id == other.Id;
 		}
-
-		/// <summary>
-		/// Serves as a hash function for a <see cref="KaosEditor.Model.Agent"/> object.
-		/// </summary>
-		/// <returns>
-		/// A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.
-		/// </returns>
-		public override int GetHashCode ()
-		{
-			unchecked {
-				return (Id != null ? Id.GetHashCode () : 0);
-			}
-		}
-
 	}
 }
 

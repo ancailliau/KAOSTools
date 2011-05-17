@@ -79,6 +79,14 @@ namespace KaosEditor
 				writer.WriteEndElement();
 			}
 			
+			foreach (var responsibility in goal.Responsibilities) {
+				writer.WriteStartElement("responsibility");
+				writer.WriteAttributeString("id", responsibility.Id);
+				writer.WriteAttributeString("name", responsibility.Name);
+				writer.WriteAttributeString("agent-id", responsibility.Agent.Id);
+				writer.WriteEndElement();
+			}
+			
 			writer.WriteEndElement();
 		}
 		

@@ -299,7 +299,7 @@ namespace KaosEditor.UI.Widgets
 				store.AppendValues(iter, view.Name, view);
 			}
 			
-			RestoreState2 (expandedNodes);
+			RestoreState (expandedNodes);
 		}
 		
 		/// <summary>
@@ -326,6 +326,11 @@ namespace KaosEditor.UI.Widgets
 						store.AppendValues (iiiter, g2.Id, g2);
 					}
 				}
+			}
+			
+			foreach (var responsibility in g.Responsibilities) {
+				var iiiter = store.AppendValues(iiter, responsibility.Name, responsibility);
+				store.AppendValues (iiiter, responsibility.Agent.Name, responsibility);
 			}
 		}
 	}

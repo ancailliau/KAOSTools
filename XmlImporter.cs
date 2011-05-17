@@ -24,6 +24,7 @@ namespace KaosEditor
 			public string id = "";
 			public string name = "";
 			public List<FutureRefinement> refinements = new List<FutureRefinement>();
+			public List<FutureResponsibility> futureResponsibilities = new List<FutureResponsibility>();
 		}
 		
 		private class FutureAgent {
@@ -35,6 +36,13 @@ namespace KaosEditor
 			public string id = "";
 			public string name = "";
 			public List<string> refinees = new List<string>();
+		}
+		
+		private class FutureResponsibility {
+			public string id = "";
+			public string name = "";
+			public string agentId = "";
+			public string goalId = "";
 		}
 		
 		private class FutureView {
@@ -111,6 +119,15 @@ namespace KaosEditor
 							}
 							futurGoal.refinements.Add(refinement);
 							
+						} else if (reader.IsStartElement("responsibility")) {
+							var responsibility = new FutureResponsibility() {
+								id = reader.GetAttribute("id"),
+								name = reader.GetAttribute("name"),
+								goalId = id,
+								agentId = reader.GetAttribute("agent-id")
+							};
+							futurGoal.futureResponsibilities.Add(responsibility);
+							
 						} else if (reader.IsEndElement("goal")) {
 							break;
 						
@@ -170,7 +187,7 @@ namespace KaosEditor
 			}
 			
 			foreach (var futureAgent in futureAgents) {
-				Model.Add(new Agent (futureAgent.id, futureAgent.name));
+				Model.Add(new Agent (futureAgent.name, futureAgent.id));
 			}
 			
 			foreach (var futureGoal in futureGoals) {
@@ -185,6 +202,11 @@ namespace KaosEditor
 						goal.Refinements.Add(refinement);
 						Model.Add(refinement);
 					}
+				}
+				foreach (var futureResponsibility in futureGoal.futureResponsibilities) {
+					new Responsibility (futureResponsibility.id, futureResponsibility.name,
+						(Goal) Model.Get(futureResponsibility.goalId),
+						(Agent) Model.Get(futureResponsibility.agentId));
 				}
 			}
 			

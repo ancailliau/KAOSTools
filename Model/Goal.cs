@@ -74,6 +74,17 @@ namespace KaosEditor.Model
 		}
 		
 		/// <summary>
+		/// Gets or sets the responsibilities.
+		/// </summary>
+		/// <value>
+		/// The responsibilities.
+		/// </value>
+		public List<Responsibility> Responsibilities {
+			get;
+			set;
+		}
+		
+		/// <summary>
 		/// Initializes a new instance of the <see cref="KaosEditor.Model.Goal"/> class.
 		/// </summary>
 		/// <param name='name'>
@@ -83,6 +94,7 @@ namespace KaosEditor.Model
 		{
 			Id = Guid.NewGuid().ToString();
 			Refinements = new List<Refinement>();
+			Responsibilities = new List<Responsibility>();
 			
 			Name = name;
 		}
@@ -109,6 +121,15 @@ namespace KaosEditor.Model
 			
 			menu.Add(new SeparatorMenuItem());
 			
+			var edit = new MenuItem("Edit...");
+			edit.Activated += delegate(object sender2, EventArgs e) {
+				var ar = new EditGoal(window, this);
+				ar.Present();
+			};
+			menu.Add(edit);
+			
+			menu.Add(new SeparatorMenuItem());
+			
 			var refine = new MenuItem("Refine...");
 			refine.Activated += delegate(object sender2, EventArgs e) {
 				var ar = new AddRefinement(window, this);
@@ -116,12 +137,12 @@ namespace KaosEditor.Model
 			};
 			menu.Add(refine);
 			
-			var edit = new MenuItem("Edit...");
-			edit.Activated += delegate(object sender2, EventArgs e) {
-				var ar = new EditGoal(window, this);
+			var assign = new MenuItem("Assign responsibility...");
+			assign.Activated += delegate(object sender2, EventArgs e) {
+				var ar = new AddResponsibility (window, this);
 				ar.Present();
 			};
-			menu.Add(edit);
+			menu.Add(assign);
 		}
 		
 		/// <summary>
