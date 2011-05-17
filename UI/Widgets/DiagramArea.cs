@@ -153,6 +153,16 @@ namespace KaosEditor.UI.Widgets
 			context.Source = oldSource;
 		}
 		
+		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
+		{
+			this.CurrentView.OnSizeRequested(ref requisition);
+		}
+		
+		public void Update ()
+		{
+			this.QueueDraw();
+		}
+		
 	}
 }
 

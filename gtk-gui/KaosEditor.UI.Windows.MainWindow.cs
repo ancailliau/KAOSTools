@@ -44,7 +44,7 @@ namespace KaosEditor.UI.Windows
 			this.AddAccelGroup (this.UIManager.AccelGroup);
 			this.Name = "KaosEditor.UI.Windows.MainWindow";
 			this.Title = global::Mono.Unix.Catalog.GetString ("A simple Kaos Editor");
-			this.WindowPosition = ((global::Gtk.WindowPosition)(3));
+			this.WindowPosition = ((global::Gtk.WindowPosition)(1));
 			this.DefaultWidth = 800;
 			this.DefaultHeight = 600;
 			// Container child KaosEditor.UI.Windows.MainWindow.Gtk.Container+ContainerChild

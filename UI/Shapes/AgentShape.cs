@@ -58,6 +58,17 @@ namespace KaosEditor.UI.Shapes
 			XPadding = 10;
 			YPadding = 4;
 			RepresentedElement = agent;
+			
+			// Computing size of the shape
+			var pangoLayout = new Pango.Layout(Gdk.PangoHelper.ContextGetForScreen(Gdk.Screen.Default));
+			pangoLayout.SetText(((Agent) this.RepresentedElement).Name);
+			pangoLayout.Alignment = Pango.Alignment.Center;
+			
+			int textWidth, textHeight;
+			pangoLayout.GetPixelSize(out textWidth, out textHeight);
+			
+			width = (int) ( textWidth + 2 * XPadding );
+			height = (int) ( textHeight + 2 * YPadding );
 		}
 		
 		/// <summary>
@@ -160,6 +171,16 @@ namespace KaosEditor.UI.Shapes
 				return new PointD(Position.X + width / 2, Position.Y);
 				
 			}
+		}
+		
+		public override Bounds GetBounds ()
+		{
+			return new Bounds () {
+				MinX = (int) (Position.X - width / 2),
+				MaxX = (int) (Position.X + width / 2),
+				MinY = (int) (Position.Y - height / 2),
+				MaxY = (int) (Position.Y + height / 2)
+			};
 		}
 		
 	}

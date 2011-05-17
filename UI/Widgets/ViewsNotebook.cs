@@ -86,6 +86,7 @@ namespace KaosEditor.UI.Widgets
 			displayedViews.Add(view);
 			
 			// Add the page if the page does not exists
+			var scroll = new ScrolledWindow ();
 			var diagram = new DiagramArea(view);
 			view.DrawingArea = diagram;
 			var tabLabel = new TabLabel (view.Name);
@@ -98,7 +99,8 @@ namespace KaosEditor.UI.Widgets
 					}
 				}
 			};
-			this.AppendPage(diagram, tabLabel);
+			scroll.AddWithViewport(diagram);
+			this.AppendPage(scroll, tabLabel);
 			
 			this.ShowAll();
 		}

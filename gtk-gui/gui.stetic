@@ -283,7 +283,7 @@
     </action-group>
     <property name="MemberName" />
     <property name="Title" translatable="yes">A simple Kaos Editor</property>
-    <property name="WindowPosition">CenterAlways</property>
+    <property name="WindowPosition">Center</property>
     <property name="DefaultWidth">800</property>
     <property name="DefaultHeight">600</property>
     <signal name="DeleteEvent" handler="OnDeleteEvent" />

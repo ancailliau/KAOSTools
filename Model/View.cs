@@ -34,6 +34,7 @@ using KaosEditor.UI.Shapes;
 using KaosEditor.UI.Dialogs;
 using KaosEditor.UI;
 using KaosEditor.UI.Windows;
+using KaosEditor.UI.Widgets;
 
 namespace KaosEditor.Model
 {
@@ -103,7 +104,7 @@ namespace KaosEditor.Model
 		/// <value>
 		/// The drawing area.
 		/// </value>
-		public DrawingArea DrawingArea { 
+		public DiagramArea DrawingArea { 
 			get; 
 			set;
 		}
@@ -187,13 +188,10 @@ namespace KaosEditor.Model
 					args.X + SelectedPoint.X, 
 					args.Y + SelectedPoint.Y);
 				
-				// Redraw
-				args.Window.InvalidateRect(
-					new Gdk.Rectangle(0, 0, 
-						DrawingArea.Allocation.Width, 
-						DrawingArea.Allocation.Height),
-					true);
+				this.DrawingArea.Update();
+				
 			}
+			
 			return true;
 		}
 		
@@ -207,12 +205,22 @@ namespace KaosEditor.Model
 		{
 			if (SelectedShape != null) {
 				SelectedShape.Selected = false;
+				if (ViewChanged != null) {
+					ViewChanged (this, EventArgs.Empty);
+				}
 			}
 			SelectedShape = null;
 			
-			if (ViewChanged != null) {
-				ViewChanged (this, EventArgs.Empty);
+			int widthPrevious, heightPrevious;
+			this.DrawingArea.GetSizeRequest (out widthPrevious, out heightPrevious);
+			
+			int width = 0;
+			int height = 0;
+			foreach (var shape in Shapes) {
+				height = Math.Max(shape.GetBounds().MaxY, height);
+				width = Math.Max(shape.GetBounds().MaxX, width);
 			}
+			this.DrawingArea.SetSizeRequest(width + 50, height + 50);
 			
 			return true;
 		}
@@ -360,6 +368,20 @@ namespace KaosEditor.Model
 				ar.Present();
 			};
 			menu.Add(renameView);
+		}
+		
+		public void OnSizeRequested (ref Gtk.Requisition requisition)
+		{
+			int width = 0;
+			int height = 0;
+			
+			foreach (var shape in Shapes) {
+				height = Math.Max(shape.GetBounds().MaxY, height);
+				width = Math.Max(shape.GetBounds().MaxX, width);
+			}
+			
+			requisition.Width = width + 50;
+			requisition.Height = height + 50;
 		}
 		
 	}

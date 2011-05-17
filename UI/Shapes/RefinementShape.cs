@@ -150,6 +150,16 @@ namespace KaosEditor.UI.Shapes
 			double angle = Math.Atan2(Position.Y - point.Y, Position.X - point.X);
 			return new PointD(Position.X - radius * Math.Cos(angle), Position.Y - radius * Math.Sin(angle));
 		}
+				
+		public override Bounds GetBounds ()
+		{
+			return new Bounds () {
+				MinX = (int) (Position.X - radius),
+				MaxX = (int) (Position.X + radius),
+				MinY = (int) (Position.Y - radius),
+				MaxY = (int) (Position.Y + radius)
+			};
+		}
 		
 	}
 }

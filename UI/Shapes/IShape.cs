@@ -115,6 +115,13 @@ namespace KaosEditor.UI.Shapes
 		/// </param>
 		PointD GetAnchor(PointD point);
 		
+		/// <summary>
+		/// Gets the bounds of the shape
+		/// </summary>
+		/// <returns>
+		/// The bounds.
+		/// </returns>
+		Bounds GetBounds ();
 	}
 }
 

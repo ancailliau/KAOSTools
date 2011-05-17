@@ -61,6 +61,17 @@ namespace KaosEditor.UI.Shapes
 			XPadding = 10;
 			YPadding = 4;
 			RepresentedElement = goal;
+			
+			// Computing size of the shape
+			var pangoLayout = new Pango.Layout(Gdk.PangoHelper.ContextGetForScreen(Gdk.Screen.Default));
+			pangoLayout.SetText(((Goal) this.RepresentedElement).Name);
+			pangoLayout.Alignment = Pango.Alignment.Center;
+			
+			int textWidth, textHeight;
+			pangoLayout.GetPixelSize(out textWidth, out textHeight);
+			
+			width = (int) ( textWidth + 2 * XPadding );
+			height = (int) ( textHeight + 2 * YPadding );
 		}
 		
 		/// <summary>
@@ -180,6 +191,16 @@ namespace KaosEditor.UI.Shapes
 				window.RemoveFromCurrentView (this);
 			};
 			menu.Add(deleteItem);
+		}
+		
+		public override Bounds GetBounds ()
+		{
+			return new Bounds () {
+				MinX = (int) (Position.X - width / 2 - 4),
+				MaxX = (int) (Position.X + width / 2 + 4),
+				MinY = (int) (Position.Y - height / 2),
+				MaxY = (int) (Position.Y + height / 2)
+			};
 		}
 		
 	}
