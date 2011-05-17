@@ -187,29 +187,40 @@ namespace KaosEditor.UI.Widgets
 		private void SaveState (List<string> expandedNodes)
 		{
 			var iter = new TreeIter();
-			int i = 0;
-			Stack<TreeIter> stack = new Stack<TreeIter>();
 			if(store.GetIterFirst(out iter)) {
-				stack.Push(iter);
+				do {
+					SaveStateRecursiveInternal (expandedNodes, iter, "");
+				} while (store.IterNext (ref iter));
 			}
-			while (stack.Count > 0) {
-				iter = stack.Pop();
-				var path = store.GetPath(iter);
-				bool expanded = this.GetRowExpanded(path);
-				if (expanded) {
-					expandedNodes.Add((string) store.GetValue(iter, 0));
-				}
-				
-				if (store.IterHasChild(iter)) {
-					var childIter = new TreeIter();
-					store.IterChildren(out childIter, iter);
-					stack.Push (childIter);
-				}
-				
-				if (store.IterNext(ref iter)) {
-					stack.Push(iter);
-				}
-				i++;
+		}
+		
+		/// <summary>
+		/// Saves the state (internal recursive function).
+		/// </summary>
+		/// <param name='expandedNodes'>
+		/// Expanded nodes.
+		/// </param>
+		/// <param name='iter'>
+		/// Iter.
+		/// </param>
+		/// <param name='prefix'>
+		/// Prefix.
+		/// </param>
+		private void SaveStateRecursiveInternal (List<string> expandedNodes, TreeIter iter, string prefix)
+		{
+			var path = store.GetPath(iter);
+			bool expanded = this.GetRowExpanded(path);
+			string str = ((string)store.GetValue (iter, 0));
+			if (expanded) {
+				expandedNodes.Add(prefix + "." + str);
+			}
+			
+			if (store.IterHasChild(iter)) {
+				var childIter = new TreeIter();
+				store.IterChildren(out childIter, iter);
+				do {
+					SaveStateRecursiveInternal (expandedNodes, childIter, prefix + "." + str);
+				} while (store.IterNext(ref childIter));
 			}
 		}
 		
@@ -221,31 +232,40 @@ namespace KaosEditor.UI.Widgets
 		/// </param>
 		private void RestoreState (List<string> expandedNodes)
 		{
-			this.CollapseAll();
 			var iter = new TreeIter();
-			int i = 0;
-			Stack<TreeIter> stack = new Stack<TreeIter>();
 			if(store.GetIterFirst(out iter)) {
-				stack.Push(iter);
+				do {
+					RestoreStateRecursiveInternal (expandedNodes, iter, "");
+				} while (store.IterNext (ref iter));
 			}
-			while (stack.Count > 0) {
-				iter = stack.Pop();
-				var path = store.GetPath(iter);
-				var str = (string) store.GetValue(iter, 0);
-				if (expandedNodes.Contains(str)) {
-					this.ExpandRow(path, false);
-				}
-				
-				if (store.IterHasChild(iter)) {
-					var childIter = new TreeIter();
-					store.IterChildren(out childIter, iter);
-					stack.Push (childIter);
-				}
-				
-				if (store.IterNext(ref iter)) {
-					stack.Push(iter);
-				}
-				i++;
+		}
+		
+		/// <summary>
+		/// Restores the state (internal recursive function).
+		/// </summary>
+		/// <param name='expandedNodes'>
+		/// Expanded nodes.
+		/// </param>
+		/// <param name='iter'>
+		/// Iter.
+		/// </param>
+		/// <param name='prefix'>
+		/// Prefix.
+		/// </param>
+		private void RestoreStateRecursiveInternal (List<string> expandedNodes, TreeIter iter, string prefix)
+		{
+			var path = store.GetPath(iter);
+			string str = ((string)store.GetValue (iter, 0));
+			if (expandedNodes.Contains(prefix + "." + str)) {
+				this.ExpandRow(path, false);
+			}
+			
+			if (store.IterHasChild(iter)) {
+				var childIter = new TreeIter();
+				store.IterChildren(out childIter, iter);
+				do {
+					RestoreStateRecursiveInternal (expandedNodes, childIter, prefix + "." + str);
+				} while (store.IterNext(ref childIter));
 			}
 		}
 		
@@ -257,6 +277,10 @@ namespace KaosEditor.UI.Widgets
 			// Save expand/collapse state
 			List<string> expandedNodes = new List<string>();
 			SaveState(expandedNodes);
+			
+			foreach (var str in expandedNodes) {
+				Console.WriteLine (str);
+			}
 			
 			store.Clear();
 			
@@ -275,7 +299,7 @@ namespace KaosEditor.UI.Widgets
 				store.AppendValues(iter, view.Name, view);
 			}
 			
-			RestoreState(expandedNodes);
+			RestoreState2 (expandedNodes);
 		}
 		
 		/// <summary>

@@ -210,6 +210,7 @@ namespace KaosEditor.Controllers
 			importer.Import();
 			
 			this.Model.Set(importer.Model);
+			Window.Title = string.Format("KAOS Editor - " + this.currentFilename);
 		}
 		
 		#endregion
