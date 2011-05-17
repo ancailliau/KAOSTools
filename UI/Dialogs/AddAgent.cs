@@ -52,6 +52,7 @@ namespace KaosEditor.UI.Dialogs
 		/// Parent window.
 		/// </param>
 		public AddAgent  (MainWindow window, MenuContext context)
+			: base ("Add new agent", window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
 			this.DestroyWithParent = true;

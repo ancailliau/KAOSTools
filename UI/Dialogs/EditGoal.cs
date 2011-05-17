@@ -28,6 +28,7 @@ using System;
 using KaosEditor.Controllers;
 using KaosEditor.Model;
 using KaosEditor.UI.Windows;
+using Gtk;
 
 namespace KaosEditor.UI.Dialogs
 {
@@ -49,9 +50,10 @@ namespace KaosEditor.UI.Dialogs
 		private Goal goal;
 		
 		public EditGoal (MainWindow window, Goal goal)
+			: base (string.Format("Edit {0}", goal.Name), 
+				window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
-			this.Title = string.Format("Edit {0}", goal.Name);
 			
 			this.window = window;
 			this.goal = goal;

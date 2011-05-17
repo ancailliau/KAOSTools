@@ -53,6 +53,7 @@ namespace KaosEditor.UI.Dialogs
 		/// Parent window.
 		/// </param>
 		public AddGoal (MainWindow window, MenuContext context)
+			: base ("Add new goal", window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
 			this.window = window;
@@ -74,8 +75,9 @@ namespace KaosEditor.UI.Dialogs
 			if (name != null && name != "") {
 				Goal goal = new Goal (name);
 				this.window.Controller.Model.Add(goal);
-				if (context.Initiator is DrawingArea) 
+				if (context.Initiator is DrawingArea) {
 					this.window.AddToCurrentView (goal, context.ClickedPoint.X, context.ClickedPoint.Y);
+				}
 				this.Destroy();
 			}
 		}

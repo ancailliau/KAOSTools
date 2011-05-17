@@ -26,6 +26,7 @@
 
 using KaosEditor.Model;
 using KaosEditor.Logging;
+using Cairo;
 
 namespace KaosEditor.UI.Shapes
 {
@@ -36,25 +37,30 @@ namespace KaosEditor.UI.Shapes
 	public static class ShapeFactory
 	{
 		
+		public static IShape Create(IModelElement element)
+		{
+			return Create(element, 0, 0);
+		}
+		
 		/// <summary>
 		/// Create the shape for the specified element.
 		/// </summary>
 		/// <param name='element'>
 		/// Element.
 		/// </param>
-		public static IShape Create(IModelElement element)
+		public static IShape Create(IModelElement element, double x, double y)
 		{
 			if (element is Goal) {
-				return new GoalShape(element as Goal);
+				return new GoalShape(element as Goal) { Position = new PointD(x,y) };
 			
 			} else if (element is Refinement) {
-				return new RefinementShape(element as Refinement);
+				return new RefinementShape(element as Refinement) { Position = new PointD(x,y) };
 			
 			} else if (element is Agent) {
-				return new AgentShape(element as Agent);
+				return new AgentShape(element as Agent) { Position = new PointD(x,y) };
 			
 			} else if (element is Responsibility) {
-				return new ResponsibilityShape(element as Responsibility);
+				return new ResponsibilityShape(element as Responsibility) { Position = new PointD(x,y) };
 				
 			} else {
 				if (element != null)

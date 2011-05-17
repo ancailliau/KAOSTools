@@ -145,9 +145,7 @@ namespace KaosEditor.UI.Windows {
 		public void AddToCurrentView (IModelElement element, double x, double y)
 		{
 			if (element != null) {
-				IShape iShape = ShapeFactory.Create (element);
-				iShape.Position.X = x;
-				iShape.Position.Y = y;
+				IShape iShape = ShapeFactory.Create (element, x, y);
 				viewsNotebook.CurrentView.Add ( iShape );
 			} else {
 				Logger.Warning ("Ignoring element '{0}'", element.Id);

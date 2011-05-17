@@ -27,6 +27,7 @@
 using System;
 using KaosEditor.Controllers;
 using KaosEditor.UI.Windows;
+using Gtk;
 
 namespace KaosEditor.UI.Dialogs
 {
@@ -49,6 +50,8 @@ namespace KaosEditor.UI.Dialogs
 		/// Parent window.
 		/// </param>
 		public AddView (MainWindow window)
+			: base ("Add view...", 
+				window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
 			this.window = window;

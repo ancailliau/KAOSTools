@@ -75,13 +75,13 @@ namespace KaosEditor.UI.Dialogs
 		/// Parent.
 		/// </param>
 		public AddRefinement (MainWindow window, Goal parent)
+			: base (string.Format("Refine goal {0}", parent.Name), 
+				window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
 			
 			this.parentGoal = parent;
 			this.refinees = new List<Goal> ();
-			
-			this.Title = string.Format("Refine goal {0}", parent.Name);
 			
 			this.window = window;
 			

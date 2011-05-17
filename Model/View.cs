@@ -246,6 +246,9 @@ namespace KaosEditor.Model
 			var selectedPoint = new PointD();
 			SelectedShape = FindShapeAtPosition(args.X, args.Y, out selectedPoint);
 			
+			double x = args.X;
+			double y = args.Y;
+			
 			if (args.Button == 3) { // Right click
 				
 				if (SelectedShape != null) {
@@ -267,14 +270,15 @@ namespace KaosEditor.Model
 					
 					var addgoal = new MenuItem ("Add goal...");
 					addgoal.Activated += delegate(object sender, EventArgs e) {
-						var ag = new AddGoal (this.Controller.Window, new MenuContext (this.DrawingArea, this.Controller, new PointD (args.X, args.Y)));
+						Console.WriteLine (x + "," + y);
+						var ag = new AddGoal (this.Controller.Window, new MenuContext (this.DrawingArea, this.Controller, new PointD (x,y)));
 						ag.Present ();
 					};
 					menu.Add (addgoal);
 					
 					var addagent = new MenuItem ("Add agent...");
 					addagent.Activated += delegate(object sender, EventArgs e) {
-						var ag = new AddAgent (this.Controller.Window, new MenuContext (this.DrawingArea, this.Controller, new PointD (args.X, args.Y)));
+						var ag = new AddAgent (this.Controller.Window, new MenuContext (this.DrawingArea, this.Controller, new PointD (x,y)));
 						ag.Present ();
 					};
 					menu.Add (addagent);
@@ -382,7 +386,7 @@ namespace KaosEditor.Model
 		{
 			var renameView = new MenuItem("Rename...");
 			renameView.Activated += delegate(object sender2, EventArgs e) {
-				var ar = new TextEntryDialog("New name:", this.Name, delegate (string a) {
+				var ar = new TextEntryDialog(this.Controller.Window, "New name:", this.Name, delegate (string a) {
 					if (a != "") {
 						this.Name = a;
 						context.Controller.Window.Model.NotifyChange();

@@ -25,6 +25,8 @@
 // THE SOFTWARE.
 
 using System;
+using Gtk;
+using KaosEditor.UI.Windows;
 
 namespace KaosEditor.UI.Dialogs
 {
@@ -53,8 +55,8 @@ namespace KaosEditor.UI.Dialogs
 		/// <param name='handler'>
 		/// Handler.
 		/// </param>
-		public TextEntryDialog (string question, OnConfirm handler)
-			: this (question, "", handler)
+		public TextEntryDialog (MainWindow window, string question, OnConfirm handler)
+			: this (window, question, "", handler)
 		{
 		}
 		
@@ -70,7 +72,8 @@ namespace KaosEditor.UI.Dialogs
 		/// <param name='handler'>
 		/// Handler.
 		/// </param>
-		public TextEntryDialog (string question, string defaultValue, OnConfirm handler)
+		public TextEntryDialog (MainWindow window, string question, string defaultValue, OnConfirm handler)
+			: base (question, window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
 			this.handler = handler;
