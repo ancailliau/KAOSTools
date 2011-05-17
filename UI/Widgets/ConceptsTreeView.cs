@@ -306,8 +306,6 @@ namespace KaosEditor.UI.Widgets
 				store.AppendValues(iter, view.Name, view);
 			}
 			
-			NotifyPopulateList();
-			
 			RestoreState(expandedNodes);
 		}
 		
