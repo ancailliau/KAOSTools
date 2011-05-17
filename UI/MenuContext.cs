@@ -1,5 +1,5 @@
 // 
-// IContextMenu.cs
+// MenuContext.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -24,22 +24,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using KaosEditor.Controllers;
 
 namespace KaosEditor.UI
 {
-	public interface IContextMenu
+	public class MenuContext
 	{
 		
-		/// <summary>
-		/// Populates the context menu.
-		/// </summary>
-		/// <param name='menu'>
-		/// Menu.
-		/// </param>
-		/// <param name='window'>
-		/// Window.
-		/// </param>
-		void PopulateContextMenu (Gtk.Menu menu, MenuContext context) ;
+		public MainController Controller {
+			get;
+			set;
+		}
+		
+		public object Initiator {
+			get;
+			set;
+		}
+		
+		public MenuContext (object initiator, MainController controller)
+		{
+			Initiator = initiator;
+			Controller = controller;
+		}
 		
 	}
 }

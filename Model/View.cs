@@ -242,11 +242,11 @@ namespace KaosEditor.Model
 					var menu = new Menu();
 					
 					// Populate menu with items related to the shape
-					((IContextMenu) selectedShape).PopulateContextMenu(menu, this.Controller.Window);
+					((IContextMenu) selectedShape).PopulateContextMenu(menu, new MenuContext(this.DrawingArea, this.Controller));
 					
 					// Populate menu with items related to the represented element
 					if (selectedShape.RepresentedElement is IContextMenu) 
-						((IContextMenu) selectedShape.RepresentedElement).PopulateContextMenu(menu, this.Controller.Window);
+						((IContextMenu) selectedShape.RepresentedElement).PopulateContextMenu(menu, new MenuContext(this.DrawingArea, this.Controller));
 					
 					menu.ShowAll();
 					menu.Popup();
@@ -353,14 +353,14 @@ namespace KaosEditor.Model
 		/// <param name='window'>
 		/// Window.
 		/// </param>
-		public void PopulateContextMenu (Menu menu, MainWindow window)
+		public void PopulateContextMenu (Menu menu, MenuContext context)
 		{
 			var renameView = new MenuItem("Rename...");
 			renameView.Activated += delegate(object sender2, EventArgs e) {
 				var ar = new TextEntryDialog("New name:", this.Name, delegate (string a) {
 					if (a != "") {
 						this.Name = a;
-						window.Model.NotifyChange();
+						context.Controller.Window.Model.NotifyChange();
 						return true;
 					}
 					return false;

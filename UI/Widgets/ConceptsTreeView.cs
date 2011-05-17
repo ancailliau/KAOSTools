@@ -137,7 +137,7 @@ namespace KaosEditor.UI.Widgets
 					object o = store.GetValue(iter, 1);
 					if (o != null & o is IContextMenu) {
 						var m = new Menu();
-						((IContextMenu) o).PopulateContextMenu(m, this.window);
+						((IContextMenu) o).PopulateContextMenu(m, new MenuContext(this, this.window.Controller));
 						m.ShowAll();
 						m.Popup();
 						

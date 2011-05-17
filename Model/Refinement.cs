@@ -114,11 +114,11 @@ namespace KaosEditor.Model
 		/// <exception cref='NotImplementedException'>
 		/// Is thrown when a requested operation is not implemented for a given type.
 		/// </exception>
-		public void PopulateContextMenu (Gtk.Menu menu, MainWindow window)
+		public void PopulateContextMenu (Gtk.Menu menu, MenuContext context)
 		{
 			var addToCurrentView = new MenuItem("Add to current view");
 			addToCurrentView.Activated += delegate(object sender2, EventArgs e) {
-				window.AddToCurrentView (this);
+				context.Controller.Window.AddToCurrentView (this);
 			};
 			menu.Add(addToCurrentView);
 		}

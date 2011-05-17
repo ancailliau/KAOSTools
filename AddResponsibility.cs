@@ -27,6 +27,7 @@ using System;
 using KaosEditor.Model;
 using Gtk;
 using KaosEditor.UI.Windows;
+using KaosEditor.UI;
 
 namespace KaosEditor
 {
@@ -53,16 +54,22 @@ namespace KaosEditor
 		private ListStore store;
 		
 		/// <summary>
+		/// The context.
+		/// </summary>
+		private MenuContext context;
+		
+		/// <summary>
 		/// Initializes a new instance of the <see cref="KaosEditor.AddResponsibility"/> class.
 		/// </summary>
 		/// <param name='goal'>
 		/// Goal.
 		/// </param>
-		public AddResponsibility (MainWindow window, Goal goal)
+		public AddResponsibility (MainWindow window, Goal goal, MenuContext context)
 		{
 			this.Build ();
 			this.goal = goal;
 			this.window = window;
+			this.context = context;
 			
 			this.Title = "Add responsibility for " + goal.Name;
 			nameEntry.Text = "Responsibility assignement";
@@ -92,7 +99,14 @@ namespace KaosEditor
 				var iter = new TreeIter();
 				if (agentComboBox.GetActiveIter(out iter)) {
 					var agent = (Agent) store.GetValue(iter, 1);
-					new Responsibility (nameEntry.Text, goal, agent);
+					var resp = new Responsibility (nameEntry.Text, goal, agent);
+					
+					Console.WriteLine (this.context.Initiator.GetType());
+					if (this.context.Initiator is DrawingArea) {
+						this.window.AddToCurrentView (resp);
+						this.window.AddToCurrentView (agent);
+					}
+					
 					this.window.Model.NotifyChange();
 					
 					this.Destroy ();

@@ -111,11 +111,11 @@ namespace KaosEditor.Model
 		/// <exception cref='NotImplementedException'>
 		/// Is thrown when a requested operation is not implemented for a given type.
 		/// </exception>
-		public void PopulateContextMenu (Menu menu, MainWindow window)
+		public void PopulateContextMenu (Menu menu, MenuContext context)
 		{
 			var addToCurrentView = new MenuItem("Add to current view");
 			addToCurrentView.Activated += delegate(object sender2, EventArgs e) {
-				window.AddToCurrentView (this);
+				context.Controller.Window.AddToCurrentView (this);
 			};
 			menu.Add(addToCurrentView);
 			
@@ -123,7 +123,7 @@ namespace KaosEditor.Model
 			
 			var edit = new MenuItem("Edit...");
 			edit.Activated += delegate(object sender2, EventArgs e) {
-				var ar = new EditGoal(window, this);
+				var ar = new EditGoal(context.Controller.Window, this);
 				ar.Present();
 			};
 			menu.Add(edit);
@@ -132,14 +132,14 @@ namespace KaosEditor.Model
 			
 			var refine = new MenuItem("Refine...");
 			refine.Activated += delegate(object sender2, EventArgs e) {
-				var ar = new AddRefinement(window, this);
+				var ar = new AddRefinement(context.Controller.Window, this);
 				ar.Present();
 			};
 			menu.Add(refine);
 			
 			var assign = new MenuItem("Assign responsibility...");
 			assign.Activated += delegate(object sender2, EventArgs e) {
-				var ar = new AddResponsibility (window, this);
+				var ar = new AddResponsibility (context.Controller.Window, this, context);
 				ar.Present();
 			};
 			menu.Add(assign);

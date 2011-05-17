@@ -184,11 +184,11 @@ namespace KaosEditor.UI.Shapes
 			}
 		}
 		
-		public void PopulateContextMenu (Menu menu, MainWindow window)
+		public void PopulateContextMenu (Menu menu, MenuContext context)
 		{
 			var deleteItem = new MenuItem("Remove from view");
 			deleteItem.Activated += delegate(object sender, EventArgs e) {
-				window.RemoveFromCurrentView (this);
+				context.Controller.Window.RemoveFromCurrentView (this);
 			};
 			menu.Add(deleteItem);
 		}
