@@ -159,6 +159,17 @@ namespace KaosEditor.UI.Windows {
 		}
 		
 		/// <summary>
+		/// Determines whether this instance has current view.
+		/// </summary>
+		/// <returns>
+		/// <c>true</c> if this instance has current view; otherwise, <c>false</c>.
+		/// </returns>
+		public bool HasCurrentView ()
+		{
+			return viewsNotebook.CurrentView != null;
+		}
+		
+		/// <summary>
 		/// Handles the delete event.
 		/// </summary>
 		/// <param name='sender'>

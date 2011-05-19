@@ -102,6 +102,7 @@
     <Compile Include="gtk-gui\KaosEditor.AddResponsibility.cs" />
     <Compile Include="UI\Bounds.cs" />
     <Compile Include="UI\MenuContext.cs" />
+    <Compile Include="Model\KAOSElement.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -37,30 +37,8 @@ namespace KaosEditor.Model
 	/// <summary>
 	/// Represents a goal.
 	/// </summary>
-	public class Goal : IModelElement, IContextMenu
+	public class Goal : KAOSElement
 	{
-		
-		/// <summary>
-		/// Gets or sets the identifier.
-		/// </summary>
-		/// <value>
-		/// The identifier.
-		/// </value>
-		public string Id {
-			get;
-			set;
-		}
-		
-		/// <summary>
-		/// Gets or sets the name.
-		/// </summary>
-		/// <value>
-		/// The name.
-		/// </value>
-		public string Name {
-			get;
-			set;
-		}
 		
 		/// <summary>
 		/// Gets or sets the refinements.
@@ -113,11 +91,7 @@ namespace KaosEditor.Model
 		/// </exception>
 		public void PopulateContextMenu (Menu menu, MenuContext context)
 		{
-			var addToCurrentView = new MenuItem("Add to current view");
-			addToCurrentView.Activated += delegate(object sender2, EventArgs e) {
-				context.Controller.Window.AddToCurrentView (this);
-			};
-			menu.Add(addToCurrentView);
+			base.PopulateContextMenu(menu, context);
 			
 			menu.Add(new SeparatorMenuItem());
 			

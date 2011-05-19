@@ -35,30 +35,8 @@ namespace KaosEditor.Model
 	/// <summary>
 	/// Represents an agent for the system.
 	/// </summary>
-	public class Agent : IModelElement, IContextMenu
+	public class Agent : KAOSElement
 	{
-		
-		/// <summary>
-		/// Gets or sets the identifier.
-		/// </summary>
-		/// <value>
-		/// The identifier.
-		/// </value>
-		public string Id {
-			get;
-			set;
-		}
-		
-		/// <summary>
-		/// Gets or sets the name.
-		/// </summary>
-		/// <value>
-		/// The name.
-		/// </value>
-		public string Name {
-			get;
-			set;
-		}
 		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KaosEditor.Model.Agent"/> class.
@@ -105,13 +83,7 @@ namespace KaosEditor.Model
 		/// </exception>
 		public void PopulateContextMenu (Gtk.Menu menu, MenuContext context)
 		{
-			if (!(context.Initiator is DrawingArea)) {
-				var addToCurrentView = new MenuItem("Add to current view");
-				addToCurrentView.Activated += delegate(object sender2, EventArgs e) {
-					context.Controller.Window.AddToCurrentView (this);
-				};
-				menu.Add(addToCurrentView);
-			}
+			base.PopulateContextMenu(menu, context);
 		}
 		
 		/// <summary>
