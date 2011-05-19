@@ -72,24 +72,38 @@ namespace KaosEditor.UI.Windows {
 		/// </summary>
 		private ConceptsTreeView conceptTreeView;
 		
+		private ViewList viewList;
+		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KaosEditor.UI.Windows.MainWindow"/> class.
 		/// </summary>
 		/// <param name='model'>
 		/// Model.
 		/// </param>
-		public MainWindow (EditorModel model): base (Gtk.WindowType.Toplevel)
+		public MainWindow (EditorModel model, MainController controller): base (Gtk.WindowType.Toplevel)
 		{
+			this.Controller = controller;
 			this.Model = model;
 			Build ();
 			
 			viewsNotebook = new ViewsNotebook();
 			conceptTreeView = new ConceptsTreeView (this);
 			
+			var notebookModelView = new Notebook ();
+			notebookModelView.TabPos = PositionType.Bottom;
+			var modelLabel = new Label ("Model");
+			var viewLabel = new Label ("Views");
+			
+			viewList = new ViewList(this.Controller);
+			var scroll2 = new ScrolledWindow ();
+			scroll2.Add (viewList);
+			notebookModelView.AppendPage (scroll2, viewLabel);
+			
 			var scroll = new ScrolledWindow ();
 			scroll.Add (conceptTreeView);
+			notebookModelView.AppendPage (scroll, modelLabel);
 			
-			hpaned1.Add1 (scroll);
+			hpaned1.Add1 (notebookModelView);
 			hpaned1.Add2 (viewsNotebook);
 			hpaned1.ShowAll();
 					
@@ -111,6 +125,7 @@ namespace KaosEditor.UI.Windows {
 		{
 			viewsNotebook.RedrawCurrentView();
 			conceptTreeView.Update();
+			viewList.UpdateList();
 		}
 		
 		/// <summary>

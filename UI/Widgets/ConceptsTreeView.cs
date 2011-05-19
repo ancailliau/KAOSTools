@@ -294,11 +294,6 @@ namespace KaosEditor.UI.Widgets
 				store.AppendValues(iter, element.Name, element);
 			}
 			
-			iter = store.AppendValues("Views", null);
-			foreach (var view in this.window.Model.Views) {
-				store.AppendValues(iter, view.Name, view);
-			}
-			
 			RestoreState (expandedNodes);
 		}
 		

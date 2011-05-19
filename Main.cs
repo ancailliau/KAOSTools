@@ -12,9 +12,10 @@ namespace KaosEditor
 			Application.Init ();
 			
 			var model = new EditorModel ();
-			var views = new Views (null);
-			var window = new MainWindow (model);
-			var controller = new MainController(model, window);
+			var controller = new MainController(model);
+			var window = new MainWindow (model, controller);
+			controller.Window = window;
+			
 			controller.Show ();
 			
 			Application.Run ();

@@ -87,15 +87,13 @@ namespace KaosEditor.Controllers
 		/// <param name='window'>
 		/// Window.
 		/// </param>
-		public MainController (EditorModel model, MainWindow window)
+		public MainController (EditorModel model)
 		{
 			// Save the model and window
 			this.Model = model;
-			this.Window = window;
 			
 			// Bind to the current controller
 			this.Model.Controller = this;
-			this.Window.Controller = this;
 			
 			// Finish loading application
 			this.LoadConfiguration();
@@ -107,6 +105,12 @@ namespace KaosEditor.Controllers
 		/// </summary>
 		public void Show ()
 		{
+			if (Configuration.LastOpenedFilename != ""
+				&& File.Exists(Configuration.LastOpenedFilename)) {
+				this.currentFilename = Configuration.LastOpenedFilename;
+				ReloadCurrentProject ();
+			}
+			
 			if (this.Configuration.Maximized) {
 				Window.Maximize();
 			}
@@ -250,12 +254,6 @@ namespace KaosEditor.Controllers
 				if (File.Exists(configPath)) {
 					this.Configuration = EditorConfiguration.LoadFromFile(configPath);
 				}
-			}
-			
-			if (Configuration.LastOpenedFilename != ""
-				&& File.Exists(Configuration.LastOpenedFilename)) {
-				this.currentFilename = Configuration.LastOpenedFilename;
-				ReloadCurrentProject ();
 			}
 		}
 		
