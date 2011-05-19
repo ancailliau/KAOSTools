@@ -89,6 +89,25 @@ namespace KaosEditor.UI.Widgets
 			
 			this.AppendColumn (column);
 			
+			this.RowActivated += OnRowActivated;
+		}
+		
+		/// <summary>
+		/// Handles the event row activated.
+		/// </summary>
+		/// <param name='o'>
+		/// O.
+		/// </param>
+		/// <param name='args'>
+		/// Arguments.
+		/// </param>
+		void OnRowActivated (object o, RowActivatedArgs args)
+		{
+			TreeIter iter;
+			store.GetIter(out iter, args.Path);
+			
+			string name = (string) store.GetValue(iter, 0);
+			this.controller.Window.DisplayView(name);
 		}
 		
 	}
