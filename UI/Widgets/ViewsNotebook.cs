@@ -66,6 +66,7 @@ namespace KaosEditor.UI.Widgets
 		public ViewsNotebook ()
 		{
 			displayedViews = new List<View>();
+			this.Scrollable = true;
 		}
 		
 		/// <summary>
