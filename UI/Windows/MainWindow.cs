@@ -242,19 +242,18 @@ namespace KaosEditor.UI.Windows {
 			this.Controller.LoadProject ();
 		}
 		
-		/// <summary>
-		/// Handles the save as action activated event.
-		/// </summary>
-		/// <param name='sender'>
-		/// Sender.
-		/// </param>
-		/// <param name='e'>
-		/// E.
-		/// </param>
+		protected virtual void OnRevertToSavedActionActivated (object sender, System.EventArgs e)
+		{
+			this.Controller.ReloadCurrentProject ();
+		}
+		
 		protected virtual void OnSaveAsActionActivated (object sender, System.EventArgs e)
 		{
 			this.Controller.SaveProjectAs ();
 		}
-			
+		
+		
+		
+		
 	}
 }

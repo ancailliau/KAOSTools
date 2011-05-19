@@ -11,8 +11,13 @@ namespace KaosEditor.UI.Windows
 		private global::Gtk.Action saveAction;
 		private global::Gtk.Action openAction;
 		private global::Gtk.Action saveAsAction;
+		private global::Gtk.Action openAction1;
+		private global::Gtk.Action saveAction1;
+		private global::Gtk.Action saveAsAction1;
+		private global::Gtk.Action revertToSavedAction;
 		private global::Gtk.VBox mainVBox;
 		private global::Gtk.MenuBar mainMenu;
+		private global::Gtk.Toolbar toolbar1;
 		private global::Gtk.HPaned hpaned1;
 		private global::Gtk.Statusbar statusBar;
 
@@ -40,6 +45,14 @@ namespace KaosEditor.UI.Windows
 			this.saveAsAction = new global::Gtk.Action ("saveAsAction", global::Mono.Unix.Catalog.GetString ("Save _As"), null, "gtk-save-as");
 			this.saveAsAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Save _As");
 			w1.Add (this.saveAsAction, null);
+			this.openAction1 = new global::Gtk.Action ("openAction1", null, null, "gtk-open");
+			w1.Add (this.openAction1, null);
+			this.saveAction1 = new global::Gtk.Action ("saveAction1", null, null, "gtk-save");
+			w1.Add (this.saveAction1, null);
+			this.saveAsAction1 = new global::Gtk.Action ("saveAsAction1", null, null, "gtk-save-as");
+			w1.Add (this.saveAsAction1, null);
+			this.revertToSavedAction = new global::Gtk.Action ("revertToSavedAction", null, null, "gtk-revert-to-saved");
+			w1.Add (this.revertToSavedAction, null);
 			this.UIManager.InsertActionGroup (w1, 0);
 			this.AddAccelGroup (this.UIManager.AccelGroup);
 			this.Name = "KaosEditor.UI.Windows.MainWindow";
@@ -60,23 +73,35 @@ namespace KaosEditor.UI.Windows
 			w2.Expand = false;
 			w2.Fill = false;
 			// Container child mainVBox.Gtk.Box+BoxChild
+			this.UIManager.AddUiFromString ("<ui><toolbar name='toolbar1'><toolitem name='openAction1' action='openAction1'/><separator/><toolitem name='saveAction1' action='saveAction1'/><toolitem name='saveAsAction1' action='saveAsAction1'/><toolitem name='revertToSavedAction' action='revertToSavedAction'/></toolbar></ui>");
+			this.toolbar1 = ((global::Gtk.Toolbar)(this.UIManager.GetWidget ("/toolbar1")));
+			this.toolbar1.Name = "toolbar1";
+			this.toolbar1.ShowArrow = false;
+			this.toolbar1.ToolbarStyle = ((global::Gtk.ToolbarStyle)(0));
+			this.toolbar1.IconSize = ((global::Gtk.IconSize)(2));
+			this.mainVBox.Add (this.toolbar1);
+			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.mainVBox [this.toolbar1]));
+			w3.Position = 1;
+			w3.Expand = false;
+			w3.Fill = false;
+			// Container child mainVBox.Gtk.Box+BoxChild
 			this.hpaned1 = new global::Gtk.HPaned ();
 			this.hpaned1.CanFocus = true;
 			this.hpaned1.Name = "hpaned1";
 			this.hpaned1.Position = 250;
 			this.hpaned1.BorderWidth = ((uint)(6));
 			this.mainVBox.Add (this.hpaned1);
-			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.mainVBox [this.hpaned1]));
-			w3.Position = 1;
+			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.mainVBox [this.hpaned1]));
+			w4.Position = 2;
 			// Container child mainVBox.Gtk.Box+BoxChild
 			this.statusBar = new global::Gtk.Statusbar ();
 			this.statusBar.Name = "statusBar";
 			this.statusBar.Spacing = 6;
 			this.mainVBox.Add (this.statusBar);
-			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.mainVBox [this.statusBar]));
-			w4.Position = 2;
-			w4.Expand = false;
-			w4.Fill = false;
+			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.mainVBox [this.statusBar]));
+			w5.Position = 3;
+			w5.Expand = false;
+			w5.Fill = false;
 			this.Add (this.mainVBox);
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
@@ -87,6 +112,10 @@ namespace KaosEditor.UI.Windows
 			this.saveAction.Activated += new global::System.EventHandler (this.OnSaveActionActivated);
 			this.openAction.Activated += new global::System.EventHandler (this.OnOpenActionActivated);
 			this.saveAsAction.Activated += new global::System.EventHandler (this.OnSaveAsActionActivated);
+			this.openAction1.Activated += new global::System.EventHandler (this.OnOpenActionActivated);
+			this.saveAction1.Activated += new global::System.EventHandler (this.OnSaveActionActivated);
+			this.saveAsAction1.Activated += new global::System.EventHandler (this.OnSaveAsActionActivated);
+			this.revertToSavedAction.Activated += new global::System.EventHandler (this.OnRevertToSavedActionActivated);
 		}
 	}
 }
