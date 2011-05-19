@@ -31,6 +31,7 @@ using KaosEditor.Events;
 using KaosEditor.Model;
 using KaosEditor.UI.Windows;
 using KaosEditor.UI.Dialogs;
+using KaosEditor.Logging;
 
 namespace KaosEditor.UI.Widgets
 {
@@ -40,6 +41,23 @@ namespace KaosEditor.UI.Widgets
 	/// </summary>
 	public class ConceptsTreeView : TreeView
 	{
+		
+		private static Gdk.Pixbuf goalPixbuf;
+		private static Gdk.Pixbuf refinementPixbuf;
+		private static Gdk.Pixbuf agentPixbuf;
+		private static Gdk.Pixbuf responsibilityPixbuf;
+		
+		static ConceptsTreeView () {
+			try {
+				goalPixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Goal.png");
+				refinementPixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Refinement.png");
+				agentPixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Agent.png");
+				responsibilityPixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Responsibility.png");
+				
+			} catch (Exception e) {
+				Logger.Warning ("Cannot load images from ressources", e);
+			}
+		}
 		
 		/// <summary>
 		/// The window.
@@ -69,11 +87,14 @@ namespace KaosEditor.UI.Widgets
 			this.HeadersVisible = false;
 			
 			var cell = new CellRendererText();
+			var iconCell = new CellRendererPixbuf();
+			column.PackStart(iconCell, false);
 			column.PackStart(cell, true);
-			column.AddAttribute(cell, "text", 0);
+			column.AddAttribute (iconCell, "pixbuf", 2);
+			column.AddAttribute (cell, "text", 0);
 			
 			// Bind the model
-			store = new TreeStore(typeof(string), typeof(object));
+			store = new TreeStore(typeof(string), typeof(object), typeof(Gdk.Pixbuf));
 			this.Model = store;
 			
 			// Bind the events
@@ -284,14 +305,14 @@ namespace KaosEditor.UI.Widgets
 			
 			store.Clear();
 			
-			var iter = store.AppendValues("Goals", null);
+			var iter = store.AppendValues("Goals", null, goalPixbuf);
 			foreach (var element in this.window.Model.Elements.FindAll(e => e is Goal)) {
 				AddGoalElement (iter, element as Goal, expandedNodes);
 			}
 			
-			iter = store.AppendValues("Agents", null);
+			iter = store.AppendValues("Agents", null, agentPixbuf);
 			foreach (var element in this.window.Model.Elements.FindAll(e => e is Agent)) {
-				store.AppendValues(iter, element.Name, element);
+				store.AppendValues(iter, element.Name, element, agentPixbuf);
 			}
 			
 			RestoreState (expandedNodes);
@@ -311,21 +332,19 @@ namespace KaosEditor.UI.Widgets
 		/// </param>
 		private void AddGoalElement (TreeIter iter, Goal g, List<string> expandedNodes)
 		{
-			var iiter = store.AppendValues(iter, g.Name.Replace("\n", ""), g);
+			var iiter = store.AppendValues(iter, g.Name.Replace("\n", ""), g, goalPixbuf);
 			foreach (var refinement in g.Refinements) {
-				var iiiter = store.AppendValues(iiter, refinement.Name, refinement);
+				var iiiter = store.AppendValues(iiter, refinement.Name, refinement, refinementPixbuf);
 				foreach (var g2 in refinement.Refinees) {
 					if (g2 is Goal) {
 						AddGoalElement (iiiter, g2 as Goal, expandedNodes);
-					} else {
-						store.AppendValues (iiiter, g2.Id, g2);
 					}
 				}
 			}
 			
 			foreach (var responsibility in g.Responsibilities) {
-				var iiiter = store.AppendValues(iiter, responsibility.Name, responsibility);
-				store.AppendValues (iiiter, responsibility.Agent.Name, responsibility);
+				var iiiter = store.AppendValues(iiter, responsibility.Name, responsibility, responsibilityPixbuf);
+				store.AppendValues (iiiter, responsibility.Agent.Name, responsibility, agentPixbuf);
 			}
 		}
 	}

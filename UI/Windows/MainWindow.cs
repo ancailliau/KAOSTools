@@ -97,11 +97,12 @@ namespace KaosEditor.UI.Windows {
 			viewList = new ViewList(this.Controller);
 			var scroll2 = new ScrolledWindow ();
 			scroll2.Add (viewList);
-			notebookModelView.AppendPage (scroll2, viewLabel);
 			
 			var scroll = new ScrolledWindow ();
 			scroll.Add (conceptTreeView);
+			
 			notebookModelView.AppendPage (scroll, modelLabel);
+			notebookModelView.AppendPage (scroll2, viewLabel);
 			
 			hpaned1.Add1 (notebookModelView);
 			hpaned1.Add2 (viewsNotebook);

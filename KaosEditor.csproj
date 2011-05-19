@@ -49,6 +49,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Images\Close.png" />
     <EmbeddedResource Include="Images\View.png" />
+    <EmbeddedResource Include="Images\Refinement.png" />
+    <EmbeddedResource Include="Images\Responsibility.png" />
+    <EmbeddedResource Include="Images\Goal.png" />
+    <EmbeddedResource Include="Images\Agent.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gtk-gui\generated.cs" />

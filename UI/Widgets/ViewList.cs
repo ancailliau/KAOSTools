@@ -84,8 +84,8 @@ namespace KaosEditor.UI.Widgets
 			var textCellRenderer = new CellRendererText ();
 			column.PackStart (textCellRenderer, true);
 			
-			column.SetAttributes (iconCellRenderer, "pixbuf", 2);
-			column.SetAttributes (textCellRenderer, "text", 0);
+			column.AddAttribute (iconCellRenderer, "pixbuf", 2);
+			column.AddAttribute (textCellRenderer, "text", 0);
 			
 			this.AppendColumn (column);
 			
