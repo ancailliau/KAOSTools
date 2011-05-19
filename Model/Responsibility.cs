@@ -27,6 +27,8 @@ using System;
 using KaosEditor.UI;
 using Gtk;
 using KaosEditor.UI.Windows;
+using KaosEditor.UI.Shapes;
+using Cairo;
 
 namespace KaosEditor.Model
 {
@@ -139,6 +141,22 @@ namespace KaosEditor.Model
 				context.Controller.Window.AddToCurrentView (this);
 			};
 			menu.Add(addToCurrentView);
+			
+			menu.Add(new SeparatorMenuItem());
+			
+			var delete = new MenuItem("Delete");
+			delete.Activated += delegate(object sender2, EventArgs e) {
+				foreach (var view in context.Controller.Model.Views) {
+					IShape shape = null;
+					while ((shape = view.GetNearestShapeFor(this, new PointD())) != null) {
+						view.Shapes.Remove(shape);
+					}
+				}
+				this.Goal.Responsibilities.Remove (this);
+				context.Controller.Model.Elements.Remove (this);
+				context.Controller.Model.NotifyChange ();
+			};
+			menu.Add(delete);
 		}
 	}
 }

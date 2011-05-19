@@ -93,7 +93,7 @@ namespace KaosEditor.UI.Shapes
 				arrow.Display(context, view);
 			}
 			
-			if (goalShape != null) {
+			if (agentShape != null) {
 				Arrow arrow2 = new Arrow () {
 					Start = agentShape,
 					End = this

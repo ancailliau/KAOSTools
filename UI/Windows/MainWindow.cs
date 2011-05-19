@@ -86,7 +86,10 @@ namespace KaosEditor.UI.Windows {
 			viewsNotebook = new ViewsNotebook();
 			conceptTreeView = new ConceptsTreeView (this);
 			
-			hpaned1.Add1 (conceptTreeView);
+			var scroll = new ScrolledWindow ();
+			scroll.Add (conceptTreeView);
+			
+			hpaned1.Add1 (scroll);
 			hpaned1.Add2 (viewsNotebook);
 			hpaned1.ShowAll();
 					

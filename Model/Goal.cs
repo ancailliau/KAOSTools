@@ -132,7 +132,8 @@ namespace KaosEditor.Model
 			
 			var refine = new MenuItem("Refine...");
 			refine.Activated += delegate(object sender2, EventArgs e) {
-				var ar = new AddRefinement(context.Controller.Window, this);
+				var ar = new AddRefinement(context.Controller.Window, this,
+					new MenuContext(context.Initiator, context.Controller, context.ClickedPoint));
 				ar.Present();
 			};
 			menu.Add(refine);

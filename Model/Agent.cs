@@ -105,11 +105,13 @@ namespace KaosEditor.Model
 		/// </exception>
 		public void PopulateContextMenu (Gtk.Menu menu, MenuContext context)
 		{
-			var addToCurrentView = new MenuItem("Add to current view");
-			addToCurrentView.Activated += delegate(object sender2, EventArgs e) {
-				context.Controller.Window.AddToCurrentView (this);
-			};
-			menu.Add(addToCurrentView);
+			if (!(context.Initiator is DrawingArea)) {
+				var addToCurrentView = new MenuItem("Add to current view");
+				addToCurrentView.Activated += delegate(object sender2, EventArgs e) {
+					context.Controller.Window.AddToCurrentView (this);
+				};
+				menu.Add(addToCurrentView);
+			}
 		}
 		
 		/// <summary>

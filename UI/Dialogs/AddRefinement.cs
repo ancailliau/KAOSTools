@@ -65,6 +65,8 @@ namespace KaosEditor.UI.Dialogs
 		/// </summary>
 		private Goal parentGoal;
 		
+		private MenuContext context;
+		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KaosEditor.UI.Dialogs.AddRefinement"/> class.
 		/// </summary>
@@ -74,11 +76,13 @@ namespace KaosEditor.UI.Dialogs
 		/// <param name='parent'>
 		/// Parent.
 		/// </param>
-		public AddRefinement (MainWindow window, Goal parent)
+		public AddRefinement (MainWindow window, Goal parent, MenuContext context)
 			: base (string.Format("Refine goal {0}", parent.Name), 
 				window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
+			
+			this.context = context;
 			
 			this.parentGoal = parent;
 			this.refinees = new List<Goal> ();
@@ -101,12 +105,12 @@ namespace KaosEditor.UI.Dialogs
 			childrenNodeView.HeadersVisible = false;
 			
 			cell = new CellRendererText();
-			childrenComboBox.PackStart(cell, false);
+			// childrenComboBox.PackStart(cell, false);
 			childrenComboBox.AddAttribute(cell, "text", 0);
 			
 			foreach (var g in window.Model.Elements.FindAll(e => e is Goal)) {
 				if (g != parent) {
-					childrenComboStore.AppendValues(g.Name, g as Goal);
+					childrenComboStore.AppendValues(g.Name.Replace ("\n", ""), g as Goal);
 				}
 			}
 		}
@@ -131,7 +135,7 @@ namespace KaosEditor.UI.Dialogs
 				var element = (Goal) childrenComboStore.GetValue(iter, 1);
 				
 				this.refinees.Add(element);
-				childrenNodeStore.AppendValues(element.Name, element);
+				childrenNodeStore.AppendValues(element.Name.Replace ("\n", ""), element);
 			}
 		}
 		
@@ -155,6 +159,10 @@ namespace KaosEditor.UI.Dialogs
 					refinement.Refinees.Add(refinee);
 				}
 				this.window.Model.Add(refinement);
+				
+				if (this.context.Initiator is DrawingArea) {
+					this.window.AddToCurrentView (refinement, context.ClickedPoint.X, context.ClickedPoint.Y);
+				}
 				
 				this.Destroy();
 			}

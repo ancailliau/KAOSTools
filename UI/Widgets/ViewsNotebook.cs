@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using Gtk;
 using KaosEditor.Model;
+using KaosEditor.UI.Shapes;
 
 namespace KaosEditor.UI.Widgets
 {

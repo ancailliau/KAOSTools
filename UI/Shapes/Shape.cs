@@ -1,5 +1,7 @@
 using Cairo;
 using KaosEditor.Model;
+using Gtk;
+using System;
 
 namespace KaosEditor.UI.Shapes
 {
@@ -7,7 +9,7 @@ namespace KaosEditor.UI.Shapes
 	/// <summary>
 	/// Represents an abstract shape.
 	/// </summary>
-	public abstract class Shape : IShape
+	public abstract class Shape : IShape, IContextMenu
 	{
 		
 		/// <summary>
@@ -130,6 +132,17 @@ namespace KaosEditor.UI.Shapes
 		/// The bounds.
 		/// </returns>
 		public abstract Bounds GetBounds ();
+
+
+		public void PopulateContextMenu (Gtk.Menu menu, MenuContext context)
+		{
+			var deleteItem = new MenuItem("Remove from view");
+			deleteItem.Activated += delegate(object sender, EventArgs e) {
+				context.Controller.Window.RemoveFromCurrentView (this);
+			};
+			menu.Add(deleteItem);
+		}
+
 	}
 }
 
