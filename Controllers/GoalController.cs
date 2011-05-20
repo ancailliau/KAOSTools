@@ -90,7 +90,7 @@ namespace KaosEditor.Controllers
 			var dialog = new AddRefinement (this.controller.Window, goal);
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok) {
-					var newRefinement = new Refinement (dialog.RefinementName, goal);
+					var newRefinement = new Refinement (goal);
 					foreach (var element in dialog.Refinees) {
 						newRefinement.Add(element);
 					}
@@ -107,7 +107,6 @@ namespace KaosEditor.Controllers
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.ResponsibleAgent != null) {
 					var newResponsibility = new Responsibility (
-						dialog.ResponsibilityName, 
 						goal, dialog.ResponsibleAgent);
 					this.controller.Model.Add (newResponsibility);
 				}

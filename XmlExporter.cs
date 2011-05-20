@@ -76,7 +76,6 @@ namespace KaosEditor
 			foreach (var refinement in refinements) {
 				writer.WriteStartElement("refinement");
 				writer.WriteAttributeString("id", refinement.Id);
-				writer.WriteAttributeString("name", refinement.Name);
 				
 				foreach (var child in refinement.Refinees) {
 					writer.WriteStartElement("refinee");
@@ -93,7 +92,6 @@ namespace KaosEditor
 			foreach (var responsibility in responsibilities) {
 				writer.WriteStartElement("responsibility");
 				writer.WriteAttributeString("id", responsibility.Id);
-				writer.WriteAttributeString("name", responsibility.Name);
 				writer.WriteAttributeString("agent-id", responsibility.Agent.Id);
 				writer.WriteEndElement();
 			}

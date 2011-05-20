@@ -160,45 +160,7 @@ namespace KaosEditor.UI.Widgets
 				TreeIter iter;
 				if (store.GetIter(out iter, path)) {
 					object o = store.GetValue(iter, 1);
-					if (o != null & o is IContextMenu) {
-						var m = new Menu();
-						((IContextMenu) o).PopulateContextMenu(m, new MenuContext(this, this.window.Controller));
-						m.ShowAll();
-						m.Popup();
-						
-					} else if (((string) store.GetValue(iter, 0)) == "Goals") {
-						var m = new Menu();
-						var addGoal = new MenuItem("Add goal");
-						addGoal.Activated += delegate(object sender2, EventArgs e) {
-							var ag = new AddGoalDialog(window, null);
-							ag.Present();
-						};
-						m.Add(addGoal);
-						m.ShowAll();
-						m.Popup();
-						
-					} else if (((string) store.GetValue(iter, 0)) == "Views") {
-						var m = new Menu();
-						var addView = new MenuItem("Add view");
-						addView.Activated += delegate(object sender2, EventArgs e) {
-							var ag = new AddView(window);
-							ag.Present();
-						};
-						m.Add(addView);
-						m.ShowAll();
-						m.Popup();
 					
-					} else if (((string) store.GetValue(iter, 0)) == "Agents") {
-						var m = new Menu();
-						var addAgent = new MenuItem("Add agent");
-						addAgent.Activated += delegate(object sender2, EventArgs e) {
-							var ag = new AddAgent(window, new MenuContext (this, this.window.Controller));
-							ag.Present();
-						};
-						m.Add(addAgent);
-						m.ShowAll();
-						m.Popup();
-					}
 				}
 			}
 		}
@@ -312,7 +274,9 @@ namespace KaosEditor.UI.Widgets
 			}
 			
 			iter = store.AppendValues("Agents", null, agentPixbuf);
-			List<IModelElement> agents = this.window.Model.Elements.FindAll (e => e is Agent);
+			var agents = from e in this.window.Model.Elements
+				where e is Agent select (Agent) e;
+			
 			foreach (var element in agents) {
 				store.AppendValues(iter, element.Name, element, agentPixbuf);
 			}
@@ -334,16 +298,25 @@ namespace KaosEditor.UI.Widgets
 		/// </param>
 		private void AddGoalElement (TreeIter iter, Goal g, List<string> expandedNodes)
 		{
-			var iiter = store.AppendValues(iter, g.Name.Replace("\n", ""), g, goalPixbuf);
+			var iiter = store.AppendValues(iter, g.Name, g, goalPixbuf);
 			var refinements = from e in this.window.Controller.Model.Elements
 				where e is Refinement && ((Refinement) e).Refined.Equals (g)
 				select (Refinement) e;
 				
-			foreach (var refinement in refinements) {
-				var iiiter = store.AppendValues(iiter, refinement.Name, refinement, refinementPixbuf);
-				foreach (var g2 in refinement.Refinees) {
+			if (refinements.Count() > 1) {
+				int i = 1;
+				foreach (var refinement in refinements) {
+					var iiiter = store.AppendValues(iiter, string.Format ("Alternative {0}", i), refinement, refinementPixbuf);
+					foreach (var g2 in refinement.Refinees) {
+						if (g2 is Goal) {
+							AddGoalElement (iiiter, g2 as Goal, expandedNodes);
+						}
+					}
+				}
+			} else if (refinements.Count() > 0) {
+				foreach (var g2 in refinements.First().Refinees) {
 					if (g2 is Goal) {
-						AddGoalElement (iiiter, g2 as Goal, expandedNodes);
+						AddGoalElement (iiter, g2 as Goal, expandedNodes);
 					}
 				}
 			}
@@ -351,10 +324,15 @@ namespace KaosEditor.UI.Widgets
 			var responsibilities = from e in this.window.Model.Elements 
 				where e is Responsibility && ((Responsibility) e).Goal.Equals (g) 
 					select (Responsibility) e;
-			
-			foreach (var responsibility in responsibilities) {
-				var iiiter = store.AppendValues(iiter, responsibility.Name, responsibility, responsibilityPixbuf);
-				store.AppendValues (iiiter, responsibility.Agent.Name, responsibility, agentPixbuf);
+			if (responsibilities.Count() > 1) {
+				int i = 1;
+				foreach (var responsibility in responsibilities) {
+					var iiiter = store.AppendValues(iiter, string.Format("Alternative '{0}'", i), responsibility, responsibilityPixbuf);
+					store.AppendValues (iiiter, responsibility.Agent.Name, responsibility, agentPixbuf);
+				}
+			} else if (responsibilities.Count() > 0) {
+				var responsibility = responsibilities.First();
+				store.AppendValues (iiter, responsibility.Agent.Name, responsibility, agentPixbuf);
 			}
 		}
 	}

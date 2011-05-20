@@ -73,8 +73,8 @@ namespace KaosEditor.Model
 		/// <param name='agent'>
 		/// Agent.
 		/// </param>
-		public Responsibility (string name, Goal goal, Agent agent)
-			: this (Guid.NewGuid().ToString(), name, goal, agent)
+		public Responsibility (Goal goal, Agent agent)
+			: this (Guid.NewGuid().ToString(), goal, agent)
 		{
 		}
 		
@@ -93,10 +93,9 @@ namespace KaosEditor.Model
 		/// <param name='agent'>
 		/// Agent.
 		/// </param>
-		public Responsibility (string id, string name, Goal goal, Agent agent)
+		public Responsibility (string id, Goal goal, Agent agent)
 		{
 			Id = id;
-			Name = name;
 			Goal = goal;
 			Agent = agent;
 		}

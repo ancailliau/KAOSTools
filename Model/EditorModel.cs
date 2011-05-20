@@ -121,7 +121,7 @@ namespace KaosEditor.Model
 			} else {
 				throw new ArgumentException (
 					string.Format ("Removed element '{0}' is not in the model", 
-						element.Name));
+						element));
 			}
 		}
 		
@@ -134,7 +134,7 @@ namespace KaosEditor.Model
 			} else {
 				throw new ArgumentException (
 					string.Format ("Modified element '{0}' is not in the model", 
-						element.Name));
+						element));
 			}
 		}
 		

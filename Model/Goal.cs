@@ -39,6 +39,11 @@ namespace KaosEditor.Model
 	/// </summary>
 	public class Goal : KAOSElement
 	{
+		public string Name {
+			get;
+			set;
+		}
+		
 		public string Definition {
 			get;
 			set;

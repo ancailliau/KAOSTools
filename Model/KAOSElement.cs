@@ -33,17 +33,10 @@ namespace KaosEditor.Model
 {
 	public abstract class KAOSElement : IModelElement
 	{
-	
 		public string Id {
 			get;
 			set;
 		}
-		
-		public string Name {
-			get;
-			set;
-		}
-		
 	}
 }
 

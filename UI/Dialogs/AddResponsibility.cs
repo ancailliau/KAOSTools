@@ -29,7 +29,7 @@ using Gtk;
 using KaosEditor.UI.Windows;
 using KaosEditor.UI;
 
-namespace KaosEditor
+namespace KaosEditor.UI.Dialogs
 {
 	
 	/// <summary>
@@ -53,12 +53,6 @@ namespace KaosEditor
 			}
 		}
 		
-		public string ResponsibilityName {
-			get {
-				return nameEntry.Text;
-			}
-		}
-		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KaosEditor.AddResponsibility"/> class.
 		/// </summary>
@@ -69,7 +63,6 @@ namespace KaosEditor
 			: base ("Assign responsibility", window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
-			nameEntry.Text = "Responsibility assignement";
 			
 			store = new ListStore(typeof (string), typeof (Agent));
 			agentComboBox.Model = store;

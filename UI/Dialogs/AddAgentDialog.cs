@@ -35,65 +35,21 @@ namespace KaosEditor.UI.Dialogs
 	/// <summary>
 	/// Represents the dialog to add a new agent to the system
 	/// </summary>
-	public partial class AddAgent : Gtk.Dialog
+	public partial class AddAgentDialog : Gtk.Dialog
 	{
 		
-		/// <summary>
-		/// The parent window.
-		/// </summary>
-		private MainWindow window;
+		public string AgentName {
+			get { return nameEntry.Text.Trim(); }
+		}
 		
-		private MenuContext context;
-		
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KaosEditor.UI.Dialogs.AddAgent"/> class.
-		/// </summary>
-		/// <param name='window'>
-		/// Parent window.
-		/// </param>
-		public AddAgent  (MainWindow window, MenuContext context)
+		public AddAgentDialog  (MainWindow window, Agent agent)
 			: base ("Add new agent", window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
-			this.DestroyWithParent = true;
 			
-			this.window = window;
-			this.context = context; 
-		}
-		
-		/// <summary>
-		/// Handles the button ok clicked event.
-		/// </summary>
-		/// <param name='sender'>
-		/// Sender.
-		/// </param>
-		/// <param name='e'>
-		/// E.
-		/// </param>
-		protected virtual void OnButtonOkClicked (object sender, System.EventArgs e)
-		{
-			string name = nameEntry.Text;
-			if (name != null && name != "") {
-				Agent agent = new Agent(name);
-				this.window.Controller.Model.Add (agent);
-				if (context.Initiator is DrawingArea) 
-					this.window.AddToCurrentView (agent, context.ClickedPoint.X, context.ClickedPoint.Y);
-				this.Destroy();
+			if (agent != null) {
+				nameEntry.Text = agent.Name;
 			}
-		}
-		
-		/// <summary>
-		/// Handles the button cancel clicked event.
-		/// </summary>
-		/// <param name='sender'>
-		/// Sender.
-		/// </param>
-		/// <param name='e'>
-		/// E.
-		/// </param>
-		protected virtual void OnButtonCancelClicked (object sender, System.EventArgs e)
-		{
-			this.Destroy ();
 		}
 	}
 }

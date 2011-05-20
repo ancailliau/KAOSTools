@@ -58,10 +58,6 @@ namespace KaosEditor.UI.Dialogs
 			private set;
 		}
 		
-		public string RefinementName {
-			get { return nameTextView.Buffer.Text; }
-		}
-		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KaosEditor.UI.Dialogs.AddRefinement"/> class.
 		/// </summary>
@@ -99,7 +95,7 @@ namespace KaosEditor.UI.Dialogs
 			
 			foreach (var g in window.Model.Elements.FindAll(e => e is Goal)) {
 				if (g != parent) {
-					childrenComboStore.AppendValues(g.Name, g as Goal);
+					childrenComboStore.AppendValues(((Goal) g).Name, g as Goal);
 				}
 			}
 			

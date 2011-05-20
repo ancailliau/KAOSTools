@@ -82,7 +82,6 @@
     <Compile Include="UI\Arrows\IArrow.cs" />
     <Compile Include="UI\Arrows\Arrow.cs" />
     <Compile Include="UI\Dialogs\AddView.cs" />
-    <Compile Include="UI\Dialogs\AddAgent.cs" />
     <Compile Include="UI\Dialogs\AddRefinement.cs" />
     <Compile Include="UI\Dialogs\TextEntryDialog.cs" />
     <Compile Include="UI\Windows\MainWindow.cs" />
@@ -91,7 +90,6 @@
     <Compile Include="UI\Widgets\ViewsNotebook.cs" />
     <Compile Include="UI\Widgets\ConceptsTreeView.cs" />
     <Compile Include="Model\EditorModel.cs" />
-    <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.AddAgent.cs" />
     <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.AddRefinement.cs" />
     <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.AddView.cs" />
     <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.TextEntryDialog.cs" />
@@ -99,8 +97,6 @@
     <Compile Include="UI\IContextMenu.cs" />
     <Compile Include="Model\Responsibility.cs" />
     <Compile Include="UI\Shapes\ResponsibilityShape.cs" />
-    <Compile Include="AddResponsibility.cs" />
-    <Compile Include="gtk-gui\KaosEditor.AddResponsibility.cs" />
     <Compile Include="UI\Bounds.cs" />
     <Compile Include="UI\MenuContext.cs" />
     <Compile Include="Model\KAOSElement.cs" />
@@ -108,6 +104,11 @@
     <Compile Include="Controllers\GoalController.cs" />
     <Compile Include="UI\Dialogs\AddGoalDialog.cs" />
     <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.AddGoalDialog.cs" />
+    <Compile Include="UI\Dialogs\AddResponsibility.cs" />
+    <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.AddResponsibility.cs" />
+    <Compile Include="Controllers\AgentController.cs" />
+    <Compile Include="UI\Dialogs\AddAgentDialog.cs" />
+    <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.AddAgentDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -64,13 +64,11 @@ namespace KaosEditor.Model
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Model.Refinement"/> class.
 		/// </summary>
-		public Refinement (string name, IModelElement parent)
+		public Refinement (IModelElement parent)
 		{
 			Id = Guid.NewGuid().ToString();
 			Refinees = new List<IModelElement>();
 			Refined = parent;
-			
-			Name = name;
 		}
 		
 		/// <summary>

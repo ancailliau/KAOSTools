@@ -38,6 +38,11 @@ namespace KaosEditor.Model
 	public class Agent : KAOSElement
 	{
 		
+		public string Name {
+			get;
+			set;
+		}
+		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KaosEditor.Model.Agent"/> class.
 		/// </summary>

@@ -200,7 +200,7 @@ namespace KaosEditor
 				foreach (var futureRefinement in futureGoal.refinements) {
 					Goal goal = (Goal) Model.Get(futureGoal.id);
 					if (goal != null) {
-						var refinement = new Refinement(futureRefinement.name, goal) { Id = futureRefinement.id };
+						var refinement = new Refinement(goal) { Id = futureRefinement.id };
 						foreach (var futureElement in futureRefinement.refinees) {
 							refinement.Add(Model.Get(futureElement));
 						}
@@ -208,7 +208,7 @@ namespace KaosEditor
 					}
 				}
 				foreach (var futureResponsibility in futureGoal.futureResponsibilities) {
-					Model.Add(new Responsibility (futureResponsibility.id, futureResponsibility.name,
+					Model.Add(new Responsibility (futureResponsibility.id,
 						(Goal) Model.Get(futureResponsibility.goalId),
 						(Agent) Model.Get(futureResponsibility.agentId)));
 				}

@@ -46,6 +46,11 @@ namespace KaosEditor.Controllers
 			private set;
 		}
 		
+		public AgentController AgentController  {
+			get;
+			private set;
+		}
+		
 		/// <summary>
 		/// The current filename (empty if not yet saved)
 		/// </summary>
@@ -101,7 +106,8 @@ namespace KaosEditor.Controllers
 			// Bind to the current controller
 			this.Model.Controller = this;
 			
-			GoalController = new GoalController(this);
+			GoalController = new GoalController (this);
+			AgentController = new AgentController (this);
 			
 			// Finish loading application
 			this.LoadConfiguration();
@@ -324,6 +330,7 @@ namespace KaosEditor.Controllers
 			}
 			
 			GoalController.PopulateContextMenu (menu, source, clickedElement);
+			AgentController.PopulateContextMenu (menu, source, clickedElement);
 			
 			if (menu.Children.Length > 0) {
 				menu.ShowAll ();
