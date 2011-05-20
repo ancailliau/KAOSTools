@@ -115,19 +115,6 @@ namespace KaosEditor.Model
 			base.PopulateContextMenu(menu, context);
 			
 			menu.Add(new SeparatorMenuItem());
-			
-			var delete = new MenuItem("Delete");
-			delete.Activated += delegate(object sender2, EventArgs e) {
-				foreach (var view in context.Controller.Model.Views) {
-					IShape shape = null;
-					while ((shape = view.GetNearestShapeFor(this, new PointD())) != null) {
-						view.Shapes.Remove(shape);
-					}
-				}
-				context.Controller.Model.Elements.Remove (this);
-				context.Controller.Model.NotifyChange ();
-			};
-			menu.Add(delete);
 		}
 	}
 }
