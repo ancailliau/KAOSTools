@@ -242,40 +242,11 @@ namespace KaosEditor.UI.Widgets
 				
 				var clickedShape = FindShapeAtPosition(evnt.X, evnt.Y);
 				if (clickedShape != null) {
-					if (clickedShape is IContextMenu) {
-						var menu = new Menu();
-						
-						// Populate menu with items related to the shape
-						((IContextMenu) clickedShape).PopulateContextMenu(menu, new MenuContext(this, this.controller));
-						
-						// Populate menu with items related to the represented element
-						if (clickedShape.RepresentedElement is IContextMenu) 
-							((IContextMenu) clickedShape.RepresentedElement).PopulateContextMenu(menu, new MenuContext(this, this.controller));
-						
-						menu.ShowAll();
-						menu.Popup();
-					}
-					
+					this.controller.PopulateContextMenu (this, clickedShape.RepresentedElement);
 				} else {
-					var menu = new Menu();
-					
-					var addgoal = new MenuItem ("Add goal...");
-					addgoal.Activated += delegate(object sender, EventArgs e) {
-						var ag = new AddGoal (this.controller.Window, new MenuContext (this, this.controller, new PointD (evnt.X,evnt.Y)));
-						ag.Present ();
-					};
-					menu.Add (addgoal);
-					
-					var addagent = new MenuItem ("Add agent...");
-					addagent.Activated += delegate(object sender, EventArgs e) {
-						var ag = new AddAgent (this.controller.Window, new MenuContext (this, this.controller, new PointD (evnt.X,evnt.Y)));
-						ag.Present ();
-					};
-					menu.Add (addagent);
-					
-					menu.ShowAll();
-					menu.Popup();
+					this.controller.PopulateContextMenu (this, null);
 				}
+				
 			}
 			
 			return true;

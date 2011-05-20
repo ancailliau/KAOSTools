@@ -73,20 +73,6 @@ namespace KaosEditor.Model
 		}
 		
 		/// <summary>
-		/// Populates the context menu.
-		/// </summary>
-		/// <param name='menu'>
-		/// Menu.
-		/// </param>
-		/// <exception cref='NotImplementedException'>
-		/// Is thrown when a requested operation is not implemented for a given type.
-		/// </exception>
-		public void PopulateContextMenu (Gtk.Menu menu, MenuContext context)
-		{
-			base.PopulateContextMenu(menu, context);
-		}
-		
-		/// <summary>
 		/// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="KaosEditor.Model.Agent"/>.
 		/// </summary>
 		/// <param name='obj'>

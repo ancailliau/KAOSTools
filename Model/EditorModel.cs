@@ -45,6 +45,11 @@ namespace KaosEditor.Model
 		/// </summary>
 		public delegate void ChangedModelHandler (object sender, EventArgs e);
 		
+		public delegate void ElementAddedHandler (IModelElement element);
+		public delegate void ElementRemovedHandler (IModelElement element);
+		public event ElementAddedHandler ElementAdded;
+		public event ElementRemovedHandler ElementRemoved;
+		
 		/// <summary>
 		/// Occurs when model changed.
 		/// </summary>
@@ -101,7 +106,36 @@ namespace KaosEditor.Model
 		public void Add (IModelElement element) 
 		{
 			Elements.Add(element);
-			NotifyChange ();
+			if (ElementAdded != null) {
+				ElementAdded (element);
+			}
+		}
+		
+		public void Remove (IModelElement element)
+		{
+			if (Elements.Contains (element)) {
+				Elements.Remove (element);
+				if (ElementRemoved != null) {
+					ElementRemoved (element);
+				}
+			} else {
+				throw new ArgumentException (
+					string.Format ("Removed element '{0}' is not in the model", 
+						element.Name));
+			}
+		}
+		
+		public void Update (IModelElement element)
+		{
+			if (Elements.Contains (element)) {
+				if (ElementRemoved != null) {
+					ElementRemoved (element);
+				}
+			} else {
+				throw new ArgumentException (
+					string.Format ("Modified element '{0}' is not in the model", 
+						element.Name));
+			}
 		}
 		
 		/// <summary>
@@ -114,10 +148,8 @@ namespace KaosEditor.Model
 		{
 			return Elements.Find(t => t.Id == id);
 		}
-		
-		/// <summary>
-		/// Notifies a change in the model
-		/// </summary>
+
+		[Obsolete("Use method `Add (IModelElement)', `Remove (IModelElement)' or `Update (IModelElement)' instead")]
 		public void NotifyChange ()
 		{
 			if (Changed != null) {

@@ -41,11 +41,6 @@ namespace KaosEditor.UI.Dialogs
 	{
 	
 		/// <summary>
-		/// The parent window.
-		/// </summary>
-		private MainWindow window;
-		
-		/// <summary>
 		/// The store for the combobox containing potential children
 		/// </summary>
 		private ListStore childrenComboStore;
@@ -58,14 +53,14 @@ namespace KaosEditor.UI.Dialogs
 		/// <summary>
 		/// The list of refinees.
 		/// </summary>
-		private List<Goal> refinees;
+		public List<IModelElement> Refinees {
+			get;
+			private set;
+		}
 		
-		/// <summary>
-		/// The parent goal.
-		/// </summary>
-		private Goal parentGoal;
-		
-		private MenuContext context;
+		public string RefinementName {
+			get { return nameTextView.Buffer.Text; }
+		}
 		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KaosEditor.UI.Dialogs.AddRefinement"/> class.
@@ -76,18 +71,12 @@ namespace KaosEditor.UI.Dialogs
 		/// <param name='parent'>
 		/// Parent.
 		/// </param>
-		public AddRefinement (MainWindow window, Goal parent, MenuContext context)
+		public AddRefinement (MainWindow window, Goal parent)
 			: base (string.Format("Refine goal {0}", parent.Name), 
 				window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
-			
-			this.context = context;
-			
-			this.parentGoal = parent;
-			this.refinees = new List<Goal> ();
-			
-			this.window = window;
+			Refinees = new List<IModelElement> ();
 			
 			childrenComboStore = new ListStore(typeof(string), typeof(object));
 			childrenComboBox.Model = childrenComboStore;
@@ -110,7 +99,7 @@ namespace KaosEditor.UI.Dialogs
 			
 			foreach (var g in window.Model.Elements.FindAll(e => e is Goal)) {
 				if (g != parent) {
-					childrenComboStore.AppendValues(g.Name.Replace ("\n", ""), g as Goal);
+					childrenComboStore.AppendValues(g.Name, g as Goal);
 				}
 			}
 			
@@ -137,56 +126,12 @@ namespace KaosEditor.UI.Dialogs
 			TreeIter iter = new TreeIter();
 			
 			if (childrenComboBox.GetActiveIter(out iter)) {
-				Console.WriteLine ("Add element");
-				
 				// Get the element
 				var element = (Goal) childrenComboStore.GetValue(iter, 1);
 				
-				this.refinees.Add(element);
-				childrenNodeStore.AppendValues(element.Name.Replace ("\n", ""), element);
+				Refinees.Add(element);
+				childrenNodeStore.AppendValues(element.Name, element);
 			}
-		}
-		
-		/// <summary>
-		/// Handles the button ok clicked event.
-		/// </summary>
-		/// <param name='sender'>
-		/// Sender.
-		/// </param>
-		/// <param name='e'>
-		/// E.
-		/// </param>
-		protected virtual void OnButtonOkClicked (object sender, System.EventArgs e)
-		{
-			string name = nameTextView.Buffer.Text.Trim();
-			if (this.refinees.Count > 0 && name != "") {
-				var refinement = new Refinement(name);
-				refinement.Refined = this.parentGoal;
-				foreach (var refinee in this.refinees) {
-					refinement.Refinees.Add(refinee);
-				}
-				this.window.Model.Add(refinement);
-				
-				if (this.context.Initiator is DrawingArea) {
-					this.window.AddToCurrentView (refinement, context.ClickedPoint.X, context.ClickedPoint.Y);
-				}
-				
-				this.Destroy();
-			}
-		}
-		
-		/// <summary>
-		/// Handles the button cancel clicked event.
-		/// </summary>
-		/// <param name='sender'>
-		/// Sender.
-		/// </param>
-		/// <param name='e'>
-		/// E.
-		/// </param>
-		protected virtual void OnButtonCancelClicked (object sender, System.EventArgs e)
-		{
-			this.Destroy();
 		}
 	}
 }

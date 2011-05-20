@@ -94,6 +94,9 @@ namespace KaosEditor.UI.Widgets
 			column.AddAttribute (iconCell, "pixbuf", 2);
 			column.AddAttribute (cell, "text", 0);
 			
+			this.EnableSearch = true;
+			this.SearchColumn = 1;
+			
 			// Bind the model
 			store = new TreeStore(typeof(string), typeof(object), typeof(Gdk.Pixbuf));
 			this.Model = store;
@@ -167,7 +170,7 @@ namespace KaosEditor.UI.Widgets
 						var m = new Menu();
 						var addGoal = new MenuItem("Add goal");
 						addGoal.Activated += delegate(object sender2, EventArgs e) {
-							var ag = new AddGoal(window, new MenuContext (this, this.window.Controller));
+							var ag = new AddGoalDialog(window, null);
 							ag.Present();
 						};
 						m.Add(addGoal);
@@ -300,19 +303,17 @@ namespace KaosEditor.UI.Widgets
 			List<string> expandedNodes = new List<string>();
 			SaveState(expandedNodes);
 			
-			foreach (var str in expandedNodes) {
-				Console.WriteLine (str);
-			}
-			
 			store.Clear();
 			
 			var iter = store.AppendValues("Goals", null, goalPixbuf);
-			foreach (var element in this.window.Model.Elements.FindAll(e => e is Goal)) {
+			List<IModelElement> goals = this.window.Model.Elements.FindAll (e => e is Goal);
+			foreach (var element in goals) {
 				AddGoalElement (iter, element as Goal, expandedNodes);
 			}
 			
 			iter = store.AppendValues("Agents", null, agentPixbuf);
-			foreach (var element in this.window.Model.Elements.FindAll(e => e is Agent)) {
+			List<IModelElement> agents = this.window.Model.Elements.FindAll (e => e is Agent);
+			foreach (var element in agents) {
 				store.AppendValues(iter, element.Name, element, agentPixbuf);
 			}
 			

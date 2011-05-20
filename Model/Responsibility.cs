@@ -101,21 +101,6 @@ namespace KaosEditor.Model
 			Agent = agent;
 		}
 		
-		/// <summary>
-		/// Populates the given context menu.
-		/// </summary>
-		/// <param name='menu'>
-		/// Menu.
-		/// </param>
-		/// <param name='window'>
-		/// Window.
-		/// </param>
-		public override void PopulateContextMenu (Menu menu, MenuContext context)
-		{
-			base.PopulateContextMenu(menu, context);
-			
-			menu.Add(new SeparatorMenuItem());
-		}
 	}
 }
 

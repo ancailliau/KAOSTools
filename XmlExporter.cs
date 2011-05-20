@@ -66,6 +66,8 @@ namespace KaosEditor
 				
 			writer.WriteAttributeString("id", goal.Id);
 			writer.WriteAttributeString("name", goal.Name);
+			
+			writer.WriteElementString("definition", goal.Definition);
 				
 			var refinements = from e in model.Elements 
 				where e is Refinement && ((Refinement) e).Refined.Equals (goal) 

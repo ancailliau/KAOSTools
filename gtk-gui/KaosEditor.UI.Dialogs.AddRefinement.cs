@@ -146,8 +146,6 @@ namespace KaosEditor.UI.Dialogs
 			this.DefaultHeight = 313;
 			this.Show ();
 			this.addButton.Clicked += new global::System.EventHandler (this.OnAddButtonActivated);
-			this.buttonCancel.Clicked += new global::System.EventHandler (this.OnButtonCancelClicked);
-			this.buttonOk.Clicked += new global::System.EventHandler (this.OnButtonOkClicked);
 		}
 	}
 }

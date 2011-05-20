@@ -39,6 +39,10 @@ namespace KaosEditor.Model
 	/// </summary>
 	public class Goal : KAOSElement
 	{
+		public string Definition {
+			get;
+			set;
+		}
 		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KaosEditor.Model.Goal"/> class.
@@ -46,65 +50,13 @@ namespace KaosEditor.Model
 		/// <param name='name'>
 		/// Name.
 		/// </param>
-		public Goal (string name) 
+		public Goal (string name, string definition) 
 		{
 			Id = Guid.NewGuid().ToString();
+			Definition = definition;
 			Name = name;
 		}
 		
-		/// <summary>
-		/// Populates the context menu.
-		/// </summary>
-		/// <param name='menu'>
-		/// Menu.
-		/// </param>
-		/// <param name="window">
-		/// Window
-		/// </param>
-		/// <exception cref='NotImplementedException'>
-		/// Is thrown when a requested operation is not implemented for a given type.
-		/// </exception>
-		public override void PopulateContextMenu (Menu menu, MenuContext context)
-		{
-			base.PopulateContextMenu(menu, context);
-			
-			menu.Add(new SeparatorMenuItem());
-			
-			var edit = new MenuItem("Edit...");
-			edit.Activated += delegate(object sender2, EventArgs e) {
-				var ar = new EditGoal(context.Controller.Window, this);
-				ar.Present();
-			};
-			menu.Add(edit);
-			
-			menu.Add(new SeparatorMenuItem());
-			
-			var refine = new MenuItem("Refine...");
-			refine.Activated += delegate(object sender2, EventArgs e) {
-				var ar = new AddRefinement(context.Controller.Window, this,
-					new MenuContext(context.Initiator, context.Controller, context.ClickedPoint));
-				ar.Present();
-			};
-			menu.Add(refine);
-			
-			var assign = new MenuItem("Assign responsibility...");
-			assign.Activated += delegate(object sender2, EventArgs e) {
-				var ar = new AddResponsibility (context.Controller.Window, this, context);
-				ar.Present();
-			};
-			menu.Add(assign);
-		}
-		
-		/// <summary>
-		/// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="KaosEditor.Model.Goal"/>.
-		/// </summary>
-		/// <param name='obj'>
-		/// The <see cref="System.Object"/> to compare with the current <see cref="KaosEditor.Model.Goal"/>.
-		/// </param>
-		/// <returns>
-		/// <c>true</c> if the specified <see cref="System.Object"/> is equal to the current
-		/// <see cref="KaosEditor.Model.Goal"/>; otherwise, <c>false</c>.
-		/// </returns>
 		public override bool Equals (object obj)
 		{
 			if (obj == null)
@@ -117,12 +69,6 @@ namespace KaosEditor.Model
 			return Id == other.Id;
 		}
 
-		/// <summary>
-		/// Serves as a hash function for a <see cref="KaosEditor.Model.Goal"/> object.
-		/// </summary>
-		/// <returns>
-		/// A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.
-		/// </returns>
 		public override int GetHashCode ()
 		{
 			unchecked {

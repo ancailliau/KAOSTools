@@ -1,5 +1,5 @@
 // 
-// EditGoal.cs
+// AddGoal.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -33,67 +33,37 @@ using Gtk;
 namespace KaosEditor.UI.Dialogs
 {
 	
-	/// <summary>
-	/// Represents the dialog to edit a goal
-	/// </summary>
-	public partial class EditGoal : Gtk.Dialog
+	public partial class AddGoalDialog : Gtk.Dialog
 	{
 		
-		/// <summary>
-		/// The parent window.
-		/// </summary>
-		private MainWindow window;
+		public AddGoalDialog (MainWindow window)
+			: this (window, null)
+		{
+		}
 		
-		/// <summary>
-		/// The goal to edit.
-		/// </summary>
-		private Goal goal;
-		
-		public EditGoal (MainWindow window, Goal goal)
-			: base (string.Format("Edit {0}", goal.Name), 
+		public AddGoalDialog (MainWindow window, Goal goal)
+			: base (goal == null ? "Add new goal" : "Edit goal", 
 				window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
 			
-			this.window = window;
-			this.goal = goal;
-			
-			nameTextView.Buffer.Text = this.goal.Name;
-		}
-		
-		/// <summary>
-		/// Handles the button ok clicked event.
-		/// </summary>
-		/// <param name='sender'>
-		/// Sender.
-		/// </param>
-		/// <param name='e'>
-		/// E.
-		/// </param>
-		protected virtual void OnButtonOkClicked (object sender, System.EventArgs e)
-		{
-			if (nameTextView.Buffer.Text != "") {
-				this.goal.Name = nameTextView.Buffer.Text;
-				this.window.Model.NotifyChange();
-				this.window.Model.Views.NotifyViewsChanged();
-				this.Destroy();
+			if (goal != null) {
+				nameEntry.Text = goal.Name;
+				definitionTextView.Buffer.Text = goal.Definition;
 			}
 		}
 		
-		/// <summary>
-		/// Handles the button cancel clicked event.
-		/// </summary>
-		/// <param name='sender'>
-		/// Sender.
-		/// </param>
-		/// <param name='e'>
-		/// E.
-		/// </param>
-		protected virtual void OnButtonCancelClicked (object sender, System.EventArgs e)
-		{
-			this.Destroy();
+		public string GoalName {
+			get {
+				return nameEntry.Text.Trim();
+			}
 		}
 		
+		public string GoalDefinition {
+			get {
+				return definitionTextView.Buffer.Text.Trim();
+			}
+		}
 		
 	}
 }

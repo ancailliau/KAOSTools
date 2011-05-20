@@ -37,26 +37,27 @@ namespace KaosEditor
 	/// </summary>
 	public partial class AddResponsibility : Gtk.Dialog
 	{
-		
-		/// <summary>
-		/// The goal.
-		/// </summary>
-		private Goal goal;
-		
-		/// <summary>
-		/// The window.
-		/// </summary>
-		private MainWindow window;
-		
 		/// <summary>
 		/// The store.
 		/// </summary>
 		private ListStore store;
 		
-		/// <summary>
-		/// The context.
-		/// </summary>
-		private MenuContext context;
+		public Agent ResponsibleAgent {
+			get {
+				var iter = new TreeIter();
+				if (agentComboBox.GetActiveIter(out iter)) {
+					return (Agent) store.GetValue(iter, 1);
+				} else {
+					return null;
+				}
+			}
+		}
+		
+		public string ResponsibilityName {
+			get {
+				return nameEntry.Text;
+			}
+		}
 		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KaosEditor.AddResponsibility"/> class.
@@ -64,20 +65,16 @@ namespace KaosEditor
 		/// <param name='goal'>
 		/// Goal.
 		/// </param>
-		public AddResponsibility (MainWindow window, Goal goal, MenuContext context)
+		public AddResponsibility (MainWindow window, Goal goal)
+			: base ("Assign responsibility", window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
-			this.goal = goal;
-			this.window = window;
-			this.context = context;
-			
-			this.Title = "Add responsibility for " + goal.Name;
 			nameEntry.Text = "Responsibility assignement";
 			
 			store = new ListStore(typeof (string), typeof (Agent));
 			agentComboBox.Model = store;
 			
-			var cell = new CellRendererText();
+			var cell = new CellRendererText();		
 			// agentComboBox.PackStart(cell, false);
 			agentComboBox.AddAttribute(cell, "text", 0);
 			
@@ -86,35 +83,6 @@ namespace KaosEditor
 				store.AppendValues (agent.Name, agent);
 			}
 		}
-		
-		protected virtual void OnButtonCancelClicked (object sender, System.EventArgs e)
-		{
-			this.Destroy();
-		}
-		
-		protected virtual void OnButtonOkClicked (object sender, System.EventArgs e)
-		{
-			if (nameEntry.Text != "") {
-				// Get the element
-				var iter = new TreeIter();
-				if (agentComboBox.GetActiveIter(out iter)) {
-					var agent = (Agent) store.GetValue(iter, 1);
-					var resp = new Responsibility (nameEntry.Text, goal, agent);
-					
-					Console.WriteLine (this.context.Initiator.GetType());
-					if (this.context.Initiator is DrawingArea) {
-						this.window.AddToCurrentView (resp);
-						this.window.AddToCurrentView (agent);
-					}
-					
-					this.window.Model.NotifyChange();
-					
-					this.Destroy ();
-				}
-			}
-		}
-		
-		
 	}
 }
 

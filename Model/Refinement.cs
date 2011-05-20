@@ -47,7 +47,7 @@ namespace KaosEditor.Model
 		/// </value>
 		public IModelElement Refined {
 			get;
-			set;
+			private set;
 		}
 		
 		/// <summary>
@@ -64,10 +64,11 @@ namespace KaosEditor.Model
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Model.Refinement"/> class.
 		/// </summary>
-		public Refinement (string name)
+		public Refinement (string name, IModelElement parent)
 		{
 			Id = Guid.NewGuid().ToString();
 			Refinees = new List<IModelElement>();
+			Refined = parent;
 			
 			Name = name;
 		}
@@ -81,20 +82,6 @@ namespace KaosEditor.Model
 		public void Add (IModelElement element) 
 		{
 			Refinees.Add(element);
-		}
-		
-		/// <summary>
-		/// Populates the given context menu.
-		/// </summary>
-		/// <param name='menu'>
-		/// Menu.
-		/// </param>
-		/// <exception cref='NotImplementedException'>
-		/// Is thrown when a requested operation is not implemented for a given type.
-		/// </exception>
-		public void PopulateContextMenu (Gtk.Menu menu, MenuContext context)
-		{
-			base.PopulateContextMenu(menu, context);
 		}
 		
 		/// <summary>

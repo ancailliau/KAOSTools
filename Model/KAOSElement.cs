@@ -31,7 +31,7 @@ using Cairo;
 
 namespace KaosEditor.Model
 {
-	public abstract class KAOSElement : IModelElement, IContextMenu
+	public abstract class KAOSElement : IModelElement
 	{
 	
 		public string Id {
@@ -42,33 +42,6 @@ namespace KaosEditor.Model
 		public string Name {
 			get;
 			set;
-		}
-		
-		public virtual void PopulateContextMenu (Gtk.Menu menu, MenuContext context)
-		{
-			if (!(context.Initiator is DrawingArea)
-				&& context.Controller.Window.HasCurrentView()) {
-				
-				var addToCurrentView = new MenuItem("Add to current view");
-				addToCurrentView.Activated += delegate(object sender2, EventArgs e) {
-					context.Controller.Window.AddToCurrentView (this);
-				};
-				menu.Add(addToCurrentView);
-			}
-			
-			var delete = new MenuItem("Delete");
-			delete.Activated += delegate(object sender2, EventArgs e) {
-				foreach (var view in context.Controller.Model.Views) {
-					IShape shape = null;
-					// TODO Remove this loop and encapsulate this in views
-					while ((shape = view.GetNearestShapeFor(this, new PointD())) != null) {
-						view.Shapes.Remove(shape);
-					}
-				}
-				context.Controller.Model.Elements.Remove (this);
-				context.Controller.Model.NotifyChange ();
-			};
-			menu.Add(delete);
 		}
 		
 	}

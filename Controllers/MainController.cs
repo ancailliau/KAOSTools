@@ -31,6 +31,7 @@ using Gtk;
 using KaosEditor.Logging;
 using KaosEditor.Model;
 using KaosEditor.UI.Windows;
+using KaosEditor.UI.Widgets;
 
 namespace KaosEditor.Controllers
 {
@@ -39,6 +40,11 @@ namespace KaosEditor.Controllers
 	/// </summary>
 	public class MainController
 	{
+		
+		public GoalController GoalController {
+			get;
+			private set;
+		}
 		
 		/// <summary>
 		/// The current filename (empty if not yet saved)
@@ -94,6 +100,8 @@ namespace KaosEditor.Controllers
 			
 			// Bind to the current controller
 			this.Model.Controller = this;
+			
+			GoalController = new GoalController(this);
 			
 			// Finish loading application
 			this.LoadConfiguration();
@@ -302,6 +310,26 @@ namespace KaosEditor.Controllers
 		}
 		
 		#endregion
+		
+		public void PopulateContextMenu (object source, IModelElement clickedElement)
+		{
+			var menu = new Menu ();
+			
+			if (clickedElement != null & !(source is DiagramArea)) {
+				var addToCurrentViewItem = new MenuItem("Add to current view...");
+				addToCurrentViewItem.Activated += delegate(object sender2, EventArgs e) {
+					this.Window.AddToCurrentView (clickedElement);
+				};
+				menu.Add(addToCurrentViewItem);
+			}
+			
+			GoalController.PopulateContextMenu (menu, source, clickedElement);
+			
+			if (menu.Children.Length > 0) {
+				menu.ShowAll ();
+				menu.Popup ();	
+			}
+		}
 		
 	}
 }

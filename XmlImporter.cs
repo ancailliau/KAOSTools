@@ -24,6 +24,7 @@ namespace KaosEditor
 		private class FutureGoal {
 			public string id = "";
 			public string name = "";
+			public string definition = "";
 			public List<FutureRefinement> refinements = new List<FutureRefinement>();
 			public List<FutureResponsibility> futureResponsibilities = new List<FutureResponsibility>();
 		}
@@ -129,6 +130,10 @@ namespace KaosEditor
 							};
 							futurGoal.futureResponsibilities.Add(responsibility);
 							
+						} else if (reader.IsStartElement ("definition")) {
+							reader.Read ();
+							futurGoal.definition = reader.Value.Trim();
+							
 						} else if (reader.IsEndElement("goal")) {
 							break;
 						
@@ -181,7 +186,7 @@ namespace KaosEditor
 		public void Compile ()
 		{
 			foreach (var futureGoal in futureGoals) {
-				var goal = new Goal(futureGoal.name) {
+				var goal = new Goal(futureGoal.name, futureGoal.definition) {
 					Id = futureGoal.id
 				};
 				Model.Add(goal);
@@ -193,13 +198,12 @@ namespace KaosEditor
 			
 			foreach (var futureGoal in futureGoals) {
 				foreach (var futureRefinement in futureGoal.refinements) {
-					var refinement = new Refinement(futureRefinement.name) { Id = futureRefinement.id };
-					foreach (var futureElement in futureRefinement.refinees) {
-						refinement.Add(Model.Get(futureElement));
-					}
 					Goal goal = (Goal) Model.Get(futureGoal.id);
 					if (goal != null) {
-						refinement.Refined = goal;
+						var refinement = new Refinement(futureRefinement.name, goal) { Id = futureRefinement.id };
+						foreach (var futureElement in futureRefinement.refinees) {
+							refinement.Add(Model.Get(futureElement));
+						}
 						Model.Add(refinement);
 					}
 				}

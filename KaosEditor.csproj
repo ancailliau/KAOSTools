@@ -81,11 +81,9 @@
     <Compile Include="UI\Arrows\FilledArrow.cs" />
     <Compile Include="UI\Arrows\IArrow.cs" />
     <Compile Include="UI\Arrows\Arrow.cs" />
-    <Compile Include="UI\Dialogs\AddGoal.cs" />
     <Compile Include="UI\Dialogs\AddView.cs" />
     <Compile Include="UI\Dialogs\AddAgent.cs" />
     <Compile Include="UI\Dialogs\AddRefinement.cs" />
-    <Compile Include="UI\Dialogs\EditGoal.cs" />
     <Compile Include="UI\Dialogs\TextEntryDialog.cs" />
     <Compile Include="UI\Windows\MainWindow.cs" />
     <Compile Include="UI\Widgets\TabLabel.cs" />
@@ -95,9 +93,7 @@
     <Compile Include="Model\EditorModel.cs" />
     <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.AddAgent.cs" />
     <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.AddRefinement.cs" />
-    <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.AddGoal.cs" />
     <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.AddView.cs" />
-    <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.EditGoal.cs" />
     <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.TextEntryDialog.cs" />
     <Compile Include="gtk-gui\KaosEditor.UI.Windows.MainWindow.cs" />
     <Compile Include="UI\IContextMenu.cs" />
@@ -109,6 +105,9 @@
     <Compile Include="UI\MenuContext.cs" />
     <Compile Include="Model\KAOSElement.cs" />
     <Compile Include="UI\Widgets\ViewList.cs" />
+    <Compile Include="Controllers\GoalController.cs" />
+    <Compile Include="UI\Dialogs\AddGoalDialog.cs" />
+    <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.AddGoalDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

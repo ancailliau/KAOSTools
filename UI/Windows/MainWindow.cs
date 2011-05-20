@@ -148,6 +148,7 @@ namespace KaosEditor.UI.Windows {
 		/// </param>
 		public void AddToCurrentView (IModelElement element)
 		{
+			// TODO Move this ...
 			AddToCurrentView (element, 10, 10);
 		}	
 		
