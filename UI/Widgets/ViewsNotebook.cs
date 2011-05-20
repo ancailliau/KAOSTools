@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using Gtk;
 using KaosEditor.Model;
 using KaosEditor.UI.Shapes;
+using KaosEditor.Controllers;
 
 namespace KaosEditor.UI.Widgets
 {
@@ -60,12 +61,15 @@ namespace KaosEditor.UI.Widgets
 			}
 		}
 		
+		private MainController controller;
+		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KaosEditor.UI.Widgets.ViewsNotebook"/> class.
 		/// </summary>
-		public ViewsNotebook ()
+		public ViewsNotebook (MainController controller)
 		{
 			displayedViews = new List<View>();
+			this.controller = controller;
 			this.Scrollable = true;
 		}
 		
@@ -89,7 +93,7 @@ namespace KaosEditor.UI.Widgets
 			
 			// Add the page if the page does not exists
 			var scroll = new ScrolledWindow ();
-			var diagram = new DiagramArea(view);
+			var diagram = new DiagramArea(view, controller);
 			view.DrawingArea = diagram;
 			var tabLabel = new TabLabel (view.Name);
 			tabLabel.CloseClicked += delegate(object sender, EventArgs args) {

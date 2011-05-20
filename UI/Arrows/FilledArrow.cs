@@ -97,13 +97,13 @@ namespace KaosEditor.UI.Arrows
 			context.LineTo(endPosition.X + arrowSideWitdh * Math.Cos(gamma2), endPosition.Y + arrowSideWitdh * Math.Sin(gamma2));
 			context.ClosePath();
 			
-			context.SetColor ("#000");
-			context.LineWidth = 1.5;
-			context.StrokePreserve();
-			context.LineWidth = 1;
 			
 			context.SetColor (FillColor);
-			context.Fill();
+			context.FillPreserve ();
+			
+			context.SetColor ("#000");
+			context.Stroke();
+			
 			
 			context.Source = oldSource;
 		}

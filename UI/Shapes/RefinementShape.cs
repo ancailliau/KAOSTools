@@ -71,6 +71,10 @@ namespace KaosEditor.UI.Shapes
 		public override void Display (Context context, View view)
 		{
 			var oldSource = context.Source;
+			var oldLineWidth = context.LineWidth;
+			if (Selected) {
+				context.LineWidth = 2.5;
+			}
 			
 			context.MoveTo(Position.X + radius, Position.Y);
 			context.Arc(Position.X, Position.Y, radius, 0, Math.PI * 2);
@@ -104,6 +108,7 @@ namespace KaosEditor.UI.Shapes
 			}
 			
 			context.Source = oldSource;
+			context.LineWidth = oldLineWidth;
 		}
 		
 		/// <summary>

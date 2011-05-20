@@ -27,6 +27,11 @@
 using Cairo;
 using Gtk;
 using KaosEditor.Model;
+using System.Collections.Generic;
+using KaosEditor.UI.Shapes;
+using KaosEditor.Controllers;
+using System;
+using KaosEditor.UI.Dialogs;
 
 namespace KaosEditor.UI.Widgets
 {
@@ -47,14 +52,22 @@ namespace KaosEditor.UI.Widgets
 			set;
 		}
 		
+		private MainController controller;
+		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KaosEditor.UI.Widgets.DiagramArea"/> class.
 		/// </summary>
-		public DiagramArea ()
+		public DiagramArea (MainController controller)
 		{
+			this.controller = controller;
+			
 			this.AddEvents((int) Gdk.EventMask.PointerMotionMask
 				| (int) Gdk.EventMask.ButtonPressMask
-				| (int) Gdk.EventMask.ButtonReleaseMask);
+				| (int) Gdk.EventMask.ButtonReleaseMask
+				| (int) Gdk.EventMask.KeyPressMask
+				| (int) Gdk.EventMask.KeyReleaseMask);
+			
+			this.CanFocus = true;
 		}
 		
 		/// <summary>
@@ -63,8 +76,8 @@ namespace KaosEditor.UI.Widgets
 		/// <param name='view'>
 		/// View.
 		/// </param>
-		public DiagramArea (View view) 
-			: this ()
+		public DiagramArea (View view, MainController controller) 
+			: this (controller)
 		{
 			this.CurrentView = view;
 			this.CurrentView.DrawingArea = this;
@@ -106,38 +119,9 @@ namespace KaosEditor.UI.Widgets
 			return true;
 		}
 		
-		/// <summary>
-		/// Handles the motion notify event.
-		/// </summary>
-		/// <param name='evnt'>
-		/// If set to <c>true</c> evnt.
-		/// </param>
-		protected override bool OnMotionNotifyEvent (Gdk.EventMotion evnt)
-		{
-			return this.CurrentView.OnMotionNotifyEvent (evnt);
-		}
 		
-		/// <summary>
-		/// Raises the button release event event.
-		/// </summary>
-		/// <param name='evnt'>
-		/// If set to <c>true</c> evnt.
-		/// </param>
-		protected override bool OnButtonReleaseEvent (Gdk.EventButton evnt)
-		{
-			return this.CurrentView.OnButtonReleaseEvent (evnt);
-		}
 		
-		/// <summary>
-		/// Raises the button press event event.
-		/// </summary>
-		/// <param name='evnt'>
-		/// If set to <c>true</c> evnt.
-		/// </param>
-		protected override bool OnButtonPressEvent (Gdk.EventButton evnt)
-		{
-			return this.CurrentView.OnButtonPressEvent(evnt);
-		}
+		
 		
 		/// <summary>
 		/// Paints the background.
@@ -161,6 +145,169 @@ namespace KaosEditor.UI.Widgets
 		public void Update ()
 		{
 			this.QueueDraw();
+		}
+		
+		private bool multipleSelection = false;
+		private List<IShape> selectedShapes = new List<IShape>();
+		private PointD lastClickedPoint;
+		
+		private bool moveShapes = false;
+		private bool hasMoved = false;
+		private IShape removalCandidate;
+		
+		protected override bool OnMotionNotifyEvent (Gdk.EventMotion evnt)
+		{
+			hasMoved = true;
+			if (moveShapes & selectedShapes.Count > 0) {
+				var newPosition = new PointD (evnt.X, evnt.Y);
+				
+				var deltaX = lastClickedPoint.X - newPosition.X;
+				var deltaY = lastClickedPoint.Y - newPosition.Y;
+				
+				lastClickedPoint = newPosition;
+				
+				foreach (var s in selectedShapes) {
+					s.Position = new PointD(
+						s.Position.X - deltaX,
+						s.Position.Y - deltaY
+						);
+				}
+				
+				this.QueueDraw ();
+			}
+			
+			return true;
+		}
+		
+		protected override bool OnButtonReleaseEvent (Gdk.EventButton evnt)
+		{
+			if (removalCandidate != null && !hasMoved) {
+				if (multipleSelection) {
+					selectedShapes.Remove (removalCandidate);
+					removalCandidate.Selected = false;
+				} else {
+					ClearSelection ();
+					selectedShapes.Add (removalCandidate);
+					removalCandidate.Selected = true;
+				}
+				removalCandidate = null;
+			}
+			
+			moveShapes = false;
+			hasMoved = false;
+			
+			this.QueueDraw();
+			
+			return true;
+		}
+		
+		void ClearSelection ()
+		{
+				foreach (var sshape in selectedShapes) {
+					sshape.Selected = false;
+				}
+				selectedShapes.Clear();
+		}
+		
+		protected override bool OnButtonPressEvent (Gdk.EventButton evnt)
+		{
+			this.GrabFocus ();
+			
+			if (evnt.Button == 1) {
+					
+				moveShapes = true;
+				
+				lastClickedPoint = new PointD (evnt.X, evnt.Y);
+				
+				var selectedShape = FindShapeAtPosition(evnt.X, evnt.Y);
+				if (selectedShape != null) {
+					if (!selectedShapes.Contains(selectedShape)) {
+						if (!multipleSelection) {
+							ClearSelection ();
+						}
+						selectedShapes.Add (selectedShape);
+						selectedShape.Selected = true;
+						
+					} else {
+						removalCandidate = selectedShape;
+					}
+				} else {
+					ClearSelection ();
+				}
+				
+				this.QueueDraw();
+			} else if (evnt.Button == 3) { // Right click
+				
+				var clickedShape = FindShapeAtPosition(evnt.X, evnt.Y);
+				if (clickedShape != null) {
+					if (clickedShape is IContextMenu) {
+						var menu = new Menu();
+						
+						// Populate menu with items related to the shape
+						((IContextMenu) clickedShape).PopulateContextMenu(menu, new MenuContext(this, this.controller));
+						
+						// Populate menu with items related to the represented element
+						if (clickedShape.RepresentedElement is IContextMenu) 
+							((IContextMenu) clickedShape.RepresentedElement).PopulateContextMenu(menu, new MenuContext(this, this.controller));
+						
+						menu.ShowAll();
+						menu.Popup();
+					}
+					
+				} else {
+					var menu = new Menu();
+					
+					var addgoal = new MenuItem ("Add goal...");
+					addgoal.Activated += delegate(object sender, EventArgs e) {
+						var ag = new AddGoal (this.controller.Window, new MenuContext (this, this.controller, new PointD (evnt.X,evnt.Y)));
+						ag.Present ();
+					};
+					menu.Add (addgoal);
+					
+					var addagent = new MenuItem ("Add agent...");
+					addagent.Activated += delegate(object sender, EventArgs e) {
+						var ag = new AddAgent (this.controller.Window, new MenuContext (this, this.controller, new PointD (evnt.X,evnt.Y)));
+						ag.Present ();
+					};
+					menu.Add (addagent);
+					
+					menu.ShowAll();
+					menu.Popup();
+				}
+			}
+			
+			return true;
+		}
+		
+		protected override bool OnKeyPressEvent (Gdk.EventKey evnt)
+		{
+			// System.Console.WriteLine (evnt.Key);
+			// System.Console.WriteLine (evnt.KeyValue);
+			if (evnt.Key == Gdk.Key.Shift_L
+				| evnt.Key == Gdk.Key.Shift_R) {
+				multipleSelection = true;
+			}
+			return base.OnKeyPressEvent (evnt);
+		}
+		
+		protected override bool OnKeyReleaseEvent (Gdk.EventKey evnt)
+		{
+			multipleSelection = false;
+			return base.OnKeyReleaseEvent (evnt);
+		}
+		
+		protected IShape FindShapeAtPosition(double x, double y)
+		{
+			PointD selectedPoint;
+			IShape selectedShape = null;
+			foreach (var shape in this.CurrentView.Shapes) {
+				if (shape.InBoundingBox(x, y, out selectedPoint)) {
+					if (selectedShape == null || shape.Depth > selectedShape.Depth) { 
+						selectedShape = shape;
+					}
+				}
+			}
+			return selectedShape;
 		}
 		
 	}

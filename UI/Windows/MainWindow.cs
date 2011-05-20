@@ -86,7 +86,7 @@ namespace KaosEditor.UI.Windows {
 			this.Model = model;
 			Build ();
 			
-			viewsNotebook = new ViewsNotebook();
+			viewsNotebook = new ViewsNotebook(controller);
 			conceptTreeView = new ConceptsTreeView (this);
 			
 			var notebookModelView = new Notebook ();
