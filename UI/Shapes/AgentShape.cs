@@ -97,7 +97,16 @@ namespace KaosEditor.UI.Shapes
 			width = (int) ( textWidth + 2 * XPadding );
 			height = (int) ( textHeight + 2 * YPadding );
 			
-			context.Rectangle(Position.X - width / 2, Position.Y - height / 2, width, height);
+			// context.Rectangle(Position.X - width / 2, Position.Y - height / 2, width, height);
+			
+			int delta = 4;
+			context.MoveTo (Position.X - width / 2 + delta, Position.Y - height / 2);
+			context.LineTo (Position.X - width / 2, Position.Y);
+			context.LineTo (Position.X - width / 2 + delta, Position.Y + height / 2);
+			context.LineTo (Position.X + width / 2 - delta, Position.Y + height / 2);
+			context.LineTo (Position.X + width / 2, Position.Y);
+			context.LineTo (Position.X + width / 2 - delta, Position.Y - height / 2);
+			context.ClosePath ();
 			
 			context.SetColor("#fefec3");
 			context.FillPreserve();
