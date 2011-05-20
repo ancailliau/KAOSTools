@@ -252,8 +252,5 @@ namespace KaosEditor.UI.Windows {
 			this.Controller.SaveProjectAs ();
 		}
 		
-		
-		
-		
 	}
 }

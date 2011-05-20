@@ -41,28 +41,6 @@ namespace KaosEditor.Model
 	{
 		
 		/// <summary>
-		/// Gets or sets the refinements.
-		/// </summary>
-		/// <value>
-		/// The refinements.
-		/// </value>
-		public List<Refinement> Refinements {
-			get;
-			set;
-		}
-		
-		/// <summary>
-		/// Gets or sets the responsibilities.
-		/// </summary>
-		/// <value>
-		/// The responsibilities.
-		/// </value>
-		public List<Responsibility> Responsibilities {
-			get;
-			set;
-		}
-		
-		/// <summary>
 		/// Initializes a new instance of the <see cref="KaosEditor.Model.Goal"/> class.
 		/// </summary>
 		/// <param name='name'>
@@ -71,9 +49,6 @@ namespace KaosEditor.Model
 		public Goal (string name) 
 		{
 			Id = Guid.NewGuid().ToString();
-			Refinements = new List<Refinement>();
-			Responsibilities = new List<Responsibility>();
-			
 			Name = name;
 		}
 		
@@ -89,7 +64,7 @@ namespace KaosEditor.Model
 		/// <exception cref='NotImplementedException'>
 		/// Is thrown when a requested operation is not implemented for a given type.
 		/// </exception>
-		public void PopulateContextMenu (Menu menu, MenuContext context)
+		public override void PopulateContextMenu (Menu menu, MenuContext context)
 		{
 			base.PopulateContextMenu(menu, context);
 			

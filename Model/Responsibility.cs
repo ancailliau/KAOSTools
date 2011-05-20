@@ -99,8 +99,6 @@ namespace KaosEditor.Model
 			Name = name;
 			Goal = goal;
 			Agent = agent;
-			
-			Goal.Responsibilities.Add (this);
 		}
 		
 		/// <summary>
@@ -112,7 +110,7 @@ namespace KaosEditor.Model
 		/// <param name='window'>
 		/// Window.
 		/// </param>
-		public void PopulateContextMenu (Menu menu, MenuContext context)
+		public override void PopulateContextMenu (Menu menu, MenuContext context)
 		{
 			base.PopulateContextMenu(menu, context);
 			
@@ -126,7 +124,6 @@ namespace KaosEditor.Model
 						view.Shapes.Remove(shape);
 					}
 				}
-				this.Goal.Responsibilities.Remove (this);
 				context.Controller.Model.Elements.Remove (this);
 				context.Controller.Model.NotifyChange ();
 			};

@@ -1,5 +1,6 @@
 using System;
 using System.Xml;
+using System.Linq;
 using KaosEditor.Model;
 
 namespace KaosEditor
@@ -66,7 +67,11 @@ namespace KaosEditor
 			writer.WriteAttributeString("id", goal.Id);
 			writer.WriteAttributeString("name", goal.Name);
 				
-			foreach (var refinement in goal.Refinements) {
+			var refinements = from e in model.Elements 
+				where e is Refinement && ((Refinement) e).Refined.Equals (goal) 
+					select (Refinement) e;
+					
+			foreach (var refinement in refinements) {
 				writer.WriteStartElement("refinement");
 				writer.WriteAttributeString("id", refinement.Id);
 				writer.WriteAttributeString("name", refinement.Name);
@@ -79,7 +84,11 @@ namespace KaosEditor
 				writer.WriteEndElement();
 			}
 			
-			foreach (var responsibility in goal.Responsibilities) {
+			var responsibilities = from e in model.Elements 
+				where e is Responsibility && ((Responsibility) e).Goal.Equals (goal) 
+					select (Responsibility) e;
+			
+			foreach (var responsibility in responsibilities) {
 				writer.WriteStartElement("responsibility");
 				writer.WriteAttributeString("id", responsibility.Id);
 				writer.WriteAttributeString("name", responsibility.Name);

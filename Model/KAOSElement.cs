@@ -42,7 +42,7 @@ namespace KaosEditor.Model
 			set;
 		}
 		
-		public void PopulateContextMenu (Gtk.Menu menu, MenuContext context)
+		public virtual void PopulateContextMenu (Gtk.Menu menu, MenuContext context)
 		{
 			if (!(context.Initiator is DrawingArea)
 				&& context.Controller.Window.HasCurrentView()) {

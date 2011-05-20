@@ -200,7 +200,6 @@ namespace KaosEditor
 					Goal goal = (Goal) Model.Get(futureGoal.id);
 					if (goal != null) {
 						refinement.Refined = goal;
-						goal.Refinements.Add(refinement);
 						Model.Add(refinement);
 					}
 				}

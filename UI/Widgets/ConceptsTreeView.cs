@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Gtk;
 using KaosEditor.Events;
@@ -333,7 +334,11 @@ namespace KaosEditor.UI.Widgets
 		private void AddGoalElement (TreeIter iter, Goal g, List<string> expandedNodes)
 		{
 			var iiter = store.AppendValues(iter, g.Name.Replace("\n", ""), g, goalPixbuf);
-			foreach (var refinement in g.Refinements) {
+			var refinements = from e in this.window.Controller.Model.Elements
+				where e is Refinement && ((Refinement) e).Refined.Equals (g)
+				select (Refinement) e;
+				
+			foreach (var refinement in refinements) {
 				var iiiter = store.AppendValues(iiter, refinement.Name, refinement, refinementPixbuf);
 				foreach (var g2 in refinement.Refinees) {
 					if (g2 is Goal) {
@@ -342,7 +347,11 @@ namespace KaosEditor.UI.Widgets
 				}
 			}
 			
-			foreach (var responsibility in g.Responsibilities) {
+			var responsibilities = from e in this.window.Model.Elements 
+				where e is Responsibility && ((Responsibility) e).Goal.Equals (g) 
+					select (Responsibility) e;
+			
+			foreach (var responsibility in responsibilities) {
 				var iiiter = store.AppendValues(iiter, responsibility.Name, responsibility, responsibilityPixbuf);
 				store.AppendValues (iiiter, responsibility.Agent.Name, responsibility, agentPixbuf);
 			}

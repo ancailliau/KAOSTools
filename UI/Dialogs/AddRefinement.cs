@@ -113,6 +113,14 @@ namespace KaosEditor.UI.Dialogs
 					childrenComboStore.AppendValues(g.Name.Replace ("\n", ""), g as Goal);
 				}
 			}
+			
+			childrenNodeView.RowActivated += delegate(object o, RowActivatedArgs args) {
+				TreeIter iter;
+				if (childrenNodeStore.GetIter(out iter, args.Path)) {
+					childrenNodeStore.Remove(ref iter);
+				}
+			};
+			
 		}
 		
 		/// <summary>
@@ -154,7 +162,6 @@ namespace KaosEditor.UI.Dialogs
 			if (this.refinees.Count > 0 && name != "") {
 				var refinement = new Refinement(name);
 				refinement.Refined = this.parentGoal;
-				this.parentGoal.Refinements.Add(refinement);
 				foreach (var refinee in this.refinees) {
 					refinement.Refinees.Add(refinee);
 				}

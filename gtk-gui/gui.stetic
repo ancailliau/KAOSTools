@@ -342,7 +342,7 @@
             <property name="ShowArrow">False</property>
             <property name="ButtonStyle">Icons</property>
             <property name="IconSize">SmallToolbar</property>
-            <node name="__gtksharp_129_Stetic_Editor_ActionToolbar" type="Toolbar">
+            <node name="toolbar1" type="Toolbar">
               <node type="Toolitem" action="openAction1" />
               <node type="Separator" />
               <node type="Toolitem" action="saveAction1" />
