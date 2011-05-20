@@ -147,13 +147,15 @@ namespace KaosEditor.UI.Widgets
 			this.QueueDraw();
 		}
 		
-		private bool multipleSelection = false;
 		private List<IShape> selectedShapes = new List<IShape>();
 		private PointD lastClickedPoint;
 		
 		private bool moveShapes = false;
 		private bool hasMoved = false;
 		private IShape removalCandidate;
+		
+		private bool controlPressed = false;
+		private bool shiftPressed = false;
 		
 		protected override bool OnMotionNotifyEvent (Gdk.EventMotion evnt)
 		{
@@ -182,7 +184,7 @@ namespace KaosEditor.UI.Widgets
 		protected override bool OnButtonReleaseEvent (Gdk.EventButton evnt)
 		{
 			if (removalCandidate != null && !hasMoved) {
-				if (multipleSelection) {
+				if (shiftPressed) {
 					selectedShapes.Remove (removalCandidate);
 					removalCandidate.Selected = false;
 				} else {
@@ -222,7 +224,7 @@ namespace KaosEditor.UI.Widgets
 				var selectedShape = FindShapeAtPosition(evnt.X, evnt.Y);
 				if (selectedShape != null) {
 					if (!selectedShapes.Contains(selectedShape)) {
-						if (!multipleSelection) {
+						if (!shiftPressed) {
 							ClearSelection ();
 						}
 						selectedShapes.Add (selectedShape);
@@ -281,19 +283,77 @@ namespace KaosEditor.UI.Widgets
 		
 		protected override bool OnKeyPressEvent (Gdk.EventKey evnt)
 		{
-			// System.Console.WriteLine (evnt.Key);
-			// System.Console.WriteLine (evnt.KeyValue);
+			System.Console.WriteLine (evnt.Key);
+			System.Console.WriteLine (evnt.KeyValue);
+			
 			if (evnt.Key == Gdk.Key.Shift_L
 				| evnt.Key == Gdk.Key.Shift_R) {
-				multipleSelection = true;
+				shiftPressed = true;
+				
+			} else if (evnt.Key == Gdk.Key.Control_L
+				| evnt.Key == Gdk.Key.Control_R) {
+				controlPressed = true;
+				
+			} else if (evnt.Key == Gdk.Key.Left) {
+				foreach (var s in selectedShapes) {
+					s.Position = new PointD (
+						s.Position.X - 1,
+						s.Position.Y
+						);
+				}	
+				this.QueueDraw ();
+				
+			} else if (evnt.Key == Gdk.Key.Right) {
+				foreach (var s in selectedShapes) {
+					s.Position = new PointD (
+						s.Position.X + 1,
+						s.Position.Y
+						);
+				}	
+				this.QueueDraw ();
+				
+			} else if (evnt.Key == Gdk.Key.Up) {
+				foreach (var s in selectedShapes) {
+					s.Position = new PointD (
+						s.Position.X,
+						s.Position.Y - 1
+						);
+				}	
+				this.QueueDraw ();
+				
+			} else if (evnt.Key == Gdk.Key.Down) {
+				foreach (var s in selectedShapes) {
+					s.Position = new PointD (
+						s.Position.X,
+						s.Position.Y + 1
+						);
+				}	
+				this.QueueDraw ();
+				
+			} else if (controlPressed & (evnt.Key == Gdk.Key.a
+				| evnt.Key == Gdk.Key.A)) {
+				
+				selectedShapes.Clear ();
+				selectedShapes.AddRange (this.CurrentView.Shapes);
+				foreach (var s in selectedShapes) {
+					s.Selected = true;
+				}
+				this.QueueDraw ();
+				
 			}
-			return base.OnKeyPressEvent (evnt);
+			
+			return true;
 		}
 		
 		protected override bool OnKeyReleaseEvent (Gdk.EventKey evnt)
 		{
-			multipleSelection = false;
-			return base.OnKeyReleaseEvent (evnt);
+			if (evnt.Key == Gdk.Key.Shift_L | evnt.Key == Gdk.Key.Shift_R) {
+				shiftPressed = false;
+			} else if (evnt.Key == Gdk.Key.Control_L | evnt.Key == Gdk.Key.Control_R) {
+				controlPressed = false;
+			}
+			
+			return true;
 		}
 		
 		protected IShape FindShapeAtPosition(double x, double y)
