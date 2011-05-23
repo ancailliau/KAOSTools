@@ -83,7 +83,7 @@ namespace KaosEditor.UI.Widgets
 		{
 			// Move to page if page already exists
 			foreach (var child in this.Children) {
-				if (((TabLabel) this.GetTabLabel (child)).Name == view.Name) {
+				if (((TabLabel) this.GetTabLabel (child)).Text == view.Name) {
 					this.CurrentPage = this.PageNum(child);
 					return ;
 				}
@@ -106,9 +106,9 @@ namespace KaosEditor.UI.Widgets
 				}
 			};
 			scroll.AddWithViewport(diagram);
-			this.AppendPage(scroll, tabLabel);
-			
+			int page = this.AppendPage(scroll, tabLabel);
 			this.ShowAll();
+			this.CurrentPage = page;
 		}
 		
 		/// <summary>
