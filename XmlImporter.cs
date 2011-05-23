@@ -28,6 +28,7 @@ namespace KaosEditor
 			public string definition = "";
 			public List<FutureRefinement> refinements = new List<FutureRefinement>();
 			public List<FutureResponsibility> futureResponsibilities = new List<FutureResponsibility>();
+			public List<FutureObstruction> futureObstructions = new List<FutureObstruction>();
 		}
 		
 		private class FutureAgent {
@@ -46,6 +47,11 @@ namespace KaosEditor
 			public string name = "";
 			public string agentId = "";
 			public string goalId = "";
+		}
+		
+		private class FutureObstruction {
+			public string id = "";
+			public string obstacleId = "";
 		}
 		
 		private class FutureView {
@@ -137,6 +143,13 @@ namespace KaosEditor
 								agentId = reader.GetAttribute("agent-id")
 							};
 							futurGoal.futureResponsibilities.Add(responsibility);
+						
+						} else if (reader.IsStartElement ("obstruction")) {
+							var obstruction = new FutureObstruction () {
+								id = reader.GetAttribute ("id"),
+								obstacleId = reader.GetAttribute ("obstacle-id")
+							};
+							futurGoal.futureObstructions.Add (obstruction);
 							
 						} else if (reader.IsStartElement ("definition")) {
 							reader.Read ();
@@ -240,6 +253,11 @@ namespace KaosEditor
 					Model.Add(new Responsibility (futureResponsibility.id,
 						(Goal) Model.Get(futureResponsibility.goalId),
 						(Agent) Model.Get(futureResponsibility.agentId)));
+				}
+				foreach (var futureObstruction in futureGoal.futureObstructions) {
+					Model.Add(new Obstruction (
+						(Goal) Model.Get(futureGoal.id),
+						(Obstacle) Model.Get(futureObstruction.obstacleId)) { Id = futureObstruction.id});
 				}
 			}
 			

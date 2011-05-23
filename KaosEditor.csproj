@@ -54,6 +54,8 @@
     <EmbeddedResource Include="Images\Goal.png" />
     <EmbeddedResource Include="Images\Agent.png" />
     <EmbeddedResource Include="Images\Obstacle.png" />
+    <EmbeddedResource Include="Images\Model.png" />
+    <EmbeddedResource Include="Images\Obstruction.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gtk-gui\generated.cs" />
@@ -116,6 +118,10 @@
     <Compile Include="Controllers\ObstacleController.cs" />
     <Compile Include="AddObstacleDialog.cs" />
     <Compile Include="gtk-gui\KaosEditor.AddObstacleDialog.cs" />
+    <Compile Include="Controllers\ObstructionController.cs" />
+    <Compile Include="Model\Obstruction.cs" />
+    <Compile Include="AddObstructionDialog.cs" />
+    <Compile Include="gtk-gui\KaosEditor.AddObstructionDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

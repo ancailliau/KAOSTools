@@ -112,6 +112,17 @@ namespace KaosEditor
 				writer.WriteEndElement();
 			}
 			
+			var obstructions = from e in model.Elements 
+				where e is Obstruction && ((Obstruction) e).Goal.Equals (goal) 
+					select (Obstruction) e;
+			
+			foreach (var obstruction in obstructions) {
+				writer.WriteStartElement("obstruction");
+				writer.WriteAttributeString("id", obstruction.Id);
+				writer.WriteAttributeString("obstacle-id", obstruction.Obstacle.Id);
+				writer.WriteEndElement();
+			}
+			
 			writer.WriteEndElement();
 		}
 		

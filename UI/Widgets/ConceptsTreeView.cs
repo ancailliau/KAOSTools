@@ -48,6 +48,7 @@ namespace KaosEditor.UI.Widgets
 		private static Gdk.Pixbuf agentPixbuf;
 		private static Gdk.Pixbuf responsibilityPixbuf;
 		private static Gdk.Pixbuf obstaclePixbuf;
+		private static Gdk.Pixbuf obstructionPixbuf;
 		
 		static ConceptsTreeView () {
 			try {
@@ -56,6 +57,7 @@ namespace KaosEditor.UI.Widgets
 				agentPixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Agent.png");
 				responsibilityPixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Responsibility.png");
 				obstaclePixbuf = Gdk.Pixbuf.LoadFromResource ("KaosEditor.Images.Obstacle.png");
+				obstructionPixbuf = Gdk.Pixbuf.LoadFromResource ("KaosEditor.Images.Obstruction.png");
 				
 			} catch (Exception e) {
 				Logger.Warning ("Cannot load images from ressources", e);
@@ -339,12 +341,21 @@ namespace KaosEditor.UI.Widgets
 			if (responsibilities.Count() > 1) {
 				int i = 1;
 				foreach (var responsibility in responsibilities) {
-					var iiiter = store.AppendValues(iiter, string.Format("Alternative '{0}'", i++), responsibility, responsibilityPixbuf);
+					var iiiter = store.AppendValues(iiter, string.Format("Alternative {0}", i++), responsibility, responsibilityPixbuf);
 					store.AppendValues (iiiter, responsibility.Agent.Name, responsibility, agentPixbuf);
 				}
 			} else if (responsibilities.Count() > 0) {
 				var responsibility = responsibilities.First();
-				store.AppendValues (iiter, responsibility.Agent.Name, responsibility, agentPixbuf);
+				store.AppendValues (iiter, responsibility.Agent.Name, responsibility.Agent, agentPixbuf);
+			}
+			
+			var obstructions = from e in this.window.Model.Elements 
+				where e is Obstruction && ((Obstruction) e).Goal.Equals (g) 
+					select (Obstruction) e;
+			int j = 1;
+			foreach (var obstruction in obstructions) {
+				var iiiter = store.AppendValues(iiter, string.Format("Obstruction {0}", j++), obstruction, obstructionPixbuf);
+				store.AppendValues (iiiter, obstruction.Obstacle.Name, obstruction.Obstacle, obstaclePixbuf);
 			}
 		}
 	}
