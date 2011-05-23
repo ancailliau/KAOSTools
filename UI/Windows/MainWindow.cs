@@ -109,6 +109,14 @@ namespace KaosEditor.UI.Windows {
 			hpaned1.ShowAll();
 					
 			Model.Changed += UpdateWidgets;
+			Model.ElementAdded += delegate(KAOSElement element) {
+				viewsNotebook.RedrawCurrentView();
+				conceptTreeView.Update();
+			};
+			model.ElementRemoved += delegate(KAOSElement element) {
+				viewsNotebook.RedrawCurrentView();
+				conceptTreeView.Update();
+			};
 			Model.Views.ViewsChanged += UpdateWidgets;
 			Model.Views.AddedView += UpdateWidgets;
 		}

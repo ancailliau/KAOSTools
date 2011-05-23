@@ -47,6 +47,7 @@ namespace KaosEditor.UI.Widgets
 		private static Gdk.Pixbuf refinementPixbuf;
 		private static Gdk.Pixbuf agentPixbuf;
 		private static Gdk.Pixbuf responsibilityPixbuf;
+		private static Gdk.Pixbuf obstaclePixbuf;
 		
 		static ConceptsTreeView () {
 			try {
@@ -54,6 +55,7 @@ namespace KaosEditor.UI.Widgets
 				refinementPixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Refinement.png");
 				agentPixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Agent.png");
 				responsibilityPixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Responsibility.png");
+				obstaclePixbuf = Gdk.Pixbuf.LoadFromResource ("KaosEditor.Images.Obstacle.png");
 				
 			} catch (Exception e) {
 				Logger.Warning ("Cannot load images from ressources", e);
@@ -160,7 +162,7 @@ namespace KaosEditor.UI.Widgets
 				TreeIter iter;
 				if (store.GetIter(out iter, path)) {
 					object o = store.GetValue(iter, 1);
-					
+					this.window.Controller.PopulateContextMenu (this, o as KAOSElement);
 				}
 			}
 		}
@@ -261,6 +263,8 @@ namespace KaosEditor.UI.Widgets
 		/// </summary>
 		public void Update()
 		{
+			Logger.Info ("Update concept list");
+			
 			// Save expand/collapse state
 			List<string> expandedNodes = new List<string>();
 			SaveState(expandedNodes);
@@ -279,6 +283,14 @@ namespace KaosEditor.UI.Widgets
 			
 			foreach (var element in agents) {
 				store.AppendValues(iter, element.Name, element, agentPixbuf);
+			}
+			
+			iter = store.AppendValues ("Obstacles", null, obstaclePixbuf);
+			var obstacles = from e in this.window.Model.Elements
+				where e is Obstacle select (Obstacle) e;
+			
+			foreach (var element in obstacles) {
+				store.AppendValues(iter, element.Name, element, obstaclePixbuf);
 			}
 			
 			RestoreState (expandedNodes);
