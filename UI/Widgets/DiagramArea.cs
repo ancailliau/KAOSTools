@@ -254,9 +254,6 @@ namespace KaosEditor.UI.Widgets
 		
 		protected override bool OnKeyPressEvent (Gdk.EventKey evnt)
 		{
-			System.Console.WriteLine (evnt.Key);
-			System.Console.WriteLine (evnt.KeyValue);
-			
 			if (evnt.Key == Gdk.Key.Shift_L
 				| evnt.Key == Gdk.Key.Shift_R) {
 				shiftPressed = true;
