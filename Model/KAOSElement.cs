@@ -37,6 +37,12 @@ namespace KaosEditor.Model
 			get;
 			set;
 		}
+		
+		public KAOSElement ()
+		{
+			Id = Guid.NewGuid ().ToString ();
+		}
+		
 	}
 }
 

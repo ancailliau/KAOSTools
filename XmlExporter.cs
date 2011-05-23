@@ -57,6 +57,22 @@ namespace KaosEditor
 			}
 			writer.WriteEndElement();
 			
+			writer.WriteStartElement("obstacles");
+			foreach (var obstacle in model.Elements.FindAll(e => e is Obstacle)) {
+				WriteObstacle(writer, obstacle as Obstacle);
+			}
+			writer.WriteEndElement();
+			
+			
+			writer.WriteEndElement();
+		}
+		
+		public void WriteObstacle(XmlWriter writer, Obstacle obstacle)
+		{	
+			writer.WriteStartElement("obstacle");
+			writer.WriteAttributeString("id", obstacle.Id);
+			writer.WriteAttributeString("name", obstacle.Name);
+			writer.WriteElementString("definition", obstacle.Definition);
 			writer.WriteEndElement();
 		}
 		

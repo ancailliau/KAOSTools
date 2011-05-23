@@ -40,6 +40,7 @@ namespace KaosEditor.Model
 		}
 		
 		public Obstacle (string name, string definition)
+			: base ()
 		{
 			Name = name;
 			Definition = definition;

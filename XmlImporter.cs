@@ -20,6 +20,7 @@ namespace KaosEditor
 		private List<FutureGoal> futureGoals;
 		private List<FutureAgent> futureAgents;
 		private List<FutureView> futureViews;
+		private List<FutureObstacle> futureObstacles;
 		
 		private class FutureGoal {
 			public string id = "";
@@ -58,6 +59,12 @@ namespace KaosEditor
 			public int depth;
 		}
 		
+		private class FutureObstacle {
+			public string id = "";
+			public string name = "";
+			public string definition = "";
+		}
+		
 		private MainController controller;
 		
 		public XmlImporter (string filename, MainController controller)
@@ -68,6 +75,7 @@ namespace KaosEditor
 			this.futureGoals = new List<FutureGoal>();
 			this.futureViews = new List<FutureView>();
 			this.futureAgents = new List<FutureAgent>();
+			this.futureObstacles = new List<FutureObstacle> ();
 			
 			this.controller = controller;
 		}
@@ -145,6 +153,21 @@ namespace KaosEditor
 					string name = reader.GetAttribute ("name");
 					var futurAgent = new FutureAgent () { id = id, name = name };
 					this.futureAgents.Add (futurAgent);					
+				
+				} else if (reader.IsStartElement ("obstacle")) {
+					string id = reader.GetAttribute ("id") ?? Guid.NewGuid().ToString();
+					string name = reader.GetAttribute ("name");
+					var futurObstacle = new FutureObstacle () { id = id, name = name };
+					while (!reader.IsEmptyElement && reader.Read()) {
+						if (reader.IsStartElement ("definition")) {
+							reader.Read ();
+							futurObstacle.definition = reader.Value.Trim();
+							
+						} else if (reader.IsEndElement ("obstacle")) {
+							break;
+						}
+					}
+					futureObstacles.Add (futurObstacle);
 					
 				} else if (reader.IsEndElement ("models")) {
 					break;
@@ -194,6 +217,12 @@ namespace KaosEditor
 			
 			foreach (var futureAgent in futureAgents) {
 				Model.Add(new Agent (futureAgent.name, futureAgent.id));
+			}
+			
+			foreach (var futureObstacle in futureObstacles) {
+				Model.Add(new Obstacle (futureObstacle.name, futureObstacle.definition) {
+					Id = futureObstacle.id
+				});
 			}
 			
 			foreach (var futureGoal in futureGoals) {
