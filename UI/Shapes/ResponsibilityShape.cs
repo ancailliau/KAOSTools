@@ -38,6 +38,8 @@ namespace KaosEditor.UI.Shapes
 	/// </summary>
 	public class ResponsibilityShape : Shape
 	{
+		private string fillColor = "#cc0000";
+		private string strokeColor = "#000";
 		
 		/// <summary>
 		/// The radius.
@@ -77,11 +79,17 @@ namespace KaosEditor.UI.Shapes
 			context.MoveTo(Position.X + radius, Position.Y);
 			context.Arc(Position.X, Position.Y, radius, 0, Math.PI * 2);
 			
-			context.SetColor ("#f70104");
+			context.SetColor (this.fillColor);
 			context.FillPreserve();
 			
-			context.SetColor ("#000");
+			context.SetColor (this.strokeColor);
 			context.Stroke();
+			
+			if (!Selected) {
+				context.Arc(Position.X, Position.Y, radius - 1, 0, Math.PI * 2);
+				context.SetColor ("#fff", .5f);
+				context.Stroke();
+			}
 			
 			var element = (Responsibility) RepresentedElement;
 			
@@ -92,7 +100,7 @@ namespace KaosEditor.UI.Shapes
 				FilledArrow arrow = new FilledArrow() {
 					Start = this,
 					End = goalShape,
-					FillColor = "#f70104"
+					FillColor = this.fillColor
 				};
 				arrow.Display(context, view);
 			}

@@ -39,6 +39,9 @@ namespace KaosEditor.UI.Shapes
 	public class RefinementShape : Shape
 	{
 		
+		private string fillColor = "#fcaf3e";
+		private string strokeColor = "#000";
+		
 		/// <summary>
 		/// The radius.
 		/// </summary>
@@ -79,11 +82,17 @@ namespace KaosEditor.UI.Shapes
 			context.MoveTo(Position.X + radius, Position.Y);
 			context.Arc(Position.X, Position.Y, radius, 0, Math.PI * 2);
 			
-			context.SetColor("#fffb49");
+			context.SetColor(this.fillColor);
 			context.FillPreserve();
 			
-			context.SetColor ("#000");
+			context.SetColor (this.strokeColor);
 			context.Stroke();
+			
+			if (!Selected) {
+				context.Arc(Position.X, Position.Y, radius - 1, 0, Math.PI * 2);
+				context.SetColor ("#fff", .3f);
+				context.Stroke ();
+			}
 			
 			// If the refined goal is present as a shape in the view, draw the arrow to.
 			IShape refinedShape = null;
@@ -91,7 +100,7 @@ namespace KaosEditor.UI.Shapes
 				var arrow = new FilledArrow() {
 					Start = this,
 					End = refinedShape,
-					FillColor = "#fffb49"
+					FillColor = this.fillColor
 				};
 				arrow.Display(context, view);
 			}

@@ -37,9 +37,16 @@ namespace KaosEditor.UI.Shapes
 	/// </summary>
 	public class AgentShape : Shape
 	{
+		
+		private string fillColor = "#fce94f";
+		private string strokeColor = "#c4a000";
+		private string textColor = "#000";
+		
 		/// <summary>
 		/// The width.
 		/// </summary>
+		/// 
+		/// 
 		private int width;
 		
 		/// <summary>
@@ -108,17 +115,30 @@ namespace KaosEditor.UI.Shapes
 			context.LineTo (Position.X + width / 2 - delta, Position.Y - height / 2);
 			context.ClosePath ();
 			
-			context.SetColor("#fefec3");
+			context.SetColor(this.fillColor);
 			context.FillPreserve();
 			
 			var oldLineWidth = context.LineWidth;
-			context.SetColor ("#000");
+			context.SetColor (this.strokeColor);
 			if (Selected) {
 				context.LineWidth = 2.5;
 			}
 			context.Stroke();
 			context.LineWidth = oldLineWidth;
 			
+			if (!Selected) {
+				context.MoveTo (Position.X - width / 2 + delta + 1, Position.Y - height / 2 + 1);
+				context.LineTo (Position.X - width / 2 + 1, Position.Y);
+				context.LineTo (Position.X - width / 2 + delta + 1, Position.Y + height / 2 - 1);
+				context.LineTo (Position.X + width / 2 - delta - 1, Position.Y + height / 2 - 1);
+				context.LineTo (Position.X + width / 2 - 1, Position.Y);
+				context.LineTo (Position.X + width / 2 - delta - 1, Position.Y - height / 2 + 1);
+				context.ClosePath ();
+				context.SetColor ("#fff", .5f);
+				context.Stroke ();
+			}
+			
+			context.SetColor (this.textColor);
 			context.MoveTo(Position.X, Position.Y - textHeight/2);
 			Pango.CairoHelper.ShowLayout(context, pangoLayout);
 			

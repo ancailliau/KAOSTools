@@ -39,6 +39,9 @@ namespace KaosEditor.UI.Shapes
 	/// </summary>
 	public class ObstacleShape : Shape
 	{
+		private string fillColor = "#ef2929";
+		private string strokeColor = "#a40000";
+		private string textColor = "#000";
 		
 		/// <summary>
 		/// The width.
@@ -110,16 +113,29 @@ namespace KaosEditor.UI.Shapes
 			context.RelLineTo(- width, 0);
 			context.ClosePath();
 			
-			context.SetColor("#fd9b7c");
+			context.SetColor(this.fillColor);
 			context.FillPreserve();
 			
 			var oldLineWidth = context.LineWidth;
-			context.SetColor("#000");
+			context.SetColor(this.strokeColor);
 			if (Selected) {
 				context.LineWidth = 2.5;
 			}
 			context.Stroke();
 			context.LineWidth = oldLineWidth;
+		
+			if (!Selected) {	
+				context.MoveTo(Position.X - width / 2 + shear / 2 + 1,
+					Position.Y - height/2 + 1);
+				context.RelLineTo (width - 2, 0);
+				context.RelLineTo (-shear, height - 2);
+				context.RelLineTo (- width + 2, 0);
+				context.ClosePath ();
+				context.SetColor ("#fff", .3f);
+				context.Stroke ();
+			}
+			
+			context.SetColor (this.textColor);
 			
 			context.MoveTo(Position.X, Position.Y - textHeight/2);
 			Pango.CairoHelper.ShowLayout(context, pangoLayout);
