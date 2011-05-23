@@ -45,7 +45,7 @@ namespace KaosEditor.Model
 		/// <value>
 		/// The refined.
 		/// </value>
-		public IModelElement Refined {
+		public Goal Refined {
 			get;
 			private set;
 		}
@@ -64,7 +64,7 @@ namespace KaosEditor.Model
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Model.Refinement"/> class.
 		/// </summary>
-		public Refinement (IModelElement parent)
+		public Refinement (Goal parent)
 		{
 			Id = Guid.NewGuid().ToString();
 			Refinees = new List<IModelElement>();

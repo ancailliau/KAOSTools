@@ -35,7 +35,7 @@ namespace KaosEditor.UI.Dialogs
 	/// <summary>
 	/// Represents the dialog to add a responsibility link.
 	/// </summary>
-	public partial class AddResponsibility : Gtk.Dialog
+	public partial class AddResponsibilityDialog : Gtk.Dialog
 	{
 		/// <summary>
 		/// The store.
@@ -53,13 +53,12 @@ namespace KaosEditor.UI.Dialogs
 			}
 		}
 		
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KaosEditor.AddResponsibility"/> class.
-		/// </summary>
-		/// <param name='goal'>
-		/// Goal.
-		/// </param>
-		public AddResponsibility (MainWindow window, Goal goal)
+		public AddResponsibilityDialog (MainWindow window, Goal goal)
+			: this (window, goal, null)
+		{
+		}
+		
+		public AddResponsibilityDialog (MainWindow window, Goal goal, Agent agent)
 			: base ("Assign responsibility", window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
@@ -71,10 +70,15 @@ namespace KaosEditor.UI.Dialogs
 			// agentComboBox.PackStart(cell, false);
 			agentComboBox.AddAttribute(cell, "text", 0);
 			
+			TreeIter iter;
 			foreach (var element in window.Controller.Model.Elements.FindAll(e => e is Agent)) {
-				var agent = (Agent) element;
-				store.AppendValues (agent.Name, agent);
+				var possibleAgent = (Agent) element;
+				var possibleIter = store.AppendValues (possibleAgent.Name, possibleAgent);
+				if (possibleAgent == agent) {
+					iter = possibleIter;
+				}
 			}
+			this.agentComboBox.SetActiveIter (iter);
 		}
 	}
 }

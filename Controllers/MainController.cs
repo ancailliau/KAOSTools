@@ -51,6 +51,16 @@ namespace KaosEditor.Controllers
 			private set;
 		}
 		
+		public RefinementController RefinementController  {
+			get;
+			private set;
+		}
+		
+		public ResponsibilityController ResponsibilityController  {
+			get;
+			private set;
+		}
+		
 		/// <summary>
 		/// The current filename (empty if not yet saved)
 		/// </summary>
@@ -108,6 +118,8 @@ namespace KaosEditor.Controllers
 			
 			GoalController = new GoalController (this);
 			AgentController = new AgentController (this);
+			RefinementController = new RefinementController (this);
+			ResponsibilityController = new ResponsibilityController (this);
 			
 			// Finish loading application
 			this.LoadConfiguration();
@@ -331,6 +343,8 @@ namespace KaosEditor.Controllers
 			
 			GoalController.PopulateContextMenu (menu, source, clickedElement);
 			AgentController.PopulateContextMenu (menu, source, clickedElement);
+			RefinementController.PopulateContextMenu (menu, source, clickedElement);
+			ResponsibilityController.PopulateContextMenu (menu, source, clickedElement);
 			
 			if (menu.Children.Length > 0) {
 				menu.ShowAll ();

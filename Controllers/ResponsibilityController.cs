@@ -1,5 +1,5 @@
 // 
-// GoalController.cs
+// ResponsibilityController.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -25,59 +25,57 @@
 // THE SOFTWARE.
 using System;
 using KaosEditor.Model;
-using KaosEditor.UI.Dialogs;
 using Gtk;
-using KaosEditor.UI.Widgets;
+using KaosEditor.UI.Dialogs;
 
 namespace KaosEditor.Controllers
 {
-	public class GoalController
+	public class ResponsibilityController
 	{
 		
 		private MainController controller;
 		
-		public GoalController (MainController controller)
+		public ResponsibilityController (MainController controller)
 		{
 			this.controller = controller;
 		}
 		
-		public void AddGoal ()
+		public void AddResponsibility (Goal goal)
 		{
-			var dialog = new AddGoalDialog(controller.Window);
-			dialog.Response += delegate(object o, Gtk.ResponseArgs args) {
-				if (args.ResponseId == Gtk.ResponseType.Ok) {
-					var goal = new Goal(dialog.GoalName, dialog.GoalDefinition);
-					controller.Model.Add (goal);
+			var dialog = new AddResponsibilityDialog (this.controller.Window, goal);
+			dialog.Response += delegate(object o, ResponseArgs args) {
+				if (args.ResponseId == ResponseType.Ok && dialog.ResponsibleAgent != null) {
+					var newResponsibility = new Responsibility (
+						goal, dialog.ResponsibleAgent);
+					this.controller.Model.Add (newResponsibility);
 				}
-				dialog.Destroy();
+				dialog.Destroy ();
 			};
-			
 			dialog.Present ();
 		}
 		
-		public void EditGoal (Goal goal)
+		public void EditResponsibility (Responsibility responsibility)
 		{
-			var dialog = new AddGoalDialog(controller.Window, goal);
-			dialog.Response += delegate(object o, Gtk.ResponseArgs args) {
-				if (args.ResponseId == Gtk.ResponseType.Ok) {
-					goal.Name = dialog.GoalName;
-					goal.Definition = dialog.GoalDefinition;
+			var dialog = new AddResponsibilityDialog (this.controller.Window, responsibility.Goal, responsibility.Agent);
+			dialog.Response += delegate(object o, ResponseArgs args) {
+				if (args.ResponseId == ResponseType.Ok && dialog.ResponsibleAgent != null) {
+					responsibility.Agent = dialog.ResponsibleAgent;
+					this.controller.Model.Update (responsibility);
 				}
-				dialog.Destroy();
+				dialog.Destroy ();
 			};
-			
 			dialog.Present ();
 		}
 		
-		public void RemoveGoal (Goal goal)
+		public void RemoveResponsibility (Responsibility responsibility)
 		{
 			var dialog = new MessageDialog (this.controller.Window,
 				DialogFlags.DestroyWithParent, MessageType.Question,
-				ButtonsType.YesNo, false, string.Format ("Delete goal '{0}'?", goal.Name));
+				ButtonsType.YesNo, false, string.Format ("Delete responsibility for '{0}' by '{1}'?", responsibility.Goal.Name, responsibility.Agent.Name));
 			
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Yes) {
-					this.controller.Model.Remove (goal);
+					this.controller.Model.Remove (responsibility);
 				}
 				dialog.Destroy ();
 			};
@@ -87,32 +85,31 @@ namespace KaosEditor.Controllers
 		
 		public void PopulateContextMenu (Menu menu, object source, IModelElement clickedElement)
 		{
-			if (clickedElement == null) {				
-				var addItem = new MenuItem("Add goal...");
-				addItem.Activated += delegate(object sender2, EventArgs e) {
-					this.AddGoal ();
+			if (clickedElement is Goal) {	
+				var clickedGoal = clickedElement as Goal;
+				var assignItem = new MenuItem("Assign responsibility...");
+				assignItem.Activated += delegate(object sender2, EventArgs e) {
+					this.AddResponsibility (clickedGoal);
 				};
-				menu.Add(addItem);
+				menu.Add(assignItem);
 			}
 			
-			if (clickedElement is Goal) {
-				var clickedGoal = (Goal) clickedElement;
+			if (clickedElement is Responsibility) {
+				var clickedResponsibility = clickedElement as Responsibility;
 				
 				var editItem = new MenuItem("Edit...");
 				editItem.Activated += delegate(object sender2, EventArgs e) {
-					this.EditGoal (clickedGoal);
+					this.EditResponsibility (clickedResponsibility);
 				};
 				menu.Add(editItem);
 				
 				var deleteItem = new MenuItem("Delete");
 				deleteItem.Activated += delegate(object sender2, EventArgs e) {
-					this.RemoveGoal (clickedGoal);
+					this.RemoveResponsibility (clickedResponsibility);
 				};
 				menu.Add(deleteItem);
-				
-				menu.Add (new SeparatorMenuItem ());
-				
 			}
+			
 		}
 	}
 }

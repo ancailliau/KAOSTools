@@ -37,7 +37,7 @@ namespace KaosEditor.UI.Dialogs
 	/// <summary>
 	/// Represents the dialog to add a new refinement
 	/// </summary>
-	public partial class AddRefinement : Gtk.Dialog
+	public partial class AddRefinementDialog : Gtk.Dialog
 	{
 	
 		/// <summary>
@@ -58,8 +58,13 @@ namespace KaosEditor.UI.Dialogs
 			private set;
 		}
 		
+		public AddRefinementDialog (MainWindow window, Goal parent)
+			: this (window, parent, new List<IModelElement> ())
+		{
+		}
+		
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KaosEditor.UI.Dialogs.AddRefinement"/> class.
+		/// Initializes a new instance of the <see cref="KaosEditor.UI.Dialogs.AddRefinementDialog"/> class.
 		/// </summary>
 		/// <param name='window'>
 		/// Window.
@@ -67,7 +72,7 @@ namespace KaosEditor.UI.Dialogs
 		/// <param name='parent'>
 		/// Parent.
 		/// </param>
-		public AddRefinement (MainWindow window, Goal parent)
+		public AddRefinementDialog (MainWindow window, Goal parent, List<IModelElement> refinees)
 			: base (string.Format("Refine goal {0}", parent.Name), 
 				window, DialogFlags.DestroyWithParent)
 		{
@@ -99,13 +104,35 @@ namespace KaosEditor.UI.Dialogs
 				}
 			}
 			
-			childrenNodeView.RowActivated += delegate(object o, RowActivatedArgs args) {
-				TreeIter iter;
-				if (childrenNodeStore.GetIter(out iter, args.Path)) {
-					childrenNodeStore.Remove(ref iter);
-				}
-			};
+			this.AddEvents((int) Gdk.EventMask.ButtonPressMask);
+			childrenNodeView.ButtonPressEvent += HandleButtonPressEvent;
 			
+			foreach (var refinee in refinees) {
+				AddRefinee (refinee as Goal);
+			}
+		}
+		
+		[GLib.ConnectBeforeAttribute]
+		private void HandleButtonPressEvent (object sender, ButtonPressEventArgs args) 
+		{
+			Console.WriteLine (args.Event.Button);
+			if (args.Event.Button == 3) {
+				TreeIter iter;
+				var path = new TreePath();
+				childrenNodeView.GetPathAtPos(System.Convert.ToInt16(args.Event.X), 
+					System.Convert.ToInt16(args.Event.Y), out path);
+				
+				if (childrenNodeStore.GetIter(out iter, path)) {
+					var menu = new Menu();
+					var removeItem = new MenuItem ("Remove");
+					removeItem.Activated += delegate(object sender2, EventArgs e) {
+						childrenNodeStore.Remove(ref iter);
+					};
+					menu.Add (removeItem);
+					menu.ShowAll ();
+					menu.Popup ();
+				}
+			}
 		}
 		
 		/// <summary>
@@ -122,12 +149,17 @@ namespace KaosEditor.UI.Dialogs
 			TreeIter iter = new TreeIter();
 			
 			if (childrenComboBox.GetActiveIter(out iter)) {
-				// Get the element
 				var element = (Goal) childrenComboStore.GetValue(iter, 1);
-				
-				Refinees.Add(element);
-				childrenNodeStore.AppendValues(element.Name, element);
+				AddRefinee (element);
 			}
+		}
+		
+		private void AddRefinee (Goal element)
+		{
+			if (element == null) throw new ArgumentNullException ("element");
+			
+			Refinees.Add(element);
+			childrenNodeStore.AppendValues(element.Name, element);
 		}
 	}
 }
