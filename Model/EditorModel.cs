@@ -105,6 +105,9 @@ namespace KaosEditor.Model
 		/// </param>
 		public void Add (IModelElement element) 
 		{
+			if (Elements.Contains (element)) {
+				throw new ArgumentException (string.Format("Duplicated element '{0}'", element));
+			}
 			Elements.Add(element);
 			if (ElementAdded != null) {
 				ElementAdded (element);

@@ -189,7 +189,7 @@ namespace KaosEditor
 				var goal = new Goal(futureGoal.name, futureGoal.definition) {
 					Id = futureGoal.id
 				};
-				Model.Add(goal);
+				Model.Add (goal);
 			}
 			
 			foreach (var futureAgent in futureAgents) {
@@ -204,7 +204,7 @@ namespace KaosEditor
 						foreach (var futureElement in futureRefinement.refinees) {
 							refinement.Add(Model.Get(futureElement));
 						}
-						Model.Add(refinement);
+						Model.Add (refinement);
 					}
 				}
 				foreach (var futureResponsibility in futureGoal.futureResponsibilities) {

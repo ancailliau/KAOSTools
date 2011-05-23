@@ -306,7 +306,7 @@ namespace KaosEditor.UI.Widgets
 			if (refinements.Count() > 1) {
 				int i = 1;
 				foreach (var refinement in refinements) {
-					var iiiter = store.AppendValues(iiter, string.Format ("Alternative {0}", i), refinement, refinementPixbuf);
+					var iiiter = store.AppendValues(iiter, string.Format ("Alternative {0}", i++), refinement, refinementPixbuf);
 					foreach (var g2 in refinement.Refinees) {
 						if (g2 is Goal) {
 							AddGoalElement (iiiter, g2 as Goal, expandedNodes);
@@ -327,7 +327,7 @@ namespace KaosEditor.UI.Widgets
 			if (responsibilities.Count() > 1) {
 				int i = 1;
 				foreach (var responsibility in responsibilities) {
-					var iiiter = store.AppendValues(iiter, string.Format("Alternative '{0}'", i), responsibility, responsibilityPixbuf);
+					var iiiter = store.AppendValues(iiter, string.Format("Alternative '{0}'", i++), responsibility, responsibilityPixbuf);
 					store.AppendValues (iiiter, responsibility.Agent.Name, responsibility, agentPixbuf);
 				}
 			} else if (responsibilities.Count() > 0) {
