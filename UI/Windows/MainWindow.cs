@@ -40,6 +40,18 @@ namespace KaosEditor.UI.Windows {
 	/// </summary>
 	public partial class MainWindow: Gtk.Window
 	{	
+		private static Gdk.Pixbuf modelPixbuf;
+		private static Gdk.Pixbuf viewPixbuf;
+		static MainWindow () {
+			try {
+				modelPixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Model.png");
+				viewPixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.View.png");
+			} catch (Exception e) {
+				Logger.Warning ("Cannot load images from ressources", e);
+			}
+		}
+		
+		
 		/// <summary>
 		/// Gets or sets the model.
 		/// </summary>
@@ -91,8 +103,17 @@ namespace KaosEditor.UI.Windows {
 			
 			var notebookModelView = new Notebook ();
 			notebookModelView.TabPos = PositionType.Bottom;
-			var modelLabel = new Label ("Model");
-			var viewLabel = new Label ("Views");
+			
+			var modelLabel = new HBox ();
+			modelLabel.PackStart (new Image (modelPixbuf), false, false, 0);
+			modelLabel.PackEnd (new Label ("Model"), true, true, 0);
+			
+			var viewLabel = new HBox ();
+			viewLabel.PackStart (new Image (viewPixbuf), false, false, 0);
+			viewLabel.PackEnd (new Label ("Views"), true, true, 0);
+			
+			modelLabel.ShowAll ();
+			viewLabel.ShowAll ();
 			
 			viewList = new ViewList(this.Controller);
 			var scroll2 = new ScrolledWindow ();
