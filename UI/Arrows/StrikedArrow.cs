@@ -1,5 +1,5 @@
 // 
-// AddView.cs
+// StrikedArrow.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -23,46 +23,40 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using KaosEditor.Controllers;
-using KaosEditor.UI.Windows;
-using Gtk;
+using Cairo;
+using KaosEditor.Model;
 
-namespace KaosEditor.UI.Dialogs
+namespace KaosEditor.UI.Arrows
 {
-
-	/// <summary>
-	/// Represents the dialog to add a view
-	/// </summary>
-	public partial class AddView : Gtk.Dialog
+	public class StrikedArrow : FilledArrow
 	{
-		
-		/// <summary>
-		/// The parent window.
-		/// </summary>
-		private MainWindow window;
-		
-		public string ViewName {
-			get {
-				return nameEntry.Text.Trim ();
-			}
-		}
-		
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KaosEditor.UI.Dialogs.AddView"/> class.
-		/// </summary>
-		/// <param name='window'>
-		/// Parent window.
-		/// </param>
-		public AddView (MainWindow window)
-			: base ("Add view...", 
-				window, DialogFlags.DestroyWithParent)
+		public StrikedArrow ()
+			: base ()
 		{
-			this.Build ();
-			this.window = window;
 		}
 		
+		public void Display (Context context, View view)
+		{
+			base.Display (context, view);
+			
+			var startPosition = Start.GetAnchor(End.Position);
+			var endPosition = End.GetAnchor(Start.Position);
+			
+			var distanceFromPoint = 15;
+			var width = 5;
+			
+			double xx = startPosition.X - endPosition.X;
+			double yy = startPosition.Y - endPosition.Y;
+			double alpha = Math.Atan2(yy, xx);
+			
+			context.MoveTo (endPosition.X + distanceFromPoint * Math.Cos(alpha) + width * Math.Sin(alpha), 
+				endPosition.Y + distanceFromPoint * Math.Sin(alpha) - width * Math.Cos(alpha));
+			
+			context.LineTo (endPosition.X + distanceFromPoint * Math.Cos(alpha) - width * Math.Sin(alpha), 
+				endPosition.Y + distanceFromPoint * Math.Sin(alpha) + width * Math.Cos(alpha));
+			context.Stroke ();
+		}
 	}
 }
 

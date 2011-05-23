@@ -28,6 +28,7 @@ using Gtk;
 using KaosEditor.Controllers;
 using KaosEditor.Model;
 using KaosEditor.Logging;
+using KaosEditor.UI.Dialogs;
 
 namespace KaosEditor.UI.Widgets
 {
@@ -90,6 +91,45 @@ namespace KaosEditor.UI.Widgets
 			this.AppendColumn (column);
 			
 			this.RowActivated += OnRowActivated;
+			
+			this.AddEvents((int) Gdk.EventMask.ButtonPressMask);
+			this.ButtonPressEvent += HandleHandleButtonPressEvent;;
+			
+		}
+
+		[GLib.ConnectBeforeAttribute]
+		void HandleHandleButtonPressEvent (object sender, ButtonPressEventArgs args)
+		{
+			if (args.Event.Button == 3) {
+				var path = new TreePath();
+				this.GetPathAtPos(System.Convert.ToInt16(args.Event.X), 
+					System.Convert.ToInt16(args.Event.Y), out path);
+				
+				if (path != null) {
+					TreeIter iter;
+					if (store.GetIter(out iter, path)) {
+						object o = store.GetValue (iter, 1);
+						
+					}
+				} else {
+					var menu = new Menu ();
+					var addItem = new MenuItem ("Add view...");
+					addItem.Activated += delegate(object sender3, EventArgs e3) {
+						var dialog = new AddView (this.controller.Window);
+						dialog.Response += delegate(object sender2, Gtk.ResponseArgs args2) {
+							if (args2.ResponseId == Gtk.ResponseType.Ok & dialog.ViewName != "") {
+								this.controller.Model.Views.Add (dialog.ViewName);
+								this.controller.Window.DisplayView (dialog.ViewName);
+							}
+							dialog.Destroy ();
+						};
+						dialog.Present ();	
+					};
+					menu.Add (addItem);
+					menu.ShowAll ();
+					menu.Popup ();
+				}
+			}
 		}
 		
 		/// <summary>

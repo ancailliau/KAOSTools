@@ -39,7 +39,7 @@ namespace KaosEditor.UI.Shapes
 		
 		public static IShape Create(KAOSElement element)
 		{
-			return Create(element, 0, 0);
+			return Create(element, 10, 10);
 		}
 		
 		/// <summary>
@@ -61,6 +61,12 @@ namespace KaosEditor.UI.Shapes
 			
 			} else if (element is Responsibility) {
 				return new ResponsibilityShape(element as Responsibility) { Position = new PointD(x,y) };
+				
+			} else if (element is Obstacle) {
+				return new ObstacleShape (element as Obstacle) { Position = new PointD(x,y) };
+				
+			} else if (element is Obstruction) {
+				return new ObstructionShape (element as Obstruction) { Position = new PointD(x,y) };
 				
 			} else {
 				if (element != null)

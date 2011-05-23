@@ -122,6 +122,8 @@
     <Compile Include="Model\Obstruction.cs" />
     <Compile Include="AddObstructionDialog.cs" />
     <Compile Include="gtk-gui\KaosEditor.AddObstructionDialog.cs" />
+    <Compile Include="UI\Shapes\ObstructionShape.cs" />
+    <Compile Include="UI\Arrows\StrikedArrow.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
