@@ -267,8 +267,6 @@ namespace KaosEditor.UI.Widgets
 		/// </summary>
 		public void Update()
 		{
-			Logger.Info ("Update concept list");
-			
 			// Save expand/collapse state
 			List<string> expandedNodes = new List<string>();
 			SaveState(expandedNodes);
@@ -327,21 +325,12 @@ namespace KaosEditor.UI.Widgets
 			var refinements = from e in this.window.Controller.Model.Elements
 				where e is Refinement && ((Refinement) e).Refined.Equals (g)
 				select (Refinement) e;
-				
-			if (refinements.Count() > 1) {
-				int i = 1;
-				foreach (var refinement in refinements) {
-					var iiiter = store.AppendValues(iiter, string.Format ("Alternative {0}", i++), refinement, refinementPixbuf);
-					foreach (var g2 in refinement.Refinees) {
-						if (g2 is Goal) {
-							AddGoalElement (iiiter, g2 as Goal, expandedNodes);
-						}
-					}
-				}
-			} else if (refinements.Count() > 0) {
-				foreach (var g2 in refinements.First().Refinees) {
+			int i = 1;
+			foreach (var refinement in refinements) {
+				var iiiter = store.AppendValues(iiter, string.Format ("Alternative {0}", i++), refinement, refinementPixbuf);
+				foreach (var g2 in refinement.Refinees) {
 					if (g2 is Goal) {
-						AddGoalElement (iiter, g2 as Goal, expandedNodes);
+						AddGoalElement (iiiter, g2 as Goal, expandedNodes);
 					}
 				}
 			}
@@ -349,23 +338,19 @@ namespace KaosEditor.UI.Widgets
 			var responsibilities = from e in this.window.Model.Elements 
 				where e is Responsibility && ((Responsibility) e).Goal.Equals (g) 
 					select (Responsibility) e;
-			if (responsibilities.Count() > 1) {
-				int i = 1;
-				foreach (var responsibility in responsibilities) {
-					var iiiter = store.AppendValues(iiter, string.Format("Alternative {0}", i++), responsibility, responsibilityPixbuf);
-					store.AppendValues (iiiter, responsibility.Agent.Name, responsibility, agentPixbuf);
-				}
-			} else if (responsibilities.Count() > 0) {
-				var responsibility = responsibilities.First();
-				store.AppendValues (iiter, responsibility.Agent.Name, responsibility.Agent, agentPixbuf);
+			i = 1;
+			foreach (var responsibility in responsibilities) {
+				var iiiter = store.AppendValues(iiter, string.Format("Alternative {0}", i++), responsibility, responsibilityPixbuf);
+				store.AppendValues (iiiter, responsibility.Agent.Name, responsibility, agentPixbuf);
 			}
+			
 			
 			var obstructions = from e in this.window.Model.Elements 
 				where e is Obstruction && ((Obstruction) e).Goal.Equals (g) 
 					select (Obstruction) e;
-			int j = 1;
+			i = 1;
 			foreach (var obstruction in obstructions) {
-				var iiiter = store.AppendValues(iiter, string.Format("Obstruction {0}", j++), obstruction, obstructionPixbuf);
+				var iiiter = store.AppendValues(iiter, string.Format("Obstruction {0}", i++), obstruction, obstructionPixbuf);
 				store.AppendValues (iiiter, obstruction.Obstacle.Name, obstruction.Obstacle, obstaclePixbuf);
 			}
 		}
