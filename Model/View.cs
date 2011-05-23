@@ -192,7 +192,7 @@ namespace KaosEditor.Model
 		/// <param name='origin'>
 		/// Origin.
 		/// </param>
-		public IShape GetNearestShapeFor (IModelElement element, PointD origin)
+		public IShape GetNearestShapeFor (KAOSElement element, PointD origin)
 		{
 			double squaredDistance = double.PositiveInfinity;
 			IShape shapeToReturn = null;

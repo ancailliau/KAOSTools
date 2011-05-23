@@ -146,7 +146,7 @@ namespace KaosEditor.UI.Windows {
 		/// <param name='element'>
 		/// Element to add
 		/// </param>
-		public void AddToCurrentView (IModelElement element)
+		public void AddToCurrentView (KAOSElement element)
 		{
 			// TODO Move this ...
 			AddToCurrentView (element, 10, 10);
@@ -158,7 +158,7 @@ namespace KaosEditor.UI.Windows {
 		/// <param name='element'>
 		/// Element to add
 		/// </param>
-		public void AddToCurrentView (IModelElement element, double x, double y)
+		public void AddToCurrentView (KAOSElement element, double x, double y)
 		{
 			viewsNotebook.AddToCurrentView(element, x, y);
 		}

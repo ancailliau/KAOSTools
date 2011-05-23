@@ -51,7 +51,7 @@ namespace KaosEditor.UI.Shapes
 		/// <value>
 		/// The represented element.
 		/// </value>
-		public IModelElement RepresentedElement {
+		public KAOSElement RepresentedElement {
 			get;
 			set;
 		}

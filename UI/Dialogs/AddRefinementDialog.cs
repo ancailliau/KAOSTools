@@ -53,13 +53,13 @@ namespace KaosEditor.UI.Dialogs
 		/// <summary>
 		/// The list of refinees.
 		/// </summary>
-		public List<IModelElement> Refinees {
+		public List<KAOSElement> Refinees {
 			get;
 			private set;
 		}
 		
 		public AddRefinementDialog (MainWindow window, Goal parent)
-			: this (window, parent, new List<IModelElement> ())
+			: this (window, parent, new List<KAOSElement> ())
 		{
 		}
 		
@@ -72,12 +72,12 @@ namespace KaosEditor.UI.Dialogs
 		/// <param name='parent'>
 		/// Parent.
 		/// </param>
-		public AddRefinementDialog (MainWindow window, Goal parent, List<IModelElement> refinees)
+		public AddRefinementDialog (MainWindow window, Goal parent, List<KAOSElement> refinees)
 			: base (string.Format("Refine goal {0}", parent.Name), 
 				window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
-			Refinees = new List<IModelElement> ();
+			Refinees = new List<KAOSElement> ();
 			
 			childrenComboStore = new ListStore(typeof(string), typeof(object));
 			childrenComboBox.Model = childrenComboStore;

@@ -85,7 +85,7 @@ namespace KaosEditor.Controllers
 			dialog.Present ();
 		}
 		
-		public void PopulateContextMenu (Menu menu, object source, IModelElement clickedElement)
+		public void PopulateContextMenu (Menu menu, object source, KAOSElement clickedElement)
 		{
 			if (clickedElement == null) {				
 				var addItem = new MenuItem("Add goal...");

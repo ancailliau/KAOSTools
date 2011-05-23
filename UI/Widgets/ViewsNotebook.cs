@@ -133,7 +133,7 @@ namespace KaosEditor.UI.Widgets
 			}
 		}
 		
-		public void AddToCurrentView (IModelElement element, double x, double y)
+		public void AddToCurrentView (KAOSElement element, double x, double y)
 		{
 			if (this.CurrentView != null) {
 				var shape = ShapeFactory.Create(element, x, y);

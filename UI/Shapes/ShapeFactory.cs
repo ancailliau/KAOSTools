@@ -37,7 +37,7 @@ namespace KaosEditor.UI.Shapes
 	public static class ShapeFactory
 	{
 		
-		public static IShape Create(IModelElement element)
+		public static IShape Create(KAOSElement element)
 		{
 			return Create(element, 0, 0);
 		}
@@ -48,7 +48,7 @@ namespace KaosEditor.UI.Shapes
 		/// <param name='element'>
 		/// Element.
 		/// </param>
-		public static IShape Create(IModelElement element, double x, double y)
+		public static IShape Create(KAOSElement element, double x, double y)
 		{
 			if (element is Goal) {
 				return new GoalShape(element as Goal) { Position = new PointD(x,y) };

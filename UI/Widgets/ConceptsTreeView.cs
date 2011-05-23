@@ -268,7 +268,7 @@ namespace KaosEditor.UI.Widgets
 			store.Clear();
 			
 			var iter = store.AppendValues("Goals", null, goalPixbuf);
-			List<IModelElement> goals = this.window.Model.Elements.FindAll (e => e is Goal);
+			List<KAOSElement> goals = this.window.Model.Elements.FindAll (e => e is Goal);
 			foreach (var element in goals) {
 				AddGoalElement (iter, element as Goal, expandedNodes);
 			}

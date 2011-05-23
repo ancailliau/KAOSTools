@@ -60,7 +60,6 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Model\Goal.cs" />
     <Compile Include="Helpers.cs" />
-    <Compile Include="Model\IModelElement.cs" />
     <Compile Include="XmlExporter.cs" />
     <Compile Include="XmlImporter.cs" />
     <Compile Include="Model\Refinement.cs" />

@@ -329,7 +329,7 @@ namespace KaosEditor.Controllers
 		
 		#endregion
 		
-		public void PopulateContextMenu (object source, IModelElement clickedElement)
+		public void PopulateContextMenu (object source, KAOSElement clickedElement)
 		{
 			var menu = new Menu ();
 			

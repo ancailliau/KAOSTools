@@ -45,8 +45,8 @@ namespace KaosEditor.Model
 		/// </summary>
 		public delegate void ChangedModelHandler (object sender, EventArgs e);
 		
-		public delegate void ElementAddedHandler (IModelElement element);
-		public delegate void ElementRemovedHandler (IModelElement element);
+		public delegate void ElementAddedHandler (KAOSElement element);
+		public delegate void ElementRemovedHandler (KAOSElement element);
 		public event ElementAddedHandler ElementAdded;
 		public event ElementRemovedHandler ElementRemoved;
 		
@@ -58,7 +58,7 @@ namespace KaosEditor.Model
 		/// <summary>
 		/// The list of element representing the model.
 		/// </summary>
-		public List<IModelElement> Elements {
+		public List<KAOSElement> Elements {
 			get;
 			set;
 		}
@@ -93,7 +93,7 @@ namespace KaosEditor.Model
 		/// </summary>
 		public EditorModel ()
 		{
-			Elements = new List<IModelElement>();
+			Elements = new List<KAOSElement>();
 			Views = new Views(null);
 		}
 		
@@ -103,7 +103,7 @@ namespace KaosEditor.Model
 		/// <param name='element'>
 		/// Element.
 		/// </param>
-		public void Add (IModelElement element) 
+		public void Add (KAOSElement element) 
 		{
 			if (Elements.Contains (element)) {
 				throw new ArgumentException (string.Format("Duplicated element '{0}'", element));
@@ -114,7 +114,7 @@ namespace KaosEditor.Model
 			}
 		}
 		
-		public void Remove (IModelElement element)
+		public void Remove (KAOSElement element)
 		{
 			if (Elements.Contains (element)) {
 				Elements.Remove (element);
@@ -128,7 +128,7 @@ namespace KaosEditor.Model
 			}
 		}
 		
-		public void Update (IModelElement element)
+		public void Update (KAOSElement element)
 		{
 			if (Elements.Contains (element)) {
 				if (ElementRemoved != null) {
@@ -147,12 +147,12 @@ namespace KaosEditor.Model
 		/// <param name='id'>
 		/// Identifier.
 		/// </param>
-		public IModelElement Get (string id)
+		public KAOSElement Get (string id)
 		{
 			return Elements.Find(t => t.Id == id);
 		}
 
-		[Obsolete("Use method `Add (IModelElement)', `Remove (IModelElement)' or `Update (IModelElement)' instead")]
+		[Obsolete("Use method `Add (KAOSElement)', `Remove (KAOSElement)' or `Update (KAOSElement)' instead")]
 		public void NotifyChange ()
 		{
 			if (Changed != null) {

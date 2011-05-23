@@ -31,7 +31,7 @@ using Cairo;
 
 namespace KaosEditor.Model
 {
-	public abstract class KAOSElement : IModelElement
+	public abstract class KAOSElement
 	{
 		public string Id {
 			get;

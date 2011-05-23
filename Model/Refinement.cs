@@ -56,7 +56,7 @@ namespace KaosEditor.Model
 		/// <value>
 		/// The refinees.
 		/// </value>
-		public List<IModelElement> Refinees {
+		public List<KAOSElement> Refinees {
 			get;
 			private set;
 		}
@@ -67,7 +67,7 @@ namespace KaosEditor.Model
 		public Refinement (Goal parent)
 		{
 			Id = Guid.NewGuid().ToString();
-			Refinees = new List<IModelElement>();
+			Refinees = new List<KAOSElement>();
 			Refined = parent;
 		}
 		
@@ -77,7 +77,7 @@ namespace KaosEditor.Model
 		/// <param name='element'>
 		/// Element.
 		/// </param>
-		public void Add (IModelElement element) 
+		public void Add (KAOSElement element) 
 		{
 			Refinees.Add(element);
 		}
