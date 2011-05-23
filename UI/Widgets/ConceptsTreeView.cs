@@ -49,6 +49,7 @@ namespace KaosEditor.UI.Widgets
 		private static Gdk.Pixbuf responsibilityPixbuf;
 		private static Gdk.Pixbuf obstaclePixbuf;
 		private static Gdk.Pixbuf obstructionPixbuf;
+		private static Gdk.Pixbuf resolutionPixbuf;
 		
 		static ConceptsTreeView () {
 			try {
@@ -58,6 +59,7 @@ namespace KaosEditor.UI.Widgets
 				responsibilityPixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Responsibility.png");
 				obstaclePixbuf = Gdk.Pixbuf.LoadFromResource ("KaosEditor.Images.Obstacle.png");
 				obstructionPixbuf = Gdk.Pixbuf.LoadFromResource ("KaosEditor.Images.Obstruction.png");
+				resolutionPixbuf = Gdk.Pixbuf.LoadFromResource ("KaosEditor.Images.Resolution.png");
 				
 			} catch (Exception e) {
 				Logger.Warning ("Cannot load images from ressources", e);
@@ -292,7 +294,16 @@ namespace KaosEditor.UI.Widgets
 				where e is Obstacle select (Obstacle) e;
 			
 			foreach (var element in obstacles) {
-				store.AppendValues(iter, element.Name, element, obstaclePixbuf);
+				var iiter = store.AppendValues(iter, element.Name, element, obstaclePixbuf);
+				
+				var resolutions = from e in this.window.Model.Elements 
+					where e is Resolution && ((Resolution) e).Obstacle.Equals (element) 
+						select (Resolution) e;
+				int j = 1;
+				foreach (var resolution in resolutions) {
+					var iiiter = store.AppendValues(iiter, string.Format("Resolution {0}", j++), resolution, resolutionPixbuf);
+					store.AppendValues (iiiter, resolution.Goal.Name, resolution.Goal, goalPixbuf);
+				}
 			}
 			
 			RestoreState (expandedNodes);

@@ -71,6 +71,11 @@ namespace KaosEditor.Controllers
 			private set;
 		}
 		
+		public ResolutionController ResolutionController  {
+			get;
+			private set;
+		}
+		
 		/// <summary>
 		/// The current filename (empty if not yet saved)
 		/// </summary>
@@ -132,6 +137,7 @@ namespace KaosEditor.Controllers
 			ResponsibilityController = new ResponsibilityController (this);
 			ObstacleController = new ObstacleController (this);
 			ObstructionController = new ObstructionController (this);
+			ResolutionController = new ResolutionController (this);
 			
 			// Finish loading application
 			this.LoadConfiguration();
@@ -359,6 +365,7 @@ namespace KaosEditor.Controllers
 			ResponsibilityController.PopulateContextMenu (menu, source, clickedElement);
 			ObstacleController.PopulateContextMenu (menu, source, clickedElement);
 			ObstructionController.PopulateContextMenu (menu, source, clickedElement);
+			ResolutionController.PopulateContextMenu (menu, source, clickedElement);
 			
 			if (menu.Children.Length > 0) {
 				menu.ShowAll ();

@@ -123,6 +123,17 @@ namespace KaosEditor
 				writer.WriteEndElement();
 			}
 			
+			var resolutions = from e in model.Elements 
+				where e is Resolution && ((Resolution) e).Goal.Equals (goal) 
+					select (Resolution) e;
+			
+			foreach (var resolution in resolutions) {
+				writer.WriteStartElement("resolution");
+				writer.WriteAttributeString("id", resolution.Id);
+				writer.WriteAttributeString("obstacle-id", resolution.Obstacle.Id);
+				writer.WriteEndElement();
+			}
+			
 			writer.WriteEndElement();
 		}
 		

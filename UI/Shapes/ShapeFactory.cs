@@ -68,6 +68,9 @@ namespace KaosEditor.UI.Shapes
 			} else if (element is Obstruction) {
 				return new ObstructionShape (element as Obstruction) { Position = new PointD(x,y) };
 				
+			} else if (element is Resolution) {
+				return new ResolutionShape (element as Resolution) { Position = new PointD(x,y) };
+				
 			} else {
 				if (element != null)
 					Logger.Warning ("Shape does not exists for element '{0}'", element.GetType());

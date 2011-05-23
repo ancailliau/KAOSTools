@@ -56,6 +56,7 @@
     <EmbeddedResource Include="Images\Obstacle.png" />
     <EmbeddedResource Include="Images\Model.png" />
     <EmbeddedResource Include="Images\Obstruction.png" />
+    <EmbeddedResource Include="Images\Resolution.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gtk-gui\generated.cs" />
@@ -124,6 +125,11 @@
     <Compile Include="gtk-gui\KaosEditor.AddObstructionDialog.cs" />
     <Compile Include="UI\Shapes\ObstructionShape.cs" />
     <Compile Include="UI\Arrows\StrikedArrow.cs" />
+    <Compile Include="UI\Shapes\ResolutionShape.cs" />
+    <Compile Include="Model\Resolution.cs" />
+    <Compile Include="Controllers\ResolutionController.cs" />
+    <Compile Include="AddResolutionDialog.cs" />
+    <Compile Include="gtk-gui\KaosEditor.AddResolutionDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

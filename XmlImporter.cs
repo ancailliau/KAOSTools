@@ -29,6 +29,7 @@ namespace KaosEditor
 			public List<FutureRefinement> refinements = new List<FutureRefinement>();
 			public List<FutureResponsibility> futureResponsibilities = new List<FutureResponsibility>();
 			public List<FutureObstruction> futureObstructions = new List<FutureObstruction>();
+			public List<FutureResolution> futureResolutions = new List<FutureResolution>();
 		}
 		
 		private class FutureAgent {
@@ -50,6 +51,11 @@ namespace KaosEditor
 		}
 		
 		private class FutureObstruction {
+			public string id = "";
+			public string obstacleId = "";
+		}
+		
+		private class FutureResolution {
 			public string id = "";
 			public string obstacleId = "";
 		}
@@ -115,8 +121,8 @@ namespace KaosEditor
 				if (reader.IsStartElement ("goal")) {
 					string id = reader.GetAttribute ("id") ?? Guid.NewGuid().ToString();
 					string name = reader.GetAttribute ("name");
-					var futurGoal = new FutureGoal () { id = id, name = name };
-					this.futureGoals.Add (futurGoal);
+					var futureGoal = new FutureGoal () { id = id, name = name };
+					this.futureGoals.Add (futureGoal);
 					
 					while (!reader.IsEmptyElement && reader.Read()) {
 						if (reader.IsStartElement("refinement")) {
@@ -133,7 +139,7 @@ namespace KaosEditor
 									break;
 								}
 							}
-							futurGoal.refinements.Add(refinement);
+							futureGoal.refinements.Add(refinement);
 							
 						} else if (reader.IsStartElement("responsibility")) {
 							var responsibility = new FutureResponsibility() {
@@ -142,18 +148,25 @@ namespace KaosEditor
 								goalId = id,
 								agentId = reader.GetAttribute("agent-id")
 							};
-							futurGoal.futureResponsibilities.Add(responsibility);
+							futureGoal.futureResponsibilities.Add(responsibility);
 						
 						} else if (reader.IsStartElement ("obstruction")) {
 							var obstruction = new FutureObstruction () {
 								id = reader.GetAttribute ("id"),
 								obstacleId = reader.GetAttribute ("obstacle-id")
 							};
-							futurGoal.futureObstructions.Add (obstruction);
+							futureGoal.futureObstructions.Add (obstruction);
+							
+						} else if (reader.IsStartElement ("resolution")) {
+							var resolution = new FutureResolution () {
+								id = reader.GetAttribute ("id"),
+								obstacleId = reader.GetAttribute ("obstacle-id")
+							};
+							futureGoal.futureResolutions.Add (resolution);
 							
 						} else if (reader.IsStartElement ("definition")) {
 							reader.Read ();
-							futurGoal.definition = reader.Value.Trim();
+							futureGoal.definition = reader.Value.Trim();
 							
 						} else if (reader.IsEndElement("goal")) {
 							break;
@@ -258,6 +271,11 @@ namespace KaosEditor
 					Model.Add(new Obstruction (
 						(Goal) Model.Get(futureGoal.id),
 						(Obstacle) Model.Get(futureObstruction.obstacleId)) { Id = futureObstruction.id});
+				}
+				foreach (var futureResolution in futureGoal.futureResolutions) {
+					Model.Add(new Resolution (
+						(Obstacle) Model.Get(futureResolution.obstacleId),
+						(Goal) Model.Get(futureGoal.id)) { Id = futureResolution.id});
 				}
 			}
 			
