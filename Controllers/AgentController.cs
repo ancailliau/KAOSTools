@@ -40,17 +40,28 @@ namespace KaosEditor.Controllers
 			this.controller = controller;
 		}
 		
-		public void AddAgent ()
+		public void AddAgent (string agentName, System.Action<Agent> action)
 		{
-			var dialog = new AddAgentDialog (this.controller.Window, null);
+			var dialog = new AddAgentDialog (this.controller.Window, agentName);
 			dialog.Response += delegate(object o, Gtk.ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Ok) {
 					var agent = new Agent (dialog.AgentName);
 					this.controller.Model.Add (agent);
+					action (agent);
 				}
 				dialog.Destroy ();
 			};
 			dialog.Present ();
+		}
+		
+		public void AddAgent (string agentName)
+		{
+			AddAgent (agentName, delegate (Agent a) {});
+		}
+		
+		public void AddAgent ()
+		{
+			AddAgent ("");
 		}
 		
 		public void EditAgent (Agent agent)
@@ -68,7 +79,18 @@ namespace KaosEditor.Controllers
 		
 		public void RemoveAgent (Agent agent)
 		{
-			throw new NotImplementedException ();
+			var dialog = new MessageDialog (this.controller.Window,
+			DialogFlags.DestroyWithParent, MessageType.Question,
+			ButtonsType.YesNo, false, string.Format ("Delete agent '{0}'?", agent.Name));
+		
+			dialog.Response += delegate(object o, ResponseArgs args) {
+				if (args.ResponseId == Gtk.ResponseType.Yes) {
+					this.controller.Model.Remove (agent);
+				}
+				dialog.Destroy ();
+			};
+			
+			dialog.Present ();
 		}
 		
 		

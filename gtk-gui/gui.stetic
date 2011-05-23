@@ -575,7 +575,7 @@
                 <property name="MemberName" />
                 <property name="Spacing">6</property>
                 <child>
-                  <widget class="Gtk.ComboBox" id="childrenComboBox">
+                  <widget class="Gtk.ComboBoxEntry" id="childrenComboBox">
                     <property name="MemberName" />
                     <property name="IsTextCombo">True</property>
                     <property name="Items" translatable="yes" />
@@ -775,7 +775,7 @@
             <property name="ColumnSpacing">6</property>
             <property name="BorderWidth">6</property>
             <child>
-              <widget class="Gtk.ComboBox" id="agentComboBox">
+              <widget class="Gtk.ComboBoxEntry" id="agentComboBox">
                 <property name="MemberName" />
                 <property name="IsTextCombo">True</property>
                 <property name="Items" translatable="yes" />
@@ -1054,7 +1054,7 @@
               </packing>
             </child>
             <child>
-              <widget class="Gtk.ComboBox" id="obstacleCombo">
+              <widget class="Gtk.ComboBoxEntry" id="obstacleCombo">
                 <property name="MemberName" />
                 <property name="IsTextCombo">True</property>
                 <property name="Items" translatable="yes" />

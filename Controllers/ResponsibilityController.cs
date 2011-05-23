@@ -44,12 +44,29 @@ namespace KaosEditor.Controllers
 		{
 			var dialog = new AddResponsibilityDialog (this.controller.Window, goal);
 			dialog.Response += delegate(object o, ResponseArgs args) {
-				if (args.ResponseId == ResponseType.Ok && dialog.ResponsibleAgent != null) {
-					var newResponsibility = new Responsibility (
-						goal, dialog.ResponsibleAgent);
-					this.controller.Model.Add (newResponsibility);
+				if (args.ResponseId == ResponseType.Ok && dialog.ResponsibleAgentName != null
+					& dialog.ResponsibleAgentName != "") {
+					if (dialog.ResponsibleAgent != null) {
+						var newResponsibility = new Responsibility (
+							goal, dialog.ResponsibleAgent);
+						this.controller.Model.Add (newResponsibility);
+						dialog.Destroy ();
+					} else {
+						var subDialog = new MessageDialog (this.controller.Window,
+						DialogFlags.DestroyWithParent, MessageType.Question,
+						ButtonsType.YesNo, false, string.Format ("Create new agent '{0}'?", dialog.ResponsibleAgentName));
+					
+						subDialog.Response += delegate(object o2, ResponseArgs args2) {
+							if (args2.ResponseId == Gtk.ResponseType.Yes) {
+								controller.AgentController.AddAgent (dialog.ResponsibleAgentName, delegate (Agent agent) {
+									dialog.ResponsibleAgent = agent;
+								});
+							}
+							subDialog.Destroy ();
+						};
+						subDialog.Present ();
+					}
 				}
-				dialog.Destroy ();
 			};
 			dialog.Present ();
 		}

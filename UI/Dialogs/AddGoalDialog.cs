@@ -37,8 +37,16 @@ namespace KaosEditor.UI.Dialogs
 	{
 		
 		public AddGoalDialog (MainWindow window)
-			: this (window, null)
+			: this (window, "")
 		{
+		}
+		
+		public AddGoalDialog (MainWindow window, string futureGoalName)
+			: base ("Add new goal", 
+				window, DialogFlags.DestroyWithParent)
+		{
+			this.Build ();
+			nameEntry.Text = futureGoalName;
 		}
 		
 		public AddGoalDialog (MainWindow window, Goal goal)

@@ -6,7 +6,7 @@ namespace KaosEditor
 	{
 		private global::Gtk.Table table2;
 		private global::Gtk.Label label3;
-		private global::Gtk.ComboBox obstacleCombo;
+		private global::Gtk.ComboBoxEntry obstacleCombo;
 		private global::Gtk.Button buttonCancel;
 		private global::Gtk.Button buttonOk;
 
@@ -35,7 +35,7 @@ namespace KaosEditor
 			w2.XOptions = ((global::Gtk.AttachOptions)(4));
 			w2.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table2.Gtk.Table+TableChild
-			this.obstacleCombo = global::Gtk.ComboBox.NewText ();
+			this.obstacleCombo = global::Gtk.ComboBoxEntry.NewText ();
 			this.obstacleCombo.Name = "obstacleCombo";
 			this.table2.Add (this.obstacleCombo);
 			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.table2 [this.obstacleCombo]));

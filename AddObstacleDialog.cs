@@ -46,8 +46,16 @@ namespace KaosEditor
 		}
 		
 		public AddObstacleDialog (MainWindow window)
-			: this (window, null)
+			: this (window, "")
 		{
+		}
+		
+		public AddObstacleDialog (MainWindow window, string obstacleName)
+			: base ("Add new obstacle", window, DialogFlags.DestroyWithParent)
+		{
+			this.Build ();
+			
+			nameEntry.Text = obstacleName;
 		}
 		
 		public AddObstacleDialog (MainWindow window, Obstacle obstacle)

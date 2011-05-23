@@ -5,7 +5,7 @@ namespace KaosEditor.UI.Dialogs
 	public partial class AddResponsibilityDialog
 	{
 		private global::Gtk.Table table1;
-		private global::Gtk.ComboBox agentComboBox;
+		private global::Gtk.ComboBoxEntry agentComboBox;
 		private global::Gtk.Label label2;
 		private global::Gtk.Button buttonCancel;
 		private global::Gtk.Button buttonOk;
@@ -27,7 +27,7 @@ namespace KaosEditor.UI.Dialogs
 			this.table1.ColumnSpacing = ((uint)(6));
 			this.table1.BorderWidth = ((uint)(6));
 			// Container child table1.Gtk.Table+TableChild
-			this.agentComboBox = global::Gtk.ComboBox.NewText ();
+			this.agentComboBox = global::Gtk.ComboBoxEntry.NewText ();
 			this.agentComboBox.Name = "agentComboBox";
 			this.table1.Add (this.agentComboBox);
 			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.table1 [this.agentComboBox]));

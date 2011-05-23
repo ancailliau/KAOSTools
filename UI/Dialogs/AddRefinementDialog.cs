@@ -58,6 +58,8 @@ namespace KaosEditor.UI.Dialogs
 			private set;
 		}
 		
+		private MainController controller;
+		
 		public AddRefinementDialog (MainWindow window, Goal parent)
 			: this (window, parent, new List<KAOSElement> ())
 		{
@@ -77,6 +79,8 @@ namespace KaosEditor.UI.Dialogs
 				window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
+			this.controller = window.Controller;
+			
 			Refinees = new List<KAOSElement> ();
 			
 			childrenComboStore = new ListStore(typeof(string), typeof(object));
@@ -115,7 +119,6 @@ namespace KaosEditor.UI.Dialogs
 		[GLib.ConnectBeforeAttribute]
 		private void HandleButtonPressEvent (object sender, ButtonPressEventArgs args) 
 		{
-			Console.WriteLine (args.Event.Button);
 			if (args.Event.Button == 3) {
 				TreeIter iter;
 				var path = new TreePath();
@@ -151,6 +154,25 @@ namespace KaosEditor.UI.Dialogs
 			if (childrenComboBox.GetActiveIter(out iter)) {
 				var element = (Goal) childrenComboStore.GetValue(iter, 1);
 				AddRefinee (element);
+			} else {
+				if (childrenComboBox.ActiveText.Trim () != "") {
+					string newGoalName = childrenComboBox.ActiveText.Trim ();
+					var dialog = new MessageDialog (this.controller.Window,
+						DialogFlags.DestroyWithParent, MessageType.Question,
+						ButtonsType.YesNo, false, string.Format ("Create new goal '{0}'?", newGoalName));
+					
+					dialog.Response += delegate(object o, ResponseArgs args) {
+						if (args.ResponseId == Gtk.ResponseType.Yes) {
+							this.controller.GoalController.AddGoal (newGoalName, delegate (Goal newGoal) {
+								childrenComboStore.AppendValues(newGoal.Name, newGoal);
+								AddRefinee (newGoal);
+							});
+						}
+						dialog.Destroy ();
+					};
+					
+					dialog.Present ();
+				}
 			}
 		}
 		

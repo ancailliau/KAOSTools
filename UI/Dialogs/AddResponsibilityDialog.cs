@@ -42,6 +42,16 @@ namespace KaosEditor.UI.Dialogs
 		/// </summary>
 		private ListStore store;
 		
+		public string ResponsibleAgentName {
+			get {
+				if (ResponsibleAgent == null) {
+					return agentComboBox.ActiveText;
+				} else {
+					return ResponsibleAgent.Name;
+				}
+			}
+		}
+		
 		public Agent ResponsibleAgent {
 			get {
 				var iter = new TreeIter();
@@ -51,7 +61,12 @@ namespace KaosEditor.UI.Dialogs
 					return null;
 				}
 			}
+			set {
+				UpdateList (value);
+			}
 		}
+		
+		private MainWindow window;
 		
 		public AddResponsibilityDialog (MainWindow window, Goal goal)
 			: this (window, goal, null)
@@ -62,6 +77,7 @@ namespace KaosEditor.UI.Dialogs
 			: base ("Assign responsibility", window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
+			this.window = window;
 			
 			store = new ListStore(typeof (string), typeof (Agent));
 			agentComboBox.Model = store;
@@ -70,6 +86,11 @@ namespace KaosEditor.UI.Dialogs
 			// agentComboBox.PackStart(cell, false);
 			agentComboBox.AddAttribute(cell, "text", 0);
 			
+			UpdateList (agent);
+		}
+		
+		void UpdateList (Agent agent)
+		{
 			TreeIter iter;
 			foreach (var element in window.Controller.Model.Elements.FindAll(e => e is Agent)) {
 				var possibleAgent = (Agent) element;

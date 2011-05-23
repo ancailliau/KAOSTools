@@ -33,6 +33,17 @@ namespace KaosEditor
 	public partial class AddObstructionDialog : Gtk.Dialog
 	{
 		private ListStore store;
+		private MainWindow window;
+		
+		public string ObstacleName {
+			get {
+				if (Obstacle != null) {
+					return Obstacle.Name;
+				} else {
+					return obstacleCombo.ActiveText;
+				}
+			}
+		}
 		
 		public Obstacle Obstacle {
 			get {
@@ -42,6 +53,9 @@ namespace KaosEditor
 				} else {
 					return null;
 				}
+			}
+			set {
+				UpdateList (value);
 			}
 		}
 		
@@ -55,6 +69,7 @@ namespace KaosEditor
 				window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
+			this.window = window;
 			
 			store = new ListStore(typeof (string), typeof (Obstacle));
 			obstacleCombo.Model = store;
@@ -63,6 +78,11 @@ namespace KaosEditor
 			// agentComboBox.PackStart(cell, false);
 			obstacleCombo.AddAttribute(cell, "text", 0);
 			
+			UpdateList (obstacle);
+		}
+
+		void UpdateList (Obstacle obstacle)
+		{
 			TreeIter iter;
 			foreach (var element in window.Controller.Model.Elements.FindAll(e => e is Obstacle)) {
 				var possibleObstacle = (Obstacle) element;

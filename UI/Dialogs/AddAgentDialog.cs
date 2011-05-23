@@ -42,6 +42,13 @@ namespace KaosEditor.UI.Dialogs
 			get { return nameEntry.Text.Trim(); }
 		}
 		
+		public AddAgentDialog  (MainWindow window, string agentName)
+			: base ("Add new agent", window, DialogFlags.DestroyWithParent)
+		{
+			this.Build ();
+			nameEntry.Text = agentName;
+		}
+		
 		public AddAgentDialog  (MainWindow window, Agent agent)
 			: base ("Add new agent", window, DialogFlags.DestroyWithParent)
 		{

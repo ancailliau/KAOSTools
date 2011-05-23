@@ -33,7 +33,7 @@ namespace KaosEditor.Controllers
 {
 	public class GoalController
 	{
-		
+	
 		private MainController controller;
 		
 		public GoalController (MainController controller)
@@ -41,9 +41,23 @@ namespace KaosEditor.Controllers
 			this.controller = controller;
 		}
 		
-		public void AddGoal ()
+		
+		public void AddGoal (string goalName, System.Action<Goal> action)
 		{
-			var dialog = new AddGoalDialog(controller.Window);
+			var dialog = new AddGoalDialog(controller.Window, goalName);
+			dialog.Response += delegate(object o, Gtk.ResponseArgs args) {
+				if (args.ResponseId == Gtk.ResponseType.Ok) {
+					var goal = new Goal(dialog.GoalName, dialog.GoalDefinition);
+					controller.Model.Add (goal);
+					action(goal);
+				}
+				dialog.Destroy();
+			};
+		}
+		
+		public void AddGoal (string goalName)
+		{
+			var dialog = new AddGoalDialog(controller.Window, goalName);
 			dialog.Response += delegate(object o, Gtk.ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Ok) {
 					var goal = new Goal(dialog.GoalName, dialog.GoalDefinition);
@@ -53,6 +67,11 @@ namespace KaosEditor.Controllers
 			};
 			
 			dialog.Present ();
+		}
+		
+		public void AddGoal ()
+		{
+			AddGoal ("");
 		}
 		
 		public void EditGoal (Goal goal)

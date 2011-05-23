@@ -8,7 +8,7 @@ namespace KaosEditor.UI.Dialogs
 		private global::Gtk.ScrolledWindow GtkScrolledWindow;
 		private global::Gtk.NodeView childrenNodeView;
 		private global::Gtk.HBox hbox2;
-		private global::Gtk.ComboBox childrenComboBox;
+		private global::Gtk.ComboBoxEntry childrenComboBox;
 		private global::Gtk.Button addButton;
 		private global::Gtk.Button buttonCancel;
 		private global::Gtk.Button buttonOk;
@@ -45,7 +45,7 @@ namespace KaosEditor.UI.Dialogs
 			this.hbox2.Name = "hbox2";
 			this.hbox2.Spacing = 6;
 			// Container child hbox2.Gtk.Box+BoxChild
-			this.childrenComboBox = global::Gtk.ComboBox.NewText ();
+			this.childrenComboBox = global::Gtk.ComboBoxEntry.NewText ();
 			this.childrenComboBox.Name = "childrenComboBox";
 			this.hbox2.Add (this.childrenComboBox);
 			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.childrenComboBox]));

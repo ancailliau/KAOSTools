@@ -43,11 +43,22 @@ namespace KaosEditor.Controllers
 		
 		public void AddObstacle ()
 		{
-			var dialog = new AddObstacleDialog(controller.Window);
+			AddObstacle ("");
+		}
+		
+		public void AddObstacle (string obstacleName)
+		{
+			AddObstacle (obstacleName, delegate (Obstacle obstacle) {});
+		}
+		
+		public void AddObstacle (string obstacleName, System.Action<Obstacle> action)
+		{
+			var dialog = new AddObstacleDialog(controller.Window, obstacleName);
 			dialog.Response += delegate(object o, Gtk.ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Ok) {
 					var obstacle = new Obstacle(dialog.ObstacleName, dialog.ObstacleDefinition);
 					controller.Model.Add (obstacle);
+					action (obstacle);
 				}
 				dialog.Destroy();
 			};

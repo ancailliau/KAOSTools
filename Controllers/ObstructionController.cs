@@ -49,8 +49,15 @@ namespace KaosEditor.Controllers
 					var newObstruction = new Obstruction (
 						goal, dialog.Obstacle);
 					this.controller.Model.Add (newObstruction);
+					dialog.Destroy ();
+					
+				} else if (args.ResponseId == ResponseType.Ok && dialog.ObstacleName != null
+					&& dialog.ObstacleName != "") {
+					this.controller.ObstacleController.AddObstacle (dialog.ObstacleName,
+						delegate (Obstacle obstacle) {
+						dialog.Obstacle = obstacle;	
+					});
 				}
-				dialog.Destroy ();
 			};
 			dialog.Present ();
 		}
