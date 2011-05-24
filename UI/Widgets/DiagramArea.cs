@@ -175,6 +175,16 @@ namespace KaosEditor.UI.Widgets
 						);
 				}
 				
+				// Update size request
+				int width = 0;
+				int height = 0;
+				
+				foreach (var shape in this.CurrentView.Shapes) {
+					height = Math.Max(shape.GetBounds().MaxY, height);
+					width = Math.Max(shape.GetBounds().MaxX, width);
+				}
+				this.SetSizeRequest (width + 50, height + 50);
+				
 				this.QueueDraw ();
 			}
 			
@@ -242,9 +252,9 @@ namespace KaosEditor.UI.Widgets
 				
 				var clickedShape = FindShapeAtPosition(evnt.X, evnt.Y);
 				if (clickedShape != null) {
-					this.controller.PopulateContextMenu (this, clickedShape.RepresentedElement);
+					this.controller.PopulateContextMenu (this, clickedShape);
 				} else {
-					this.controller.PopulateContextMenu (this, null);
+					this.controller.PopulateContextMenu (this, (KAOSElement) null);
 				}
 				
 			}

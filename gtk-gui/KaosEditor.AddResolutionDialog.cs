@@ -5,7 +5,7 @@ namespace KaosEditor
 	public partial class AddResolutionDialog
 	{
 		private global::Gtk.Table table3;
-		private global::Gtk.ComboBox goalCombo;
+		private global::Gtk.ComboBoxEntry goalCombo;
 		private global::Gtk.Label label4;
 		private global::Gtk.Button buttonCancel;
 		private global::Gtk.Button buttonOk;
@@ -27,7 +27,7 @@ namespace KaosEditor
 			this.table3.ColumnSpacing = ((uint)(6));
 			this.table3.BorderWidth = ((uint)(6));
 			// Container child table3.Gtk.Table+TableChild
-			this.goalCombo = global::Gtk.ComboBox.NewText ();
+			this.goalCombo = global::Gtk.ComboBoxEntry.NewText ();
 			this.goalCombo.Name = "goalCombo";
 			this.table3.Add (this.goalCombo);
 			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.table3 [this.goalCombo]));

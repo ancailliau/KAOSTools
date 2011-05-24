@@ -1,5 +1,5 @@
 // 
-// ResponsibilityController.cs
+// RefinementController.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -24,63 +24,63 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Linq;
 using KaosEditor.Model;
 using Gtk;
 using KaosEditor.UI.Dialogs;
 
 namespace KaosEditor.Controllers
 {
-	public class ResolutionController
+	public class ObstacleRefinementController
 	{
 		
 		private MainController controller;
 		
-		public ResolutionController (MainController controller)
+		public ObstacleRefinementController (MainController controller)
 		{
 			this.controller = controller;
 		}
 		
-		public void AddResolution (Obstacle obstacle)
+		public void AddRefinement (Obstacle obstacle)
 		{
-			var dialog = new AddResolutionDialog (this.controller.Window, obstacle);
+			var dialog = new AddObstacleRefinementDialog (this.controller.Window, obstacle);
 			dialog.Response += delegate(object o, ResponseArgs args) {
-				if (args.ResponseId == ResponseType.Ok && dialog.ResolvingGoal != null) {
-					var newObstruction = new Resolution (
-						obstacle, dialog.ResolvingGoal);
-					this.controller.Model.Add (newObstruction);
-					dialog.Destroy ();
-				} else if (args.ResponseId == ResponseType.Ok && dialog.ResolvingGoalName != "") {
-					this.controller.GoalController.AddGoal (dialog.ResolvingGoalName, delegate (Goal goal) {
-						dialog.ResolvingGoal = goal;
-					});
-				}
-			};
-			dialog.Present ();
-		}
-		
-		public void EditResolution (Resolution resolution)
-		{
-			var dialog = new AddResolutionDialog (this.controller.Window, resolution.Obstacle, resolution.Goal);
-			dialog.Response += delegate(object o, ResponseArgs args) {
-				if (args.ResponseId == ResponseType.Ok && dialog.ResolvingGoal != null) {
-					resolution.Goal = dialog.ResolvingGoal;
-					this.controller.Model.Update (resolution);
+				if (args.ResponseId == ResponseType.Ok) {
+					var newRefinement = new ObstacleRefinement (obstacle);
+					foreach (var element in dialog.Refinees) {
+						newRefinement.Add(element);
+					}
+					this.controller.Model.Add(newRefinement);
 				}
 				dialog.Destroy ();
 			};
 			dialog.Present ();
 		}
 		
-		public void RemoveResolution (Resolution resolution)
+		public void EditRefinement (ObstacleRefinement refinement)
+		{
+			var dialog = new AddObstacleRefinementDialog (this.controller.Window, refinement.Refined, refinement.Refinees);
+			dialog.Response += delegate(object o, ResponseArgs args) {
+				if (args.ResponseId == ResponseType.Ok) {
+					refinement.Refinees.Clear();
+					foreach (var element in dialog.Refinees) {
+						refinement.Add(element);
+					}
+					this.controller.Model.Update (refinement);
+				}
+				dialog.Destroy ();
+			};
+			dialog.Present ();
+		}
+		
+		public void RemoveRefinement (ObstacleRefinement refinement)
 		{
 			var dialog = new MessageDialog (this.controller.Window,
 				DialogFlags.DestroyWithParent, MessageType.Question,
-				ButtonsType.YesNo, false, string.Format ("Delete resolution of '{0}' by '{1}'?", resolution.Obstacle.Name, resolution.Goal.Name));
+				ButtonsType.YesNo, false, string.Format ("Delete refinement for '{0}'?", refinement.Refined.Name));
 			
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Yes) {
-					this.controller.Model.Remove (resolution);
+					this.controller.Model.Remove (refinement);
 				}
 				dialog.Destroy ();
 			};
@@ -90,32 +90,32 @@ namespace KaosEditor.Controllers
 		
 		public void PopulateContextMenu (Menu menu, object source, KAOSElement clickedElement)
 		{
-			if (clickedElement is Obstacle) {	
-				var clickedObstacle = clickedElement as Obstacle;
-				var assignItem = new MenuItem("Resolve...");
-				assignItem.Activated += delegate(object sender2, EventArgs e) {
-					this.AddResolution (clickedObstacle);
+			if (clickedElement is Obstacle) {
+				var clickedObstacle = (Obstacle) clickedElement;				
+				var refineItem = new MenuItem("Refine...");
+				refineItem.Activated += delegate(object sender2, EventArgs e) {
+					this.AddRefinement (clickedObstacle);
 				};
-				menu.Add(assignItem);
+				menu.Add(refineItem);	
 			}
 			
-			if (clickedElement is Resolution) {
-				var clickedResolution = clickedElement as Resolution;
+			if (clickedElement is ObstacleRefinement) {
+				var clickedRefinement = clickedElement as ObstacleRefinement;
 				
 				var editItem = new MenuItem("Edit...");
 				editItem.Activated += delegate(object sender2, EventArgs e) {
-					this.EditResolution (clickedResolution);
+					this.EditRefinement (clickedRefinement);
 				};
 				menu.Add(editItem);
 				
 				var deleteItem = new MenuItem("Delete");
 				deleteItem.Activated += delegate(object sender2, EventArgs e) {
-					this.RemoveResolution (clickedResolution);
+					this.RemoveRefinement (clickedRefinement);
 				};
 				menu.Add(deleteItem);
 			}
-			
 		}
+		
 	}
 }
 

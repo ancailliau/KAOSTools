@@ -45,6 +45,27 @@ namespace KaosEditor.Model
 			Name = name;
 			Definition = definition;
 		}
+		
+		public override bool Equals (object obj)
+		{
+			if (obj == null)
+				return false;
+			if (ReferenceEquals (this, obj))
+				return true;
+			if (obj.GetType () != typeof(Obstacle))
+				return false;
+			KaosEditor.Model.Obstacle other = (KaosEditor.Model.Obstacle)obj;
+			return Id == other.Id;
+		}
+
+
+		public override int GetHashCode ()
+		{
+			unchecked {
+				return (Id != null ? Id.GetHashCode () : 0);
+			}
+		}
+
 	}
 }
 

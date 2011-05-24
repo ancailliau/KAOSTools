@@ -32,6 +32,7 @@ using KaosEditor.Logging;
 using KaosEditor.Model;
 using KaosEditor.UI.Windows;
 using KaosEditor.UI.Widgets;
+using KaosEditor.UI.Shapes;
 
 namespace KaosEditor.Controllers
 {
@@ -72,6 +73,11 @@ namespace KaosEditor.Controllers
 		}
 		
 		public ResolutionController ResolutionController  {
+			get;
+			private set;
+		}
+		
+		public ObstacleRefinementController ObstacleRefinementController  {
 			get;
 			private set;
 		}
@@ -138,6 +144,7 @@ namespace KaosEditor.Controllers
 			ObstacleController = new ObstacleController (this);
 			ObstructionController = new ObstructionController (this);
 			ResolutionController = new ResolutionController (this);
+			ObstacleRefinementController = new ObstacleRefinementController (this);
 			
 			// Finish loading application
 			this.LoadConfiguration();
@@ -347,11 +354,31 @@ namespace KaosEditor.Controllers
 		
 		#endregion
 		
-		public void PopulateContextMenu (object source, KAOSElement clickedElement)
+		public void PopulateContextMenu (object source, IShape clickedElement)
 		{
 			var menu = new Menu ();
 			
-			if (clickedElement != null & !(source is DiagramArea)) {
+			if (clickedElement != null & (source is DiagramArea)) {
+				var removeFromCurrentViewItem = new MenuItem("Remove from current view...");
+				removeFromCurrentViewItem.Activated += delegate(object sender2, EventArgs e) {
+					this.Window.RemoveFromCurrentView (clickedElement);
+				};
+				menu.Add (removeFromCurrentViewItem);
+				menu.Add (new SeparatorMenuItem ());
+			}
+			
+			PopulateContextMenu (source, clickedElement.RepresentedElement, menu);
+		}
+		
+		public void PopulateContextMenu (object source, KAOSElement clickedElement)
+		{
+			var menu = new Menu ();
+			PopulateContextMenu (source, clickedElement, menu);
+		}
+		
+		public void PopulateContextMenu (object source, KAOSElement clickedElement, Menu menu)
+		{
+			if (clickedElement != null & !(source is DiagramArea) & this.Window.HasCurrentView()) {
 				var addToCurrentViewItem = new MenuItem("Add to current view...");
 				addToCurrentViewItem.Activated += delegate(object sender2, EventArgs e) {
 					this.Window.AddToCurrentView (clickedElement);
@@ -366,13 +393,13 @@ namespace KaosEditor.Controllers
 			ObstacleController.PopulateContextMenu (menu, source, clickedElement);
 			ObstructionController.PopulateContextMenu (menu, source, clickedElement);
 			ResolutionController.PopulateContextMenu (menu, source, clickedElement);
+			ObstacleRefinementController.PopulateContextMenu (menu, source, clickedElement);
 			
 			if (menu.Children.Length > 0) {
 				menu.ShowAll ();
 				menu.Popup ();	
 			}
 		}
-		
 	}
 }
 

@@ -70,6 +70,9 @@ namespace KaosEditor.UI.Shapes
 				
 			} else if (element is Resolution) {
 				return new ResolutionShape (element as Resolution) { Position = new PointD(x,y) };
+			
+			} else if (element is ObstacleRefinement) {
+				return new ObstacleRefinementShape (element as ObstacleRefinement) { Position = new PointD(x,y) };
 				
 			} else {
 				if (element != null)

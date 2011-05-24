@@ -73,6 +73,22 @@ namespace KaosEditor
 			writer.WriteAttributeString("id", obstacle.Id);
 			writer.WriteAttributeString("name", obstacle.Name);
 			writer.WriteElementString("definition", obstacle.Definition);
+			
+			var refinements = from e in model.Elements 
+				where e is ObstacleRefinement && ((ObstacleRefinement) e).Refined.Equals (obstacle) 
+					select (ObstacleRefinement) e;
+			
+			foreach (var refinement in refinements) {
+				writer.WriteStartElement("refinement");
+				writer.WriteAttributeString("id", refinement.Id);
+				
+				foreach (var child in refinement.Refinees) {
+					writer.WriteStartElement("refinee");
+					writer.WriteAttributeString("id", child.Id);
+					writer.WriteEndElement();
+				}
+				writer.WriteEndElement();
+			}
 			writer.WriteEndElement();
 		}
 		

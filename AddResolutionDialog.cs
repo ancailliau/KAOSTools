@@ -33,6 +33,17 @@ namespace KaosEditor
 	public partial class AddResolutionDialog : Gtk.Dialog
 	{
 		private ListStore store;
+		private MainWindow window;
+		
+		public string ResolvingGoalName {
+			get {
+				if (ResolvingGoal == null) {
+					return goalCombo.ActiveText;
+				} else {
+					return ResolvingGoal.Name;
+				}
+			}
+		}
 		
 		public Goal ResolvingGoal {
 			get {
@@ -42,6 +53,9 @@ namespace KaosEditor
 				} else {
 					return null;
 				}
+			}
+			set {
+				UpdateList (value);
 			}
 		}
 		
@@ -54,6 +68,7 @@ namespace KaosEditor
 			: base ("Assign responsibility", window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
+			this.window = window;
 			
 			store = new ListStore(typeof (string), typeof (Goal));
 			goalCombo.Model = store;
@@ -62,6 +77,12 @@ namespace KaosEditor
 			// agentComboBox.PackStart(cell, false);
 			goalCombo.AddAttribute(cell, "text", 0);
 			
+			UpdateList (goal);
+		}
+
+		void UpdateList (Goal goal)
+		{
+			store.Clear ();
 			TreeIter iter;
 			foreach (var element in window.Controller.Model.Elements.FindAll(e => e is Goal)) {
 				var possibleGoal = (Goal) element;

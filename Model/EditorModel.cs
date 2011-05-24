@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using KaosEditor.Controllers;
+using KaosEditor.Logging;
 
 namespace KaosEditor.Model
 {
@@ -105,6 +106,7 @@ namespace KaosEditor.Model
 		/// </param>
 		public void Add (KAOSElement element) 
 		{
+			Logger.Info ("Adding element '{0}' to model", element);
 			if (Elements.Contains (element)) {
 				throw new ArgumentException (string.Format("Duplicated element '{0}'", element));
 			}

@@ -75,6 +75,12 @@ namespace KaosEditor
 			public string id = "";
 			public string name = "";
 			public string definition = "";
+			public List<FutureObstacleRefinement> refinements = new List<FutureObstacleRefinement>();
+		}
+		
+		private class FutureObstacleRefinement {
+			public string id = "";
+			public List<string> refinees = new List<string>();
 		}
 		
 		private MainController controller;
@@ -124,7 +130,7 @@ namespace KaosEditor
 					var futureGoal = new FutureGoal () { id = id, name = name };
 					this.futureGoals.Add (futureGoal);
 					
-					while (!reader.IsEmptyElement && reader.Read()) {
+					while (reader.Read()) {
 						if (reader.IsStartElement("refinement")) {
 							var refinement = new FutureRefinement() {
 								id = reader.GetAttribute("id"),
@@ -185,7 +191,22 @@ namespace KaosEditor
 					string name = reader.GetAttribute ("name");
 					var futurObstacle = new FutureObstacle () { id = id, name = name };
 					while (!reader.IsEmptyElement && reader.Read()) {
-						if (reader.IsStartElement ("definition")) {
+						if (reader.IsStartElement("refinement")) {
+							var refinement = new FutureObstacleRefinement() {
+								id = reader.GetAttribute("id")
+							};
+							while (reader.Read()) {
+								if (reader.IsStartElement("refinee")) {
+									string refineeId = reader.GetAttribute("id");
+									refinement.refinees.Add(refineeId);
+									
+								} else if (reader.IsEndElement("refinement")) {
+									break;
+								}
+							}
+							futurObstacle.refinements.Add(refinement);
+							
+						} else if (reader.IsStartElement ("definition")) {
 							reader.Read ();
 							futurObstacle.definition = reader.Value.Trim();
 							
@@ -279,6 +300,19 @@ namespace KaosEditor
 				}
 			}
 			
+			foreach (var futureObstacle in futureObstacles) {
+				foreach (var futureRefinement in futureObstacle.refinements) {
+					Obstacle obstacle = (Obstacle) Model.Get(futureObstacle.id);
+					if (obstacle != null) {
+						var refinement = new ObstacleRefinement(obstacle) { Id = futureRefinement.id };
+						foreach (var futureElement in futureRefinement.refinees) {
+							refinement.Add(Model.Get(futureElement));
+						}
+						Model.Add (refinement);
+					}
+				}
+			}
+			
 			foreach (var futureView in futureViews) {
 				var view = new View(futureView.name, controller);
 				foreach (var futureElement in futureView.elements) {
@@ -291,6 +325,7 @@ namespace KaosEditor
 				}
 				Model.Views.Add(view);
 			}
+			
 			
 		}
 		

@@ -130,6 +130,11 @@
     <Compile Include="Controllers\ResolutionController.cs" />
     <Compile Include="AddResolutionDialog.cs" />
     <Compile Include="gtk-gui\KaosEditor.AddResolutionDialog.cs" />
+    <Compile Include="Controllers\ObstacleRefinementController.cs" />
+    <Compile Include="AddObstacleRefinementDialog.cs" />
+    <Compile Include="Model\ObstacleRefinement.cs" />
+    <Compile Include="UI\Shapes\ObstacleRefinementShape.cs" />
+    <Compile Include="gtk-gui\KaosEditor.AddObstacleRefinementDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

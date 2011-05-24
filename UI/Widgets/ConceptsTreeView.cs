@@ -302,6 +302,19 @@ namespace KaosEditor.UI.Widgets
 					var iiiter = store.AppendValues(iiter, string.Format("Resolution {0}", j++), resolution, resolutionPixbuf);
 					store.AppendValues (iiiter, resolution.Goal.Name, resolution.Goal, goalPixbuf);
 				}
+				
+				j = 1;
+				var obstacleRefinements = from e in this.window.Controller.Model.Elements
+					where e is ObstacleRefinement && ((ObstacleRefinement) e).Refined.Equals (element)
+					select (ObstacleRefinement) e;
+				foreach (var refinement in obstacleRefinements) {
+					var vbiter = store.AppendValues(iiter, string.Format ("Alternative obstruction {0}", j++), refinement, refinementPixbuf);
+					foreach (var g2 in refinement.Refinees) {
+						if (g2 is Obstacle) {
+							store.AppendValues(vbiter, ((Obstacle) g2).Name, g2, obstaclePixbuf);
+						}
+					}
+				}
 			}
 			
 			RestoreState (expandedNodes);
@@ -340,8 +353,8 @@ namespace KaosEditor.UI.Widgets
 					select (Responsibility) e;
 			i = 1;
 			foreach (var responsibility in responsibilities) {
-				var iiiter = store.AppendValues(iiter, string.Format("Alternative {0}", i++), responsibility, responsibilityPixbuf);
-				store.AppendValues (iiiter, responsibility.Agent.Name, responsibility, agentPixbuf);
+				var iiiter = store.AppendValues(iiter, string.Format("Alternative responsibility {0}", i++), responsibility, responsibilityPixbuf);
+				store.AppendValues (iiiter, responsibility.Agent.Name, responsibility.Agent, agentPixbuf);
 			}
 			
 			
