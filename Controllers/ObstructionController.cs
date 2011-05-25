@@ -94,6 +94,10 @@ namespace KaosEditor.Controllers
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Yes) {
 					this.controller.Model.Remove (obstruction);
+					foreach (var v in this.controller.Model.Views) {
+						var shapes = v.GetAllShapesFor (obstruction);
+						v.Shapes.RemoveAll ((obj) => shapes.Contains(obj));
+					}
 				}
 				dialog.Destroy ();
 			};
