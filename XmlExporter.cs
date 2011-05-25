@@ -150,6 +150,17 @@ namespace KaosEditor
 				writer.WriteEndElement();
 			}
 			
+			var exceptions = from e in model.Elements 
+				where e is ExceptionLink && ((ExceptionLink) e).Goal.Equals (goal) 
+					select (ExceptionLink) e;
+			
+			foreach (var exception in exceptions) {
+				writer.WriteStartElement("exception");
+				writer.WriteAttributeString("id", exception.Id);
+				writer.WriteAttributeString("goal-id", exception.ExceptionGoal.Id);
+				writer.WriteEndElement();
+			}
+			
 			writer.WriteEndElement();
 		}
 		

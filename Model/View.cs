@@ -180,6 +180,13 @@ namespace KaosEditor.Model
 			}
 		}
 		
+		public IShape[] GetAllShapesFor (KAOSElement element) 
+		{
+			return Shapes.FindAll (x => {
+				return x.RepresentedElement.Equals (element);
+			}).ToArray();
+		}
+		
 		/// <summary>
 		/// Gets the nearest shape for a given kaos element
 		/// </summary>

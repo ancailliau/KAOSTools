@@ -50,6 +50,7 @@ namespace KaosEditor.UI.Widgets
 		private static Gdk.Pixbuf obstaclePixbuf;
 		private static Gdk.Pixbuf obstructionPixbuf;
 		private static Gdk.Pixbuf resolutionPixbuf;
+		private static Gdk.Pixbuf exceptionPixbuf;
 		
 		static ConceptsTreeView () {
 			try {
@@ -60,6 +61,7 @@ namespace KaosEditor.UI.Widgets
 				obstaclePixbuf = Gdk.Pixbuf.LoadFromResource ("KaosEditor.Images.Obstacle.png");
 				obstructionPixbuf = Gdk.Pixbuf.LoadFromResource ("KaosEditor.Images.Obstruction.png");
 				resolutionPixbuf = Gdk.Pixbuf.LoadFromResource ("KaosEditor.Images.Resolution.png");
+				exceptionPixbuf = Gdk.Pixbuf.LoadFromResource ("KaosEditor.Images.Exception.png");
 				
 			} catch (Exception e) {
 				Logger.Warning ("Cannot load images from ressources", e);
@@ -357,7 +359,6 @@ namespace KaosEditor.UI.Widgets
 				store.AppendValues (iiiter, responsibility.Agent.Name, responsibility.Agent, agentPixbuf);
 			}
 			
-			
 			var obstructions = from e in this.window.Model.Elements 
 				where e is Obstruction && ((Obstruction) e).Goal.Equals (g) 
 					select (Obstruction) e;
@@ -365,6 +366,15 @@ namespace KaosEditor.UI.Widgets
 			foreach (var obstruction in obstructions) {
 				var iiiter = store.AppendValues(iiter, string.Format("Obstruction {0}", i++), obstruction, obstructionPixbuf);
 				store.AppendValues (iiiter, obstruction.Obstacle.Name, obstruction.Obstacle, obstaclePixbuf);
+			}
+			
+			var exceptions = from e in this.window.Model.Elements 
+				where e is ExceptionLink && ((ExceptionLink) e).Goal.Equals (g) 
+					select (ExceptionLink) e;
+			i = 1;
+			foreach (var exception in exceptions) {
+				var iiiter = store.AppendValues(iiter, string.Format("Exception {0}", i++), exception, exceptionPixbuf);
+				store.AppendValues (iiiter, exception.ExceptionGoal.Name, exception.ExceptionGoal, goalPixbuf);
 			}
 		}
 	}

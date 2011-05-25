@@ -29,15 +29,17 @@ using Cairo;
 using KaosEditor;
 using KaosEditor.Model;
 using KaosEditor.UI.Arrows;
+using KaosEditor.Logging;
 
 namespace KaosEditor.UI.Shapes
 {
 	
-	public class ObstructionShape : Shape
+	public class ExceptionLinkShape : Shape
 	{
-		public ObstructionShape (Obstruction obstruction) : base ()
+		
+		public ExceptionLinkShape (ExceptionLink exception) : base ()
 		{
-			RepresentedElement = obstruction;
+			RepresentedElement = exception;
 		}
 				
 		/// <summary>
@@ -57,35 +59,35 @@ namespace KaosEditor.UI.Shapes
 			}
 			var oldSource = context.Source;
 			
-			var element = (Obstruction) RepresentedElement;
+			var element = (ExceptionLink) RepresentedElement;
 			
 			var goalShapes = view.GetAllShapesFor (element.Goal);
-			var obstacleShapes = view.GetAllShapesFor (element.Obstacle);
+			var exceptionGoalShapes = view.GetAllShapesFor (element.ExceptionGoal);
 			
 			IShape goalShape = null;
-			IShape obstacleShape = null;
+			IShape exceptionGoalShape = null;
 			double minDist = double.PositiveInfinity;
 			foreach (var s in goalShapes) {
-				foreach (var s2 in obstacleShapes) {
+				foreach (var s2 in exceptionGoalShapes) {
 					var a = s.Position.X - s2.Position.X;
 					var b = s.Position.Y - s2.Position.Y;
 					var c = a * a + b * b;
 					if (c < minDist) {
 						minDist = c;
 						goalShape = s;
-						obstacleShape = s2;
+						exceptionGoalShape = s2;
 					}
 				}
 			}
 			
-			if (goalShape != null & obstacleShape != null) {
-				StrikedArrow arrow = new StrikedArrow() {
-					Start = obstacleShape,
-					End = goalShape,
-					FillColor = "#f54326"
+			if (goalShape != null & exceptionGoalShape != null) {
+				DashedArrow arrow = new DashedArrow() {
+					Start = exceptionGoalShape,
+					End = goalShape
 				};
 				arrow.Display(context, view);
 			}
+			
 			
 			context.Source = oldSource;
 			context.LineWidth = oldLineWidth;

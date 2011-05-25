@@ -30,6 +30,7 @@ namespace KaosEditor
 			public List<FutureResponsibility> futureResponsibilities = new List<FutureResponsibility>();
 			public List<FutureObstruction> futureObstructions = new List<FutureObstruction>();
 			public List<FutureResolution> futureResolutions = new List<FutureResolution>();
+			public List<FutureException> futureExceptions = new List<FutureException>();
 		}
 		
 		private class FutureAgent {
@@ -58,6 +59,11 @@ namespace KaosEditor
 		private class FutureResolution {
 			public string id = "";
 			public string obstacleId = "";
+		}
+		
+		private class FutureException {
+			public string id = "";
+			public string goalId = "";
 		}
 		
 		private class FutureView {
@@ -169,6 +175,13 @@ namespace KaosEditor
 								obstacleId = reader.GetAttribute ("obstacle-id")
 							};
 							futureGoal.futureResolutions.Add (resolution);
+						
+						} else if (reader.IsStartElement ("exception")) {
+							var exception = new FutureException () {
+								id = reader.GetAttribute ("id"),
+								goalId = reader.GetAttribute ("goal-id")
+							};
+							futureGoal.futureExceptions.Add (exception);
 							
 						} else if (reader.IsStartElement ("definition")) {
 							reader.Read ();
@@ -297,6 +310,11 @@ namespace KaosEditor
 					Model.Add(new Resolution (
 						(Obstacle) Model.Get(futureResolution.obstacleId),
 						(Goal) Model.Get(futureGoal.id)) { Id = futureResolution.id});
+				}
+				foreach (var futureException in futureGoal.futureExceptions) {
+					Model.Add(new ExceptionLink (
+						(Goal) Model.Get(futureGoal.id),
+						(Goal) Model.Get(futureException.goalId)) { Id = futureException.id});
 				}
 			}
 			

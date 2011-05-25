@@ -49,8 +49,24 @@ namespace KaosEditor.UI.Shapes
 			
 			var element = (Resolution) RepresentedElement;
 			
-			IShape goalShape = view.GetNearestShapeFor(element.Goal, this.Position);
-			IShape obstacleShape = view.GetNearestShapeFor(element.Obstacle, this.Position);
+			var goalShapes = view.GetAllShapesFor (element.Goal);
+			var obstacleShapes = view.GetAllShapesFor (element.Obstacle);
+			
+			IShape goalShape = null;
+			IShape obstacleShape = null;
+			double minDist = double.PositiveInfinity;
+			foreach (var s in goalShapes) {
+				foreach (var s2 in obstacleShapes) {
+					var a = s.Position.X - s2.Position.X;
+					var b = s.Position.Y - s2.Position.Y;
+					var c = a * a + b * b;
+					if (c < minDist) {
+						minDist = c;
+						goalShape = s;
+						obstacleShape = s2;
+					}
+				}
+			}
 			
 			if (goalShape != null & obstacleShape != null) {
 				StrikedArrow arrow = new StrikedArrow() {
@@ -60,6 +76,7 @@ namespace KaosEditor.UI.Shapes
 				};
 				arrow.Display(context, view);
 			}
+			
 			context.Source = oldSource;
 			context.LineWidth = oldLineWidth;
 		}

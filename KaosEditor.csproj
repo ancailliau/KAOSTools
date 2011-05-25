@@ -57,6 +57,7 @@
     <EmbeddedResource Include="Images\Model.png" />
     <EmbeddedResource Include="Images\Obstruction.png" />
     <EmbeddedResource Include="Images\Resolution.png" />
+    <EmbeddedResource Include="Images\Exception.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gtk-gui\generated.cs" />
@@ -135,6 +136,12 @@
     <Compile Include="Model\ObstacleRefinement.cs" />
     <Compile Include="UI\Shapes\ObstacleRefinementShape.cs" />
     <Compile Include="gtk-gui\KaosEditor.AddObstacleRefinementDialog.cs" />
+    <Compile Include="Controllers\ExceptionController.cs" />
+    <Compile Include="Model\ExceptionLink.cs" />
+    <Compile Include="UI\Shapes\ExceptionLinkShape.cs" />
+    <Compile Include="AddExceptionDialog.cs" />
+    <Compile Include="gtk-gui\KaosEditor.AddExceptionDialog.cs" />
+    <Compile Include="UI\Arrows\DashedArrow.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

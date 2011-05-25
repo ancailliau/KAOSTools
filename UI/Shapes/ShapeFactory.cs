@@ -73,6 +73,9 @@ namespace KaosEditor.UI.Shapes
 			
 			} else if (element is ObstacleRefinement) {
 				return new ObstacleRefinementShape (element as ObstacleRefinement) { Position = new PointD(x,y) };
+			
+			} else if (element is ExceptionLink) {
+				return new ExceptionLinkShape (element as ExceptionLink) { Position = new PointD(x,y) };
 				
 			} else {
 				if (element != null)
