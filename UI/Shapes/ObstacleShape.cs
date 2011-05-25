@@ -67,7 +67,7 @@ namespace KaosEditor.UI.Shapes
 			
 			// Computing size of the shape
 			var pangoLayout = new Pango.Layout(Gdk.PangoHelper.ContextGetForScreen(Gdk.Screen.Default));
-			pangoLayout.Width = 100;			
+			pangoLayout.Width = Pango.Units.FromPixels(150);
 			pangoLayout.Alignment = Pango.Alignment.Center;
 			pangoLayout.SetText(((Obstacle) this.RepresentedElement).Name);
 			
@@ -93,7 +93,7 @@ namespace KaosEditor.UI.Shapes
 			var oldSource = context.Source;
 			
 			var pangoLayout = new Pango.Layout(drawingArea.PangoContext);
-			pangoLayout.Width = 100;			
+			pangoLayout.Width = Pango.Units.FromPixels(150);
 			pangoLayout.Alignment = Pango.Alignment.Center;
 			pangoLayout.SetText(((Obstacle) this.RepresentedElement).Name);
 			
@@ -137,7 +137,7 @@ namespace KaosEditor.UI.Shapes
 			
 			context.SetColor (this.textColor);
 			
-			context.MoveTo(Position.X, Position.Y - textHeight/2);
+			context.MoveTo(Position.X - 150/2, Position.Y - textHeight/2);
 			Pango.CairoHelper.ShowLayout(context, pangoLayout);
 			
 			context.Source = oldSource;

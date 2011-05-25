@@ -94,7 +94,7 @@ namespace KaosEditor.UI.Shapes
 			var oldSource = context.Source;
 			
 			var pangoLayout = new Pango.Layout(drawingArea.PangoContext);
-			pangoLayout.Width = 100;			
+			pangoLayout.Width = Pango.Units.FromPixels(100);			
 			pangoLayout.Alignment = Pango.Alignment.Center;
 			pangoLayout.SetText(((Agent) this.RepresentedElement).Name);
 			
@@ -139,7 +139,7 @@ namespace KaosEditor.UI.Shapes
 			}
 			
 			context.SetColor (this.textColor);
-			context.MoveTo(Position.X, Position.Y - textHeight/2);
+			context.MoveTo(Position.X - 100/2, Position.Y - textHeight/2);
 			Pango.CairoHelper.ShowLayout(context, pangoLayout);
 			
 			context.Source = oldSource;
