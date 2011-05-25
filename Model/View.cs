@@ -170,6 +170,12 @@ namespace KaosEditor.Model
 			}
 		}
 		
+		public void Remove (IShape shape)
+		{
+			Shapes.Remove (shape);
+			NotifyChange ();
+		}
+		
 		/// <summary>
 		/// Notifies the change.
 		/// </summary>

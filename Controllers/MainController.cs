@@ -369,7 +369,14 @@ namespace KaosEditor.Controllers
 		public void PopulateContextMenu (object source, object clickedElement)
 		{
 			var menu = new Menu ();
-			
+			Temp (source, clickedElement, menu);
+			if (clickedElement is IShape) {
+				Temp (source, (clickedElement as IShape).RepresentedElement, menu);
+			}
+		}
+
+		public void Temp (object source, object clickedElement, Menu menu)
+		{
 			if (clickedElement != null & clickedElement is IShape & (source is DiagramArea)) {
 				var removeFromCurrentViewItem = new MenuItem("Remove from current view...");
 				removeFromCurrentViewItem.Activated += delegate(object sender2, EventArgs e) {

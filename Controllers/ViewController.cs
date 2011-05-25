@@ -46,8 +46,7 @@ namespace KaosEditor.Controllers
 			var addViewDialog = new AddViewDialog (this.controller.Window);
 			addViewDialog.Response += delegate(object sender, Gtk.ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Ok & addViewDialog.ViewName != "") {
-					this.controller.Model.Views.Add (addViewDialog.ViewName);
-					this.controller.Window.DisplayView (addViewDialog.ViewName);
+					this.Add (addViewDialog.ViewName);
 				}
 				addViewDialog.Destroy ();
 			};
@@ -73,10 +72,30 @@ namespace KaosEditor.Controllers
 		
 		public void EditView (View view)
 		{
-			throw new NotImplementedException ();
+			var dialog = new AddViewDialog (this.controller.Window, view);
+			dialog.Response += delegate(object sender, Gtk.ResponseArgs args) {
+				if (args.ResponseId == Gtk.ResponseType.Ok & dialog.ViewName != "") {
+					view.Name = dialog.ViewName;
+					this.controller.Window.DisplayView (dialog.ViewName);
+				}
+				dialog.Destroy ();
+			};
+			dialog.Present ();
 		}
 		
 		public void RemoveView (View view)
+		{
+			throw new NotImplementedException ();
+		}
+		
+		
+		public void Add (string name)
+		{
+			this.controller.Model.Views.Add (new View (name, this.controller));
+			this.controller.Window.DisplayView (name);
+		}
+				
+		public void Remove (View view)
 		{
 			throw new NotImplementedException ();
 		}
@@ -93,6 +112,12 @@ namespace KaosEditor.Controllers
 			
 			if (clickedElement is View) {
 				var clickedView = clickedElement as View;
+				
+				var editItem = new MenuItem("Edit view...");
+				editItem.Activated += delegate(object sender2, EventArgs e) {
+					this.EditView (clickedView);
+				};
+				menu.Add(editItem);
 				
 				var duplicateItem = new MenuItem("Duplicate view...");
 				duplicateItem.Activated += delegate(object sender2, EventArgs e) {
