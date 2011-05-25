@@ -35,7 +35,7 @@ namespace KaosEditor.UI.Dialogs
 	/// <summary>
 	/// Represents the dialog to add a view
 	/// </summary>
-	public partial class AddView : Gtk.Dialog
+	public partial class AddViewDialog : Gtk.Dialog
 	{
 		
 		/// <summary>
@@ -50,17 +50,23 @@ namespace KaosEditor.UI.Dialogs
 		}
 		
 		/// <summary>
-		/// Initializes a new instance of the <see cref="KaosEditor.UI.Dialogs.AddView"/> class.
+		/// Initializes a new instance of the <see cref="KaosEditor.UI.Dialogs.AddViewDialog"/> class.
 		/// </summary>
 		/// <param name='window'>
 		/// Parent window.
 		/// </param>
-		public AddView (MainWindow window)
+		public AddViewDialog (MainWindow window)
+			: this (window, "")
+		{
+		}
+		
+		public AddViewDialog (MainWindow window, string viewName)
 			: base ("Add view...", 
 				window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
 			this.window = window;
+			this.nameEntry.Text = viewName;
 		}
 		
 	}

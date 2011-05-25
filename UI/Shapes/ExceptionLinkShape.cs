@@ -131,6 +131,13 @@ namespace KaosEditor.UI.Shapes
 		{
 			return new Bounds () {};
 		}
+		
+		public override IShape Copy ()
+		{
+			return new ExceptionLinkShape (this.RepresentedElement as ExceptionLink) {
+				Position = new PointD (Position.X, Position.Y)
+			};
+		}
 	}
 }
 

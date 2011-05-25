@@ -132,7 +132,8 @@ namespace KaosEditor.UI.Shapes
 		/// The bounds.
 		/// </returns>
 		public abstract Bounds GetBounds ();
-
+		
+		public abstract IShape Copy ();
 
 		public void PopulateContextMenu (Gtk.Menu menu, MenuContext context)
 		{

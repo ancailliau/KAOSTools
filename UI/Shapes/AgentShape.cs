@@ -214,6 +214,12 @@ namespace KaosEditor.UI.Shapes
 			};
 		}
 		
+		public override IShape Copy ()
+		{
+			return new AgentShape (this.RepresentedElement as Agent) {
+				Position = new PointD (Position.X, Position.Y)
+			};
+		}
 	}
 }
 

@@ -20,7 +20,7 @@ namespace KaosEditor.UI.Windows
 		private global::Gtk.Toolbar toolbar1;
 		private global::Gtk.HPaned hpaned1;
 		private global::Gtk.Statusbar statusBar;
-
+        
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);

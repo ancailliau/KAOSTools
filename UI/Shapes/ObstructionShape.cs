@@ -129,6 +129,14 @@ namespace KaosEditor.UI.Shapes
 		{
 			return new Bounds () {};
 		}
+		
+		
+		public override IShape Copy ()
+		{
+			return new ObstructionShape (this.RepresentedElement as Obstruction) {
+				Position = new PointD (Position.X, Position.Y)
+			};
+		}
 	}
 }
 

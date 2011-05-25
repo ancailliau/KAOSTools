@@ -85,7 +85,6 @@
     <Compile Include="UI\Arrows\FilledArrow.cs" />
     <Compile Include="UI\Arrows\IArrow.cs" />
     <Compile Include="UI\Arrows\Arrow.cs" />
-    <Compile Include="UI\Dialogs\AddView.cs" />
     <Compile Include="UI\Dialogs\TextEntryDialog.cs" />
     <Compile Include="UI\Windows\MainWindow.cs" />
     <Compile Include="UI\Widgets\TabLabel.cs" />
@@ -93,7 +92,6 @@
     <Compile Include="UI\Widgets\ViewsNotebook.cs" />
     <Compile Include="UI\Widgets\ConceptsTreeView.cs" />
     <Compile Include="Model\EditorModel.cs" />
-    <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.AddView.cs" />
     <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.TextEntryDialog.cs" />
     <Compile Include="gtk-gui\KaosEditor.UI.Windows.MainWindow.cs" />
     <Compile Include="UI\IContextMenu.cs" />
@@ -142,6 +140,9 @@
     <Compile Include="AddExceptionDialog.cs" />
     <Compile Include="gtk-gui\KaosEditor.AddExceptionDialog.cs" />
     <Compile Include="UI\Arrows\DashedArrow.cs" />
+    <Compile Include="Controllers\ViewController.cs" />
+    <Compile Include="UI\Dialogs\AddViewDialog.cs" />
+    <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.AddViewDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

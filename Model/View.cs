@@ -42,7 +42,7 @@ namespace KaosEditor.Model
 	/// <summary>
 	/// Represents a view.
 	/// </summary>
-	public class View : IContextMenu
+	public class View
 	{
 		/// <summary>
 		/// Handler executed when the view changed
@@ -230,32 +230,6 @@ namespace KaosEditor.Model
 			} else {
 				Console.WriteLine ("oups");
 			}
-		}
-		
-		/// <summary>
-		/// Populates the context menu.
-		/// </summary>
-		/// <param name='menu'>
-		/// Menu.
-		/// </param>
-		/// <param name='window'>
-		/// Window.
-		/// </param>
-		public void PopulateContextMenu (Menu menu, MenuContext context)
-		{
-			var renameView = new MenuItem("Rename...");
-			renameView.Activated += delegate(object sender2, EventArgs e) {
-				var ar = new TextEntryDialog(this.Controller.Window, "New name:", this.Name, delegate (string a) {
-					if (a != "") {
-						this.Name = a;
-						context.Controller.Window.Model.NotifyChange();
-						return true;
-					}
-					return false;
-				});
-				ar.Present();
-			};
-			menu.Add(renameView);
 		}
 		
 		public void OnSizeRequested (ref Gtk.Requisition requisition)

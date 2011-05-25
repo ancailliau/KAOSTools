@@ -88,7 +88,7 @@ namespace KaosEditor.Controllers
 			dialog.Present ();
 		}
 		
-		public void PopulateContextMenu (Menu menu, object source, KAOSElement clickedElement)
+		public void PopulateContextMenu (Menu menu, object source, object clickedElement)
 		{
 			if (clickedElement is Obstacle) {
 				var clickedObstacle = (Obstacle) clickedElement;				

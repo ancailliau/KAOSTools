@@ -109,25 +109,12 @@ namespace KaosEditor.UI.Widgets
 					TreeIter iter;
 					if (store.GetIter(out iter, path)) {
 						object o = store.GetValue (iter, 1);
+						this.controller.PopulateContextMenu (this, o);
 						
 					}
 				} else {
-					var menu = new Menu ();
-					var addItem = new MenuItem ("Add view...");
-					addItem.Activated += delegate(object sender3, EventArgs e3) {
-						var dialog = new AddView (this.controller.Window);
-						dialog.Response += delegate(object sender2, Gtk.ResponseArgs args2) {
-							if (args2.ResponseId == Gtk.ResponseType.Ok & dialog.ViewName != "") {
-								this.controller.Model.Views.Add (dialog.ViewName);
-								this.controller.Window.DisplayView (dialog.ViewName);
-							}
-							dialog.Destroy ();
-						};
-						dialog.Present ();	
-					};
-					menu.Add (addItem);
-					menu.ShowAll ();
-					menu.Popup ();
+					this.controller.PopulateContextMenu (this, null);
+					
 				}
 			}
 		}

@@ -122,6 +122,8 @@ namespace KaosEditor.UI.Shapes
 		/// The bounds.
 		/// </returns>
 		Bounds GetBounds ();
+		
+		IShape Copy ();
 	}
 }
 

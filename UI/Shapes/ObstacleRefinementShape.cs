@@ -175,6 +175,14 @@ namespace KaosEditor.UI.Shapes
 			};
 		}
 		
+		
+		public override IShape Copy ()
+		{
+			return new ObstacleRefinementShape (this.RepresentedElement as ObstacleRefinement) {
+				Position = new PointD (Position.X, Position.Y)
+			};
+		}
+		
 	}
 }
 

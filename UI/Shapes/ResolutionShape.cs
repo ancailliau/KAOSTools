@@ -119,6 +119,14 @@ namespace KaosEditor.UI.Shapes
 		{
 			return new Bounds () {};
 		}
+		
+		
+		public override IShape Copy ()
+		{
+			return new ResolutionShape (this.RepresentedElement as Resolution) {
+				Position = new PointD (Position.X, Position.Y)
+			};
+		}
 	}
 }
 

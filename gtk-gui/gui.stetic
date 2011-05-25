@@ -168,7 +168,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="KaosEditor.UI.Dialogs.AddView" design-size="400 79">
+  <widget class="Gtk.Dialog" id="KaosEditor.UI.Dialogs.AddViewDialog" design-size="400 79">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Add new view...</property>
     <property name="WindowPosition">CenterOnParent</property>

@@ -37,7 +37,7 @@ namespace KaosEditor.UI.Shapes
 	/// <summary>
 	/// Represents the shape for goals.
 	/// </summary>
-	public class GoalShape : Shape, IContextMenu
+	public class GoalShape : Shape
 	{
 		
 		private string fillColor = "#729fcf";
@@ -210,6 +210,13 @@ namespace KaosEditor.UI.Shapes
 				MaxX = (int) (Position.X + width / 2 + 4),
 				MinY = (int) (Position.Y - height / 2),
 				MaxY = (int) (Position.Y + height / 2)
+			};
+		}
+		
+		public override IShape Copy ()
+		{
+			return new GoalShape (this.RepresentedElement as Goal) {
+				Position = new PointD (Position.X, Position.Y)
 			};
 		}
 		

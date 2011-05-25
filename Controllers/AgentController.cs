@@ -27,6 +27,7 @@ using System;
 using KaosEditor.UI.Dialogs;
 using KaosEditor.Model;
 using Gtk;
+using KaosEditor.UI.Widgets;
 
 namespace KaosEditor.Controllers
 {
@@ -94,9 +95,9 @@ namespace KaosEditor.Controllers
 		}
 		
 		
-		public void PopulateContextMenu (Menu menu, object source, KAOSElement clickedElement)
+		public void PopulateContextMenu (Menu menu, object source, object clickedElement)
 		{
-			if (clickedElement == null) {				
+			if (clickedElement == null & source is ConceptsTreeView) {				
 				var addItem = new MenuItem("Add agent...");
 				addItem.Activated += delegate(object sender2, EventArgs e) {
 					this.AddAgent ();

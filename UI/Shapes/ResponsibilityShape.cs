@@ -171,6 +171,13 @@ namespace KaosEditor.UI.Shapes
 				MaxY = (int) (Position.Y + radius)
 			};
 		}
+		
+		public override IShape Copy ()
+		{
+			return new ResponsibilityShape (this.RepresentedElement as Responsibility) {
+				Position = new PointD (Position.X, Position.Y)
+			};
+		}
 	}
 }
 
