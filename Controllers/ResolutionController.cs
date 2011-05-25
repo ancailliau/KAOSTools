@@ -51,9 +51,18 @@ namespace KaosEditor.Controllers
 					this.controller.Model.Add (newObstruction);
 					dialog.Destroy ();
 				} else if (args.ResponseId == ResponseType.Ok && dialog.ResolvingGoalName != "") {
-					this.controller.GoalController.AddGoal (dialog.ResolvingGoalName, delegate (Goal goal) {
-						dialog.ResolvingGoal = goal;
-					});
+					var confirmDialog = new MessageDialog (this.controller.Window,
+						DialogFlags.DestroyWithParent, MessageType.Question,
+						ButtonsType.YesNo, false, string.Format ("Create new goal '{0}'?", dialog.ResolvingGoalName));
+					confirmDialog.Response += delegate(object o2, ResponseArgs args2) {
+						if (args2.ResponseId == ResponseType.Yes) {
+							this.controller.GoalController.AddGoal (dialog.ResolvingGoalName, delegate (Goal goal) {
+								dialog.ResolvingGoal = goal;
+							});
+						}
+						confirmDialog.Destroy ();
+					};
+					confirmDialog.Present ();
 				}
 			};
 			dialog.Present ();

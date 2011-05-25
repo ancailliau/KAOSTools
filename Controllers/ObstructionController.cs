@@ -53,10 +53,20 @@ namespace KaosEditor.Controllers
 					
 				} else if (args.ResponseId == ResponseType.Ok && dialog.ObstacleName != null
 					&& dialog.ObstacleName != "") {
-					this.controller.ObstacleController.AddObstacle (dialog.ObstacleName,
-						delegate (Obstacle obstacle) {
-						dialog.Obstacle = obstacle;	
-					});
+					
+					var confirmDialog = new MessageDialog (this.controller.Window,
+						DialogFlags.DestroyWithParent, MessageType.Question,
+						ButtonsType.YesNo, false, string.Format ("Create new obstacle '{0}'?", dialog.ObstacleName));
+					confirmDialog.Response += delegate(object o2, ResponseArgs args2) {
+						if (args2.ResponseId == ResponseType.Yes) {
+							this.controller.ObstacleController.AddObstacle (dialog.ObstacleName,
+							delegate (Obstacle obstacle) {
+								dialog.Obstacle = obstacle;	
+							});
+						}
+						confirmDialog.Destroy ();
+					};
+					confirmDialog.Present ();
 				}
 			};
 			dialog.Present ();
