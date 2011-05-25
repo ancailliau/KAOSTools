@@ -77,6 +77,9 @@ namespace KaosEditor.UI.Shapes
 			} else if (element is ExceptionLink) {
 				return new ExceptionLinkShape (element as ExceptionLink) { Position = new PointD(x,y) };
 				
+			} else if (element is DomainProperty) {
+				return new DomainPropertyShape (element as DomainProperty) { Position = new PointD(x,y) };
+				
 			} else {
 				if (element != null)
 					Logger.Warning ("Shape does not exists for element '{0}'", element.GetType());
