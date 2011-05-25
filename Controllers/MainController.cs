@@ -33,6 +33,7 @@ using KaosEditor.Model;
 using KaosEditor.UI.Windows;
 using KaosEditor.UI.Widgets;
 using KaosEditor.UI.Shapes;
+using System.Collections.Generic;
 
 namespace KaosEditor.Controllers
 {
@@ -91,6 +92,14 @@ namespace KaosEditor.Controllers
 			get;
 			private set;
 		}
+		
+		public DomainPropertyController DomainPropertyController  {
+			get;
+			private set;
+		}
+		
+		private List<IController> controllers = new List<IController> ();
+		
 		
 		/// <summary>
 		/// The current filename (empty if not yet saved)
@@ -157,6 +166,14 @@ namespace KaosEditor.Controllers
 			ObstacleRefinementController = new ObstacleRefinementController (this);
 			ExceptionController = new ExceptionController (this);
 			ViewController = new ViewController (this);
+			DomainPropertyController = new DomainPropertyController (this);
+			
+			controllers.AddRange (new IController[] {
+				ViewController,	GoalController, AgentController, RefinementController, 
+				ResponsibilityController, ObstacleController,
+				ObstructionController, ResolutionController,
+				ObstacleRefinementController, DomainPropertyController
+			});
 			
 			// Finish loading application
 			this.LoadConfiguration();
@@ -366,6 +383,27 @@ namespace KaosEditor.Controllers
 		
 		#endregion
 		
+		public void PopulateTree (TreeStore store, bool header)
+		{
+			foreach (var c in controllers) {
+				c.PopulateTree (store, header);
+			}
+		}
+		
+		public void PopulateTree (TreeStore store, TreeIter iter, bool header)
+		{
+			foreach (var c in controllers) {
+				c.PopulateTree (store, iter, header);
+			}
+		}
+		
+		public void PopulateTree (KAOSElement[] elements, TreeStore store, TreeIter iter)
+		{
+			foreach (var c in controllers) {
+				c.PopulateTree (elements, store, iter);
+			}
+		}
+		
 		public void PopulateContextMenu (object source, object clickedElement)
 		{
 			var menu = new Menu ();
@@ -377,33 +415,9 @@ namespace KaosEditor.Controllers
 
 		public void Temp (object source, object clickedElement, Menu menu)
 		{
-			if (clickedElement != null & clickedElement is IShape & (source is DiagramArea)) {
-				var removeFromCurrentViewItem = new MenuItem("Remove from current view...");
-				removeFromCurrentViewItem.Activated += delegate(object sender2, EventArgs e) {
-					this.Window.RemoveFromCurrentView (clickedElement as IShape);
-				};
-				menu.Add (removeFromCurrentViewItem);
-				menu.Add (new SeparatorMenuItem ());
+			foreach (var c in controllers) {
+				c.PopulateContextMenu (menu, source, clickedElement);
 			}
-			
-			if (clickedElement != null & clickedElement is KAOSElement & !(source is DiagramArea) & this.Window.HasCurrentView()) {
-				var addToCurrentViewItem = new MenuItem("Add to current view...");
-				addToCurrentViewItem.Activated += delegate(object sender2, EventArgs e) {
-					this.Window.AddToCurrentView (clickedElement as KAOSElement);
-				};
-				menu.Add(addToCurrentViewItem);
-			}
-			
-			GoalController.PopulateContextMenu (menu, source, clickedElement);
-			AgentController.PopulateContextMenu (menu, source, clickedElement);
-			RefinementController.PopulateContextMenu (menu, source, clickedElement);
-			ResponsibilityController.PopulateContextMenu (menu, source, clickedElement);
-			ObstacleController.PopulateContextMenu (menu, source, clickedElement);
-			ObstructionController.PopulateContextMenu (menu, source, clickedElement);
-			ResolutionController.PopulateContextMenu (menu, source, clickedElement);
-			ObstacleRefinementController.PopulateContextMenu (menu, source, clickedElement);
-			ExceptionController.PopulateContextMenu (menu, source, clickedElement);
-			ViewController.PopulateContextMenu (menu, source, clickedElement);
 			
 			if (menu.Children.Length > 0) {
 				menu.ShowAll ();

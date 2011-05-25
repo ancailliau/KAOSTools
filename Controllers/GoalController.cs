@@ -24,16 +24,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
 using KaosEditor.Model;
 using KaosEditor.UI.Dialogs;
 using Gtk;
 using KaosEditor.UI.Widgets;
+using KaosEditor.Logging;
 
 namespace KaosEditor.Controllers
 {
-	public class GoalController
+	public class GoalController : IController
 	{
 	
+		private static Gdk.Pixbuf pixbuf;
+		
+		static GoalController () {
+			try {
+				pixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Goal.png");
+				
+			} catch (Exception e) {
+				Logger.Warning ("Cannot load images from ressources", e);
+			}
+		}
+		
 		private MainController controller;
 		
 		public GoalController (MainController controller)
@@ -130,6 +143,56 @@ namespace KaosEditor.Controllers
 				menu.Add(deleteItem);
 				
 				menu.Add (new SeparatorMenuItem ());
+				
+			}
+		}
+		
+		public void PopulateTree (TreeStore store, bool header)
+		{
+			if (header) {
+				var iter = store.AppendValues ("Goals", null, pixbuf);
+				PopulateTree (store, iter, false);
+				
+			} else {
+				var goals = from e in this.controller.Model.Elements
+					where e is Goal select (Goal) e;
+			
+				foreach (var goal in goals) {
+					store.AppendValues (goal.Name, goal, pixbuf);
+				}
+			}
+		}
+		
+		public void PopulateTree (TreeStore store, TreeIter iter, bool header)
+		{
+			var goals = from e in this.controller.Model.Elements
+				where e is Goal select (Goal) e;
+			
+			if (header) {
+				iter = store.AppendValues (iter, "Goals", null, pixbuf);
+			}
+			PopulateTree (goals.ToArray(), store, iter);
+		}
+		
+		public void PopulateTree (KAOSElement[] elements, TreeStore store, TreeIter iter)
+		{
+			foreach (var goal in from e in elements where e is Goal select (Goal) e) {
+				var subIter = store.AppendValues (iter, goal.Name, goal, pixbuf);
+				
+				var refinements = from e in this.controller.Model.Elements
+					where e is Refinement && ((Refinement) e).Refined == goal
+						select (Refinement) e;
+				this.controller.PopulateTree (refinements.ToArray(), store, subIter);
+				
+				var obstructions = from e in this.controller.Model.Elements
+					where e is Obstruction && ((Obstruction) e).Goal == goal
+						select (Obstruction) e;
+				this.controller.PopulateTree (obstructions.ToArray(), store, subIter);
+				
+				var reponsibilities = from e in this.controller.Model.Elements
+					where e is Responsibility && ((Responsibility) e).Goal == goal
+						select (Responsibility) e;
+				this.controller.PopulateTree (reponsibilities.ToArray(), store, subIter);
 				
 			}
 		}

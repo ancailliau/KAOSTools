@@ -24,15 +24,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
 using KaosEditor.Model;
 using KaosEditor.UI.Dialogs;
 using Gtk;
 using KaosEditor.UI.Widgets;
+using KaosEditor.Logging;
 
 namespace KaosEditor.Controllers
 {
-	public class ObstacleController
+	public class ObstacleController : IController
 	{
+		
+		private static Gdk.Pixbuf pixbuf;
+		
+		static ObstacleController () {
+			try {
+				pixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Obstacle.png");
+				
+			} catch (Exception e) {
+				Logger.Warning ("Cannot load images from ressources", e);
+			}
+		}
 		
 		private MainController controller;
 		
@@ -124,6 +137,50 @@ namespace KaosEditor.Controllers
 				
 				menu.Add (new SeparatorMenuItem ());
 				
+			}
+		}
+		
+		public void PopulateTree (TreeStore store, bool header)
+		{
+			if (header) {
+				var iter = store.AppendValues ("Obstacles", null, pixbuf);
+				PopulateTree (store, iter, false);
+				
+			} else {
+				var obstacles = from e in this.controller.Model.Elements
+					where e is Obstacle select (Obstacle) e;
+			
+				foreach (var obstacle in obstacles) {
+					store.AppendValues (obstacle.Name, obstacle, pixbuf);
+				}
+			}
+		}
+		
+		public void PopulateTree (TreeStore store, TreeIter iter, bool header)
+		{
+			var obstacles = from e in this.controller.Model.Elements
+				where e is Obstacle select (Obstacle) e;
+			
+			if (header) {
+				iter = store.AppendValues (iter, "Obstacles", null, pixbuf);
+			}
+			PopulateTree (obstacles.ToArray(), store, iter);
+		}
+		
+		public void PopulateTree (KAOSElement[] elements, TreeStore store, TreeIter iter)
+		{
+			foreach (var obstacle in from e in elements where e is Obstacle select (Obstacle) e) {
+				var subIter = store.AppendValues (iter, obstacle.Name, obstacle, pixbuf);
+				
+				var refinements = from e in this.controller.Model.Elements
+					where e is ObstacleRefinement && ((ObstacleRefinement) e).Refined == obstacle
+						select (ObstacleRefinement) e;
+				this.controller.PopulateTree (refinements.ToArray(), store, subIter);
+				
+				var resolutions = from e in this.controller.Model.Elements
+					where e is Resolution && ((Resolution) e).Obstacle == obstacle
+						select (Resolution) e;
+				this.controller.PopulateTree (resolutions.ToArray(), store, subIter);
 			}
 		}
 	}

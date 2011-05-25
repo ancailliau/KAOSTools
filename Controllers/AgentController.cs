@@ -24,15 +24,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
 using KaosEditor.UI.Dialogs;
 using KaosEditor.Model;
 using Gtk;
 using KaosEditor.UI.Widgets;
+using KaosEditor.Logging;
 
 namespace KaosEditor.Controllers
 {
-	public class AgentController
+	public class AgentController : IController
 	{
+		private static Gdk.Pixbuf pixbuf;
+		
+		static AgentController () {
+			try {
+				pixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Agent.png");
+				
+			} catch (Exception e) {
+				Logger.Warning ("Cannot load images from ressources", e);
+			}
+		}
 		
 		private MainController controller;
 		
@@ -119,6 +131,40 @@ namespace KaosEditor.Controllers
 					this.RemoveAgent (clickedAgent);
 				};
 				menu.Add(deleteItem);
+			}
+		}
+		
+		public void PopulateTree (TreeStore store, bool header)
+		{
+			if (header) {
+				var iter = store.AppendValues ("Agents", null, pixbuf);
+				PopulateTree (store, iter, false);
+				
+			} else {
+				var agents = from e in this.controller.Model.Elements
+					where e is Agent select (Agent) e;
+			
+				foreach (var agent in agents) {
+					store.AppendValues (agent.Name, agent, pixbuf);
+				}
+			}
+		}
+		
+		public void PopulateTree (TreeStore store, TreeIter iter, bool header)
+		{
+			var agents = from e in this.controller.Model.Elements
+				where e is Agent select (Agent) e;
+			
+			if (header) {
+				iter = store.AppendValues (iter, "Agents", null, pixbuf);
+			}
+			PopulateTree (agents.ToArray(), store, iter);
+		}
+		
+		public void PopulateTree (KAOSElement[] elements, TreeStore store, TreeIter iter)
+		{
+			foreach (var agent in from e in elements where e is Agent select (Agent) e) {
+				store.AppendValues (iter, agent.Name, agent, pixbuf);
 			}
 		}
 	}

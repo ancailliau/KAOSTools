@@ -24,14 +24,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
 using KaosEditor.Model;
 using Gtk;
 using KaosEditor.UI.Dialogs;
+using KaosEditor.Logging;
 
 namespace KaosEditor.Controllers
 {
-	public class ResponsibilityController
+	public class ResponsibilityController : IController
 	{
+		private static Gdk.Pixbuf pixbuf;
+		
+		static ResponsibilityController () {
+			try {
+				pixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Responsibility.png");
+				
+			} catch (Exception e) {
+				Logger.Warning ("Cannot load images from ressources", e);
+			}
+		}
 		
 		private MainController controller;
 		
@@ -127,6 +139,41 @@ namespace KaosEditor.Controllers
 				menu.Add(deleteItem);
 			}
 			
+		}
+		
+		public void PopulateTree (TreeStore store, bool header)
+		{
+			if (header) {
+				var iter = store.AppendValues ("Responsibilities", null, pixbuf);
+				PopulateTree (store, iter, false);
+				
+			} else {
+				var responsibilities = from e in this.controller.Model.Elements
+					where e is Responsibility select (Responsibility) e;
+			
+				foreach (var responsibility in responsibilities) {
+					store.AppendValues ("Responsibility", responsibility, pixbuf);
+				}
+			}
+		}
+		
+		public void PopulateTree (TreeStore store, TreeIter iter, bool header)
+		{
+			var responsibilities = from e in this.controller.Model.Elements
+				where e is Responsibility select (Responsibility) e;
+			
+			if (header) {
+				iter = store.AppendValues (iter, "Responsibilities", null, pixbuf);
+			}
+			PopulateTree (responsibilities.ToArray(), store, iter);
+		}
+		
+		public void PopulateTree (KAOSElement[] elements, TreeStore store, TreeIter iter)
+		{
+			foreach (var responsibility in from e in elements where e is Responsibility select (Responsibility) e) {
+				var subIter = store.AppendValues (iter, "Responsibility", responsibility, pixbuf);
+				this.controller.PopulateTree (new KAOSElement[] { responsibility.Agent }, store, subIter); 
+			}
 		}
 	}
 }

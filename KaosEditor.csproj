@@ -148,6 +148,7 @@
     <Compile Include="UI\Shapes\DomainPropertyShape.cs" />
     <Compile Include="AddDomainPropertyDialog.cs" />
     <Compile Include="gtk-gui\KaosEditor.AddDomainPropertyDialog.cs" />
+    <Compile Include="Controllers\IController.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

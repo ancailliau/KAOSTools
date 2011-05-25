@@ -24,15 +24,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
 using KaosEditor.Model;
 using KaosEditor.UI.Dialogs;
 using Gtk;
 using KaosEditor.UI.Widgets;
+using KaosEditor.Logging;
+using KaosEditor.UI.Shapes;
 
 namespace KaosEditor.Controllers
 {
-	public class ViewController
+	public class ViewController : IController
 	{
+		
+		private static Gdk.Pixbuf pixbuf;
+		
+		static ViewController () {
+			try {
+				pixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.View.png");
+				
+			} catch (Exception e) {
+				Logger.Warning ("Cannot load images from ressources", e);
+			}
+		}
 		
 		private MainController controller;
 		
@@ -102,6 +116,23 @@ namespace KaosEditor.Controllers
 		
 		public void PopulateContextMenu (Menu menu, object source, object clickedElement)
 		{
+			if (clickedElement != null & clickedElement is IShape & (source is DiagramArea)) {
+				var removeFromCurrentViewItem = new MenuItem("Remove from current view...");
+				removeFromCurrentViewItem.Activated += delegate(object sender2, EventArgs e) {
+					this.controller.Window.RemoveFromCurrentView (clickedElement as IShape);
+				};
+				menu.Add (removeFromCurrentViewItem);
+				menu.Add (new SeparatorMenuItem ());
+			}
+			
+			if (clickedElement != null & clickedElement is KAOSElement & !(source is DiagramArea) & this.controller.Window.HasCurrentView()) {
+				var addToCurrentViewItem = new MenuItem("Add to current view...");
+				addToCurrentViewItem.Activated += delegate(object sender2, EventArgs e) {
+					this.controller.Window.AddToCurrentView (clickedElement as KAOSElement);
+				};
+				menu.Add(addToCurrentViewItem);
+			}
+			
 			if (clickedElement == null & source is ViewList) {
 				var addViewItem = new MenuItem("Add view...");
 				addViewItem.Activated += delegate(object sender2, EventArgs e) {
@@ -125,6 +156,22 @@ namespace KaosEditor.Controllers
 				};
 				menu.Add(duplicateItem);
 			}
+		}
+		
+		
+		public void PopulateTree (TreeStore store, bool header)
+		{
+			// TODO
+		}
+		
+		public void PopulateTree (TreeStore store, TreeIter iter, bool header)
+		{
+			// TODO
+		}
+		
+		public void PopulateTree (KAOSElement[] elements, TreeStore store, TreeIter iter)
+		{
+			// TODO
 		}
 	}
 }

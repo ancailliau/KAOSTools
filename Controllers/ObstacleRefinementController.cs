@@ -24,14 +24,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
 using KaosEditor.Model;
 using Gtk;
 using KaosEditor.UI.Dialogs;
+using KaosEditor.Logging;
 
 namespace KaosEditor.Controllers
 {
-	public class ObstacleRefinementController
+	public class ObstacleRefinementController : IController
 	{
+		
+		private static Gdk.Pixbuf pixbuf;
+		
+		static ObstacleRefinementController () {
+			try {
+				pixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Refinement.png");
+				
+			} catch (Exception e) {
+				Logger.Warning ("Cannot load images from ressources", e);
+			}
+		}
 		
 		private MainController controller;
 		
@@ -116,6 +129,40 @@ namespace KaosEditor.Controllers
 			}
 		}
 		
+		public void PopulateTree (TreeStore store, bool header)
+		{
+			if (header) {
+				var iter = store.AppendValues ("Obstacles refinements", null, pixbuf);
+				PopulateTree (store, iter, false);
+				
+			} else {
+				var refinements = from e in this.controller.Model.Elements
+					where e is ObstacleRefinement select (ObstacleRefinement) e;
+			
+				foreach (var refinement in refinements) {
+					store.AppendValues ("Refinement", refinement, pixbuf);
+				}
+			}
+		}
+		
+		public void PopulateTree (TreeStore store, TreeIter iter, bool header)
+		{
+			var refinements = from e in this.controller.Model.Elements
+				where e is ObstacleRefinement select (ObstacleRefinement) e;
+			
+			if (header) {
+				iter = store.AppendValues (iter, "Obstacles refinements", null, pixbuf);
+			}
+			PopulateTree (refinements.ToArray(), store, iter);
+		}
+		
+		public void PopulateTree (KAOSElement[] elements, TreeStore store, TreeIter iter)
+		{
+			foreach (var refinement in from e in elements where e is ObstacleRefinement select (ObstacleRefinement) e) {
+				var subIter = store.AppendValues (iter, "Refinement", refinement, pixbuf);
+				this.controller.PopulateTree (refinement.Refinees.ToArray(), store, subIter);
+			}
+		}
 	}
 }
 

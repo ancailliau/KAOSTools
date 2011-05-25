@@ -28,11 +28,23 @@ using System.Linq;
 using KaosEditor.Model;
 using Gtk;
 using KaosEditor.UI.Dialogs;
+using KaosEditor.Logging;
 
 namespace KaosEditor.Controllers
 {
-	public class ObstructionController
+	public class ObstructionController : IController
 	{
+		
+		private static Gdk.Pixbuf pixbuf;
+		
+		static ObstructionController () {
+			try {
+				pixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Obstruction.png");
+				
+			} catch (Exception e) {
+				Logger.Warning ("Cannot load images from ressources", e);
+			}
+		}
 		
 		private MainController controller;
 		
@@ -137,6 +149,41 @@ namespace KaosEditor.Controllers
 				menu.Add(deleteItem);
 			}
 			
+		}
+		
+		public void PopulateTree (TreeStore store, bool header)
+		{
+			if (header) {
+				var iter = store.AppendValues ("Obstructions", null, pixbuf);
+				PopulateTree (store, iter, false);
+				
+			} else {
+				var obstructions = from e in this.controller.Model.Elements
+					where e is Obstruction select (Obstruction) e;
+			
+				foreach (var obstruction in obstructions) {
+					store.AppendValues ("Obstruction", obstruction, pixbuf);
+				}
+			}
+		}
+		
+		public void PopulateTree (TreeStore store, TreeIter iter, bool header)
+		{
+			var obstructions = from e in this.controller.Model.Elements
+				where e is Obstruction select (Obstruction) e;
+			
+			if (header) {
+				iter = store.AppendValues (iter, "Obstructions", null, pixbuf);
+			}
+			PopulateTree (obstructions.ToArray(), store, iter);
+		}
+		
+		public void PopulateTree (KAOSElement[] elements, TreeStore store, TreeIter iter)
+		{
+			foreach (var obstruction in from e in elements where e is Obstruction select (Obstruction) e) {
+				var subIter = store.AppendValues (iter, "Obstruction", obstruction, pixbuf);
+				this.controller.PopulateTree (new [] { obstruction.Obstacle }, store, subIter);
+			}
 		}
 	}
 }

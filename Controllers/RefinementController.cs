@@ -24,14 +24,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
 using KaosEditor.Model;
 using Gtk;
 using KaosEditor.UI.Dialogs;
+using KaosEditor.Logging;
 
 namespace KaosEditor.Controllers
 {
-	public class RefinementController
+	public class RefinementController : IController
 	{
+		
+		private static Gdk.Pixbuf pixbuf;
+		
+		static RefinementController () {
+			try {
+				pixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Refinement.png");
+				
+			} catch (Exception e) {
+				Logger.Warning ("Cannot load images from ressources", e);
+			}
+		}
 		
 		private MainController controller;
 		
@@ -114,6 +127,43 @@ namespace KaosEditor.Controllers
 					this.RemoveRefinement (clickedRefinement);
 				};
 				menu.Add(deleteItem);
+			}
+		}
+		
+		
+		public void PopulateTree (TreeStore store, bool header)
+		{
+			if (header) {
+				var iter = store.AppendValues ("Refinements", null, pixbuf);
+				PopulateTree (store, iter, false);
+				
+			} else {
+				var refinements = from e in this.controller.Model.Elements
+					where e is Refinement select (Refinement) e;
+			
+				int i = 1;
+				foreach (var refinement in refinements) {
+					store.AppendValues ("Refinement", refinement, pixbuf);
+				}
+			}
+		}
+		
+		public void PopulateTree (TreeStore store, TreeIter iter, bool header)
+		{
+			var refinements = from e in this.controller.Model.Elements
+				where e is Refinement select (Refinement) e;
+			
+			if (header) {
+				iter = store.AppendValues (iter, "Refinements", null, pixbuf);
+			}
+			PopulateTree (refinements.ToArray(), store, iter);
+		}
+		
+		public void PopulateTree (KAOSElement[] elements, TreeStore store, TreeIter iter)
+		{
+			foreach (var refinement in from e in elements where e is Refinement select (Refinement) e) {
+				var subIter = store.AppendValues (iter, "Refinement", refinement, pixbuf);
+				this.controller.PopulateTree (refinement.Refinees.ToArray(), store, subIter);
 			}
 		}
 		

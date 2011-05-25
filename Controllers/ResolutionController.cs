@@ -28,11 +28,23 @@ using System.Linq;
 using KaosEditor.Model;
 using Gtk;
 using KaosEditor.UI.Dialogs;
+using KaosEditor.Logging;
 
 namespace KaosEditor.Controllers
 {
-	public class ResolutionController
+	public class ResolutionController : IController
 	{
+		
+		private static Gdk.Pixbuf pixbuf;
+		
+		static ResolutionController () {
+			try {
+				pixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Resolution.png");
+				
+			} catch (Exception e) {
+				Logger.Warning ("Cannot load images from ressources", e);
+			}
+		}
 		
 		private MainController controller;
 		
@@ -124,6 +136,41 @@ namespace KaosEditor.Controllers
 				menu.Add(deleteItem);
 			}
 			
+		}
+		
+		public void PopulateTree (TreeStore store, bool header)
+		{
+			if (header) {
+				var iter = store.AppendValues ("Resolutions", null, pixbuf);
+				PopulateTree (store, iter, false);
+				
+			} else {
+				var resolutions = from e in this.controller.Model.Elements
+					where e is Resolution select (Resolution) e;
+			
+				foreach (var resolution in resolutions) {
+					store.AppendValues ("Resolution", resolution, pixbuf);
+				}
+			}
+		}
+		
+		public void PopulateTree (TreeStore store, TreeIter iter, bool header)
+		{
+			var resolutions = from e in this.controller.Model.Elements
+				where e is Resolution select (Resolution) e;
+			
+			if (header) {
+				iter = store.AppendValues (iter, "Resolutions", null, pixbuf);
+			}
+			PopulateTree (resolutions.ToArray(), store, iter);
+		}
+		
+		public void PopulateTree (KAOSElement[] elements, TreeStore store, TreeIter iter)
+		{
+			foreach (var resolution in from e in elements where e is Resolution select (Resolution) e) {
+				var subIter = store.AppendValues (iter, "Resolution", resolution, pixbuf);
+				this.controller.PopulateTree (new [] { resolution.Goal }, store, subIter);
+			}
 		}
 	}
 }

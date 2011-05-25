@@ -24,15 +24,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Linq;
 using KaosEditor.Model;
 using KaosEditor.UI.Dialogs;
 using Gtk;
 using KaosEditor.UI.Widgets;
+using KaosEditor.Logging;
 
 namespace KaosEditor.Controllers
 {
-	public class DomainPropertyController
+	public class DomainPropertyController : IController
 	{
+		
+		private static Gdk.Pixbuf pixbuf;
+		
+		static DomainPropertyController () {
+			try {
+				// TODO Change image
+				pixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Goal.png");
+				
+			} catch (Exception e) {
+				Logger.Warning ("Cannot load images from ressources", e);
+			}
+		}
+		
 		private MainController controller;
 		
 		public DomainPropertyController (MainController controller)
@@ -110,6 +125,42 @@ namespace KaosEditor.Controllers
 				menu.Add(deleteItem);
 				
 				menu.Add (new SeparatorMenuItem ());				
+			}
+		}
+		
+		public void PopulateTree (TreeStore store, bool header)
+		{
+			if (header) {
+				var iter = store.AppendValues ("Domain properties", null, pixbuf);
+				PopulateTree (store, iter, false);
+				
+			} else {
+				var domainProperties = from e in this.controller.Model.Elements
+					where e is DomainProperty select (DomainProperty) e;
+			
+				foreach (var domProp in domainProperties) {
+					store.AppendValues (domProp.Name, domProp, pixbuf);
+				}
+			}
+		}
+		
+		public void PopulateTree (TreeStore store, TreeIter iter, bool header)
+		{
+			var domainProperties = from e in this.controller.Model.Elements
+				where e is DomainProperty select (DomainProperty) e;
+			
+			if (header) {
+				iter = store.AppendValues (iter, "Domain properties", null, pixbuf);
+			}
+			foreach (var domProp in domainProperties) {
+				store.AppendValues (iter, domProp.Name, domProp, pixbuf);
+			}
+		}
+		
+		public void PopulateTree (KAOSElement[] elements, TreeStore store, TreeIter iter)
+		{
+			foreach (var domProp in from e in elements where e is DomainProperty select (DomainProperty) e) {
+				store.AppendValues (iter, domProp.Name, domProp, pixbuf);
 			}
 		}
 	}
