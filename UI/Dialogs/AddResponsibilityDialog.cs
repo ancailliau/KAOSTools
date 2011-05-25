@@ -28,6 +28,7 @@ using KaosEditor.Model;
 using Gtk;
 using KaosEditor.UI.Windows;
 using KaosEditor.UI;
+using KaosEditor.Controllers;
 
 namespace KaosEditor.UI.Dialogs
 {
@@ -66,18 +67,18 @@ namespace KaosEditor.UI.Dialogs
 			}
 		}
 		
-		private MainWindow window;
+		private MainController controller;
 		
-		public AddResponsibilityDialog (MainWindow window, Goal goal)
-			: this (window, goal, null)
+		public AddResponsibilityDialog (MainController controller, Goal goal)
+			: this (controller, goal, null)
 		{
 		}
 		
-		public AddResponsibilityDialog (MainWindow window, Goal goal, Agent agent)
-			: base ("Assign responsibility", window, DialogFlags.DestroyWithParent)
+		public AddResponsibilityDialog (MainController controller, Goal goal, Agent agent)
+			: base ("Assign responsibility", controller.Window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
-			this.window = window;
+			this.controller = controller;
 			
 			store = new ListStore(typeof (string), typeof (Agent));
 			agentComboBox.Model = store;
@@ -92,7 +93,7 @@ namespace KaosEditor.UI.Dialogs
 		void UpdateList (Agent agent)
 		{
 			TreeIter iter;
-			foreach (var element in window.Controller.Model.Elements.FindAll(e => e is Agent)) {
+			foreach (var element in controller.Model.Elements.FindAll(e => e is Agent)) {
 				var possibleAgent = (Agent) element;
 				var possibleIter = store.AppendValues (possibleAgent.Name, possibleAgent);
 				if (possibleAgent == agent) {

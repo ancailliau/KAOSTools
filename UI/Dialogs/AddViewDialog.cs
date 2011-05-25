@@ -29,6 +29,7 @@ using KaosEditor.Controllers;
 using KaosEditor.UI.Windows;
 using Gtk;
 using KaosEditor.Model;
+using KaosEditor.Views;
 
 namespace KaosEditor.UI.Dialogs
 {
@@ -70,7 +71,7 @@ namespace KaosEditor.UI.Dialogs
 			this.nameEntry.Text = viewName;
 		}
 		
-		public AddViewDialog (MainWindow window, View view)
+		public AddViewDialog (MainWindow window, ModelView view)
 			: base ("Edit view...", 
 				window, DialogFlags.DestroyWithParent)
 		{

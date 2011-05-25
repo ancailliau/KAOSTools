@@ -27,13 +27,14 @@ using System;
 using KaosEditor.Model;
 using Gtk;
 using KaosEditor.UI.Windows;
+using KaosEditor.Controllers;
 
 namespace KaosEditor
 {
 	public partial class AddResolutionDialog : Gtk.Dialog
 	{
 		private ListStore store;
-		private MainWindow window;
+		private MainController controller;
 		
 		public string ResolvingGoalName {
 			get {
@@ -59,16 +60,16 @@ namespace KaosEditor
 			}
 		}
 		
-		public AddResolutionDialog (MainWindow window, Obstacle obstacle)
-			: this (window, obstacle, null)
+		public AddResolutionDialog (MainController controller, Obstacle obstacle)
+			: this (controller, obstacle, null)
 		{
 		}
 		
-		public AddResolutionDialog (MainWindow window, Obstacle obstacle, Goal goal)
-			: base ("Assign responsibility", window, DialogFlags.DestroyWithParent)
+		public AddResolutionDialog (MainController controller, Obstacle obstacle, Goal goal)
+			: base ("Assign responsibility", controller.Window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
-			this.window = window;
+			this.controller = controller;
 			
 			store = new ListStore(typeof (string), typeof (Goal));
 			goalCombo.Model = store;
@@ -84,7 +85,7 @@ namespace KaosEditor
 		{
 			store.Clear ();
 			TreeIter iter;
-			foreach (var element in window.Controller.Model.Elements.FindAll(e => e is Goal)) {
+			foreach (var element in controller.Model.Elements.FindAll(e => e is Goal)) {
 				var possibleGoal = (Goal) element;
 				var possibleIter = store.AppendValues (possibleGoal.Name, possibleGoal);
 				if (possibleGoal == goal) {

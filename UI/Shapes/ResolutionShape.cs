@@ -27,6 +27,7 @@ using System;
 using KaosEditor.Model;
 using Cairo;
 using KaosEditor.UI.Arrows;
+using KaosEditor.Views;
 
 namespace KaosEditor.UI.Shapes
 {
@@ -39,7 +40,7 @@ namespace KaosEditor.UI.Shapes
 			RepresentedElement = resolution;
 		}
 		
-		public override void Display (Context context, View view)
+		public override void Display (Context context, ModelView view)
 		{
 			var oldLineWidth = context.LineWidth;
 			if (Selected) {

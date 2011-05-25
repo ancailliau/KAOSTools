@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using KaosEditor.Controllers;
 
-namespace KaosEditor.Model
+namespace KaosEditor.Views
 {
-	public class Views : IEnumerable<View>
+	public class ModelViews : IEnumerable<ModelView>
 	{
 		
 		public delegate void AddedViewHandler (object sender, EventArgs e);
@@ -13,7 +13,7 @@ namespace KaosEditor.Model
 		public delegate void ViewsChangedHandler (object sender, EventArgs e);
 		public event ViewsChangedHandler ViewsChanged;
 		
-		private List<View> views;
+		private List<ModelView> views;
 		
 		private MainController controller;
 		public MainController Controller {
@@ -32,13 +32,13 @@ namespace KaosEditor.Model
 			get { return views.Count ; }
 		}
 		
-		public Views (MainController controller)
+		public ModelViews (MainController controller)
 		{
-			views = new List<View>();
+			views = new List<ModelView>();
 			this.controller = controller;
 		}
 		
-		public void Add (View view)
+		public void Add (ModelView view)
 		{
 			views.Add(view);
 			view.ViewChanged += delegate(object sender, EventArgs e) {
@@ -49,19 +49,19 @@ namespace KaosEditor.Model
 			}
 		}
 		
-		public View Add (string name)
+		public ModelView Add (string name)
 		{
-			var view = new View(name, controller);
+			var view = new ModelView(name, controller);
 			Add (view);
 			return view;
 		}
 		
-		public View Get (string name)
+		public ModelView Get (string name)
 		{
 			return views.Find(v => v.Name == name);
 		}
 		
-		IEnumerator<View> IEnumerable<View>.GetEnumerator ()
+		IEnumerator<ModelView> IEnumerable<ModelView>.GetEnumerator ()
 		{
 			return views.GetEnumerator ();
 		}
@@ -78,7 +78,7 @@ namespace KaosEditor.Model
 			}
 		}
 		
-		public void Set (Views newView)
+		public void Set (ModelViews newView)
 		{
 			views = newView.views;
 			foreach (var v in views) {

@@ -27,13 +27,14 @@ using System;
 using Gtk;
 using KaosEditor.UI.Windows;
 using KaosEditor.Model;
+using KaosEditor.Controllers;
 
 namespace KaosEditor
 {
 	public partial class AddExceptionDialog : Gtk.Dialog
 	{
 		private ListStore store;
-		private MainWindow window;
+		private MainController controller;
 		
 		public Goal ExceptionGoal {
 			get {
@@ -49,16 +50,16 @@ namespace KaosEditor
 			}
 		}
 		
-		public AddExceptionDialog (MainWindow window, Goal goal)
+		public AddExceptionDialog (MainController window, Goal goal)
 			: this (window, goal, null)
 		{
 		}
 		
-		public AddExceptionDialog (MainWindow window, Goal goal, Goal exceptionGoal)
-			: base ("Add exception", window, DialogFlags.DestroyWithParent)
+		public AddExceptionDialog (MainController controller, Goal goal, Goal exceptionGoal)
+			: base ("Add exception", controller.Window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
-			this.window = window;
+			this.controller = controller;
 			
 			store = new ListStore(typeof (string), typeof (Goal));
 			goalCombo.Model = store;
@@ -74,7 +75,7 @@ namespace KaosEditor
 		{
 			store.Clear ();
 			TreeIter iter;
-			foreach (var element in window.Controller.Model.Elements.FindAll(e => e is Goal)) {
+			foreach (var element in controller.Model.Elements.FindAll(e => e is Goal)) {
 				var possibleGoal = (Goal) element;
 				var possibleIter = store.AppendValues (possibleGoal.Name, possibleGoal);
 				if (possibleGoal == goal) {

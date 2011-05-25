@@ -36,13 +36,13 @@ using KaosEditor.UI;
 using KaosEditor.UI.Windows;
 using KaosEditor.UI.Widgets;
 
-namespace KaosEditor.Model
+namespace KaosEditor.Views
 {
 	
 	/// <summary>
 	/// Represents a view.
 	/// </summary>
-	public class View
+	public class ModelView
 	{
 		/// <summary>
 		/// Handler executed when the view changed
@@ -134,7 +134,7 @@ namespace KaosEditor.Model
 		/// <param name='controller'>
 		/// Controller.
 		/// </param>
-		public View (string name, MainController controller)
+		public ModelView (string name, MainController controller)
 		{
 			Name = name;
 			Shapes = new List<IShape>();

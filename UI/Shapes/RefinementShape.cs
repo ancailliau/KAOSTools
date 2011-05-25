@@ -29,6 +29,7 @@ using Cairo;
 using KaosEditor;
 using KaosEditor.Model;
 using KaosEditor.UI.Arrows;
+using KaosEditor.Views;
 
 namespace KaosEditor.UI.Shapes
 {
@@ -71,7 +72,7 @@ namespace KaosEditor.UI.Shapes
 		/// <param name='view'>
 		/// View.
 		/// </param>
-		public override void Display (Context context, View view)
+		public override void Display (Context context, ModelView view)
 		{
 			var oldSource = context.Source;
 			var oldLineWidth = context.LineWidth;

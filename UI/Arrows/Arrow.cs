@@ -28,6 +28,7 @@ using Cairo;
 using KaosEditor;
 using KaosEditor.Model;
 using KaosEditor.UI.Shapes;
+using KaosEditor.Views;
 
 namespace KaosEditor.UI.Arrows
 {
@@ -77,7 +78,7 @@ namespace KaosEditor.UI.Arrows
 		/// <param name='view'>
 		/// View.
 		/// </param>
-		public void Display (Context context, View view)
+		public void Display (Context context, ModelView view)
 		{
 			var drawingArea = view.DrawingArea;
 			var startPosition = Start.GetAnchor(End.Position);

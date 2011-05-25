@@ -29,6 +29,7 @@ using KaosEditor.Controllers;
 using KaosEditor.Model;
 using KaosEditor.Logging;
 using KaosEditor.UI.Dialogs;
+using KaosEditor.Views;
 
 namespace KaosEditor.UI.Widgets
 {
@@ -62,7 +63,7 @@ namespace KaosEditor.UI.Widgets
 		{
 			store.Clear ();
 			
-			foreach (var view in this.controller.Model.Views) {
+			foreach (var view in this.controller.Views) {
 				store.AppendValues (view.Name, view, viewPixbuf);
 			}
 		}
@@ -73,7 +74,7 @@ namespace KaosEditor.UI.Widgets
 			this.HeadersVisible = false;
 			
 			// Create the store
-			store = new ListStore (typeof(string), typeof(View), typeof(Gdk.Pixbuf));
+			store = new ListStore (typeof(string), typeof(ModelView), typeof(Gdk.Pixbuf));
 			this.Model = store;
 			
 			// Initialize columns

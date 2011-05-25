@@ -27,13 +27,14 @@ using System;
 using KaosEditor.UI.Windows;
 using Gtk;
 using KaosEditor.Model;
+using KaosEditor.Controllers;
 
 namespace KaosEditor
 {
 	public partial class AddObstructionDialog : Gtk.Dialog
 	{
 		private ListStore store;
-		private MainWindow window;
+		private MainController controller;
 		
 		public string ObstacleName {
 			get {
@@ -59,17 +60,17 @@ namespace KaosEditor
 			}
 		}
 		
-		public AddObstructionDialog (MainWindow window, Goal goal)
-			: this (window, goal, null)
+		public AddObstructionDialog (MainController controller, Goal goal)
+			: this (controller, goal, null)
 		{
 		}
 		
-		public AddObstructionDialog (MainWindow window, Goal goal, Obstacle obstacle)
+		public AddObstructionDialog (MainController controller, Goal goal, Obstacle obstacle)
 			: base (string.Format ("Add obstruction to '{0}'", goal.Name), 
-				window, DialogFlags.DestroyWithParent)
+				controller.Window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
-			this.window = window;
+			this.controller = controller;
 			
 			store = new ListStore(typeof (string), typeof (Obstacle));
 			obstacleCombo.Model = store;
@@ -84,7 +85,7 @@ namespace KaosEditor
 		void UpdateList (Obstacle obstacle)
 		{
 			TreeIter iter;
-			foreach (var element in window.Controller.Model.Elements.FindAll(e => e is Obstacle)) {
+			foreach (var element in controller.Model.Elements.FindAll(e => e is Obstacle)) {
 				var possibleObstacle = (Obstacle) element;
 				var possibleIter = store.AppendValues (possibleObstacle.Name, possibleObstacle);
 				if (possibleObstacle == obstacle) {

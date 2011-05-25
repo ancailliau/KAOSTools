@@ -54,8 +54,8 @@ namespace KaosEditor
 		
 		private MainController controller;
 		
-		public AddObstacleRefinementDialog (MainWindow window, Obstacle parent)
-			: this (window, parent, new List<KAOSElement> ())
+		public AddObstacleRefinementDialog (MainController controller, Obstacle parent)
+			: this (controller, parent, new List<KAOSElement> ())
 		{
 		}
 		
@@ -68,12 +68,12 @@ namespace KaosEditor
 		/// <param name='parent'>
 		/// Parent.
 		/// </param>
-		public AddObstacleRefinementDialog (MainWindow window, Obstacle parent, List<KAOSElement> refinees)
+		public AddObstacleRefinementDialog (MainController controller, Obstacle parent, List<KAOSElement> refinees)
 			: base (string.Format("Refine obstacle {0}", parent.Name), 
-				window, DialogFlags.DestroyWithParent)
+				controller.Window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
-			this.controller = window.Controller;
+			this.controller = controller;
 			
 			Refinees = new List<KAOSElement> ();
 			
@@ -96,7 +96,7 @@ namespace KaosEditor
 			// childrenComboBox.PackStart(cell, false);
 			childrenComboBox.AddAttribute(cell, "text", 0);
 			
-			foreach (var g in window.Model.Elements.FindAll(e => e is Obstacle)) {
+			foreach (var g in controller.Model.Elements.FindAll(e => e is Obstacle)) {
 				if (g != parent) {
 					childrenComboStore.AppendValues(((Obstacle) g).Name, g as Obstacle);
 				}

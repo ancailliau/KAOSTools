@@ -33,6 +33,7 @@ using KaosEditor.Model;
 using KaosEditor.UI.Windows;
 using KaosEditor.UI.Dialogs;
 using KaosEditor.Logging;
+using KaosEditor.Controllers;
 
 namespace KaosEditor.UI.Widgets
 {
@@ -42,52 +43,11 @@ namespace KaosEditor.UI.Widgets
 	/// </summary>
 	public class ConceptsTreeView : TreeView
 	{
-		
-		private static Gdk.Pixbuf goalPixbuf;
-		private static Gdk.Pixbuf refinementPixbuf;
-		private static Gdk.Pixbuf agentPixbuf;
-		private static Gdk.Pixbuf responsibilityPixbuf;
-		private static Gdk.Pixbuf obstaclePixbuf;
-		private static Gdk.Pixbuf obstructionPixbuf;
-		private static Gdk.Pixbuf resolutionPixbuf;
-		private static Gdk.Pixbuf exceptionPixbuf;
-		
-		static ConceptsTreeView () {
-			try {
-				goalPixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Goal.png");
-				refinementPixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Refinement.png");
-				agentPixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Agent.png");
-				responsibilityPixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Responsibility.png");
-				obstaclePixbuf = Gdk.Pixbuf.LoadFromResource ("KaosEditor.Images.Obstacle.png");
-				obstructionPixbuf = Gdk.Pixbuf.LoadFromResource ("KaosEditor.Images.Obstruction.png");
-				resolutionPixbuf = Gdk.Pixbuf.LoadFromResource ("KaosEditor.Images.Resolution.png");
-				exceptionPixbuf = Gdk.Pixbuf.LoadFromResource ("KaosEditor.Images.Exception.png");
-				
-			} catch (Exception e) {
-				Logger.Warning ("Cannot load images from ressources", e);
-			}
-		}
-		
-		/// <summary>
-		/// The window.
-		/// </summary>
-		private MainWindow window;
-		
-		/// <summary>
-		/// The store.
-		/// </summary>
+		private MainController controller;
 		public TreeStore store;
-		
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KaosEditor.UI.Widgets.ConceptsTreeView"/> class.
-		/// </summary>
-		/// <param name='window'>
-		/// Window.
-		/// </param>
-		public ConceptsTreeView (MainWindow window)
+		public ConceptsTreeView (MainController controller)
 		{
-			// Bind main window
-			this.window = window;
+			this.controller = controller;
 			
 			// Build column and renderers	
 			var column = new TreeViewColumn ();
@@ -144,7 +104,7 @@ namespace KaosEditor.UI.Widgets
 			
 			if (inViews) {
 				string name = (string) store.GetValue(iter, 0);
-				this.window.DisplayView(name);
+				this.controller.ViewController.DisplayView(name);
 			}
 		}
 		
@@ -168,7 +128,7 @@ namespace KaosEditor.UI.Widgets
 				TreeIter iter;
 				if (store.GetIter(out iter, path)) {
 					object o = store.GetValue(iter, 1);
-					this.window.Controller.PopulateContextMenu (this, o as KAOSElement);
+					controller.PopulateContextMenu (this, o as KAOSElement);
 				}
 			}
 		}
@@ -275,110 +235,8 @@ namespace KaosEditor.UI.Widgets
 			
 			store.Clear();
 			
-			this.window.Controller.PopulateTree (store, true);
-			/*
-			var iter = store.AppendValues("Goals", null, goalPixbuf);
-			List<KAOSElement> goals = this.window.Model.Elements.FindAll (e => e is Goal);
-			foreach (var element in goals) {
-				AddGoalElement (iter, element as Goal, expandedNodes);
-			}
-			
-			iter = store.AppendValues("Agents", null, agentPixbuf);
-			var agents = from e in this.window.Model.Elements
-				where e is Agent select (Agent) e;
-			
-			foreach (var element in agents) {
-				store.AppendValues(iter, element.Name, element, agentPixbuf);
-			}
-			
-			iter = store.AppendValues ("Obstacles", null, obstaclePixbuf);
-			var obstacles = from e in this.window.Model.Elements
-				where e is Obstacle select (Obstacle) e;
-			
-			foreach (var element in obstacles) {
-				var iiter = store.AppendValues(iter, element.Name, element, obstaclePixbuf);
-				
-				var resolutions = from e in this.window.Model.Elements 
-					where e is Resolution && ((Resolution) e).Obstacle.Equals (element) 
-						select (Resolution) e;
-				int j = 1;
-				foreach (var resolution in resolutions) {
-					var iiiter = store.AppendValues(iiter, string.Format("Resolution {0}", j++), resolution, resolutionPixbuf);
-					store.AppendValues (iiiter, resolution.Goal.Name, resolution.Goal, goalPixbuf);
-				}
-				
-				j = 1;
-				var obstacleRefinements = from e in this.window.Controller.Model.Elements
-					where e is ObstacleRefinement && ((ObstacleRefinement) e).Refined.Equals (element)
-					select (ObstacleRefinement) e;
-				foreach (var refinement in obstacleRefinements) {
-					var vbiter = store.AppendValues(iiter, string.Format ("Alternative obstruction {0}", j++), refinement, refinementPixbuf);
-					foreach (var g2 in refinement.Refinees) {
-						if (g2 is Obstacle) {
-							store.AppendValues(vbiter, ((Obstacle) g2).Name, g2, obstaclePixbuf);
-						}
-					}
-				}
-			}
-			*/
-			
+			this.controller.PopulateTree (store, true);
 			RestoreState (expandedNodes);
-		}
-		
-		/// <summary>
-		/// Adds the goal item element.
-		/// </summary>
-		/// <param name='iter'>
-		/// Iter.
-		/// </param>
-		/// <param name='g'>
-		/// G.
-		/// </param>
-		/// <param name='expandedNodes'>
-		/// Expanded nodes.
-		/// </param>
-		private void AddGoalElement (TreeIter iter, Goal g, List<string> expandedNodes)
-		{
-			var iiter = store.AppendValues(iter, g.Name, g, goalPixbuf);
-			var refinements = from e in this.window.Controller.Model.Elements
-				where e is Refinement && ((Refinement) e).Refined.Equals (g)
-				select (Refinement) e;
-			int i = 1;
-			foreach (var refinement in refinements) {
-				var iiiter = store.AppendValues(iiter, string.Format ("Alternative {0}", i++), refinement, refinementPixbuf);
-				foreach (var g2 in refinement.Refinees) {
-					if (g2 is Goal) {
-						AddGoalElement (iiiter, g2 as Goal, expandedNodes);
-					}
-				}
-			}
-			
-			var responsibilities = from e in this.window.Model.Elements 
-				where e is Responsibility && ((Responsibility) e).Goal.Equals (g) 
-					select (Responsibility) e;
-			i = 1;
-			foreach (var responsibility in responsibilities) {
-				var iiiter = store.AppendValues(iiter, string.Format("Alternative responsibility {0}", i++), responsibility, responsibilityPixbuf);
-				store.AppendValues (iiiter, responsibility.Agent.Name, responsibility.Agent, agentPixbuf);
-			}
-			
-			var obstructions = from e in this.window.Model.Elements 
-				where e is Obstruction && ((Obstruction) e).Goal.Equals (g) 
-					select (Obstruction) e;
-			i = 1;
-			foreach (var obstruction in obstructions) {
-				var iiiter = store.AppendValues(iiter, string.Format("Obstruction {0}", i++), obstruction, obstructionPixbuf);
-				store.AppendValues (iiiter, obstruction.Obstacle.Name, obstruction.Obstacle, obstaclePixbuf);
-			}
-			
-			var exceptions = from e in this.window.Model.Elements 
-				where e is ExceptionLink && ((ExceptionLink) e).Goal.Equals (g) 
-					select (ExceptionLink) e;
-			i = 1;
-			foreach (var exception in exceptions) {
-				var iiiter = store.AppendValues(iiter, string.Format("Exception {0}", i++), exception, exceptionPixbuf);
-				store.AppendValues (iiiter, exception.ExceptionGoal.Name, exception.ExceptionGoal, goalPixbuf);
-			}
 		}
 	}
 }

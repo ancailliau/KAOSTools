@@ -55,7 +55,7 @@ namespace KaosEditor.Controllers
 		
 		public void AddObstruction (Goal goal)
 		{
-			var dialog = new AddObstructionDialog (this.controller.Window, goal);
+			var dialog = new AddObstructionDialog (this.controller, goal);
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.Obstacle != null) {
 					var newObstruction = new Obstruction (
@@ -86,7 +86,7 @@ namespace KaosEditor.Controllers
 		
 		public void EditObstruction (Obstruction obstruction)
 		{
-			var dialog = new AddObstructionDialog (this.controller.Window, obstruction.Goal, obstruction.Obstacle);
+			var dialog = new AddObstructionDialog (this.controller, obstruction.Goal, obstruction.Obstacle);
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.Obstacle != null) {
 					obstruction.Obstacle = dialog.Obstacle;
@@ -106,7 +106,7 @@ namespace KaosEditor.Controllers
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Yes) {
 					this.controller.Model.Remove (obstruction);
-					foreach (var v in this.controller.Model.Views) {
+					foreach (var v in this.controller.Views) {
 						var shapes = v.GetAllShapesFor (obstruction);
 						v.Shapes.RemoveAll ((obj) => shapes.Contains(obj));
 					}

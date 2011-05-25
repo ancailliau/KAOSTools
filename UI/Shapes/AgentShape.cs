@@ -28,6 +28,7 @@ using System;
 using Cairo;
 using KaosEditor;
 using KaosEditor.Model;
+using KaosEditor.Views;
 
 namespace KaosEditor.UI.Shapes
 {
@@ -88,7 +89,7 @@ namespace KaosEditor.UI.Shapes
 		/// <param name='view'>
 		/// View.
 		/// </param>
-		public override void Display (Context context, View view)
+		public override void Display (Context context, ModelView view)
 		{
 			var drawingArea = view.DrawingArea;
 			var oldSource = context.Source;

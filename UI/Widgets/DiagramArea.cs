@@ -32,6 +32,7 @@ using KaosEditor.UI.Shapes;
 using KaosEditor.Controllers;
 using System;
 using KaosEditor.UI.Dialogs;
+using KaosEditor.Views;
 
 namespace KaosEditor.UI.Widgets
 {
@@ -47,7 +48,7 @@ namespace KaosEditor.UI.Widgets
 		/// <value>
 		/// The view.
 		/// </value>
-		public View CurrentView {
+		public ModelView CurrentView {
 			get;
 			set;
 		}
@@ -76,7 +77,7 @@ namespace KaosEditor.UI.Widgets
 		/// <param name='view'>
 		/// View.
 		/// </param>
-		public DiagramArea (View view, MainController controller) 
+		public DiagramArea (ModelView view, MainController controller) 
 			: this (controller)
 		{
 			this.CurrentView = view;
@@ -89,7 +90,7 @@ namespace KaosEditor.UI.Widgets
 		/// <param name='view'>
 		/// View.
 		/// </param>
-		public void UpdateView (View view) 
+		public void UpdateView (ModelView view) 
 		{
 			this.CurrentView = view;
 			view.DrawingArea = this;

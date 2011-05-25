@@ -2,6 +2,7 @@ using Cairo;
 using KaosEditor.Model;
 using Gtk;
 using System;
+using KaosEditor.Views;
 
 namespace KaosEditor.UI.Shapes
 {
@@ -95,7 +96,7 @@ namespace KaosEditor.UI.Shapes
 		/// <param name='view'>
 		/// View.
 		/// </param>
-		public abstract void Display (Context context, View view);
+		public abstract void Display (Context context, ModelView view);
 		
 		/// <summary>
 		/// Determines whether coordinates are in the form.

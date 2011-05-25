@@ -60,8 +60,8 @@ namespace KaosEditor.UI.Dialogs
 		
 		private MainController controller;
 		
-		public AddRefinementDialog (MainWindow window, Goal parent)
-			: this (window, parent, new List<KAOSElement> ())
+		public AddRefinementDialog (MainController controller, Goal parent)
+			: this (controller, parent, new List<KAOSElement> ())
 		{
 		}
 		
@@ -74,12 +74,12 @@ namespace KaosEditor.UI.Dialogs
 		/// <param name='parent'>
 		/// Parent.
 		/// </param>
-		public AddRefinementDialog (MainWindow window, Goal parent, List<KAOSElement> refinees)
+		public AddRefinementDialog (MainController controller, Goal parent, List<KAOSElement> refinees)
 			: base (string.Format("Refine goal {0}", parent.Name), 
-				window, DialogFlags.DestroyWithParent)
+				controller.Window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
-			this.controller = window.Controller;
+			this.controller = controller;
 			
 			Refinees = new List<KAOSElement> ();
 			
@@ -102,7 +102,7 @@ namespace KaosEditor.UI.Dialogs
 			// childrenComboBox.PackStart(cell, false);
 			childrenComboBox.AddAttribute(cell, "text", 0);
 			
-			foreach (var g in window.Model.Elements.FindAll(e => e is Goal)) {
+			foreach (var g in controller.Model.Elements.FindAll(e => e is Goal)) {
 				if (g != parent) {
 					childrenComboStore.AppendValues(((Goal) g).Name, g as Goal);
 				}

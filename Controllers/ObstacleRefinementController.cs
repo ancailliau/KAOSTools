@@ -55,7 +55,7 @@ namespace KaosEditor.Controllers
 		
 		public void AddRefinement (Obstacle obstacle)
 		{
-			var dialog = new AddObstacleRefinementDialog (this.controller.Window, obstacle);
+			var dialog = new AddObstacleRefinementDialog (this.controller, obstacle);
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok) {
 					var newRefinement = new ObstacleRefinement (obstacle);
@@ -71,7 +71,7 @@ namespace KaosEditor.Controllers
 		
 		public void EditRefinement (ObstacleRefinement refinement)
 		{
-			var dialog = new AddObstacleRefinementDialog (this.controller.Window, refinement.Refined, refinement.Refinees);
+			var dialog = new AddObstacleRefinementDialog (this.controller, refinement.Refined, refinement.Refinees);
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok) {
 					refinement.Refinees.Clear();

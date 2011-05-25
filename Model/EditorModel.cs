@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using KaosEditor.Controllers;
 using KaosEditor.Logging;
+using KaosEditor.Views;
 
 namespace KaosEditor.Model
 {
@@ -64,18 +65,6 @@ namespace KaosEditor.Model
 			set;
 		}
 		
-		/// <summary>
-		/// Gets or sets the views.
-		/// </summary>
-		/// <value>
-		/// The views.
-		/// </value>
-		public Views Views {
-			get;
-			set;
-		}
-		
-		
 		private MainController controller;
 		
 		/// <summary>
@@ -86,7 +75,7 @@ namespace KaosEditor.Model
 		/// </value>
 		public MainController Controller {
 			get { return controller; }
-			set { controller = value; Views.Controller = value; }
+			set { controller = value; }
 		}
 		
 		/// <summary>
@@ -95,7 +84,6 @@ namespace KaosEditor.Model
 		public EditorModel ()
 		{
 			Elements = new List<KAOSElement>();
-			Views = new Views(null);
 		}
 		
 		/// <summary>
@@ -171,8 +159,6 @@ namespace KaosEditor.Model
 		public void Set (Model.EditorModel model)
 		{
 			this.Elements = model.Elements;
-			this.Views.Set(model.Views);
-			
 			NotifyChange ();
 		}
 		

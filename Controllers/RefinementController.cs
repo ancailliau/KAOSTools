@@ -55,7 +55,7 @@ namespace KaosEditor.Controllers
 		
 		public void AddRefinement (Goal goal)
 		{
-			var dialog = new AddRefinementDialog (this.controller.Window, goal);
+			var dialog = new AddRefinementDialog (this.controller, goal);
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok) {
 					var newRefinement = new Refinement (goal);
@@ -71,7 +71,7 @@ namespace KaosEditor.Controllers
 		
 		public void EditRefinement (Refinement refinement)
 		{
-			var dialog = new AddRefinementDialog (this.controller.Window, refinement.Refined, refinement.Refinees);
+			var dialog = new AddRefinementDialog (this.controller, refinement.Refined, refinement.Refinees);
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok) {
 					refinement.Refinees.Clear();

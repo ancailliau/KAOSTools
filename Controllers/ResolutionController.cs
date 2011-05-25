@@ -55,7 +55,7 @@ namespace KaosEditor.Controllers
 		
 		public void AddResolution (Obstacle obstacle)
 		{
-			var dialog = new AddResolutionDialog (this.controller.Window, obstacle);
+			var dialog = new AddResolutionDialog (this.controller, obstacle);
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.ResolvingGoal != null) {
 					var newObstruction = new Resolution (
@@ -82,7 +82,7 @@ namespace KaosEditor.Controllers
 		
 		public void EditResolution (Resolution resolution)
 		{
-			var dialog = new AddResolutionDialog (this.controller.Window, resolution.Obstacle, resolution.Goal);
+			var dialog = new AddResolutionDialog (this.controller, resolution.Obstacle, resolution.Goal);
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.ResolvingGoal != null) {
 					resolution.Goal = dialog.ResolvingGoal;

@@ -31,11 +31,18 @@ using Gtk;
 using KaosEditor.UI.Widgets;
 using KaosEditor.Logging;
 using KaosEditor.UI.Shapes;
+using KaosEditor.Views;
 
 namespace KaosEditor.Controllers
 {
 	public class ViewController : IController
 	{
+		public void DisplayView (string name)
+		{
+			// TODO
+			throw new NotImplementedException ();
+		}
+		
 		
 		private static Gdk.Pixbuf pixbuf;
 		
@@ -67,16 +74,16 @@ namespace KaosEditor.Controllers
 			addViewDialog.Present ();	
 		}
 		
-		public void DuplicateView (View view)
+		public void DuplicateView (ModelView view)
 		{
 			var addViewDialog = new AddViewDialog (this.controller.Window, view.Name + " (copy)");
 			addViewDialog.Response += delegate(object sender, Gtk.ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Ok & addViewDialog.ViewName != "") {
-					var newView = new View (addViewDialog.ViewName, this.controller);
+					var newView = new ModelView (addViewDialog.ViewName, this.controller);
 					foreach (var s in view.Shapes) {
 						newView.Add (s.Copy ());
 					}
-					this.controller.Model.Views.Add (newView);
+					this.controller.Views.Add (newView);
 					this.controller.Window.DisplayView (addViewDialog.ViewName);
 				}
 				addViewDialog.Destroy ();
@@ -84,7 +91,7 @@ namespace KaosEditor.Controllers
 			addViewDialog.Present ();
 		}
 		
-		public void EditView (View view)
+		public void EditView (ModelView view)
 		{
 			var dialog = new AddViewDialog (this.controller.Window, view);
 			dialog.Response += delegate(object sender, Gtk.ResponseArgs args) {
@@ -97,7 +104,7 @@ namespace KaosEditor.Controllers
 			dialog.Present ();
 		}
 		
-		public void RemoveView (View view)
+		public void RemoveView (ModelView view)
 		{
 			throw new NotImplementedException ();
 		}
@@ -105,11 +112,11 @@ namespace KaosEditor.Controllers
 		
 		public void Add (string name)
 		{
-			this.controller.Model.Views.Add (new View (name, this.controller));
+			this.controller.Views.Add (new ModelView (name, this.controller));
 			this.controller.Window.DisplayView (name);
 		}
 				
-		public void Remove (View view)
+		public void Remove (ModelView view)
 		{
 			throw new NotImplementedException ();
 		}
@@ -141,8 +148,8 @@ namespace KaosEditor.Controllers
 				menu.Add(addViewItem);
 			}
 			
-			if (clickedElement is View) {
-				var clickedView = clickedElement as View;
+			if (clickedElement is ModelView) {
+				var clickedView = clickedElement as ModelView;
 				
 				var editItem = new MenuItem("Edit view...");
 				editItem.Activated += delegate(object sender2, EventArgs e) {

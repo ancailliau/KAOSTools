@@ -2,6 +2,7 @@ using System;
 using System.Xml;
 using System.Linq;
 using KaosEditor.Model;
+using KaosEditor.Views;
 
 namespace KaosEditor
 {
@@ -11,13 +12,15 @@ namespace KaosEditor
 		private string filename;
 		
 		private EditorModel model;
+		private ModelViews modelViews;
 		
 		private XmlWriterSettings settings;
 		
-		public XmlExporter (string filename, EditorModel model)
+		public XmlExporter (string filename, EditorModel model, ModelViews modelViews)
 		{
 			this.filename = filename;
 			this.model = model;
+			this.modelViews = modelViews;
 			
 			settings = new XmlWriterSettings();
 			settings.Indent = true;
@@ -177,7 +180,7 @@ namespace KaosEditor
 		public void WriteViews (XmlWriter writer)
 		{
 			writer.WriteStartElement("views");
-			foreach (var view in model.Views) {
+			foreach (var view in modelViews) {
 				writer.WriteStartElement("view");
 				writer.WriteAttributeString("name", view.Name);
 				foreach (var shape in view.Shapes) {

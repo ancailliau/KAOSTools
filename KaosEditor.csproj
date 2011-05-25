@@ -69,8 +69,6 @@
     <Compile Include="XmlImporter.cs" />
     <Compile Include="Model\Refinement.cs" />
     <Compile Include="Controllers\MainController.cs" />
-    <Compile Include="Model\View.cs" />
-    <Compile Include="Model\Views.cs" />
     <Compile Include="Model\Agent.cs" />
     <Compile Include="Events\PopulateStoreEventArgs.cs" />
     <Compile Include="EditorConfiguration.cs" />
@@ -149,6 +147,8 @@
     <Compile Include="AddDomainPropertyDialog.cs" />
     <Compile Include="gtk-gui\KaosEditor.AddDomainPropertyDialog.cs" />
     <Compile Include="Controllers\IController.cs" />
+    <Compile Include="Views\ModelViews.cs" />
+    <Compile Include="Views\ModelView.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -157,6 +157,7 @@
     <Folder Include="Events\" />
     <Folder Include="Logging\" />
     <Folder Include="UI\" />
+    <Folder Include="Views\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

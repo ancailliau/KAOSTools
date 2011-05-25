@@ -43,7 +43,7 @@ namespace KaosEditor.Controllers
 		
 		public void AddException (Goal goal)
 		{
-			var dialog = new AddExceptionDialog (this.controller.Window, goal);
+			var dialog = new AddExceptionDialog (this.controller, goal);
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.ExceptionGoal != null) {
 					var newException = new ExceptionLink (
@@ -59,7 +59,7 @@ namespace KaosEditor.Controllers
 		
 		public void EditException (ExceptionLink exception)
 		{
-			var dialog = new AddExceptionDialog (this.controller.Window, exception.Goal, exception.ExceptionGoal);
+			var dialog = new AddExceptionDialog (this.controller, exception.Goal, exception.ExceptionGoal);
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.ExceptionGoal != null) {
 					exception.ExceptionGoal = dialog.ExceptionGoal;

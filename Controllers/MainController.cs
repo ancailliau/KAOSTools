@@ -34,6 +34,7 @@ using KaosEditor.UI.Windows;
 using KaosEditor.UI.Widgets;
 using KaosEditor.UI.Shapes;
 using System.Collections.Generic;
+using KaosEditor.Views;
 
 namespace KaosEditor.Controllers
 {
@@ -128,6 +129,11 @@ namespace KaosEditor.Controllers
 			set;
 		}
 		
+		public ModelViews Views {
+			get;
+			set;
+		}
+		
 		/// <summary>
 		/// Gets or sets the window.
 		/// </summary>
@@ -218,7 +224,7 @@ namespace KaosEditor.Controllers
 				ConnectWatcher ();
 				
 			} else {
-				new XmlExporter(this.currentFilename, Model).Export();
+				new XmlExporter(this.currentFilename, Model, Views).Export();
 			}
 		}
 		
@@ -293,7 +299,8 @@ namespace KaosEditor.Controllers
 			var importer = new XmlImporter(this.currentFilename, this);
 			importer.Import();
 			
-			this.Model.Set(importer.Model);
+			this.Model.Set (importer.Model);
+			this.Views.Set (importer.ModelViews);
 			Window.Title = string.Format("KAOS Editor - " + this.currentFilename);
 		}
 		

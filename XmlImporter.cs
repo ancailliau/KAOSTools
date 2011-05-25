@@ -7,6 +7,7 @@ using KaosEditor.Controllers;
 using KaosEditor.Model;
 using KaosEditor.UI.Shapes;
 using KaosEditor.Logging;
+using KaosEditor.Views;
 
 namespace KaosEditor
 {
@@ -16,6 +17,9 @@ namespace KaosEditor
 		
 		private EditorModel model;
 		public EditorModel Model { get { return model ; } }
+		
+		private ModelViews modelViews;
+		public ModelViews ModelViews { get { return modelViews ; } }
 		
 		private List<FutureGoal> futureGoals;
 		private List<FutureAgent> futureAgents;
@@ -332,7 +336,7 @@ namespace KaosEditor
 			}
 			
 			foreach (var futureView in futureViews) {
-				var view = new View(futureView.name, controller);
+				var view = new ModelView(futureView.name, controller);
 				foreach (var futureElement in futureView.elements) {
 					var element = ShapeFactory.Create(Model.Get(futureElement.elementId));
 					if (element != null) {
@@ -341,7 +345,7 @@ namespace KaosEditor
 						view.Add(element);
 					}
 				}
-				Model.Views.Add(view);
+				modelViews.Add(view);
 			}
 			
 			

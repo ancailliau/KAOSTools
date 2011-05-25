@@ -26,6 +26,7 @@
 
 using Cairo;
 using KaosEditor.Model;
+using KaosEditor.Views;
 
 namespace KaosEditor.UI.Shapes
 {
@@ -85,7 +86,7 @@ namespace KaosEditor.UI.Shapes
 		/// <param name='view'>
 		/// View.
 		/// </param>
-		void Display (Context context, View view);
+		void Display (Context context, ModelView view);
 		
 		/// <summary>
 		/// Determines whether coordinates are in the form.

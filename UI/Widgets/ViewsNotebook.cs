@@ -30,6 +30,7 @@ using Gtk;
 using KaosEditor.Model;
 using KaosEditor.UI.Shapes;
 using KaosEditor.Controllers;
+using KaosEditor.Views;
 
 namespace KaosEditor.UI.Widgets
 {
@@ -43,7 +44,7 @@ namespace KaosEditor.UI.Widgets
 		/// <summary>
 		/// The list of displayed views.
 		/// </summary>
-		private List<View> displayedViews;
+		private List<ModelView> displayedViews;
 		
 		/// <summary>
 		/// Gets the current view.
@@ -51,7 +52,7 @@ namespace KaosEditor.UI.Widgets
 		/// <value>
 		/// The current view.
 		/// </value>
-		public View CurrentView {
+		public ModelView CurrentView {
 			get {
 				if (this.CurrentPage >= 0 && this.CurrentPage < displayedViews.Count) {
 					return displayedViews[this.CurrentPage];
@@ -68,7 +69,7 @@ namespace KaosEditor.UI.Widgets
 		/// </summary>
 		public ViewsNotebook (MainController controller)
 		{
-			displayedViews = new List<View>();
+			displayedViews = new List<ModelView>();
 			this.controller = controller;
 			this.Scrollable = true;
 		}
@@ -79,7 +80,7 @@ namespace KaosEditor.UI.Widgets
 		/// <param name='view'>
 		/// View.
 		/// </param>
-		public void DisplayView (View view)
+		public void DisplayView (ModelView view)
 		{
 			// Move to page if page already exists
 			foreach (var child in this.Children) {

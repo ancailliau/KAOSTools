@@ -27,6 +27,7 @@
 using Cairo;
 using KaosEditor.Model;
 using KaosEditor.UI.Shapes;
+using KaosEditor.Views;
 
 namespace KaosEditor.UI.Arrows
 {
@@ -68,7 +69,7 @@ namespace KaosEditor.UI.Arrows
 		/// <param name='view'>
 		/// View.
 		/// </param>
-		void Display (Context context, View view);
+		void Display (Context context, ModelView view);
 	}
 }
 

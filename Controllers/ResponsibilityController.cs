@@ -54,7 +54,7 @@ namespace KaosEditor.Controllers
 		
 		public void AddResponsibility (Goal goal)
 		{
-			var dialog = new AddResponsibilityDialog (this.controller.Window, goal);
+			var dialog = new AddResponsibilityDialog (this.controller, goal);
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.ResponsibleAgentName != null
 					& dialog.ResponsibleAgentName != "") {
@@ -85,7 +85,7 @@ namespace KaosEditor.Controllers
 		
 		public void EditResponsibility (Responsibility responsibility)
 		{
-			var dialog = new AddResponsibilityDialog (this.controller.Window, responsibility.Goal, responsibility.Agent);
+			var dialog = new AddResponsibilityDialog (this.controller, responsibility.Goal, responsibility.Agent);
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.ResponsibleAgent != null) {
 					responsibility.Agent = dialog.ResponsibleAgent;

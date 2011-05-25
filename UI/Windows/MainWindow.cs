@@ -69,10 +69,7 @@ namespace KaosEditor.UI.Windows {
 		/// <value>
 		/// The controller.
 		/// </value>
-		public MainController Controller {
-			get;
-			set;
-		}
+		private MainController controller;
 		
 		/// <summary>
 		/// The views notebook.
@@ -94,12 +91,12 @@ namespace KaosEditor.UI.Windows {
 		/// </param>
 		public MainWindow (EditorModel model, MainController controller): base (Gtk.WindowType.Toplevel)
 		{
-			this.Controller = controller;
+			this.controller = controller;
 			this.Model = model;
 			Build ();
 			
 			viewsNotebook = new ViewsNotebook(controller);
-			conceptTreeView = new ConceptsTreeView (this);
+			conceptTreeView = new ConceptsTreeView (controller);
 			
 			var notebookModelView = new Notebook ();
 			notebookModelView.TabPos = PositionType.Bottom;
@@ -115,7 +112,7 @@ namespace KaosEditor.UI.Windows {
 			modelLabel.ShowAll ();
 			viewLabel.ShowAll ();
 			
-			viewList = new ViewList(this.Controller);
+			viewList = new ViewList(this.controller);
 			var scroll2 = new ScrolledWindow ();
 			scroll2.Add (viewList);
 			
@@ -138,8 +135,8 @@ namespace KaosEditor.UI.Windows {
 				viewsNotebook.RedrawCurrentView();
 				conceptTreeView.Update();
 			};
-			Model.Views.ViewsChanged += UpdateWidgets;
-			Model.Views.AddedView += UpdateWidgets;
+			controller.Views.ViewsChanged += UpdateWidgets;
+			controller.Views.AddedView += UpdateWidgets;
 		}
 		
 		/// <summary>
@@ -166,7 +163,7 @@ namespace KaosEditor.UI.Windows {
 		/// </param>
 		public void DisplayView (string name)
 		{
-			viewsNotebook.DisplayView (Model.Views.Get(name));
+			viewsNotebook.DisplayView (controller.Views.Get(name));
 		}
 			
 		/// <summary>
@@ -226,7 +223,7 @@ namespace KaosEditor.UI.Windows {
 		/// </param>
 		protected void OnDeleteEvent (object sender, DeleteEventArgs a)
 		{
-			this.Controller.Quit ();
+			this.controller.Quit ();
 			a.RetVal = true;
 		}
 		
@@ -241,7 +238,7 @@ namespace KaosEditor.UI.Windows {
 		/// </param>
 		protected virtual void OnQuitActionActivated (object sender, System.EventArgs e)
 		{
-			this.Controller.Quit ();
+			this.controller.Quit ();
 		}
 		
 		/// <summary>
@@ -255,7 +252,7 @@ namespace KaosEditor.UI.Windows {
 		/// </param>
 		protected virtual void OnSaveActionActivated (object sender, System.EventArgs e)
 		{
-			this.Controller.SaveProject ();
+			this.controller.SaveProject ();
 		}
 		
 		/// <summary>
@@ -269,17 +266,17 @@ namespace KaosEditor.UI.Windows {
 		/// </param>
 		protected virtual void OnOpenActionActivated (object sender, System.EventArgs e)
 		{
-			this.Controller.LoadProject ();
+			this.controller.LoadProject ();
 		}
 		
 		protected virtual void OnRevertToSavedActionActivated (object sender, System.EventArgs e)
 		{
-			this.Controller.ReloadCurrentProject ();
+			this.controller.ReloadCurrentProject ();
 		}
 		
 		protected virtual void OnSaveAsActionActivated (object sender, System.EventArgs e)
 		{
-			this.Controller.SaveProjectAs ();
+			this.controller.SaveProjectAs ();
 		}
 		
 	}
