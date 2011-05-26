@@ -239,6 +239,25 @@ namespace KaosEditor.Views
 			}
 		}
 		
+		public void GetSize (out int width, out int height)
+		{
+			int minX = 0;
+			int minY = 0;
+			int maxX = 0;
+			int maxY = 0;
+			
+			foreach (var shape in Shapes) {
+				minY = Math.Min(shape.GetBounds().MinY, minY);
+				minX = Math.Min(shape.GetBounds().MinX, minX);
+				maxY = Math.Max(shape.GetBounds().MaxY, maxY);
+				maxX = Math.Max(shape.GetBounds().MaxX, maxX);
+			}
+			
+			// FIXME
+			width = maxX /* - minX */;
+			height = maxY /* - minY */;
+		}
+		
 		public void OnSizeRequested (ref Gtk.Requisition requisition)
 		{
 			int width = 0;

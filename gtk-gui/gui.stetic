@@ -276,7 +276,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Window" id="KaosEditor.UI.Windows.MainWindow" design-size="419 300">
+  <widget class="Gtk.Window" id="KaosEditor.UI.Windows.MainWindow" design-size="461 300">
     <action-group name="Default">
       <action id="ApplicationAction">
         <property name="Type">Action</property>
@@ -340,6 +340,17 @@
         <property name="StockId">gtk-revert-to-saved</property>
         <signal name="Activated" handler="OnRevertToSavedActionActivated" />
       </action>
+      <action id="ViewsAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Views</property>
+        <property name="ShortLabel" translatable="yes">Views</property>
+      </action>
+      <action id="ExportCurrentViewAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Export current view</property>
+        <property name="ShortLabel" translatable="yes">Export current view</property>
+        <signal name="Activated" handler="OnExportCurrentViewActionActivated" />
+      </action>
     </action-group>
     <property name="MemberName" />
     <property name="Title" translatable="yes">A simple Kaos Editor</property>
@@ -362,6 +373,9 @@
                 <node type="Separator" />
                 <node type="Menuitem" action="saveAction" />
                 <node type="Menuitem" action="saveAsAction" />
+              </node>
+              <node type="Menu" action="ViewsAction">
+                <node type="Menuitem" action="ExportCurrentViewAction" />
               </node>
             </node>
           </widget>

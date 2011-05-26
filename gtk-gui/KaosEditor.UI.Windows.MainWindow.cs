@@ -15,6 +15,8 @@ namespace KaosEditor.UI.Windows
 		private global::Gtk.Action saveAction1;
 		private global::Gtk.Action saveAsAction1;
 		private global::Gtk.Action revertToSavedAction;
+		private global::Gtk.Action ViewsAction;
+		private global::Gtk.Action ExportCurrentViewAction;
 		private global::Gtk.VBox mainVBox;
 		private global::Gtk.MenuBar mainMenu;
 		private global::Gtk.Toolbar toolbar1;
@@ -53,6 +55,12 @@ namespace KaosEditor.UI.Windows
 			w1.Add (this.saveAsAction1, null);
 			this.revertToSavedAction = new global::Gtk.Action ("revertToSavedAction", null, null, "gtk-revert-to-saved");
 			w1.Add (this.revertToSavedAction, null);
+			this.ViewsAction = new global::Gtk.Action ("ViewsAction", global::Mono.Unix.Catalog.GetString ("Views"), null, null);
+			this.ViewsAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Views");
+			w1.Add (this.ViewsAction, null);
+			this.ExportCurrentViewAction = new global::Gtk.Action ("ExportCurrentViewAction", global::Mono.Unix.Catalog.GetString ("Export current view"), null, null);
+			this.ExportCurrentViewAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Export current view");
+			w1.Add (this.ExportCurrentViewAction, null);
 			this.UIManager.InsertActionGroup (w1, 0);
 			this.AddAccelGroup (this.UIManager.AccelGroup);
 			this.Name = "KaosEditor.UI.Windows.MainWindow";
@@ -64,7 +72,7 @@ namespace KaosEditor.UI.Windows
 			this.mainVBox = new global::Gtk.VBox ();
 			this.mainVBox.Name = "mainVBox";
 			// Container child mainVBox.Gtk.Box+BoxChild
-			this.UIManager.AddUiFromString ("<ui><menubar name='mainMenu'><menu name='ApplicationAction' action='ApplicationAction'><menuitem name='quitAction' action='quitAction'/></menu><menu name='ModelAction' action='ModelAction'><menuitem name='openAction' action='openAction'/><separator/><menuitem name='saveAction' action='saveAction'/><menuitem name='saveAsAction' action='saveAsAction'/></menu></menubar></ui>");
+			this.UIManager.AddUiFromString ("<ui><menubar name='mainMenu'><menu name='ApplicationAction' action='ApplicationAction'><menuitem name='quitAction' action='quitAction'/></menu><menu name='ModelAction' action='ModelAction'><menuitem name='openAction' action='openAction'/><separator/><menuitem name='saveAction' action='saveAction'/><menuitem name='saveAsAction' action='saveAsAction'/></menu><menu name='ViewsAction' action='ViewsAction'><menuitem name='ExportCurrentViewAction' action='ExportCurrentViewAction'/></menu></menubar></ui>");
 			this.mainMenu = ((global::Gtk.MenuBar)(this.UIManager.GetWidget ("/mainMenu")));
 			this.mainMenu.Name = "mainMenu";
 			this.mainVBox.Add (this.mainMenu);
@@ -116,6 +124,7 @@ namespace KaosEditor.UI.Windows
 			this.saveAction1.Activated += new global::System.EventHandler (this.OnSaveActionActivated);
 			this.saveAsAction1.Activated += new global::System.EventHandler (this.OnSaveAsActionActivated);
 			this.revertToSavedAction.Activated += new global::System.EventHandler (this.OnRevertToSavedActionActivated);
+			this.ExportCurrentViewAction.Activated += new global::System.EventHandler (this.OnExportCurrentViewActionActivated);
 		}
 	}
 }

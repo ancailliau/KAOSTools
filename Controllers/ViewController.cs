@@ -33,6 +33,7 @@ using KaosEditor.Logging;
 using KaosEditor.UI.Shapes;
 using KaosEditor.Views;
 using System.Collections.Generic;
+using Cairo;
 
 namespace KaosEditor.Controllers
 {
@@ -205,6 +206,31 @@ namespace KaosEditor.Controllers
 		public void Populate (IEnumerable<KAOSElement> elements, TreeStore store, TreeIter iter)
 		{
 			throw new NotImplementedException ();
+		}
+
+		public void ExportCurrentView ()
+		{
+			var dialog = new FileChooserDialog("Save image as...", this.controller.Window,
+			FileChooserAction.Save, "Cancel", ResponseType.Cancel, "Save", ResponseType.Accept);
+			
+			if (dialog.Run() == (int) ResponseType.Accept) {
+				int width , height;
+				var currentView = this.controller.Window.viewsNotebook.CurrentView;
+				
+				currentView.GetSize (out width, out height);
+				
+				using (var surface = new ImageSurface (Format.Argb32, width, height)) {
+					using (Context context = new Context (surface)) {
+						currentView.Display (context);
+					}
+					
+					surface.WriteToPng (dialog.Filename);
+				}
+			}
+			
+			dialog.Destroy();	
+			
+			
 		}
 	}
 }

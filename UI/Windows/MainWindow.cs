@@ -187,5 +187,9 @@ namespace KaosEditor.UI.Windows {
 			this.Controller.SaveProjectAs ();
 		}
 		
+		protected void OnExportCurrentViewActionActivated (object sender, System.EventArgs e)
+		{
+			this.Controller.ViewController.ExportCurrentView ();
+		}
 	}
 }
