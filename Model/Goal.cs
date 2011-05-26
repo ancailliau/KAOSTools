@@ -37,7 +37,7 @@ namespace KaosEditor.Model
 	/// <summary>
 	/// Represents a goal.
 	/// </summary>
-	public class Goal : KAOSElement
+	public class Goal : IGoalRefinee
 	{
 		public string Name {
 			get;
@@ -45,6 +45,11 @@ namespace KaosEditor.Model
 		}
 		
 		public string Definition {
+			get;
+			set;
+		}
+		
+		public string Id {
 			get;
 			set;
 		}

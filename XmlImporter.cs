@@ -316,7 +316,7 @@ namespace KaosEditor
 					if (goal != null) {
 						var refinement = new Refinement(goal) { Id = futureRefinement.id };
 						foreach (var futureElement in futureRefinement.refinees) {
-							refinement.Add(this.controller.GoalController.Get(futureElement));
+							refinement.Add((IGoalRefinee) this.controller.Get(futureElement));
 						}
 						this.controller.RefinementController.Add (refinement);
 					}

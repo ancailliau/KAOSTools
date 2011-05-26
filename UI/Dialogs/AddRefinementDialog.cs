@@ -53,7 +53,7 @@ namespace KaosEditor.UI.Dialogs
 		/// <summary>
 		/// The list of refinees.
 		/// </summary>
-		public List<KAOSElement> Refinees {
+		public List<IGoalRefinee> Refinees {
 			get;
 			private set;
 		}
@@ -61,7 +61,7 @@ namespace KaosEditor.UI.Dialogs
 		private MainController controller;
 		
 		public AddRefinementDialog (MainController controller, Goal parent)
-			: this (controller, parent, new List<KAOSElement> ())
+			: this (controller, parent, new List<IGoalRefinee> ())
 		{
 		}
 		
@@ -74,14 +74,14 @@ namespace KaosEditor.UI.Dialogs
 		/// <param name='parent'>
 		/// Parent.
 		/// </param>
-		public AddRefinementDialog (MainController controller, Goal parent, List<KAOSElement> refinees)
+		public AddRefinementDialog (MainController controller, Goal parent, List<IGoalRefinee> refinees)
 			: base (string.Format("Refine goal {0}", parent.Name), 
 				controller.Window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
 			this.controller = controller;
 			
-			Refinees = new List<KAOSElement> ();
+			Refinees = new List<IGoalRefinee> ();
 			
 			childrenComboStore = new ListStore(typeof(string), typeof(object));
 			childrenComboBox.Model = childrenComboStore;
@@ -104,8 +104,11 @@ namespace KaosEditor.UI.Dialogs
 			
 			foreach (var g in this.controller.GoalController.GetAll ()) {
 				if (g != parent) {
-					childrenComboStore.AppendValues(((Goal) g).Name, g as Goal);
+					childrenComboStore.AppendValues(g.Name, g);
 				}
+			}
+			foreach (var domProp in this.controller.DomainPropertyController.GetAll ()) {
+				childrenComboStore.AppendValues (domProp.Name, domProp);
 			}
 			
 			this.AddEvents((int) Gdk.EventMask.ButtonPressMask);
@@ -152,8 +155,8 @@ namespace KaosEditor.UI.Dialogs
 			TreeIter iter = new TreeIter();
 			
 			if (childrenComboBox.GetActiveIter(out iter)) {
-				var element = (Goal) childrenComboStore.GetValue(iter, 1);
-				AddRefinee (element);
+				AddRefinee (childrenComboStore.GetValue(iter, 1) as IGoalRefinee);
+				
 			} else {
 				if (childrenComboBox.ActiveText.Trim () != "") {
 					string newGoalName = childrenComboBox.ActiveText.Trim ();
@@ -176,10 +179,8 @@ namespace KaosEditor.UI.Dialogs
 			}
 		}
 		
-		private void AddRefinee (Goal element)
+		private void AddRefinee (IGoalRefinee element)
 		{
-			if (element == null) throw new ArgumentNullException ("element");
-			
 			Refinees.Add(element);
 			childrenNodeStore.AppendValues(element.Name, element);
 		}

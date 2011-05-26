@@ -168,7 +168,9 @@ namespace KaosEditor.Controllers
 		{
 			foreach (var refinement in from e in elements where e is Refinement select (Refinement) e) {
 				var subIter = store.AppendValues (iter, "Refinement", refinement, pixbuf);
-				this.controller.GoalController.Populate (refinement.Refinees, store, subIter);
+				var list = refinement.Refinees.Cast<KAOSElement> ();
+				this.controller.GoalController.Populate (list, store, subIter);
+				this.controller.DomainPropertyController.Populate (list, store, subIter);
 			}
 		}
 		

@@ -1,5 +1,5 @@
 // 
-// Goal.cs
+// IGoalRefinee.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -23,58 +23,13 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using System.Collections.Generic;
-using Gtk;
-using KaosEditor.UI.Windows;
-using KaosEditor.UI.Dialogs;
-using KaosEditor.UI;
 
 namespace KaosEditor.Model
 {
-	public class DomainProperty : IGoalRefinee
+	public interface IGoalRefinee : KAOSElement
 	{
-		public string Name {
-			get;
-			set;
-		}
-		
-		public string Definition {
-			get;
-			set;
-		}
-		
-		public string Id {
-			get;
-			set;
-		}
-		
-		public DomainProperty (string name, string definition) 
-			: base ()
-		{
-			Id = Guid.NewGuid ().ToString ();
-			Name = name;
-			Definition = definition;
-		}
-		
-		public override bool Equals (object obj)
-		{
-			if (obj == null)
-				return false;
-			if (ReferenceEquals (this, obj))
-				return true;
-			if (obj.GetType () != typeof(DomainProperty))
-				return false;
-			DomainProperty other = (DomainProperty) obj;
-			return Id == other.Id;
-		}
-
-		public override int GetHashCode ()
-		{
-			unchecked {
-				return (Id != null ? Id.GetHashCode () : 0);
-			}
-		}
+		string Name { get ; }
 	}
 }
+

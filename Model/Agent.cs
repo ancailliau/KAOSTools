@@ -37,6 +37,11 @@ namespace KaosEditor.Model
 	/// </summary>
 	public class Agent : KAOSElement
 	{
+		public string Id {
+			get;
+			set;
+		}
+		
 		public string Name {
 			get;
 			set;

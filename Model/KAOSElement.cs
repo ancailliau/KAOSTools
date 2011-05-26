@@ -31,18 +31,12 @@ using Cairo;
 
 namespace KaosEditor.Model
 {
-	public abstract class KAOSElement
+	public interface KAOSElement
 	{
-		public string Id {
+		string Id {
 			get;
 			set;
 		}
-		
-		public KAOSElement ()
-		{
-			Id = Guid.NewGuid ().ToString ();
-		}
-		
 	}
 }
 

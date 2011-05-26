@@ -39,9 +39,15 @@ namespace KaosEditor.Model
 			set;
 		}
 		
+		public string Id {
+			get;
+			set;
+		}
+		
 		public Obstacle (string name, string definition)
 			: base ()
 		{
+			Id = Guid.NewGuid ().ToString ();
 			Name = name;
 			Definition = definition;
 		}

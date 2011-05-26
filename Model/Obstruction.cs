@@ -29,7 +29,10 @@ namespace KaosEditor.Model
 {
 	public class Obstruction : KAOSElement
 	{
-		
+		public string Id {
+			get;
+			set;
+		}
 		public Goal Goal {
 			get;
 			set;
@@ -43,6 +46,7 @@ namespace KaosEditor.Model
 		public Obstruction (Goal goal, Obstacle obstacle)
 			: base ()
 		{
+			Id = Guid.NewGuid ().ToString ();
 			Goal = goal;
 			Obstacle = obstacle;
 		}

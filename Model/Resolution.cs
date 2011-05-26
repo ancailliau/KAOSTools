@@ -29,6 +29,11 @@ namespace KaosEditor.Model
 {
 	public class Resolution : KAOSElement
 	{
+		public string Id {
+			get;
+			set;
+		}
+		
 		public Goal Goal {
 			get;
 			set;
@@ -42,6 +47,7 @@ namespace KaosEditor.Model
 		public Resolution (Obstacle obstacle, Goal goal)
 			: base()
 		{
+			Id = Guid.NewGuid ().ToString ();
 			Goal = goal;
 			Obstacle = obstacle;
 		}

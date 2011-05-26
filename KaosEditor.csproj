@@ -151,6 +151,7 @@
     <Compile Include="Views\ModelView.cs" />
     <Compile Include="IPopulateTree.cs" />
     <Compile Include="IPopulateMenu.cs" />
+    <Compile Include="Model\IGoalRefinee.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

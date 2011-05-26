@@ -39,6 +39,11 @@ namespace KaosEditor.Model
 	public class ObstacleRefinement : KAOSElement
 	{
 		
+		public string Id {
+			get;
+			set;
+		}
+		
 		/// <summary>
 		/// Gets or sets the goal refined.
 		/// </summary>

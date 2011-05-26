@@ -30,6 +30,11 @@ namespace KaosEditor.Model
 	public class ExceptionLink : KAOSElement
 	{
 		
+		public string Id {
+			get;
+			set;
+		}
+		
 		public Goal Goal {
 			get;
 			set;
@@ -43,6 +48,7 @@ namespace KaosEditor.Model
 		public ExceptionLink (Goal goal, Goal exceptionGoal)
 			: base ()
 		{
+			Id = Guid.NewGuid ().ToString ();
 			Goal = goal;
 			ExceptionGoal = exceptionGoal;
 		}

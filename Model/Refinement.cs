@@ -38,13 +38,11 @@ namespace KaosEditor.Model
 	/// </summary>
 	public class Refinement : KAOSElement
 	{
+		public string Id {
+			get;
+			set;
+		}	
 		
-		/// <summary>
-		/// Gets or sets the goal refined.
-		/// </summary>
-		/// <value>
-		/// The refined.
-		/// </value>
 		public Goal Refined {
 			get;
 			private set;
@@ -56,7 +54,7 @@ namespace KaosEditor.Model
 		/// <value>
 		/// The refinees.
 		/// </value>
-		public List<KAOSElement> Refinees {
+		public List<IGoalRefinee> Refinees {
 			get;
 			private set;
 		}
@@ -67,7 +65,7 @@ namespace KaosEditor.Model
 		public Refinement (Goal parent)
 		{
 			Id = Guid.NewGuid().ToString();
-			Refinees = new List<KAOSElement>();
+			Refinees = new List<IGoalRefinee>();
 			Refined = parent;
 		}
 		
@@ -77,7 +75,7 @@ namespace KaosEditor.Model
 		/// <param name='element'>
 		/// Element.
 		/// </param>
-		public void Add (KAOSElement element) 
+		public void Add (IGoalRefinee element) 
 		{
 			Refinees.Add(element);
 		}
