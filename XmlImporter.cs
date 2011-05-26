@@ -19,6 +19,7 @@ namespace KaosEditor
 		private List<FutureAgent> futureAgents;
 		private List<FutureView> futureViews;
 		private List<FutureObstacle> futureObstacles;
+		private List<FutureDomainProperty> futureDomainProperties;
 		
 		private class FutureGoal {
 			public string id = "";
@@ -87,6 +88,12 @@ namespace KaosEditor
 			public List<string> refinees = new List<string>();
 		}
 		
+		private class FutureDomainProperty {
+			public string id = "";
+			public string name = "";
+			public string definition = "";
+		}
+		
 		private MainController controller;
 		
 		public XmlImporter (string filename, MainController controller)
@@ -97,6 +104,7 @@ namespace KaosEditor
 			this.futureViews = new List<FutureView>();
 			this.futureAgents = new List<FutureAgent>();
 			this.futureObstacles = new List<FutureObstacle> ();
+			this.futureDomainProperties = new List<FutureDomainProperty> ();
 			
 			this.controller = controller;
 		}
@@ -195,7 +203,22 @@ namespace KaosEditor
 					string name = reader.GetAttribute ("name");
 					var futurAgent = new FutureAgent () { id = id, name = name };
 					this.futureAgents.Add (futurAgent);					
-				
+					
+				} else if (reader.IsStartElement ("domainproperty")) {
+					string id = reader.GetAttribute ("id") ?? Guid.NewGuid().ToString();
+					string name = reader.GetAttribute ("name");
+					var futureDomProp = new FutureDomainProperty () { id = id, name = name };
+					while (!reader.IsEmptyElement && reader.Read()) {
+						if (reader.IsStartElement ("definition")) {
+							reader.Read ();
+							futureDomProp.definition = reader.Value.Trim();
+							
+						} else if (reader.IsEndElement ("domainproperty")) {
+							break;
+						}
+					}
+					futureDomainProperties.Add (futureDomProp);
+					
 				} else if (reader.IsStartElement ("obstacle")) {
 					string id = reader.GetAttribute ("id") ?? Guid.NewGuid().ToString();
 					string name = reader.GetAttribute ("name");
@@ -278,6 +301,12 @@ namespace KaosEditor
 			foreach (var futureObstacle in futureObstacles) {
 				this.controller.ObstacleController.Add(new Obstacle (futureObstacle.name, futureObstacle.definition) {
 					Id = futureObstacle.id
+				});
+			}
+			
+			foreach (var futureDomainProperty in futureDomainProperties) {
+				this.controller.DomainPropertyController.Add (new DomainProperty (futureDomainProperty.name, futureDomainProperty.definition) {
+					Id = futureDomainProperty.id
 				});
 			}
 			

@@ -65,7 +65,21 @@ namespace KaosEditor
 			}
 			writer.WriteEndElement();
 			
+			writer.WriteStartElement("domainproperties");
+			foreach (var domProp in this.controller.DomainPropertyController.GetAll()) {
+				WriteDomainProperty(writer, domProp as DomainProperty);
+			}
+			writer.WriteEndElement();
 			
+			writer.WriteEndElement();
+		}
+		
+		public void WriteDomainProperty (XmlWriter writer, DomainProperty domProp)
+		{
+			writer.WriteStartElement("domainproperty");
+			writer.WriteAttributeString("id", domProp.Id);
+			writer.WriteAttributeString("name", domProp.Name);
+			writer.WriteElementString("definition", domProp.Definition);
 			writer.WriteEndElement();
 		}
 		

@@ -105,8 +105,6 @@ namespace KaosEditor.UI.Shapes
 			pangoLayout.GetPixelSize(out textWidth, out textHeight);
 			pangoLayout.GetSize (out a, out b);
 			
-			Console.WriteLine (textWidth);
-			
 			width = (int) ( textWidth + 2 * XPadding );
 			height = (int) ( textHeight + 2 * YPadding );
 			

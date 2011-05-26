@@ -210,6 +210,7 @@ namespace KaosEditor.Views
 			double squaredDistance = double.PositiveInfinity;
 			IShape shapeToReturn = null;
 			var consideredShapes = Shapes.FindAll(v => { 
+				Console.WriteLine (v.RepresentedElement);
 				return v.RepresentedElement.Equals(element);
 			});
 			foreach (IShape shape in consideredShapes) {

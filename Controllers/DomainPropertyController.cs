@@ -41,8 +41,7 @@ namespace KaosEditor.Controllers
 		
 		static DomainPropertyController () {
 			try {
-				// TODO Change image
-				pixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Goal.png");
+				pixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.DomainProperty.png");
 				
 			} catch (Exception e) {
 				Logger.Warning ("Cannot load images from ressources", e);
@@ -104,7 +103,14 @@ namespace KaosEditor.Controllers
 		
 		public void EditDomainProperty (DomainProperty domProp)
 		{
-			throw new NotImplementedException ();
+			var dialog = new AddDomainPropertyDialog(controller.Window, domProp.Name);
+			dialog.Response += delegate(object o, Gtk.ResponseArgs args) {
+				if (args.ResponseId == Gtk.ResponseType.Ok) {
+					domProp.Name = dialog.DomainPropertyName;
+					domProp.Definition = dialog.DomainPropertyDefinition;
+				}
+				dialog.Destroy();
+			};
 		}
 		
 		public void RemoveDomainProperty (DomainProperty domProp)

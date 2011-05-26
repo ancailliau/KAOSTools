@@ -58,6 +58,7 @@
     <EmbeddedResource Include="Images\Obstruction.png" />
     <EmbeddedResource Include="Images\Resolution.png" />
     <EmbeddedResource Include="Images\Exception.png" />
+    <EmbeddedResource Include="Images\DomainProperty.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gtk-gui\generated.cs" />
@@ -170,7 +171,4 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
-  <ItemGroup>
-    <None Include="Model\EditorModel.cs" />
-  </ItemGroup>
 </Project>

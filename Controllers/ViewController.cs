@@ -55,6 +55,7 @@ namespace KaosEditor.Controllers
 		public ViewController (MainController controller)
 		{
 			this.controller = controller;
+			this.controller.Window.conceptTreeView.RegisterForMenu (this);
 			this.controller.Window.viewList.RegisterForTree (this);
 			this.controller.Window.viewList.RegisterForMenu (this);
 			this.controller.Window.viewList.ElementActivated += ElementActivated;
@@ -131,6 +132,11 @@ namespace KaosEditor.Controllers
 		{
 			this.controller.Window.viewsNotebook.DisplayView (view);
 		}
+		
+		public void AddToCurrentView (KAOSElement element)
+		{
+			this.controller.Window.viewsNotebook.AddToCurrentView (element, 10, 10);
+		}
 				
 		private void ElementActivated (object element)
 		{
@@ -150,15 +156,15 @@ namespace KaosEditor.Controllers
 				menu.Add (new SeparatorMenuItem ());
 			}
 			
-			if (clickedElement != null & clickedElement is KAOSElement & !(source is DiagramArea)) {
+			if (clickedElement != null & clickedElement is KAOSElement) {
 				var addToCurrentViewItem = new MenuItem("Add to current view...");
 				addToCurrentViewItem.Activated += delegate(object sender2, EventArgs e) {
-					// TODO this.controller.Window.AddToCurrentView (clickedElement as KAOSElement);
+					this.AddToCurrentView (clickedElement as KAOSElement);
 				};
 				menu.Add(addToCurrentViewItem);
 			}
 			
-			if (clickedElement == null & source is ViewList) {
+			if (clickedElement == null) {
 				var addViewItem = new MenuItem("Add view...");
 				addViewItem.Activated += delegate(object sender2, EventArgs e) {
 					this.AddView ();

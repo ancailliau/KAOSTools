@@ -58,9 +58,9 @@ namespace KaosEditor.Model
 				return false;
 			if (ReferenceEquals (this, obj))
 				return true;
-			if (obj.GetType () != typeof(Goal))
+			if (obj.GetType () != typeof(DomainProperty))
 				return false;
-			Model.DomainProperty other = (Model.DomainProperty)obj;
+			DomainProperty other = (DomainProperty) obj;
 			return Id == other.Id;
 		}
 

@@ -67,19 +67,12 @@ namespace KaosEditor.UI.Shapes
 			height = (int) ( textHeight + 2 * YPadding );
 		}
 		
-		/// <summary>
-		/// Display the shape on the specified context and view.
-		/// </summary>
-		/// <param name='context'>
-		/// Context.
-		/// </param>
-		/// <param name='view'>
-		/// View.
-		/// </param>
 		public override void Display (Context context, ModelView view)
 		{
 			var drawingArea = view.DrawingArea;
 			var oldSource = context.Source;
+			
+			Console.WriteLine (" ? " + this.RepresentedElement == null);
 			
 			var pangoLayout = new Pango.Layout(drawingArea.PangoContext);
 			pangoLayout.Alignment = Pango.Alignment.Center;
@@ -91,18 +84,17 @@ namespace KaosEditor.UI.Shapes
 			pangoLayout.GetPixelSize(out textWidth, out textHeight);
 			pangoLayout.GetSize (out a, out b);
 			
-			Console.WriteLine (textWidth);
-			
 			width = (int) ( textWidth + 2 * XPadding );
 			height = (int) ( textHeight + 2 * YPadding );
 			
 			//context.Rectangle(Position.X - width / 2, Position.Y - height / 2, width, height);
-			var shear = 0;
+			var shear = 6;
 			
-			context.MoveTo(Position.X - width / 2 + shear / 2,
+			context.MoveTo(Position.X - width / 2,
 				Position.Y - height/2);
-			context.RelLineTo(width, 0);
-			context.RelLineTo(-shear, height);
+			context.RelLineTo(width / 2, - shear);
+			context.RelLineTo(width / 2, shear);
+			context.RelLineTo(0, height);
 			context.RelLineTo(- width, 0);
 			context.ClosePath();
 			
@@ -118,10 +110,11 @@ namespace KaosEditor.UI.Shapes
 			context.LineWidth = oldLineWidth;
 			
 			if (!Selected) {
-				context.MoveTo(Position.X - width / 2 + shear / 2 + 1,
+				context.MoveTo(Position.X - width / 2 + 1,
 					Position.Y - height/2 + 1);
-				context.RelLineTo (width - 2, 0);
-				context.RelLineTo (-shear, height - 2);
+				context.RelLineTo (width /2 - 1, -shear+1);
+				context.RelLineTo (width /2- 1, shear-1);
+				context.RelLineTo (0, height - 2);
 				context.RelLineTo (- width + 2, 0);
 				context.ClosePath ();
 				context.SetColor ("#fff", .3f);
@@ -206,7 +199,7 @@ namespace KaosEditor.UI.Shapes
 		
 		public override IShape Copy ()
 		{
-			return new GoalShape (this.RepresentedElement as Goal) {
+			return new DomainPropertyShape (this.RepresentedElement as DomainProperty) {
 				Position = new PointD (Position.X, Position.Y)
 			};
 		}

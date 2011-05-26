@@ -83,7 +83,9 @@ namespace KaosEditor.UI.Shapes
 			} else {
 				if (element != null)
 					Logger.Warning ("Shape does not exists for element '{0}'", element.GetType());
-				
+				else 
+					Logger.Warning ("Request shape for (null) element");
+					
 				return null;
 			}
 		}
