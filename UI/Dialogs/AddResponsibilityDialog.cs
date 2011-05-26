@@ -93,7 +93,7 @@ namespace KaosEditor.UI.Dialogs
 		void UpdateList (Agent agent)
 		{
 			TreeIter iter;
-			foreach (var element in controller.Model.Elements.FindAll(e => e is Agent)) {
+			foreach (var element in this.controller.AgentController.GetAll ()) {
 				var possibleAgent = (Agent) element;
 				var possibleIter = store.AppendValues (possibleAgent.Name, possibleAgent);
 				if (possibleAgent == agent) {

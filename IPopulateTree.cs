@@ -1,5 +1,5 @@
 // 
-// IController.cs
+// IPopulateList.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -25,13 +25,15 @@
 // THE SOFTWARE.
 using System;
 using Gtk;
+using System.Collections.Generic;
 using KaosEditor.Model;
 
-namespace KaosEditor.Controllers
+namespace KaosEditor
 {
-	public interface IController
+	public interface IPopulateTree
 	{
-		
+		void Populate (TreeStore store);
+		void Populate (IEnumerable<KAOSElement> elements, TreeStore store, TreeIter iter);
 	}
 }
 

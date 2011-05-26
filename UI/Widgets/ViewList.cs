@@ -48,22 +48,20 @@ namespace KaosEditor.UI.Widgets
 		private MainController controller;
 		private ListStore store;
 		
-		public ViewList (MainController controller)
+		public ViewList ()
 		{
-			if (controller == null) {
-				throw new ArgumentNullException("controller");
-			}
-			
-			this.controller = controller;
+			this.controller = null;
 			this.Build ();
 			this.UpdateList ();
 		}
 		
 		public void UpdateList ()
 		{
+			if (controller == null) return;
+			
 			store.Clear ();
 			
-			foreach (var view in this.controller.Views) {
+			foreach (var view in this.controller.ViewController.GetAll ()) {
 				store.AppendValues (view.Name, view, viewPixbuf);
 			}
 		}
@@ -110,11 +108,11 @@ namespace KaosEditor.UI.Widgets
 					TreeIter iter;
 					if (store.GetIter(out iter, path)) {
 						object o = store.GetValue (iter, 1);
-						this.controller.PopulateContextMenu (this, o);
+						// TODO this.controller.PopulateContextMenu (this, o);
 						
 					}
 				} else {
-					this.controller.PopulateContextMenu (this, null);
+					// TODO this.controller.PopulateContextMenu (this, null);
 					
 				}
 			}
@@ -135,7 +133,7 @@ namespace KaosEditor.UI.Widgets
 			store.GetIter(out iter, args.Path);
 			
 			string name = (string) store.GetValue(iter, 0);
-			this.controller.Window.DisplayView(name);
+			// TODO this.controller.Window.DisplayView(name);
 		}
 		
 	}

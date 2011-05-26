@@ -119,22 +119,6 @@ namespace KaosEditor.Controllers
 		}
 		
 		/// <summary>
-		/// Gets or sets the model.
-		/// </summary>
-		/// <value>
-		/// The model.
-		/// </value>
-		public EditorModel Model {
-			get;
-			set;
-		}
-		
-		public ModelViews Views {
-			get;
-			set;
-		}
-		
-		/// <summary>
 		/// Gets or sets the window.
 		/// </summary>
 		/// <value>
@@ -154,13 +138,10 @@ namespace KaosEditor.Controllers
 		/// <param name='window'>
 		/// Window.
 		/// </param>
-		public MainController (EditorModel model)
-		{
-			// Save the model and window
-			this.Model = model;
-			
-			// Bind to the current controller
-			this.Model.Controller = this;
+		public MainController (MainWindow window)
+		{	
+			this.Window = window;
+			this.Window.Controller = this;
 			
 			GoalController = new GoalController (this);
 			AgentController = new AgentController (this);
@@ -200,7 +181,8 @@ namespace KaosEditor.Controllers
 			if (this.Configuration.Maximized) {
 				Window.Maximize();
 			}
-			Window.Present();
+			Window.Update ();
+			Window.Present ();
 		}
 		
 		/// <summary>
@@ -224,7 +206,7 @@ namespace KaosEditor.Controllers
 				ConnectWatcher ();
 				
 			} else {
-				new XmlExporter(this.currentFilename, Model, Views).Export();
+				new XmlExporter(this.currentFilename, this).Export();
 			}
 		}
 		
@@ -299,8 +281,6 @@ namespace KaosEditor.Controllers
 			var importer = new XmlImporter(this.currentFilename, this);
 			importer.Import();
 			
-			this.Model.Set (importer.Model);
-			this.Views.Set (importer.ModelViews);
 			Window.Title = string.Format("KAOS Editor - " + this.currentFilename);
 		}
 		
@@ -390,6 +370,7 @@ namespace KaosEditor.Controllers
 		
 		#endregion
 		
+		#if false
 		public void PopulateTree (TreeStore store, bool header)
 		{
 			foreach (var c in controllers) {
@@ -419,7 +400,7 @@ namespace KaosEditor.Controllers
 				Temp (source, (clickedElement as IShape).RepresentedElement, menu);
 			}
 		}
-
+		
 		public void Temp (object source, object clickedElement, Menu menu)
 		{
 			foreach (var c in controllers) {
@@ -430,6 +411,44 @@ namespace KaosEditor.Controllers
 				menu.ShowAll ();
 				menu.Popup ();	
 			}
+		}
+		#endif
+		
+		public KAOSElement Get (string id)
+		{
+			if (GoalController.Get (id) != null)
+				return GoalController.Get (id) ;
+				
+			if (AgentController.Get (id) != null)
+				return AgentController.Get (id) ;
+			
+			if (ObstacleController.Get (id) != null)
+				return ObstacleController.Get (id) ;
+			
+			if (ResolutionController.Get (id) != null)
+				return ResolutionController.Get (id) ;
+			
+			if (DomainPropertyController.Get (id) != null)
+				return DomainPropertyController.Get (id) ;
+			
+			if (ExceptionController.Get (id) != null)
+				return ExceptionController.Get (id) ;
+		
+			if (ObstacleRefinementController.Get (id) != null)
+				return ObstacleRefinementController.Get (id) ;
+			
+			if (ObstructionController.Get (id) != null)
+				return ObstructionController.Get (id) ;
+			
+			if (ResponsibilityController.Get (id) != null)
+				return ResponsibilityController.Get (id) ;
+			
+			if (RefinementController.Get (id) != null)
+				return RefinementController.Get (id) ;
+			
+			Logger.Warning ("Ignoring element '{0}'", id);
+			
+			return null;
 		}
 	}
 }

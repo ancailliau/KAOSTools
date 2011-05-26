@@ -37,7 +37,6 @@ namespace KaosEditor.Model
 	/// </summary>
 	public class Agent : KAOSElement
 	{
-		
 		public string Name {
 			get;
 			set;

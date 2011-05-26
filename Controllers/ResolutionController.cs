@@ -29,10 +29,11 @@ using KaosEditor.Model;
 using Gtk;
 using KaosEditor.UI.Dialogs;
 using KaosEditor.Logging;
+using System.Collections.Generic;
 
 namespace KaosEditor.Controllers
 {
-	public class ResolutionController : IController
+	public class ResolutionController : IController, IPopulateMenu
 	{
 		
 		private static Gdk.Pixbuf pixbuf;
@@ -47,10 +48,42 @@ namespace KaosEditor.Controllers
 		}
 		
 		private MainController controller;
+		private List<Resolution> resolutions = new List<Resolution>();
 		
 		public ResolutionController (MainController controller)
 		{
 			this.controller = controller;
+			this.controller.Window.conceptTreeView.RegisterForMenu (this);
+		}
+		
+		public IEnumerable<Resolution> GetAll ()
+		{
+			return this.resolutions;
+		}
+		
+		public IEnumerable<Resolution> GetAll (Goal goal)
+		{
+			return this.resolutions.Where ((arg) => arg.Goal == goal);
+		}
+		
+		public IEnumerable<Resolution> GetAll (Obstacle obstacle)
+		{
+			return this.resolutions.Where ((arg) => arg.Obstacle == obstacle);
+		}
+		
+		public void Add (Resolution resolution)
+		{
+			this.resolutions.Add (resolution);
+		}
+		
+		public void Remove (Resolution resolution)
+		{
+			this.resolutions.Remove (resolution);
+		}
+		
+		public Resolution Get (string id)
+		{
+			return this.resolutions.Find ((obj) => obj.Id == id);
 		}
 		
 		public void AddResolution (Obstacle obstacle)
@@ -60,7 +93,7 @@ namespace KaosEditor.Controllers
 				if (args.ResponseId == ResponseType.Ok && dialog.ResolvingGoal != null) {
 					var newObstruction = new Resolution (
 						obstacle, dialog.ResolvingGoal);
-					this.controller.Model.Add (newObstruction);
+					this.Add (newObstruction);
 					dialog.Destroy ();
 				} else if (args.ResponseId == ResponseType.Ok && dialog.ResolvingGoalName != "") {
 					var confirmDialog = new MessageDialog (this.controller.Window,
@@ -86,7 +119,7 @@ namespace KaosEditor.Controllers
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.ResolvingGoal != null) {
 					resolution.Goal = dialog.ResolvingGoal;
-					this.controller.Model.Update (resolution);
+					// TODO this.controller.Model.Update (resolution);
 				}
 				dialog.Destroy ();
 			};
@@ -101,7 +134,7 @@ namespace KaosEditor.Controllers
 			
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Yes) {
-					this.controller.Model.Remove (resolution);
+					this.Remove (resolution);
 				}
 				dialog.Destroy ();
 			};
@@ -138,38 +171,19 @@ namespace KaosEditor.Controllers
 			
 		}
 		
-		public void PopulateTree (TreeStore store, bool header)
+		public void Populate (TreeStore store)
 		{
-			if (header) {
-				var iter = store.AppendValues ("Resolutions", null, pixbuf);
-				PopulateTree (store, iter, false);
-				
-			} else {
-				var resolutions = from e in this.controller.Model.Elements
-					where e is Resolution select (Resolution) e;
-			
-				foreach (var resolution in resolutions) {
-					store.AppendValues ("Resolution", resolution, pixbuf);
-				}
-			}
+			var iter = store.AppendValues ("Resolutions", null, pixbuf);
+			Populate (this.GetAll().Cast<KAOSElement>(), store, iter);
 		}
 		
-		public void PopulateTree (TreeStore store, TreeIter iter, bool header)
-		{
-			var resolutions = from e in this.controller.Model.Elements
-				where e is Resolution select (Resolution) e;
-			
-			if (header) {
-				iter = store.AppendValues (iter, "Resolutions", null, pixbuf);
-			}
-			PopulateTree (resolutions.ToArray(), store, iter);
-		}
-		
-		public void PopulateTree (KAOSElement[] elements, TreeStore store, TreeIter iter)
+		public void Populate (IEnumerable<KAOSElement> elements, TreeStore store, TreeIter iter)
 		{
 			foreach (var resolution in from e in elements where e is Resolution select (Resolution) e) {
 				var subIter = store.AppendValues (iter, "Resolution", resolution, pixbuf);
-				this.controller.PopulateTree (new [] { resolution.Goal }, store, subIter);
+				this.controller.GoalController.Populate (new List<KAOSElement> () { 
+					resolution.Goal
+				}, store, subIter);
 			}
 		}
 	}

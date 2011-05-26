@@ -32,18 +32,12 @@ using KaosEditor.UI.Widgets;
 using KaosEditor.Logging;
 using KaosEditor.UI.Shapes;
 using KaosEditor.Views;
+using System.Collections.Generic;
 
 namespace KaosEditor.Controllers
 {
-	public class ViewController : IController
+	public class ViewController : IController, IPopulateTree, IPopulateMenu
 	{
-		public void DisplayView (string name)
-		{
-			// TODO
-			throw new NotImplementedException ();
-		}
-		
-		
 		private static Gdk.Pixbuf pixbuf;
 		
 		static ViewController () {
@@ -56,10 +50,34 @@ namespace KaosEditor.Controllers
 		}
 		
 		private MainController controller;
+		private List<ModelView> views = new List<ModelView> ();
 		
 		public ViewController (MainController controller)
 		{
 			this.controller = controller;
+			this.controller.Window.viewList.RegisterForTree (this);
+			this.controller.Window.viewList.RegisterForMenu (this);
+			this.controller.Window.viewList.ElementActivated += ElementActivated;
+		}
+
+		public IEnumerable<ModelView> GetAll ()
+		{
+			return this.views.AsEnumerable ();
+		}
+		
+		public void Add (ModelView view)
+		{
+			this.views.Add (view);
+		}
+		
+		public void Remove (ModelView view)
+		{
+			this.views.Remove (view);
+		}
+		
+		public ModelView Get (string name)
+		{
+			return this.views.Find ((obj) => obj.Name == name);
 		}
 		
 		public void AddView ()
@@ -67,7 +85,7 @@ namespace KaosEditor.Controllers
 			var addViewDialog = new AddViewDialog (this.controller.Window);
 			addViewDialog.Response += delegate(object sender, Gtk.ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Ok & addViewDialog.ViewName != "") {
-					this.Add (addViewDialog.ViewName);
+					this.Add (new ModelView (addViewDialog.ViewName, this.controller));
 				}
 				addViewDialog.Destroy ();
 			};
@@ -83,8 +101,8 @@ namespace KaosEditor.Controllers
 					foreach (var s in view.Shapes) {
 						newView.Add (s.Copy ());
 					}
-					this.controller.Views.Add (newView);
-					this.controller.Window.DisplayView (addViewDialog.ViewName);
+					this.Add (newView);
+					// TODO this.controller.Window.DisplayView (addViewDialog.ViewName);
 				}
 				addViewDialog.Destroy ();
 			};
@@ -97,7 +115,7 @@ namespace KaosEditor.Controllers
 			dialog.Response += delegate(object sender, Gtk.ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Ok & dialog.ViewName != "") {
 					view.Name = dialog.ViewName;
-					this.controller.Window.DisplayView (dialog.ViewName);
+					// TODO this.controller.Window.DisplayView (dialog.ViewName);
 				}
 				dialog.Destroy ();
 			};
@@ -109,16 +127,16 @@ namespace KaosEditor.Controllers
 			throw new NotImplementedException ();
 		}
 		
-		
-		public void Add (string name)
+		public void DisplayView (ModelView view)
 		{
-			this.controller.Views.Add (new ModelView (name, this.controller));
-			this.controller.Window.DisplayView (name);
+			this.controller.Window.viewsNotebook.DisplayView (view);
 		}
 				
-		public void Remove (ModelView view)
+		private void ElementActivated (object element)
 		{
-			throw new NotImplementedException ();
+			if ((element as ModelView) != null) {
+				this.DisplayView (element as ModelView);
+			}
 		}
 		
 		public void PopulateContextMenu (Menu menu, object source, object clickedElement)
@@ -126,16 +144,16 @@ namespace KaosEditor.Controllers
 			if (clickedElement != null & clickedElement is IShape & (source is DiagramArea)) {
 				var removeFromCurrentViewItem = new MenuItem("Remove from current view...");
 				removeFromCurrentViewItem.Activated += delegate(object sender2, EventArgs e) {
-					this.controller.Window.RemoveFromCurrentView (clickedElement as IShape);
+					// TODO this.controller.Window.RemoveFromCurrentView (clickedElement as IShape);
 				};
 				menu.Add (removeFromCurrentViewItem);
 				menu.Add (new SeparatorMenuItem ());
 			}
 			
-			if (clickedElement != null & clickedElement is KAOSElement & !(source is DiagramArea) & this.controller.Window.HasCurrentView()) {
+			if (clickedElement != null & clickedElement is KAOSElement & !(source is DiagramArea)) {
 				var addToCurrentViewItem = new MenuItem("Add to current view...");
 				addToCurrentViewItem.Activated += delegate(object sender2, EventArgs e) {
-					this.controller.Window.AddToCurrentView (clickedElement as KAOSElement);
+					// TODO this.controller.Window.AddToCurrentView (clickedElement as KAOSElement);
 				};
 				menu.Add(addToCurrentViewItem);
 			}
@@ -151,34 +169,36 @@ namespace KaosEditor.Controllers
 			if (clickedElement is ModelView) {
 				var clickedView = clickedElement as ModelView;
 				
-				var editItem = new MenuItem("Edit view...");
+				var editItem = new MenuItem("Edit...");
 				editItem.Activated += delegate(object sender2, EventArgs e) {
 					this.EditView (clickedView);
 				};
 				menu.Add(editItem);
 				
-				var duplicateItem = new MenuItem("Duplicate view...");
+				var duplicateItem = new MenuItem("Duplicate...");
 				duplicateItem.Activated += delegate(object sender2, EventArgs e) {
 					this.DuplicateView (clickedView);
 				};
 				menu.Add(duplicateItem);
+				
+				var removeItem = new MenuItem("Delete");
+				removeItem.Activated += delegate(object sender2, EventArgs e) {
+					this.DuplicateView (clickedView);
+				};
+				menu.Add(removeItem);
 			}
 		}
 		
-		
-		public void PopulateTree (TreeStore store, bool header)
+		public void Populate (TreeStore store)
 		{
-			// TODO
+			foreach (var view in this.GetAll ()) {
+				store.AppendValues (view.Name, view, pixbuf);
+			}
 		}
 		
-		public void PopulateTree (TreeStore store, TreeIter iter, bool header)
+		public void Populate (IEnumerable<KAOSElement> elements, TreeStore store, TreeIter iter)
 		{
-			// TODO
-		}
-		
-		public void PopulateTree (KAOSElement[] elements, TreeStore store, TreeIter iter)
-		{
-			// TODO
+			throw new NotImplementedException ();
 		}
 	}
 }

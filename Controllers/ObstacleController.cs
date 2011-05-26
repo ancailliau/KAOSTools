@@ -30,10 +30,11 @@ using KaosEditor.UI.Dialogs;
 using Gtk;
 using KaosEditor.UI.Widgets;
 using KaosEditor.Logging;
+using System.Collections.Generic;
 
 namespace KaosEditor.Controllers
 {
-	public class ObstacleController : IController
+	public class ObstacleController : IController, IPopulateTree, IPopulateMenu
 	{
 		
 		private static Gdk.Pixbuf pixbuf;
@@ -48,10 +49,33 @@ namespace KaosEditor.Controllers
 		}
 		
 		private MainController controller;
+		private List<Obstacle> obstacles = new List<Obstacle>();
 		
 		public ObstacleController (MainController controller)
 		{
 			this.controller = controller;
+			this.controller.Window.conceptTreeView.RegisterForTree (this);
+			this.controller.Window.conceptTreeView.RegisterForMenu (this);
+		}
+		
+		public IEnumerable<Obstacle> GetAll ()
+		{
+			return this.obstacles.AsEnumerable ();
+		}
+		
+		public void Add (Obstacle obstacle)
+		{
+			this.obstacles.Add (obstacle);
+		}
+		
+		public void Remove (Obstacle obstacle)
+		{
+			this.obstacles.Remove (obstacle);
+		}
+		
+		public Obstacle Get (string id)
+		{
+			return this.obstacles.Find ((obj) => obj.Id == id);
 		}
 		
 		public void AddObstacle ()
@@ -70,7 +94,7 @@ namespace KaosEditor.Controllers
 			dialog.Response += delegate(object o, Gtk.ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Ok) {
 					var obstacle = new Obstacle(dialog.ObstacleName, dialog.ObstacleDefinition);
-					controller.Model.Add (obstacle);
+					this.Add (obstacle);
 					action (obstacle);
 				}
 				dialog.Destroy();
@@ -86,7 +110,7 @@ namespace KaosEditor.Controllers
 				if (args.ResponseId == Gtk.ResponseType.Ok) {
 					obstacle.Name = dialog.ObstacleName;
 					obstacle.Definition = dialog.ObstacleDefinition;
-					controller.Model.Update (obstacle);
+					// TODO controller.Model.Update (obstacle);
 				}
 				dialog.Destroy();
 			};
@@ -102,7 +126,7 @@ namespace KaosEditor.Controllers
 			
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Yes) {
-					this.controller.Model.Remove (obstacle);
+					this.Remove (obstacle);
 				}
 				dialog.Destroy ();
 			};
@@ -139,48 +163,22 @@ namespace KaosEditor.Controllers
 				
 			}
 		}
-		
-		public void PopulateTree (TreeStore store, bool header)
+		public void Populate (TreeStore store)
 		{
-			if (header) {
-				var iter = store.AppendValues ("Obstacles", null, pixbuf);
-				PopulateTree (store, iter, false);
-				
-			} else {
-				var obstacles = from e in this.controller.Model.Elements
-					where e is Obstacle select (Obstacle) e;
-			
-				foreach (var obstacle in obstacles) {
-					store.AppendValues (obstacle.Name, obstacle, pixbuf);
-				}
-			}
+			var iter = store.AppendValues ("Obstacles", null, pixbuf);
+			Populate (this.GetAll().Cast<KAOSElement>(), store, iter);
 		}
 		
-		public void PopulateTree (TreeStore store, TreeIter iter, bool header)
-		{
-			var obstacles = from e in this.controller.Model.Elements
-				where e is Obstacle select (Obstacle) e;
-			
-			if (header) {
-				iter = store.AppendValues (iter, "Obstacles", null, pixbuf);
-			}
-			PopulateTree (obstacles.ToArray(), store, iter);
-		}
-		
-		public void PopulateTree (KAOSElement[] elements, TreeStore store, TreeIter iter)
+		public void Populate (IEnumerable<KAOSElement> elements, TreeStore store, TreeIter iter)
 		{
 			foreach (var obstacle in from e in elements where e is Obstacle select (Obstacle) e) {
 				var subIter = store.AppendValues (iter, obstacle.Name, obstacle, pixbuf);
 				
-				var refinements = from e in this.controller.Model.Elements
-					where e is ObstacleRefinement && ((ObstacleRefinement) e).Refined == obstacle
-						select (ObstacleRefinement) e;
-				this.controller.PopulateTree (refinements.ToArray(), store, subIter);
+				var refinements = this.controller.ObstacleRefinementController.GetAll (obstacle).Cast<KAOSElement> ();
+				this.controller.ObstacleRefinementController.Populate (refinements, store, subIter);
 				
-				var resolutions = from e in this.controller.Model.Elements
-					where e is Resolution && ((Resolution) e).Obstacle == obstacle
-						select (Resolution) e;
-				this.controller.PopulateTree (resolutions.ToArray(), store, subIter);
+				var resolutions = this.controller.ResolutionController.GetAll (obstacle).Cast<KAOSElement> ();
+				this.controller.ResolutionController.Populate (resolutions, store, subIter);
 			}
 		}
 	}

@@ -43,15 +43,15 @@ namespace KaosEditor.UI.Widgets
 	/// </summary>
 	public class ConceptsTreeView : TreeView
 	{
-		private MainController controller;
+		public delegate void HandleElementActivated (object activatedObject);
+		public event HandleElementActivated ElementActivated;
+		
 		public TreeStore store;
-		public ConceptsTreeView (MainController controller)
+		
+		public ConceptsTreeView ()
 		{
-			this.controller = controller;
-			
 			// Build column and renderers	
 			var column = new TreeViewColumn ();
-			column.Title = "Concepts";
 			this.AppendColumn (column);
 			this.HeadersVisible = false;
 			
@@ -90,21 +90,10 @@ namespace KaosEditor.UI.Widgets
 		void OnRowActivated (object o, RowActivatedArgs args)
 		{
 			TreeIter iter;
-			store.GetIter(out iter, args.Path);
-			
-			bool inViews = false;
-			if (args.Path.Depth > 1 && args.Path.Up()) {
-				TreeIter iterParent;
-				Console.WriteLine ();
-				store.GetIter(out iterParent, args.Path);
-				if (((string) store.GetValue(iterParent, 0)) == "Views") {
-					inViews = true;
+			if (store.GetIter(out iter, args.Path)) {
+				if (ElementActivated != null) {
+					ElementActivated (store.GetValue (iter, 1));
 				}
-			}
-			
-			if (inViews) {
-				string name = (string) store.GetValue(iter, 0);
-				this.controller.ViewController.DisplayView(name);
 			}
 		}
 		
@@ -128,7 +117,12 @@ namespace KaosEditor.UI.Widgets
 				TreeIter iter;
 				if (store.GetIter(out iter, path)) {
 					object o = store.GetValue(iter, 1);
-					controller.PopulateContextMenu (this, o as KAOSElement);
+					var menu = new Menu();
+					foreach (var p in menuPopulater) {
+						p.PopulateContextMenu (menu, this, o);
+					}
+					menu.ShowAll ();
+					menu.Popup ();
 				}
 			}
 		}
@@ -235,8 +229,25 @@ namespace KaosEditor.UI.Widgets
 			
 			store.Clear();
 			
-			this.controller.PopulateTree (store, true);
+			foreach (var p in treePopulater) {
+				Logger.Info (string.Format ("Populate list with '{0}'", p.GetType()));
+				p.Populate (store);
+			}
+			
 			RestoreState (expandedNodes);
+		}
+		
+		private List<IPopulateTree> treePopulater = new List<IPopulateTree>();
+		private List<IPopulateMenu> menuPopulater = new List<IPopulateMenu>();
+		
+		public void RegisterForTree (IPopulateTree populater)
+		{
+			this.treePopulater.Add (populater);
+		}
+		
+		public void RegisterForMenu (IPopulateMenu populater)
+		{
+			this.menuPopulater.Add (populater);
 		}
 	}
 }

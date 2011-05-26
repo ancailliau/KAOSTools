@@ -3,6 +3,7 @@ using System.Xml;
 using System.Linq;
 using KaosEditor.Model;
 using KaosEditor.Views;
+using KaosEditor.Controllers;
 
 namespace KaosEditor
 {
@@ -11,16 +12,14 @@ namespace KaosEditor
 		private Version version = new Version(0, 1);
 		private string filename;
 		
-		private EditorModel model;
-		private ModelViews modelViews;
+		private MainController controller;
 		
 		private XmlWriterSettings settings;
 		
-		public XmlExporter (string filename, EditorModel model, ModelViews modelViews)
+		public XmlExporter (string filename, MainController controller)
 		{
 			this.filename = filename;
-			this.model = model;
-			this.modelViews = modelViews;
+			this.controller = controller;
 			
 			settings = new XmlWriterSettings();
 			settings.Indent = true;
@@ -49,19 +48,19 @@ namespace KaosEditor
 			writer.WriteStartElement("models");
 			
 			writer.WriteStartElement("goals");
-			foreach (var goal in model.Elements.FindAll(e => e is Goal)) {
+			foreach (var goal in this.controller.GoalController.GetAll()) {
 				WriteGoal(writer, goal as Goal);
 			}
 			writer.WriteEndElement();
 			
 			writer.WriteStartElement("agents");
-			foreach (var agent in model.Elements.FindAll(e => e is Agent)) {
+			foreach (var agent in this.controller.AgentController.GetAll()) {
 				WriteAgent (writer, agent as Agent);
 			}
 			writer.WriteEndElement();
 			
 			writer.WriteStartElement("obstacles");
-			foreach (var obstacle in model.Elements.FindAll(e => e is Obstacle)) {
+			foreach (var obstacle in this.controller.ObstacleController.GetAll()) {
 				WriteObstacle(writer, obstacle as Obstacle);
 			}
 			writer.WriteEndElement();
@@ -77,10 +76,7 @@ namespace KaosEditor
 			writer.WriteAttributeString("name", obstacle.Name);
 			writer.WriteElementString("definition", obstacle.Definition);
 			
-			var refinements = from e in model.Elements 
-				where e is ObstacleRefinement && ((ObstacleRefinement) e).Refined.Equals (obstacle) 
-					select (ObstacleRefinement) e;
-			
+			var refinements = this.controller.ObstacleRefinementController.GetAll (obstacle);
 			foreach (var refinement in refinements) {
 				writer.WriteStartElement("refinement");
 				writer.WriteAttributeString("id", refinement.Id);
@@ -104,9 +100,7 @@ namespace KaosEditor
 			
 			writer.WriteElementString("definition", goal.Definition);
 				
-			var refinements = from e in model.Elements 
-				where e is Refinement && ((Refinement) e).Refined.Equals (goal) 
-					select (Refinement) e;
+			var refinements = this.controller.RefinementController.GetAll (goal);
 					
 			foreach (var refinement in refinements) {
 				writer.WriteStartElement("refinement");
@@ -120,9 +114,7 @@ namespace KaosEditor
 				writer.WriteEndElement();
 			}
 			
-			var responsibilities = from e in model.Elements 
-				where e is Responsibility && ((Responsibility) e).Goal.Equals (goal) 
-					select (Responsibility) e;
+			var responsibilities = this.controller.ResponsibilityController.GetAll (goal);
 			
 			foreach (var responsibility in responsibilities) {
 				writer.WriteStartElement("responsibility");
@@ -131,9 +123,7 @@ namespace KaosEditor
 				writer.WriteEndElement();
 			}
 			
-			var obstructions = from e in model.Elements 
-				where e is Obstruction && ((Obstruction) e).Goal.Equals (goal) 
-					select (Obstruction) e;
+			var obstructions = this.controller.ObstructionController.GetAll (goal);
 			
 			foreach (var obstruction in obstructions) {
 				writer.WriteStartElement("obstruction");
@@ -142,9 +132,7 @@ namespace KaosEditor
 				writer.WriteEndElement();
 			}
 			
-			var resolutions = from e in model.Elements 
-				where e is Resolution && ((Resolution) e).Goal.Equals (goal) 
-					select (Resolution) e;
+			var resolutions = this.controller.ResolutionController.GetAll (goal);
 			
 			foreach (var resolution in resolutions) {
 				writer.WriteStartElement("resolution");
@@ -153,9 +141,7 @@ namespace KaosEditor
 				writer.WriteEndElement();
 			}
 			
-			var exceptions = from e in model.Elements 
-				where e is ExceptionLink && ((ExceptionLink) e).Goal.Equals (goal) 
-					select (ExceptionLink) e;
+			var exceptions = this.controller.ExceptionController.GetAll (goal);
 			
 			foreach (var exception in exceptions) {
 				writer.WriteStartElement("exception");
@@ -180,7 +166,7 @@ namespace KaosEditor
 		public void WriteViews (XmlWriter writer)
 		{
 			writer.WriteStartElement("views");
-			foreach (var view in modelViews) {
+			foreach (var view in this.controller.ViewController.GetAll ()) {
 				writer.WriteStartElement("view");
 				writer.WriteAttributeString("name", view.Name);
 				foreach (var shape in view.Shapes) {

@@ -30,10 +30,11 @@ using KaosEditor.Model;
 using Gtk;
 using KaosEditor.UI.Widgets;
 using KaosEditor.Logging;
+using System.Collections.Generic;
 
 namespace KaosEditor.Controllers
 {
-	public class AgentController : IController
+	public class AgentController : IController, IPopulateTree, IPopulateMenu
 	{
 		private static Gdk.Pixbuf pixbuf;
 		
@@ -46,11 +47,35 @@ namespace KaosEditor.Controllers
 			}
 		}
 		
+		private List<Agent> agents = new List<Agent>();
+		
 		private MainController controller;
 		
 		public AgentController (MainController controller)
 		{
 			this.controller = controller;
+			this.controller.Window.conceptTreeView.RegisterForTree (this);
+			this.controller.Window.conceptTreeView.RegisterForMenu (this);
+		}
+		
+		public IEnumerable<Agent> GetAll ()
+		{
+			return this.agents.AsEnumerable ();
+		}
+		
+		public void Add (Agent agent)
+		{
+			this.agents.Add (agent);
+		}
+		
+		public void Remove (Agent agent)
+		{
+			this.agents.Remove (agent);
+		}
+		
+		public Agent Get (string id)
+		{
+			return this.agents.Find ((obj) => obj.Id == id);
 		}
 		
 		public void AddAgent (string agentName, System.Action<Agent> action)
@@ -59,7 +84,7 @@ namespace KaosEditor.Controllers
 			dialog.Response += delegate(object o, Gtk.ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Ok) {
 					var agent = new Agent (dialog.AgentName);
-					this.controller.Model.Add (agent);
+					this.Add (agent);
 					action (agent);
 				}
 				dialog.Destroy ();
@@ -83,7 +108,7 @@ namespace KaosEditor.Controllers
 			dialog.Response += delegate(object o, Gtk.ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Ok) {
 					agent.Name = dialog.AgentName;
-					this.controller.Model.Update (agent);
+					// TODO this.controller.Model.Update (agent);
 				}
 				dialog.Destroy ();
 			};
@@ -98,7 +123,7 @@ namespace KaosEditor.Controllers
 		
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Yes) {
-					this.controller.Model.Remove (agent);
+					this.Remove (agent);
 				}
 				dialog.Destroy ();
 			};
@@ -134,34 +159,13 @@ namespace KaosEditor.Controllers
 			}
 		}
 		
-		public void PopulateTree (TreeStore store, bool header)
+		public void Populate (TreeStore store)
 		{
-			if (header) {
-				var iter = store.AppendValues ("Agents", null, pixbuf);
-				PopulateTree (store, iter, false);
-				
-			} else {
-				var agents = from e in this.controller.Model.Elements
-					where e is Agent select (Agent) e;
-			
-				foreach (var agent in agents) {
-					store.AppendValues (agent.Name, agent, pixbuf);
-				}
-			}
+			var iter = store.AppendValues ("Agents", null, pixbuf);
+			Populate (this.GetAll().Cast<KAOSElement>(), store, iter);
 		}
 		
-		public void PopulateTree (TreeStore store, TreeIter iter, bool header)
-		{
-			var agents = from e in this.controller.Model.Elements
-				where e is Agent select (Agent) e;
-			
-			if (header) {
-				iter = store.AppendValues (iter, "Agents", null, pixbuf);
-			}
-			PopulateTree (agents.ToArray(), store, iter);
-		}
-		
-		public void PopulateTree (KAOSElement[] elements, TreeStore store, TreeIter iter)
+		public void Populate (IEnumerable<KAOSElement> elements, TreeStore store, TreeIter iter)
 		{
 			foreach (var agent in from e in elements where e is Agent select (Agent) e) {
 				store.AppendValues (iter, agent.Name, agent, pixbuf);

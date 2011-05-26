@@ -89,7 +89,6 @@
     <Compile Include="UI\Widgets\DiagramArea.cs" />
     <Compile Include="UI\Widgets\ViewsNotebook.cs" />
     <Compile Include="UI\Widgets\ConceptsTreeView.cs" />
-    <Compile Include="Model\EditorModel.cs" />
     <Compile Include="gtk-gui\KaosEditor.UI.Dialogs.TextEntryDialog.cs" />
     <Compile Include="gtk-gui\KaosEditor.UI.Windows.MainWindow.cs" />
     <Compile Include="UI\IContextMenu.cs" />
@@ -149,6 +148,8 @@
     <Compile Include="Controllers\IController.cs" />
     <Compile Include="Views\ModelViews.cs" />
     <Compile Include="Views\ModelView.cs" />
+    <Compile Include="IPopulateTree.cs" />
+    <Compile Include="IPopulateMenu.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -169,4 +170,7 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <None Include="Model\EditorModel.cs" />
+  </ItemGroup>
 </Project>

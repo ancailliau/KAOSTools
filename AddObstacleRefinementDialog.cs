@@ -96,7 +96,7 @@ namespace KaosEditor
 			// childrenComboBox.PackStart(cell, false);
 			childrenComboBox.AddAttribute(cell, "text", 0);
 			
-			foreach (var g in controller.Model.Elements.FindAll(e => e is Obstacle)) {
+			foreach (var g in this.controller.ObstacleController.GetAll ()) {
 				if (g != parent) {
 					childrenComboStore.AppendValues(((Obstacle) g).Name, g as Obstacle);
 				}

@@ -102,7 +102,7 @@ namespace KaosEditor.UI.Dialogs
 			// childrenComboBox.PackStart(cell, false);
 			childrenComboBox.AddAttribute(cell, "text", 0);
 			
-			foreach (var g in controller.Model.Elements.FindAll(e => e is Goal)) {
+			foreach (var g in this.controller.GoalController.GetAll ()) {
 				if (g != parent) {
 					childrenComboStore.AppendValues(((Goal) g).Name, g as Goal);
 				}

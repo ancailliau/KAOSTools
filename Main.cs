@@ -9,7 +9,6 @@ namespace KaosEditor
 {
 	class MainClass
 	{
-		private static EditorModel model;
 		private static MainController controller;
 		private static MainWindow window;
 		
@@ -17,10 +16,8 @@ namespace KaosEditor
 		{
 			Application.Init ();
 			
-			model = new EditorModel ();
-			controller = new MainController(model);
-			window = new MainWindow (model, controller);
-			controller.Window = window;
+			window = new MainWindow ();
+			controller = new MainController(window);
 			
 			controller.Show ();
 			

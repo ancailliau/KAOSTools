@@ -51,37 +51,25 @@ namespace KaosEditor.UI.Windows {
 			}
 		}
 		
-		
-		/// <summary>
-		/// Gets or sets the model.
-		/// </summary>
-		/// <value>
-		/// The model.
-		/// </value>
-		public EditorModel Model {
-			get;
-			set;
-		}
-		
 		/// <summary>
 		/// Gets or sets the controller.
 		/// </summary>
 		/// <value>
 		/// The controller.
 		/// </value>
-		private MainController controller;
+		public MainController Controller;
 		
 		/// <summary>
 		/// The views notebook.
 		/// </summary>
-		private ViewsNotebook viewsNotebook;
+		public ViewsNotebook viewsNotebook;
 		
 		/// <summary>
 		/// The concept tree view.
 		/// </summary>
-		private ConceptsTreeView conceptTreeView;
+		public ConceptsTreeView conceptTreeView;
 		
-		private ViewList viewList;
+		public ConceptsTreeView viewList;
 		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KaosEditor.UI.Windows.MainWindow"/> class.
@@ -89,14 +77,12 @@ namespace KaosEditor.UI.Windows {
 		/// <param name='model'>
 		/// Model.
 		/// </param>
-		public MainWindow (EditorModel model, MainController controller): base (Gtk.WindowType.Toplevel)
+		public MainWindow (): base (Gtk.WindowType.Toplevel)
 		{
-			this.controller = controller;
-			this.Model = model;
 			Build ();
 			
-			viewsNotebook = new ViewsNotebook(controller);
-			conceptTreeView = new ConceptsTreeView (controller);
+			viewsNotebook = new ViewsNotebook();
+			conceptTreeView = new ConceptsTreeView ();
 			
 			var notebookModelView = new Notebook ();
 			notebookModelView.TabPos = PositionType.Bottom;
@@ -112,7 +98,7 @@ namespace KaosEditor.UI.Windows {
 			modelLabel.ShowAll ();
 			viewLabel.ShowAll ();
 			
-			viewList = new ViewList(this.controller);
+			viewList = new ConceptsTreeView();
 			var scroll2 = new ScrolledWindow ();
 			scroll2.Add (viewList);
 			
@@ -125,91 +111,13 @@ namespace KaosEditor.UI.Windows {
 			hpaned1.Add1 (notebookModelView);
 			hpaned1.Add2 (viewsNotebook);
 			hpaned1.ShowAll();
-					
-			Model.Changed += UpdateWidgets;
-			Model.ElementAdded += delegate(KAOSElement element) {
-				viewsNotebook.RedrawCurrentView();
-				conceptTreeView.Update();
-			};
-			model.ElementRemoved += delegate(KAOSElement element) {
-				viewsNotebook.RedrawCurrentView();
-				conceptTreeView.Update();
-			};
-			controller.Views.ViewsChanged += UpdateWidgets;
-			controller.Views.AddedView += UpdateWidgets;
 		}
 		
-		/// <summary>
-		/// Updates the widgets.
-		/// </summary>
-		/// <param name='sender'>
-		/// Sender.
-		/// </param>
-		/// <param name='args'>
-		/// Arguments.
-		/// </param>
-		private void UpdateWidgets (object sender, EventArgs args)
+		public void Update ()
 		{
 			viewsNotebook.RedrawCurrentView();
-			conceptTreeView.Update();
-			viewList.UpdateList();
-		}
-		
-		/// <summary>
-		/// Displaies the view specified by the given name
-		/// </summary>
-		/// <param name='name'>
-		/// Name of the view to display.
-		/// </param>
-		public void DisplayView (string name)
-		{
-			viewsNotebook.DisplayView (controller.Views.Get(name));
-		}
-			
-		/// <summary>
-		/// Adds given model element to current view.
-		/// </summary>
-		/// <param name='element'>
-		/// Element to add
-		/// </param>
-		public void AddToCurrentView (KAOSElement element)
-		{
-			// TODO Move this ...
-			AddToCurrentView (element, 10, 10);
-		}	
-		
-		/// <summary>
-		/// Adds given model element to current view.
-		/// </summary>
-		/// <param name='element'>
-		/// Element to add
-		/// </param>
-		public void AddToCurrentView (KAOSElement element, double x, double y)
-		{
-			viewsNotebook.AddToCurrentView(element, x, y);
-		}
-			
-		/// <summary>
-		/// Removes from current view.
-		/// </summary>
-		/// <param name='element'>
-		/// Element.
-		/// </param>
-		public void RemoveFromCurrentView (IShape element)
-		{
-			viewsNotebook.CurrentView.Shapes.Remove ( element );
-			viewsNotebook.RedrawCurrentView ();
-		}
-		
-		/// <summary>
-		/// Determines whether this instance has current view.
-		/// </summary>
-		/// <returns>
-		/// <c>true</c> if this instance has current view; otherwise, <c>false</c>.
-		/// </returns>
-		public bool HasCurrentView ()
-		{
-			return viewsNotebook.CurrentView != null;
+			conceptTreeView.Update ();
+			viewList.Update ();
 		}
 		
 		/// <summary>
@@ -223,7 +131,7 @@ namespace KaosEditor.UI.Windows {
 		/// </param>
 		protected void OnDeleteEvent (object sender, DeleteEventArgs a)
 		{
-			this.controller.Quit ();
+			this.Controller.Quit ();
 			a.RetVal = true;
 		}
 		
@@ -238,7 +146,7 @@ namespace KaosEditor.UI.Windows {
 		/// </param>
 		protected virtual void OnQuitActionActivated (object sender, System.EventArgs e)
 		{
-			this.controller.Quit ();
+			this.Controller.Quit ();
 		}
 		
 		/// <summary>
@@ -252,7 +160,7 @@ namespace KaosEditor.UI.Windows {
 		/// </param>
 		protected virtual void OnSaveActionActivated (object sender, System.EventArgs e)
 		{
-			this.controller.SaveProject ();
+			this.Controller.SaveProject ();
 		}
 		
 		/// <summary>
@@ -266,17 +174,17 @@ namespace KaosEditor.UI.Windows {
 		/// </param>
 		protected virtual void OnOpenActionActivated (object sender, System.EventArgs e)
 		{
-			this.controller.LoadProject ();
+			this.Controller.LoadProject ();
 		}
 		
 		protected virtual void OnRevertToSavedActionActivated (object sender, System.EventArgs e)
 		{
-			this.controller.ReloadCurrentProject ();
+			this.Controller.ReloadCurrentProject ();
 		}
 		
 		protected virtual void OnSaveAsActionActivated (object sender, System.EventArgs e)
 		{
-			this.controller.SaveProjectAs ();
+			this.Controller.SaveProjectAs ();
 		}
 		
 	}

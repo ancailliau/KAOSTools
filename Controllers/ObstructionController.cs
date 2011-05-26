@@ -29,10 +29,11 @@ using KaosEditor.Model;
 using Gtk;
 using KaosEditor.UI.Dialogs;
 using KaosEditor.Logging;
+using System.Collections.Generic;
 
 namespace KaosEditor.Controllers
 {
-	public class ObstructionController : IController
+	public class ObstructionController : IController, IPopulateTree, IPopulateMenu
 	{
 		
 		private static Gdk.Pixbuf pixbuf;
@@ -47,10 +48,42 @@ namespace KaosEditor.Controllers
 		}
 		
 		private MainController controller;
+		private List<Obstruction> obstructions = new List<Obstruction> ();
 		
 		public ObstructionController (MainController controller)
 		{
 			this.controller = controller;
+			this.controller.Window.conceptTreeView.RegisterForMenu (this);
+		}
+		
+		public IEnumerable<Obstruction> GetAll ()
+		{
+			return this.obstructions.AsEnumerable ();
+		}
+		
+		public IEnumerable<Obstruction> GetAll (Goal goal)
+		{
+			return this.obstructions.Where ((arg) => arg.Goal == goal);
+		}
+		
+		public IEnumerable<Obstruction> GetAll (Obstacle obstacle)
+		{
+			return this.obstructions.Where ((arg) => arg.Obstacle == obstacle);
+		}
+		
+		public void Add (Obstruction obstruction)
+		{
+			this.obstructions.Add (obstruction);
+		}
+		
+		public void Remove (Obstruction obstruction)
+		{
+			this.obstructions.Remove (obstruction);
+		}
+		
+		public Obstruction Get (string id)
+		{
+			return this.obstructions.Find ((obj) => obj.Id == id);
 		}
 		
 		public void AddObstruction (Goal goal)
@@ -60,7 +93,7 @@ namespace KaosEditor.Controllers
 				if (args.ResponseId == ResponseType.Ok && dialog.Obstacle != null) {
 					var newObstruction = new Obstruction (
 						goal, dialog.Obstacle);
-					this.controller.Model.Add (newObstruction);
+					this.Add (newObstruction);
 					dialog.Destroy ();
 					
 				} else if (args.ResponseId == ResponseType.Ok && dialog.ObstacleName != null
@@ -90,7 +123,7 @@ namespace KaosEditor.Controllers
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.Obstacle != null) {
 					obstruction.Obstacle = dialog.Obstacle;
-					this.controller.Model.Update (obstruction);
+					// TODO this.controller.Model.Update (obstruction);
 				}
 				dialog.Destroy ();
 			};
@@ -105,11 +138,7 @@ namespace KaosEditor.Controllers
 			
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Yes) {
-					this.controller.Model.Remove (obstruction);
-					foreach (var v in this.controller.Views) {
-						var shapes = v.GetAllShapesFor (obstruction);
-						v.Shapes.RemoveAll ((obj) => shapes.Contains(obj));
-					}
+					this.Remove (obstruction);
 				}
 				dialog.Destroy ();
 			};
@@ -120,9 +149,7 @@ namespace KaosEditor.Controllers
 		public void PopulateContextMenu (Menu menu, object source, object clickedElement)
 		{
 			if (clickedElement is Goal) {	
-				var refinements = from n in this.controller.Model.Elements
-					where n is Refinement && ((Refinement) n).Refined.Equals (clickedElement)
-					select n;
+				var refinements = this.GetAll ();
 				if (refinements.Count() == 0) {
 					var clickedGoal = clickedElement as Goal;
 					var assignItem = new MenuItem("Obstruct...");
@@ -151,38 +178,19 @@ namespace KaosEditor.Controllers
 			
 		}
 		
-		public void PopulateTree (TreeStore store, bool header)
+		public void Populate (TreeStore store)
 		{
-			if (header) {
-				var iter = store.AppendValues ("Obstructions", null, pixbuf);
-				PopulateTree (store, iter, false);
-				
-			} else {
-				var obstructions = from e in this.controller.Model.Elements
-					where e is Obstruction select (Obstruction) e;
-			
-				foreach (var obstruction in obstructions) {
-					store.AppendValues ("Obstruction", obstruction, pixbuf);
-				}
-			}
+			var iter = store.AppendValues ("Obstructions", null, pixbuf);
+			Populate (this.GetAll().Cast<KAOSElement>(), store, iter);
 		}
 		
-		public void PopulateTree (TreeStore store, TreeIter iter, bool header)
-		{
-			var obstructions = from e in this.controller.Model.Elements
-				where e is Obstruction select (Obstruction) e;
-			
-			if (header) {
-				iter = store.AppendValues (iter, "Obstructions", null, pixbuf);
-			}
-			PopulateTree (obstructions.ToArray(), store, iter);
-		}
-		
-		public void PopulateTree (KAOSElement[] elements, TreeStore store, TreeIter iter)
+		public void Populate (IEnumerable<KAOSElement> elements, TreeStore store, TreeIter iter)
 		{
 			foreach (var obstruction in from e in elements where e is Obstruction select (Obstruction) e) {
 				var subIter = store.AppendValues (iter, "Obstruction", obstruction, pixbuf);
-				this.controller.PopulateTree (new [] { obstruction.Obstacle }, store, subIter);
+				this.controller.ObstacleController.Populate (new List<KAOSElement> () { 
+					obstruction.Obstacle
+				}, store, subIter);
 			}
 		}
 	}

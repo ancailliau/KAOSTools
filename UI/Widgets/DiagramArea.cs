@@ -253,9 +253,9 @@ namespace KaosEditor.UI.Widgets
 				
 				var clickedShape = FindShapeAtPosition(evnt.X, evnt.Y);
 				if (clickedShape != null) {
-					this.controller.PopulateContextMenu (this, clickedShape);
+					// TODO this.controller.PopulateContextMenu (this, clickedShape);
 				} else {
-					this.controller.PopulateContextMenu (this, (KAOSElement) null);
+					// TODO this.controller.PopulateContextMenu (this, (KAOSElement) null);
 				}
 				
 			}

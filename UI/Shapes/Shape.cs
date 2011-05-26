@@ -140,7 +140,7 @@ namespace KaosEditor.UI.Shapes
 		{
 			var deleteItem = new MenuItem("Remove from view");
 			deleteItem.Activated += delegate(object sender, EventArgs e) {
-				context.Controller.Window.RemoveFromCurrentView (this);
+				// TODO context.Controller.Window.RemoveFromCurrentView (this);
 			};
 			menu.Add(deleteItem);
 		}

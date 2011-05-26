@@ -85,7 +85,7 @@ namespace KaosEditor
 		void UpdateList (Obstacle obstacle)
 		{
 			TreeIter iter;
-			foreach (var element in controller.Model.Elements.FindAll(e => e is Obstacle)) {
+			foreach (var element in this.controller.ObstacleController.GetAll ()) {
 				var possibleObstacle = (Obstacle) element;
 				var possibleIter = store.AppendValues (possibleObstacle.Name, possibleObstacle);
 				if (possibleObstacle == obstacle) {

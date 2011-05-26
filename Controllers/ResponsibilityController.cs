@@ -29,10 +29,11 @@ using KaosEditor.Model;
 using Gtk;
 using KaosEditor.UI.Dialogs;
 using KaosEditor.Logging;
+using System.Collections.Generic;
 
 namespace KaosEditor.Controllers
 {
-	public class ResponsibilityController : IController
+	public class ResponsibilityController : IController, IPopulateMenu
 	{
 		private static Gdk.Pixbuf pixbuf;
 		
@@ -46,10 +47,37 @@ namespace KaosEditor.Controllers
 		}
 		
 		private MainController controller;
+		private List<Responsibility> responsibilities = new List<Responsibility>();
 		
 		public ResponsibilityController (MainController controller)
 		{
 			this.controller = controller;
+			this.controller.Window.conceptTreeView.RegisterForMenu (this);
+		}
+
+		public IEnumerable<Responsibility> GetAll ()
+		{
+			return this.responsibilities.AsEnumerable ();
+		}
+		
+		public IEnumerable<Responsibility> GetAll (Goal goal)
+		{
+			return this.responsibilities.Where ((arg) => arg.Goal == goal).AsEnumerable ();
+		}
+		
+		public void Add (Responsibility responsibility)
+		{
+			this.responsibilities.Add (responsibility);
+		}
+		
+		public void Remove (Responsibility responsibility)
+		{
+			this.responsibilities.Remove (responsibility);
+		}
+		
+		public Responsibility Get (string id)
+		{
+			return this.responsibilities.Find ((obj) => obj.Id == id);
 		}
 		
 		public void AddResponsibility (Goal goal)
@@ -61,7 +89,7 @@ namespace KaosEditor.Controllers
 					if (dialog.ResponsibleAgent != null) {
 						var newResponsibility = new Responsibility (
 							goal, dialog.ResponsibleAgent);
-						this.controller.Model.Add (newResponsibility);
+						this.Add (newResponsibility);
 						dialog.Destroy ();
 					} else {
 						var subDialog = new MessageDialog (this.controller.Window,
@@ -89,7 +117,7 @@ namespace KaosEditor.Controllers
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.ResponsibleAgent != null) {
 					responsibility.Agent = dialog.ResponsibleAgent;
-					this.controller.Model.Update (responsibility);
+					// TODO this.controller.Model.Update (responsibility);
 				}
 				dialog.Destroy ();
 			};
@@ -104,7 +132,7 @@ namespace KaosEditor.Controllers
 			
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Yes) {
-					this.controller.Model.Remove (responsibility);
+					this.Remove (responsibility);
 				}
 				dialog.Destroy ();
 			};
@@ -141,38 +169,17 @@ namespace KaosEditor.Controllers
 			
 		}
 		
-		public void PopulateTree (TreeStore store, bool header)
+		public void Populate (TreeStore store)
 		{
-			if (header) {
-				var iter = store.AppendValues ("Responsibilities", null, pixbuf);
-				PopulateTree (store, iter, false);
-				
-			} else {
-				var responsibilities = from e in this.controller.Model.Elements
-					where e is Responsibility select (Responsibility) e;
-			
-				foreach (var responsibility in responsibilities) {
-					store.AppendValues ("Responsibility", responsibility, pixbuf);
-				}
-			}
+			var iter = store.AppendValues ("Responsibilities", null, pixbuf);
+			Populate (this.GetAll().Cast<KAOSElement>(), store, iter);
 		}
 		
-		public void PopulateTree (TreeStore store, TreeIter iter, bool header)
-		{
-			var responsibilities = from e in this.controller.Model.Elements
-				where e is Responsibility select (Responsibility) e;
-			
-			if (header) {
-				iter = store.AppendValues (iter, "Responsibilities", null, pixbuf);
-			}
-			PopulateTree (responsibilities.ToArray(), store, iter);
-		}
-		
-		public void PopulateTree (KAOSElement[] elements, TreeStore store, TreeIter iter)
+		public void Populate (IEnumerable<KAOSElement> elements, TreeStore store, TreeIter iter)
 		{
 			foreach (var responsibility in from e in elements where e is Responsibility select (Responsibility) e) {
 				var subIter = store.AppendValues (iter, "Responsibility", responsibility, pixbuf);
-				this.controller.PopulateTree (new KAOSElement[] { responsibility.Agent }, store, subIter); 
+				this.controller.AgentController.Populate (new List<KAOSElement> () { responsibility.Agent }, store, subIter);
 			}
 		}
 	}

@@ -29,10 +29,11 @@ using KaosEditor.Model;
 using Gtk;
 using KaosEditor.UI.Dialogs;
 using KaosEditor.Logging;
+using System.Collections.Generic;
 
 namespace KaosEditor.Controllers
 {
-	public class RefinementController : IController
+	public class RefinementController : IController, IPopulateTree, IPopulateMenu
 	{
 		
 		private static Gdk.Pixbuf pixbuf;
@@ -47,10 +48,37 @@ namespace KaosEditor.Controllers
 		}
 		
 		private MainController controller;
+		private List<Refinement> refinements = new List<Refinement>();
 		
 		public RefinementController (MainController controller)
 		{
 			this.controller = controller;
+			this.controller.Window.conceptTreeView.RegisterForMenu (this);
+		}
+		
+		public IEnumerable <Refinement> GetAll ()
+		{
+			return this.refinements.AsEnumerable ();
+		}
+		
+		public IEnumerable <Refinement> GetAll (Goal goal)
+		{
+			return this.refinements.Where ((arg) => arg.Refined == goal).AsEnumerable ();
+		}
+		
+		public void Add (Refinement refinement)
+		{
+			this.refinements.Add (refinement);
+		}
+		
+		public void Remove (Refinement refinement)
+		{
+			this.refinements.Remove (refinement);
+		}
+		
+		public Refinement Get (string id)
+		{
+			return this.refinements.Find ((obj) => obj.Id == id);
 		}
 		
 		public void AddRefinement (Goal goal)
@@ -62,7 +90,7 @@ namespace KaosEditor.Controllers
 					foreach (var element in dialog.Refinees) {
 						newRefinement.Add(element);
 					}
-					this.controller.Model.Add(newRefinement);
+					this.Add(newRefinement);
 				}
 				dialog.Destroy ();
 			};
@@ -78,7 +106,7 @@ namespace KaosEditor.Controllers
 					foreach (var element in dialog.Refinees) {
 						refinement.Add(element);
 					}
-					this.controller.Model.Update (refinement);
+					// TODO this.Update (refinement);
 				}
 				dialog.Destroy ();
 			};
@@ -93,7 +121,7 @@ namespace KaosEditor.Controllers
 			
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Yes) {
-					this.controller.Model.Remove (refinement);
+					this.Remove (refinement);
 				}
 				dialog.Destroy ();
 			};
@@ -130,40 +158,17 @@ namespace KaosEditor.Controllers
 			}
 		}
 		
-		
-		public void PopulateTree (TreeStore store, bool header)
+		public void Populate (TreeStore store)
 		{
-			if (header) {
-				var iter = store.AppendValues ("Refinements", null, pixbuf);
-				PopulateTree (store, iter, false);
-				
-			} else {
-				var refinements = from e in this.controller.Model.Elements
-					where e is Refinement select (Refinement) e;
-			
-				int i = 1;
-				foreach (var refinement in refinements) {
-					store.AppendValues ("Refinement", refinement, pixbuf);
-				}
-			}
+			var iter = store.AppendValues ("Refinements", null, pixbuf);
+			Populate (this.GetAll().Cast<KAOSElement>(), store, iter);
 		}
 		
-		public void PopulateTree (TreeStore store, TreeIter iter, bool header)
-		{
-			var refinements = from e in this.controller.Model.Elements
-				where e is Refinement select (Refinement) e;
-			
-			if (header) {
-				iter = store.AppendValues (iter, "Refinements", null, pixbuf);
-			}
-			PopulateTree (refinements.ToArray(), store, iter);
-		}
-		
-		public void PopulateTree (KAOSElement[] elements, TreeStore store, TreeIter iter)
+		public void Populate (IEnumerable<KAOSElement> elements, TreeStore store, TreeIter iter)
 		{
 			foreach (var refinement in from e in elements where e is Refinement select (Refinement) e) {
 				var subIter = store.AppendValues (iter, "Refinement", refinement, pixbuf);
-				this.controller.PopulateTree (refinement.Refinees.ToArray(), store, subIter);
+				this.controller.GoalController.Populate (refinement.Refinees, store, subIter);
 			}
 		}
 		

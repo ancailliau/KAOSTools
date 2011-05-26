@@ -30,10 +30,11 @@ using KaosEditor.UI.Dialogs;
 using Gtk;
 using KaosEditor.UI.Widgets;
 using KaosEditor.Logging;
+using System.Collections.Generic;
 
 namespace KaosEditor.Controllers
 {
-	public class DomainPropertyController : IController
+	public class DomainPropertyController : IController, IPopulateTree, IPopulateMenu
 	{
 		
 		private static Gdk.Pixbuf pixbuf;
@@ -49,10 +50,33 @@ namespace KaosEditor.Controllers
 		}
 		
 		private MainController controller;
+		private List<DomainProperty> domainProperties = new List<DomainProperty>();
 		
 		public DomainPropertyController (MainController controller)
 		{
 			this.controller = controller;
+			this.controller.Window.conceptTreeView.RegisterForTree (this);
+			this.controller.Window.conceptTreeView.RegisterForMenu (this);
+		}
+		
+		public IEnumerable<DomainProperty> GetAll ()
+		{
+			return this.domainProperties.AsEnumerable ();
+		}
+		
+		public void Add (DomainProperty domProp)
+		{
+			this.domainProperties.Add (domProp);
+		}
+		
+		public void Remove (DomainProperty domProp)
+		{
+			this.domainProperties.Remove (domProp);
+		}
+		
+		public DomainProperty Get (string id)
+		{
+			return this.domainProperties.Find ((obj) => obj.Id == id);
 		}
 				
 		public void AddDomainProperty (string domPropName, System.Action<DomainProperty> action)
@@ -61,7 +85,7 @@ namespace KaosEditor.Controllers
 			dialog.Response += delegate(object o, Gtk.ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Ok) {
 					var domProp = new DomainProperty(dialog.DomainPropertyName, dialog.DomainPropertyDefinition);
-					controller.Model.Add (domProp);
+					this.Add (domProp);
 					action(domProp);
 				}
 				dialog.Destroy();
@@ -91,7 +115,7 @@ namespace KaosEditor.Controllers
 			
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Yes) {
-					this.controller.Model.Remove (domProp);
+					this.Remove (domProp);
 				}
 				dialog.Destroy ();
 			};
@@ -128,36 +152,13 @@ namespace KaosEditor.Controllers
 			}
 		}
 		
-		public void PopulateTree (TreeStore store, bool header)
+		public void Populate (TreeStore store)
 		{
-			if (header) {
-				var iter = store.AppendValues ("Domain properties", null, pixbuf);
-				PopulateTree (store, iter, false);
-				
-			} else {
-				var domainProperties = from e in this.controller.Model.Elements
-					where e is DomainProperty select (DomainProperty) e;
-			
-				foreach (var domProp in domainProperties) {
-					store.AppendValues (domProp.Name, domProp, pixbuf);
-				}
-			}
+			var iter = store.AppendValues ("Domain properties", null, pixbuf);
+			Populate (this.GetAll().Cast<KAOSElement>(), store, iter);
 		}
 		
-		public void PopulateTree (TreeStore store, TreeIter iter, bool header)
-		{
-			var domainProperties = from e in this.controller.Model.Elements
-				where e is DomainProperty select (DomainProperty) e;
-			
-			if (header) {
-				iter = store.AppendValues (iter, "Domain properties", null, pixbuf);
-			}
-			foreach (var domProp in domainProperties) {
-				store.AppendValues (iter, domProp.Name, domProp, pixbuf);
-			}
-		}
-		
-		public void PopulateTree (KAOSElement[] elements, TreeStore store, TreeIter iter)
+		public void Populate (IEnumerable<KAOSElement> elements, TreeStore store, TreeIter iter)
 		{
 			foreach (var domProp in from e in elements where e is DomainProperty select (DomainProperty) e) {
 				store.AppendValues (iter, domProp.Name, domProp, pixbuf);

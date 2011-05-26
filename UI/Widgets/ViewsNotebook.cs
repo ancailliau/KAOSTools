@@ -67,10 +67,10 @@ namespace KaosEditor.UI.Widgets
 		/// <summary>
 		/// Initializes a new instance of the <see cref="KaosEditor.UI.Widgets.ViewsNotebook"/> class.
 		/// </summary>
-		public ViewsNotebook (MainController controller)
+		public ViewsNotebook ()
 		{
 			displayedViews = new List<ModelView>();
-			this.controller = controller;
+			this.controller = null;
 			this.Scrollable = true;
 		}
 		

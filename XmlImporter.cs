@@ -15,12 +15,6 @@ namespace KaosEditor
 	{
 		private string filename;
 		
-		private EditorModel model;
-		public EditorModel Model { get { return model ; } }
-		
-		private ModelViews modelViews;
-		public ModelViews ModelViews { get { return modelViews ; } }
-		
 		private List<FutureGoal> futureGoals;
 		private List<FutureAgent> futureAgents;
 		private List<FutureView> futureViews;
@@ -98,7 +92,6 @@ namespace KaosEditor
 		public XmlImporter (string filename, MainController controller)
 		{
 			this.filename = filename;
-			this.model = new EditorModel();
 			
 			this.futureGoals = new List<FutureGoal>();
 			this.futureViews = new List<FutureView>();
@@ -273,64 +266,63 @@ namespace KaosEditor
 		public void Compile ()
 		{
 			foreach (var futureGoal in futureGoals) {
-				var goal = new Goal(futureGoal.name, futureGoal.definition) {
+				this.controller.GoalController.Add (new Goal(futureGoal.name, futureGoal.definition) {
 					Id = futureGoal.id
-				};
-				Model.Add (goal);
+				});
 			}
 			
 			foreach (var futureAgent in futureAgents) {
-				Model.Add(new Agent (futureAgent.name, futureAgent.id));
+				this.controller.AgentController.Add(new Agent (futureAgent.name, futureAgent.id));
 			}
 			
 			foreach (var futureObstacle in futureObstacles) {
-				Model.Add(new Obstacle (futureObstacle.name, futureObstacle.definition) {
+				this.controller.ObstacleController.Add(new Obstacle (futureObstacle.name, futureObstacle.definition) {
 					Id = futureObstacle.id
 				});
 			}
 			
 			foreach (var futureGoal in futureGoals) {
 				foreach (var futureRefinement in futureGoal.refinements) {
-					Goal goal = (Goal) Model.Get(futureGoal.id);
+					Goal goal = this.controller.GoalController.Get(futureGoal.id);
 					if (goal != null) {
 						var refinement = new Refinement(goal) { Id = futureRefinement.id };
 						foreach (var futureElement in futureRefinement.refinees) {
-							refinement.Add(Model.Get(futureElement));
+							refinement.Add(this.controller.GoalController.Get(futureElement));
 						}
-						Model.Add (refinement);
+						this.controller.RefinementController.Add (refinement);
 					}
 				}
 				foreach (var futureResponsibility in futureGoal.futureResponsibilities) {
-					Model.Add(new Responsibility (futureResponsibility.id,
-						(Goal) Model.Get(futureResponsibility.goalId),
-						(Agent) Model.Get(futureResponsibility.agentId)));
+					this.controller.ResponsibilityController.Add(new Responsibility (futureResponsibility.id,
+						this.controller.GoalController.Get(futureResponsibility.goalId),
+						this.controller.AgentController.Get(futureResponsibility.agentId)));
 				}
 				foreach (var futureObstruction in futureGoal.futureObstructions) {
-					Model.Add(new Obstruction (
-						(Goal) Model.Get(futureGoal.id),
-						(Obstacle) Model.Get(futureObstruction.obstacleId)) { Id = futureObstruction.id});
+					this.controller.ObstructionController.Add(new Obstruction (
+						this.controller.GoalController.Get(futureGoal.id),
+						this.controller.ObstacleController.Get(futureObstruction.obstacleId)) { Id = futureObstruction.id});
 				}
 				foreach (var futureResolution in futureGoal.futureResolutions) {
-					Model.Add(new Resolution (
-						(Obstacle) Model.Get(futureResolution.obstacleId),
-						(Goal) Model.Get(futureGoal.id)) { Id = futureResolution.id});
+					this.controller.ResolutionController.Add(new Resolution (
+						this.controller.ObstacleController.Get(futureResolution.obstacleId),
+						this.controller.GoalController.Get(futureGoal.id)) { Id = futureResolution.id});
 				}
 				foreach (var futureException in futureGoal.futureExceptions) {
-					Model.Add(new ExceptionLink (
-						(Goal) Model.Get(futureGoal.id),
-						(Goal) Model.Get(futureException.goalId)) { Id = futureException.id});
+					this.controller.ExceptionController.Add(new ExceptionLink (
+						this.controller.GoalController.Get(futureGoal.id),
+						this.controller.GoalController.Get(futureException.goalId)) { Id = futureException.id});
 				}
 			}
 			
 			foreach (var futureObstacle in futureObstacles) {
 				foreach (var futureRefinement in futureObstacle.refinements) {
-					Obstacle obstacle = (Obstacle) Model.Get(futureObstacle.id);
+					Obstacle obstacle = this.controller.ObstacleController.Get(futureObstacle.id);
 					if (obstacle != null) {
 						var refinement = new ObstacleRefinement(obstacle) { Id = futureRefinement.id };
 						foreach (var futureElement in futureRefinement.refinees) {
-							refinement.Add(Model.Get(futureElement));
+							refinement.Add(this.controller.ObstacleController.Get(futureElement));
 						}
-						Model.Add (refinement);
+						this.controller.ObstacleRefinementController.Add (refinement);
 					}
 				}
 			}
@@ -338,14 +330,14 @@ namespace KaosEditor
 			foreach (var futureView in futureViews) {
 				var view = new ModelView(futureView.name, controller);
 				foreach (var futureElement in futureView.elements) {
-					var element = ShapeFactory.Create(Model.Get(futureElement.elementId));
+					var element = ShapeFactory.Create(this.controller.Get(futureElement.elementId));
 					if (element != null) {
 						element.Position = futureElement.position;
 						element.Depth = futureElement.depth;
 						view.Add(element);
 					}
 				}
-				modelViews.Add(view);
+				this.controller.ViewController.Add(view);
 			}
 			
 			

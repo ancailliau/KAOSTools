@@ -28,17 +28,56 @@ using System.Linq;
 using KaosEditor.Model;
 using Gtk;
 using KaosEditor.UI.Dialogs;
+using System.Collections.Generic;
+using KaosEditor.Logging;
 
 namespace KaosEditor.Controllers
 {
-	public class ExceptionController
+	public class ExceptionController : IController, IPopulateTree, IPopulateMenu
 	{
+		private static Gdk.Pixbuf pixbuf;
+		
+		static ExceptionController () {
+			try {
+				pixbuf = Gdk.Pixbuf.LoadFromResource("KaosEditor.Images.Exception.png");
+				
+			} catch (Exception e) {
+				Logger.Warning ("Cannot load images from ressources", e);
+			}
+		}
 		
 		private MainController controller;
+		private List<ExceptionLink> exceptions = new List<ExceptionLink>();
 		
 		public ExceptionController (MainController controller)
 		{
 			this.controller = controller;
+			this.controller.Window.conceptTreeView.RegisterForMenu (this);
+		}
+		
+		public IEnumerable<ExceptionLink> GetAll ()
+		{
+			return this.exceptions.AsEnumerable ();
+		}
+		
+		public IEnumerable<ExceptionLink> GetAll (Goal goal)
+		{
+			return this.exceptions.Where ((arg) => arg.Goal == goal);
+		}		
+		
+		public void Add (ExceptionLink exception)
+		{
+			this.exceptions.Add (exception);
+		}
+		
+		public void Remove (ExceptionLink exception)
+		{
+			this.exceptions.Remove (exception);
+		}
+		
+		public ExceptionLink Get (string id)
+		{
+			return this.exceptions.Find ((obj) => obj.Id == id);
 		}
 		
 		public void AddException (Goal goal)
@@ -48,7 +87,7 @@ namespace KaosEditor.Controllers
 				if (args.ResponseId == ResponseType.Ok && dialog.ExceptionGoal != null) {
 					var newException = new ExceptionLink (
 						goal, dialog.ExceptionGoal);
-					this.controller.Model.Add (newException);
+					this.Add (newException);
 					dialog.Destroy ();
 				} else if (args.ResponseId == ResponseType.Cancel) {
 					dialog.Destroy ();
@@ -63,7 +102,7 @@ namespace KaosEditor.Controllers
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.ExceptionGoal != null) {
 					exception.ExceptionGoal = dialog.ExceptionGoal;
-					this.controller.Model.Update (exception);
+					// TODO this.controller.Model.Update (exception);
 					dialog.Destroy ();
 				} else if (args.ResponseId == ResponseType.Cancel) {
 					dialog.Destroy ();
@@ -80,7 +119,7 @@ namespace KaosEditor.Controllers
 			
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Yes) {
-					this.controller.Model.Remove (exception);
+					this.Remove (exception);
 				}
 				dialog.Destroy ();
 			};
@@ -98,9 +137,7 @@ namespace KaosEditor.Controllers
 				};
 				menu.Add(assignItem);
 			
-				var exceptions = from e in this.controller.Model.Elements 
-					where e is ExceptionLink && ((ExceptionLink) e).Goal.Equals (clickedGoal) 
-					select (ExceptionLink) e;
+				var exceptions = this.GetAll ();
 				
 				if (exceptions.Count () > 0) {
 					menu.Add (new SeparatorMenuItem ());
@@ -130,6 +167,20 @@ namespace KaosEditor.Controllers
 					subMenuItem.Submenu = subMenu;
 					menu.Add (subMenuItem);
 				}
+			}
+		}
+		
+		public void Populate (TreeStore store)
+		{
+			var iter = store.AppendValues ("Exceptions", null, pixbuf);
+			Populate (this.GetAll().Cast<KAOSElement>(), store, iter);
+		}
+		
+		public void Populate (IEnumerable<KAOSElement> elements, TreeStore store, TreeIter iter)
+		{
+			foreach (var exception in from e in elements where e is ExceptionLink select (ExceptionLink) e) {
+				var subIter = store.AppendValues (iter, "Exception", exception, pixbuf);
+				this.controller.GoalController.Populate (new List<KAOSElement> () { exception.ExceptionGoal }, store, subIter);
 			}
 		}
 	}

@@ -75,7 +75,7 @@ namespace KaosEditor
 		{
 			store.Clear ();
 			TreeIter iter;
-			foreach (var element in controller.Model.Elements.FindAll(e => e is Goal)) {
+			foreach (var element in this.controller.GoalController.GetAll ()) {
 				var possibleGoal = (Goal) element;
 				var possibleIter = store.AppendValues (possibleGoal.Name, possibleGoal);
 				if (possibleGoal == goal) {

@@ -30,12 +30,12 @@ using KaosEditor.UI.Dialogs;
 using Gtk;
 using KaosEditor.UI.Widgets;
 using KaosEditor.Logging;
+using System.Collections.Generic;
 
 namespace KaosEditor.Controllers
 {
-	public class GoalController : IController
+	public class GoalController : IController, IPopulateTree, IPopulateMenu
 	{
-	
 		private static Gdk.Pixbuf pixbuf;
 		
 		static GoalController () {
@@ -48,12 +48,34 @@ namespace KaosEditor.Controllers
 		}
 		
 		private MainController controller;
+		private List<Goal> goals = new List<Goal> ();
 		
 		public GoalController (MainController controller)
 		{
 			this.controller = controller;
+			this.controller.Window.conceptTreeView.RegisterForTree (this);
+			this.controller.Window.conceptTreeView.RegisterForMenu (this);
 		}
 		
+		public IEnumerable<Goal> GetAll ()
+		{
+			return this.goals.AsEnumerable ();
+		}
+		
+		public void Add (Goal goal)
+		{
+			this.goals.Add (goal);
+		}
+		
+		public void Remove (Goal goal)
+		{
+			this.goals.Remove (goal);
+		}
+		
+		public Goal Get (string id)
+		{
+			return this.goals.Find ((obj) => obj.Id == id);
+		}
 		
 		public void AddGoal (string goalName, System.Action<Goal> action)
 		{
@@ -61,7 +83,7 @@ namespace KaosEditor.Controllers
 			dialog.Response += delegate(object o, Gtk.ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Ok) {
 					var goal = new Goal(dialog.GoalName, dialog.GoalDefinition);
-					controller.Model.Add (goal);
+					this.Add (goal);
 					action(goal);
 				}
 				dialog.Destroy();
@@ -70,16 +92,7 @@ namespace KaosEditor.Controllers
 		
 		public void AddGoal (string goalName)
 		{
-			var dialog = new AddGoalDialog(controller.Window, goalName);
-			dialog.Response += delegate(object o, Gtk.ResponseArgs args) {
-				if (args.ResponseId == Gtk.ResponseType.Ok) {
-					var goal = new Goal(dialog.GoalName, dialog.GoalDefinition);
-					controller.Model.Add (goal);
-				}
-				dialog.Destroy();
-			};
-			
-			dialog.Present ();
+			AddGoal (goalName, (obj) => {});
 		}
 		
 		public void AddGoal ()
@@ -109,7 +122,7 @@ namespace KaosEditor.Controllers
 			
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Yes) {
-					this.controller.Model.Remove (goal);
+					this.Remove (goal);
 				}
 				dialog.Destroy ();
 			};
@@ -147,52 +160,28 @@ namespace KaosEditor.Controllers
 			}
 		}
 		
-		public void PopulateTree (TreeStore store, bool header)
+		public void Populate (TreeStore store)
 		{
-			if (header) {
-				var iter = store.AppendValues ("Goals", null, pixbuf);
-				PopulateTree (store, iter, false);
-				
-			} else {
-				var goals = from e in this.controller.Model.Elements
-					where e is Goal select (Goal) e;
-			
-				foreach (var goal in goals) {
-					store.AppendValues (goal.Name, goal, pixbuf);
-				}
-			}
+			var iter = store.AppendValues ("Goals", null, pixbuf);
+			Populate (this.GetAll().Cast<KAOSElement>(), store, iter);
 		}
 		
-		public void PopulateTree (TreeStore store, TreeIter iter, bool header)
-		{
-			var goals = from e in this.controller.Model.Elements
-				where e is Goal select (Goal) e;
-			
-			if (header) {
-				iter = store.AppendValues (iter, "Goals", null, pixbuf);
-			}
-			PopulateTree (goals.ToArray(), store, iter);
-		}
-		
-		public void PopulateTree (KAOSElement[] elements, TreeStore store, TreeIter iter)
+		public void Populate (IEnumerable<KAOSElement> elements, TreeStore store, TreeIter iter)
 		{
 			foreach (var goal in from e in elements where e is Goal select (Goal) e) {
 				var subIter = store.AppendValues (iter, goal.Name, goal, pixbuf);
 				
-				var refinements = from e in this.controller.Model.Elements
-					where e is Refinement && ((Refinement) e).Refined == goal
-						select (Refinement) e;
-				this.controller.PopulateTree (refinements.ToArray(), store, subIter);
+				var refinements = this.controller.RefinementController.GetAll (goal).Cast<KAOSElement> ();
+				this.controller.RefinementController.Populate (refinements, store, subIter);
 				
-				var obstructions = from e in this.controller.Model.Elements
-					where e is Obstruction && ((Obstruction) e).Goal == goal
-						select (Obstruction) e;
-				this.controller.PopulateTree (obstructions.ToArray(), store, subIter);
+				var obstructions = this.controller.ObstructionController.GetAll (goal).Cast<KAOSElement> ();
+				this.controller.ObstructionController.Populate (obstructions, store, subIter);
 				
-				var reponsibilities = from e in this.controller.Model.Elements
-					where e is Responsibility && ((Responsibility) e).Goal == goal
-						select (Responsibility) e;
-				this.controller.PopulateTree (reponsibilities.ToArray(), store, subIter);
+				var reponsibilities = this.controller.ResponsibilityController.GetAll (goal).Cast<KAOSElement> ();
+				this.controller.ResponsibilityController.Populate (reponsibilities, store, subIter);
+				
+				var exceptions = this.controller.ExceptionController.GetAll (goal).Cast<KAOSElement> ();
+				this.controller.ExceptionController.Populate (exceptions, store, subIter);
 				
 			}
 		}
