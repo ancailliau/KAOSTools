@@ -262,17 +262,27 @@ namespace KaosEditor.Controllers
 			FileChooserAction.Save, "Cancel", ResponseType.Cancel, "Save", ResponseType.Accept);
 			
 			if (dialog.Run() == (int) ResponseType.Accept) {
-				int width , height;
+				int minX , minY, maxX, maxY;
 				var currentView = this.controller.Window.viewsNotebook.CurrentView;
 				
-				currentView.GetSize (out width, out height);
+				currentView.GetSize (out minX, out maxX, out minY, out maxY);
 				
-				using (var surface = new ImageSurface (Format.Argb32, width, height)) {
+				using (var surface = new ImageSurface (Format.Argb32, maxX, maxY)) {
 					using (Context context = new Context (surface)) {
 						currentView.Display (context);
+						surface.WriteToPng (dialog.Filename);
 					}
-					
-					surface.WriteToPng (dialog.Filename);
+				}
+				
+				using (var surface = new ImageSurface (dialog.Filename)) {
+					using (var surface2 = new ImageSurface (Format.Argb32, maxX-minX, maxY-minY)) {
+						using (Context context = new Context (surface2)) {
+							context.SetSourceSurface (surface, -minX, -minY);
+							context.Rectangle (0,0,maxX-minX,maxY-minY);
+							context.Fill ();
+							surface2.WriteToPng (dialog.Filename.Replace(".png", "-2.png"));
+						}
+					}
 				}
 			}
 			

@@ -105,7 +105,7 @@ namespace KaosEditor.Controllers
 		/// <summary>
 		/// The current filename (empty if not yet saved)
 		/// </summary>
-		private string currentFilename = "";
+		public string currentFilename = "";
 		
 		/// <summary>
 		/// Gets or sets the configuration.
