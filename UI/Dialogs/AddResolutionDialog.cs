@@ -1,5 +1,5 @@
 // 
-// AddObstructionDialog.cs
+// AddResolutionDialog.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -24,33 +24,33 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using KaosEditor.UI.Windows;
-using Gtk;
 using KaosEditor.Model;
+using Gtk;
+using KaosEditor.UI.Windows;
 using KaosEditor.Controllers;
 
-namespace KaosEditor
+namespace KaosEditor.UI.Dialogs
 {
-	public partial class AddObstructionDialog : Gtk.Dialog
+	public partial class AddResolutionDialog : Gtk.Dialog
 	{
 		private ListStore store;
 		private MainController controller;
 		
-		public string ObstacleName {
+		public string ResolvingGoalName {
 			get {
-				if (Obstacle != null) {
-					return Obstacle.Name;
+				if (ResolvingGoal == null) {
+					return goalCombo.ActiveText;
 				} else {
-					return obstacleCombo.ActiveText;
+					return ResolvingGoal.Name;
 				}
 			}
 		}
 		
-		public Obstacle Obstacle {
+		public Goal ResolvingGoal {
 			get {
 				var iter = new TreeIter();
-				if (obstacleCombo.GetActiveIter(out iter)) {
-					return (Obstacle) store.GetValue(iter, 1);
+				if (goalCombo.GetActiveIter(out iter)) {
+					return (Goal) store.GetValue(iter, 1);
 				} else {
 					return null;
 				}
@@ -60,39 +60,39 @@ namespace KaosEditor
 			}
 		}
 		
-		public AddObstructionDialog (MainController controller, Goal goal)
-			: this (controller, goal, null)
+		public AddResolutionDialog (MainController controller, Obstacle obstacle)
+			: this (controller, obstacle, null)
 		{
 		}
 		
-		public AddObstructionDialog (MainController controller, Goal goal, Obstacle obstacle)
-			: base (string.Format ("Add obstruction to '{0}'", goal.Name), 
-				controller.Window, DialogFlags.DestroyWithParent)
+		public AddResolutionDialog (MainController controller, Obstacle obstacle, Goal goal)
+			: base ("Assign responsibility", controller.Window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
 			this.controller = controller;
 			
-			store = new ListStore(typeof (string), typeof (Obstacle));
-			obstacleCombo.Model = store;
+			store = new ListStore(typeof (string), typeof (Goal));
+			goalCombo.Model = store;
 			
 			var cell = new CellRendererText();		
 			// agentComboBox.PackStart(cell, false);
-			obstacleCombo.AddAttribute(cell, "text", 0);
+			goalCombo.AddAttribute(cell, "text", 0);
 			
-			UpdateList (obstacle);
+			UpdateList (goal);
 		}
 
-		void UpdateList (Obstacle obstacle)
+		void UpdateList (Goal goal)
 		{
+			store.Clear ();
 			TreeIter iter;
-			foreach (var element in this.controller.ObstacleController.GetAll ()) {
-				var possibleObstacle = (Obstacle) element;
-				var possibleIter = store.AppendValues (possibleObstacle.Name, possibleObstacle);
-				if (possibleObstacle == obstacle) {
+			foreach (var element in this.controller.GoalController.GetAll ()) {
+				var possibleGoal = (Goal) element;
+				var possibleIter = store.AppendValues (possibleGoal.Name, possibleGoal);
+				if (possibleGoal == goal) {
 					iter = possibleIter;
 				}
 			}
-			obstacleCombo.SetActiveIter (iter);
+			goalCombo.SetActiveIter (iter);
 		}
 	}
 }

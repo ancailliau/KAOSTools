@@ -27,7 +27,7 @@ using System;
 using KaosEditor.UI.Windows;
 using Gtk;
 
-namespace KaosEditor
+namespace KaosEditor.UI.Dialogs
 {
 	public partial class AddDomainPropertyDialog : Gtk.Dialog
 	{

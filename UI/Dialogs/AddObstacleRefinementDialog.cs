@@ -30,7 +30,7 @@ using KaosEditor.Controllers;
 using KaosEditor.UI.Windows;
 using System.Collections.Generic;
 
-namespace KaosEditor
+namespace KaosEditor.UI.Dialogs
 {
 	public partial class AddObstacleRefinementDialog : Gtk.Dialog
 	{

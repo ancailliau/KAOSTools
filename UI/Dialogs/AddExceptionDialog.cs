@@ -1,5 +1,5 @@
 // 
-// AddObstacleDialog.cs
+// AddExceptionDialog.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -27,46 +27,62 @@ using System;
 using Gtk;
 using KaosEditor.UI.Windows;
 using KaosEditor.Model;
+using KaosEditor.Controllers;
 
-namespace KaosEditor
+namespace KaosEditor.UI.Dialogs
 {
-	public partial class AddObstacleDialog : Gtk.Dialog
+	public partial class AddExceptionDialog : Gtk.Dialog
 	{
+		private ListStore store;
+		private MainController controller;
 		
-		public string ObstacleName {
+		public Goal ExceptionGoal {
 			get {
-				return nameEntry.Text.Trim ();
+				var iter = new TreeIter();
+				if (goalCombo.GetActiveIter(out iter)) {
+					return (Goal) store.GetValue(iter, 1);
+				} else {
+					return null;
+				}
+			}
+			set {
+				UpdateList (value);
 			}
 		}
 		
-		public string ObstacleDefinition {
-			get {
-				return definitionTextview.Buffer.Text.Trim ();
-			}
-		}
-		
-		public AddObstacleDialog (MainWindow window)
-			: this (window, "")
+		public AddExceptionDialog (MainController window, Goal goal)
+			: this (window, goal, null)
 		{
 		}
 		
-		public AddObstacleDialog (MainWindow window, string obstacleName)
-			: base ("Add new obstacle", window, DialogFlags.DestroyWithParent)
+		public AddExceptionDialog (MainController controller, Goal goal, Goal exceptionGoal)
+			: base ("Add exception", controller.Window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
+			this.controller = controller;
 			
-			nameEntry.Text = obstacleName;
+			store = new ListStore(typeof (string), typeof (Goal));
+			goalCombo.Model = store;
+			
+			var cell = new CellRendererText();		
+			// agentComboBox.PackStart(cell, false);
+			goalCombo.AddAttribute(cell, "text", 0);
+			
+			UpdateList (exceptionGoal);
 		}
-		
-		public AddObstacleDialog (MainWindow window, Obstacle obstacle)
-			: base (obstacle == null ? "Add new obstacle" : "Edit obstacle", window, DialogFlags.DestroyWithParent)
+
+		void UpdateList (Goal goal)
 		{
-			this.Build ();
-			
-			if (obstacle != null) {
-				nameEntry.Text = obstacle.Name;
-				definitionTextview.Buffer.Text = obstacle.Definition;
+			store.Clear ();
+			TreeIter iter;
+			foreach (var element in this.controller.GoalController.GetAll ()) {
+				var possibleGoal = (Goal) element;
+				var possibleIter = store.AppendValues (possibleGoal.Name, possibleGoal);
+				if (possibleGoal == goal) {
+					iter = possibleIter;
+				}
 			}
+			goalCombo.SetActiveIter (iter);
 		}
 	}
 }
