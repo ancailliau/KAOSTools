@@ -61,6 +61,14 @@ namespace KaosEditor.Controllers
 		{
 			this.controller = controller;
 			this.controller.Window.conceptTreeView.RegisterForMenu (this);
+		
+			this.ExceptionAdded += UpdateLists;
+			this.ExceptionRemoved += UpdateLists;
+			this.ExceptionUpdated += UpdateLists;
+		}
+		
+		private void UpdateLists (ExceptionLink exception) {
+			this.controller.Window.conceptTreeView.Update ();
 		}
 		
 		public IEnumerable<ExceptionLink> GetAll ()
@@ -71,12 +79,17 @@ namespace KaosEditor.Controllers
 		public IEnumerable<ExceptionLink> GetAll (Goal goal)
 		{
 			return this.exceptions.Where ((arg) => arg.Goal == goal);
-		}		
+		}
 		
 		public void Add (ExceptionLink exception)
 		{
+			Add (exception, true);
+		}
+		
+		public void Add (ExceptionLink exception, bool notify)
+		{
 			this.exceptions.Add (exception);
-			if (ExceptionAdded != null) {
+			if (ExceptionAdded != null & notify) {
 				ExceptionAdded (exception);
 			}
 		}
@@ -89,7 +102,7 @@ namespace KaosEditor.Controllers
 			}
 		}
 		
-		public void Updated (ExceptionLink exception)
+		public void Update (ExceptionLink exception)
 		{
 			if (ExceptionUpdated != null) {
 				ExceptionUpdated (exception);
@@ -123,7 +136,7 @@ namespace KaosEditor.Controllers
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.ExceptionGoal != null) {
 					exception.ExceptionGoal = dialog.ExceptionGoal;
-					this.Updated (exception);
+					this.Update (exception);
 					dialog.Destroy ();
 				} else if (args.ResponseId == ResponseType.Cancel) {
 					dialog.Destroy ();

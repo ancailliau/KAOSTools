@@ -62,6 +62,14 @@ namespace KaosEditor.Controllers
 		{
 			this.controller = controller;
 			this.controller.Window.conceptTreeView.RegisterForMenu (this);
+		
+			this.ResolutionAdded += UpdateLists;
+			this.ResolutionRemoved += UpdateLists;
+			this.ResolutionUpdated += UpdateLists;
+		}
+		
+		private void UpdateLists (Resolution resolution) {
+			this.controller.Window.conceptTreeView.Update ();
 		}
 		
 		public IEnumerable<Resolution> GetAll ()
@@ -81,8 +89,13 @@ namespace KaosEditor.Controllers
 		
 		public void Add (Resolution resolution)
 		{
+			Add (resolution, true);
+		}
+		
+		public void Add (Resolution resolution, bool notify)
+		{
 			this.resolutions.Add (resolution);
-			if (ResolutionAdded != null) {
+			if (ResolutionAdded != null & notify) {
 				ResolutionAdded (resolution);
 			}
 		}

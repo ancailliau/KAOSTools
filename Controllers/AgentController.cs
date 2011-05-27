@@ -64,7 +64,16 @@ namespace KaosEditor.Controllers
 			this.controller = controller;
 			this.controller.Window.conceptTreeView.RegisterForTree (this);
 			this.controller.Window.conceptTreeView.RegisterForMenu (this);
+		
+			this.AgentAdded += UpdateLists;
+			this.AgentRemoved += UpdateLists;
+			this.AgentUpdated += UpdateLists;
 		}
+		
+		private void UpdateLists (Agent agent) {
+			this.controller.Window.conceptTreeView.Update ();
+		}
+		
 		
 		public IEnumerable<Agent> GetAll ()
 		{
@@ -73,8 +82,13 @@ namespace KaosEditor.Controllers
 		
 		public void Add (Agent agent)
 		{
+			Add (agent, true);
+		}
+		
+		public void Add (Agent agent, bool notify)
+		{
 			this.agents.Add (agent);
-			if (AgentAdded != null) {
+			if (AgentAdded != null & notify) {
 				AgentAdded (agent);
 			}
 		}

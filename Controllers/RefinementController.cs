@@ -62,7 +62,16 @@ namespace KaosEditor.Controllers
 		{
 			this.controller = controller;
 			this.controller.Window.conceptTreeView.RegisterForMenu (this);
+		
+			this.RefinementAdded += UpdateLists;
+			this.RefinementRemoved += UpdateLists;
+			this.RefinementUpdated += UpdateLists;
 		}
+		
+		private void UpdateLists (Refinement refinement) {
+			this.controller.Window.conceptTreeView.Update ();
+		}
+		
 		
 		public IEnumerable <Refinement> GetAll ()
 		{
@@ -76,8 +85,13 @@ namespace KaosEditor.Controllers
 		
 		public void Add (Refinement refinement)
 		{
+			Add (refinement, true);
+		}
+		
+		public void Add (Refinement refinement, bool notify)
+		{
 			this.refinements.Add (refinement);
-			if (RefinementAdded != null) {
+			if (RefinementAdded != null & notify) {
 				RefinementAdded (refinement);
 			}
 		}

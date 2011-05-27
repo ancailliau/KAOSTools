@@ -61,7 +61,16 @@ namespace KaosEditor.Controllers
 		{
 			this.controller = controller;
 			this.controller.Window.conceptTreeView.RegisterForMenu (this);
+		
+			this.ResponsibilityAdded += UpdateLists;
+			this.ResponsibilityRemoved += UpdateLists;
+			this.ResponsibilityUpdated += UpdateLists;
 		}
+		
+		private void UpdateLists (Responsibility responsibility) {
+			this.controller.Window.conceptTreeView.Update ();
+		}
+		
 
 		public IEnumerable<Responsibility> GetAll ()
 		{
@@ -75,8 +84,13 @@ namespace KaosEditor.Controllers
 		
 		public void Add (Responsibility responsibility)
 		{
+			Add (responsibility, true);
+		}
+		
+		public void Add (Responsibility responsibility, bool notify)
+		{
 			this.responsibilities.Add (responsibility);
-			if (ResponsibilityAdded != null) {
+			if (ResponsibilityAdded != null & notify) {
 				ResponsibilityAdded (responsibility);
 			}
 		}

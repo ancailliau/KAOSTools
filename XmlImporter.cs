@@ -291,23 +291,23 @@ namespace KaosEditor
 			foreach (var futureGoal in futureGoals) {
 				this.controller.GoalController.Add (new Goal(futureGoal.name, futureGoal.definition) {
 					Id = futureGoal.id
-				});
+				}, false);
 			}
 			
 			foreach (var futureAgent in futureAgents) {
-				this.controller.AgentController.Add(new Agent (futureAgent.name, futureAgent.id));
+				this.controller.AgentController.Add(new Agent (futureAgent.name, futureAgent.id), false);
 			}
 			
 			foreach (var futureObstacle in futureObstacles) {
 				this.controller.ObstacleController.Add(new Obstacle (futureObstacle.name, futureObstacle.definition) {
 					Id = futureObstacle.id
-				});
+				}, false);
 			}
 			
 			foreach (var futureDomainProperty in futureDomainProperties) {
 				this.controller.DomainPropertyController.Add (new DomainProperty (futureDomainProperty.name, futureDomainProperty.definition) {
 					Id = futureDomainProperty.id
-				});
+				}, false);
 			}
 			
 			foreach (var futureGoal in futureGoals) {
@@ -318,28 +318,28 @@ namespace KaosEditor
 						foreach (var futureElement in futureRefinement.refinees) {
 							refinement.Add((IGoalRefinee) this.controller.Get(futureElement));
 						}
-						this.controller.RefinementController.Add (refinement);
+						this.controller.RefinementController.Add (refinement, false);
 					}
 				}
 				foreach (var futureResponsibility in futureGoal.futureResponsibilities) {
 					this.controller.ResponsibilityController.Add(new Responsibility (futureResponsibility.id,
 						this.controller.GoalController.Get(futureResponsibility.goalId),
-						this.controller.AgentController.Get(futureResponsibility.agentId)));
+						this.controller.AgentController.Get(futureResponsibility.agentId)), false);
 				}
 				foreach (var futureObstruction in futureGoal.futureObstructions) {
 					this.controller.ObstructionController.Add(new Obstruction (
 						this.controller.GoalController.Get(futureGoal.id),
-						this.controller.ObstacleController.Get(futureObstruction.obstacleId)) { Id = futureObstruction.id});
+						this.controller.ObstacleController.Get(futureObstruction.obstacleId)) { Id = futureObstruction.id}, false);
 				}
 				foreach (var futureResolution in futureGoal.futureResolutions) {
 					this.controller.ResolutionController.Add(new Resolution (
 						this.controller.ObstacleController.Get(futureResolution.obstacleId),
-						this.controller.GoalController.Get(futureGoal.id)) { Id = futureResolution.id});
+						this.controller.GoalController.Get(futureGoal.id)) { Id = futureResolution.id}, false);
 				}
 				foreach (var futureException in futureGoal.futureExceptions) {
 					this.controller.ExceptionController.Add(new ExceptionLink (
 						this.controller.GoalController.Get(futureGoal.id),
-						this.controller.GoalController.Get(futureException.goalId)) { Id = futureException.id});
+						this.controller.GoalController.Get(futureException.goalId)) { Id = futureException.id}, false);
 				}
 			}
 			
@@ -351,7 +351,7 @@ namespace KaosEditor
 						foreach (var futureElement in futureRefinement.refinees) {
 							refinement.Add(this.controller.ObstacleController.Get(futureElement));
 						}
-						this.controller.ObstacleRefinementController.Add (refinement);
+						this.controller.ObstacleRefinementController.Add (refinement, false);
 					}
 				}
 			}
@@ -366,9 +366,8 @@ namespace KaosEditor
 						view.Add(element);
 					}
 				}
-				this.controller.ViewController.Add(view);
+				this.controller.ViewController.Add(view, false);
 			}
-			
 			
 		}
 		

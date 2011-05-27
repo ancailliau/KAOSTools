@@ -62,7 +62,16 @@ namespace KaosEditor.Controllers
 		{
 			this.controller = controller;
 			this.controller.Window.conceptTreeView.RegisterForMenu (this);
+		
+			this.ObstructionAdded += UpdateLists;
+			this.ObstructionRemoved += UpdateLists;
+			this.ObstructionUpdated += UpdateLists;
 		}
+		
+		private void UpdateLists (Obstruction obstruction) {
+			this.controller.Window.conceptTreeView.Update ();
+		}
+		
 		
 		public IEnumerable<Obstruction> GetAll ()
 		{
@@ -81,8 +90,13 @@ namespace KaosEditor.Controllers
 		
 		public void Add (Obstruction obstruction)
 		{
+			Add (obstruction, true);
+		}
+		
+		public void Add (Obstruction obstruction, bool notify)
+		{
 			this.obstructions.Add (obstruction);
-			if (ObstructionAdded != null) {
+			if (ObstructionAdded != null & notify) {
 				ObstructionAdded (obstruction);
 			}
 		}

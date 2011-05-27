@@ -62,7 +62,16 @@ namespace KaosEditor.Controllers
 		{
 			this.controller = controller;
 			this.controller.Window.conceptTreeView.RegisterForMenu (this);
+		
+			this.ObstacleRefinementAdded += UpdateLists;
+			this.ObstacleRefinementRemoved += UpdateLists;
+			this.ObstacleRefinementUpdated += UpdateLists;
 		}
+		
+		private void UpdateLists (ObstacleRefinement refinement) {
+			this.controller.Window.conceptTreeView.Update ();
+		}
+		
 		
 		public IEnumerable <ObstacleRefinement> GetAll () 
 		{
@@ -76,8 +85,13 @@ namespace KaosEditor.Controllers
 		
 		public void Add (ObstacleRefinement refinement)
 		{
+			Add (refinement, true);
+		}
+		
+		public void Add (ObstacleRefinement refinement, bool notify)
+		{
 			this.refinements.Add (refinement);
-			if (ObstacleRefinementAdded != null) {
+			if (ObstacleRefinementAdded != null & notify) {
 				ObstacleRefinementAdded (refinement);
 			}
 		}

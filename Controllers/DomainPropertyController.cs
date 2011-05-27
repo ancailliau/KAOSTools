@@ -64,7 +64,16 @@ namespace KaosEditor.Controllers
 			this.controller = controller;
 			this.controller.Window.conceptTreeView.RegisterForTree (this);
 			this.controller.Window.conceptTreeView.RegisterForMenu (this);
+		
+			this.DomainPropertyAdded += UpdateLists;
+			this.DomainPropertyRemoved += UpdateLists;
+			this.DomainPropertyUpdated += UpdateLists;
 		}
+		
+		private void UpdateLists (DomainProperty domProp) {
+			this.controller.Window.conceptTreeView.Update ();
+		}
+		
 		
 		public IEnumerable<DomainProperty> GetAll ()
 		{
@@ -73,8 +82,13 @@ namespace KaosEditor.Controllers
 		
 		public void Add (DomainProperty domProp)
 		{
+			Add (domProp, true);
+		}
+		
+		public void Add (DomainProperty domProp, bool notify)
+		{
 			this.domainProperties.Add (domProp);
-			if (DomainPropertyAdded != null) {
+			if (DomainPropertyAdded != null & notify) {
 				DomainPropertyAdded (domProp);
 			}
 		}

@@ -50,9 +50,9 @@ namespace KaosEditor.Controllers
 			}
 		}
 		
-		public delegate void HandleViewAdded (Agent agent);
-		public delegate void HandleViewRemoved (Agent agent);
-		public delegate void HandleViewUpdated (Agent agent);
+		public delegate void HandleViewAdded (ModelView view);
+		public delegate void HandleViewRemoved (ModelView view);
+		public delegate void HandleViewUpdated (ModelView view);
 		
 		public event HandleViewAdded ViewAdded;
 		public event HandleViewRemoved ViewRemoved;
@@ -68,6 +68,14 @@ namespace KaosEditor.Controllers
 			this.controller.Window.viewList.RegisterForTree (this);
 			this.controller.Window.viewList.RegisterForMenu (this);
 			this.controller.Window.viewList.ElementActivated += ElementActivated;
+		
+			this.ViewAdded += UpdateLists;
+			this.ViewRemoved += UpdateLists;
+			this.ViewUpdated += UpdateLists;
+		}
+		
+		private void UpdateLists (ModelView view) {
+			this.controller.Window.viewList.Update ();
 		}
 
 		public IEnumerable<ModelView> GetAll ()
@@ -77,8 +85,13 @@ namespace KaosEditor.Controllers
 		
 		public void Add (ModelView view)
 		{
+			Add (view, true);
+		}
+			
+		public void Add (ModelView view, bool notify)
+		{
 			this.views.Add (view);
-			if (ViewAdded != null) {
+			if (ViewAdded != null & notify) {
 				ViewAdded (view);
 			}
 		}

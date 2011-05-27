@@ -63,6 +63,14 @@ namespace KaosEditor.Controllers
 			this.controller = controller;
 			this.controller.Window.conceptTreeView.RegisterForTree (this);
 			this.controller.Window.conceptTreeView.RegisterForMenu (this);
+			
+			this.GoalAdded += UpdateLists;
+			this.GoalRemoved += UpdateLists;
+			this.GoalUpdated += UpdateLists;
+		}
+		
+		private void UpdateLists (Goal goal) {
+			this.controller.Window.conceptTreeView.Update ();
 		}
 		
 		public IEnumerable<Goal> GetAll ()
@@ -72,8 +80,13 @@ namespace KaosEditor.Controllers
 		
 		public void Add (Goal goal)
 		{
+			Add (goal, true);
+		}
+		
+		public void Add (Goal goal, bool notify)
+		{
 			this.goals.Add (goal);
-			if (GoalAdded != null) {
+			if (GoalAdded != null & notify) {
 				GoalAdded (goal);
 			}
 		}
