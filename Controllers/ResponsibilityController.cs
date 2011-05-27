@@ -69,6 +69,7 @@ namespace KaosEditor.Controllers
 		
 		private void UpdateLists (Responsibility responsibility) {
 			this.controller.Window.conceptTreeView.Update ();
+			this.controller.ViewController.RefreshCurrentView ();
 		}
 		
 

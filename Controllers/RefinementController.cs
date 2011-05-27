@@ -70,6 +70,7 @@ namespace KaosEditor.Controllers
 		
 		private void UpdateLists (Refinement refinement) {
 			this.controller.Window.conceptTreeView.Update ();
+			this.controller.ViewController.RefreshCurrentView ();
 		}
 		
 		

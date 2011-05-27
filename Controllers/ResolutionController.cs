@@ -70,6 +70,7 @@ namespace KaosEditor.Controllers
 		
 		private void UpdateLists (Resolution resolution) {
 			this.controller.Window.conceptTreeView.Update ();
+			this.controller.ViewController.RefreshCurrentView ();
 		}
 		
 		public IEnumerable<Resolution> GetAll ()

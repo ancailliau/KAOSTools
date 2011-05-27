@@ -173,11 +173,19 @@ namespace KaosEditor.Controllers
 		public void AddToCurrentView (KAOSElement element)
 		{
 			this.controller.Window.viewsNotebook.AddToCurrentView (element, 10, 10);
+			this.RefreshCurrentView ();
 		}
 		
 		public void RemoveFromCurrentView (IShape element)
 		{
 			this.controller.Window.viewsNotebook.CurrentView.Shapes.Remove (element);
+			this.RefreshCurrentView ();
+		}
+
+		public void RefreshCurrentView ()
+		{
+			if (this.controller.Window.viewsNotebook.CurrentView != null)
+				this.controller.Window.viewsNotebook.CurrentView.Redraw ();
 		}
 				
 		private void ElementActivated (object element)

@@ -72,6 +72,7 @@ namespace KaosEditor.Controllers
 		
 		private void UpdateLists (Agent agent) {
 			this.controller.Window.conceptTreeView.Update ();
+			this.controller.ViewController.RefreshCurrentView ();
 		}
 		
 		

@@ -72,6 +72,7 @@ namespace KaosEditor.Controllers
 		
 		private void UpdateLists (Obstacle obstacle) {
 			this.controller.Window.conceptTreeView.Update ();
+			this.controller.ViewController.RefreshCurrentView ();
 		}
 		
 		

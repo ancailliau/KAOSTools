@@ -69,6 +69,7 @@ namespace KaosEditor.Controllers
 		
 		private void UpdateLists (ExceptionLink exception) {
 			this.controller.Window.conceptTreeView.Update ();
+			this.controller.ViewController.RefreshCurrentView ();
 		}
 		
 		public IEnumerable<ExceptionLink> GetAll ()

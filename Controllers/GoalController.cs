@@ -71,6 +71,7 @@ namespace KaosEditor.Controllers
 		
 		private void UpdateLists (Goal goal) {
 			this.controller.Window.conceptTreeView.Update ();
+			this.controller.ViewController.RefreshCurrentView ();
 		}
 		
 		public IEnumerable<Goal> GetAll ()

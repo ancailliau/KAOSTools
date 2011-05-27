@@ -70,6 +70,7 @@ namespace KaosEditor.Controllers
 		
 		private void UpdateLists (Obstruction obstruction) {
 			this.controller.Window.conceptTreeView.Update ();
+			this.controller.ViewController.RefreshCurrentView ();
 		}
 		
 		
