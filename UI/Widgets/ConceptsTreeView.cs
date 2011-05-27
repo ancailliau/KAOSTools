@@ -114,15 +114,25 @@ namespace KaosEditor.UI.Widgets
 				this.GetPathAtPos(System.Convert.ToInt16(args.Event.X), 
 					System.Convert.ToInt16(args.Event.Y), out path);
 				
-				TreeIter iter;
-				if (store.GetIter(out iter, path)) {
-					object o = store.GetValue(iter, 1);
+				if (path == null) {
 					var menu = new Menu();
 					foreach (var p in menuPopulater) {
-						p.PopulateContextMenu (menu, this, o);
+						p.PopulateContextMenu (menu, this, null);
 					}
 					menu.ShowAll ();
 					menu.Popup ();
+					
+				} else {
+					TreeIter iter;
+					if (store.GetIter(out iter, path)) {
+						object o = store.GetValue(iter, 1);
+						var menu = new Menu();
+						foreach (var p in menuPopulater) {
+							p.PopulateContextMenu (menu, this, o);
+						}
+						menu.ShowAll ();
+						menu.Popup ();
+					}
 				}
 			}
 		}

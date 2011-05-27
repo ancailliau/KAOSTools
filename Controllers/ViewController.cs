@@ -99,6 +99,7 @@ namespace KaosEditor.Controllers
 		public void Remove (ModelView view)
 		{
 			this.views.Remove (view);
+			this.controller.Window.viewsNotebook.CloseView (view);
 			if (ViewRemoved != null) {
 				ViewRemoved (view);
 			}
@@ -106,6 +107,8 @@ namespace KaosEditor.Controllers
 		
 		public void Update (ModelView view)
 		{
+			this.controller.Window.viewsNotebook.CloseView (view);
+			this.controller.Window.viewsNotebook.DisplayView (view);
 			if (ViewUpdated != null) {
 				ViewUpdated (view);
 			}
@@ -162,7 +165,18 @@ namespace KaosEditor.Controllers
 		
 		public void RemoveView (ModelView view)
 		{
-			throw new NotImplementedException ();
+			var dialog = new MessageDialog (this.controller.Window,
+				DialogFlags.DestroyWithParent, MessageType.Question,
+				ButtonsType.YesNo, false, string.Format ("Delete view '{0}'?", view.Name));
+			
+			dialog.Response += delegate(object o, ResponseArgs args) {
+				if (args.ResponseId == Gtk.ResponseType.Yes) {
+					this.Remove (view);
+				}
+				dialog.Destroy ();
+			};
+			
+			dialog.Present ();
 		}
 		
 		public void DisplayView (ModelView view)
@@ -238,7 +252,7 @@ namespace KaosEditor.Controllers
 				
 				var removeItem = new MenuItem("Delete");
 				removeItem.Activated += delegate(object sender2, EventArgs e) {
-					this.DuplicateView (clickedView);
+					this.RemoveView (clickedView);
 				};
 				menu.Add(removeItem);
 			}
@@ -274,13 +288,14 @@ namespace KaosEditor.Controllers
 					}
 				}
 				
+				int padding = 10;
 				using (var surface = new ImageSurface (dialog.Filename)) {
-					using (var surface2 = new ImageSurface (Format.Argb32, maxX-minX, maxY-minY)) {
+					using (var surface2 = new ImageSurface (Format.Argb32, maxX-minX+2*padding, maxY-minY+2*padding)) {
 						using (Context context = new Context (surface2)) {
-							context.SetSourceSurface (surface, -minX, -minY);
-							context.Rectangle (0,0,maxX-minX,maxY-minY);
+							context.SetSourceSurface (surface, -minX+padding, -minY+padding);
+							context.Rectangle (padding,padding,maxX-minX,maxY-minY);
 							context.Fill ();
-							surface2.WriteToPng (dialog.Filename.Replace(".png", "-2.png"));
+							surface2.WriteToPng (dialog.Filename);
 						}
 					}
 				}

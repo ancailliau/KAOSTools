@@ -112,6 +112,19 @@ namespace KaosEditor.UI.Widgets
 			this.CurrentPage = page;
 		}
 		
+		public void CloseView (ModelView view)
+		{
+			foreach (var child in this.Children) {
+				var scroll = (ScrolledWindow) child;
+				var viewport = (Viewport) scroll.Child;
+				var diagram = (DiagramArea) viewport.Child;
+				if (diagram.CurrentView == view) {
+					int pageNum = this.PageNum (child);
+					Hide (pageNum);
+				}
+			}
+		}
+		
 		/// <summary>
 		/// Hide the specified page.
 		/// </summary>
