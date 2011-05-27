@@ -46,6 +46,14 @@ namespace KaosEditor.Controllers
 			}
 		}
 		
+		public delegate void HandleExceptionAdded (ExceptionLink exception);
+		public delegate void HandleExceptionRemoved (ExceptionLink exception);
+		public delegate void HandleExceptionUpdated (ExceptionLink exception);
+		
+		public event HandleExceptionAdded ExceptionAdded;
+		public event HandleExceptionRemoved ExceptionRemoved;
+		public event HandleExceptionUpdated ExceptionUpdated;
+		
 		private MainController controller;
 		private List<ExceptionLink> exceptions = new List<ExceptionLink>();
 		
@@ -68,11 +76,24 @@ namespace KaosEditor.Controllers
 		public void Add (ExceptionLink exception)
 		{
 			this.exceptions.Add (exception);
+			if (ExceptionAdded != null) {
+				ExceptionAdded (exception);
+			}
 		}
 		
 		public void Remove (ExceptionLink exception)
 		{
 			this.exceptions.Remove (exception);
+			if (ExceptionRemoved != null) {
+				ExceptionRemoved (exception);
+			}
+		}
+		
+		public void Updated (ExceptionLink exception)
+		{
+			if (ExceptionUpdated != null) {
+				ExceptionUpdated (exception);
+			}
 		}
 		
 		public ExceptionLink Get (string id)
@@ -102,7 +123,7 @@ namespace KaosEditor.Controllers
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.ExceptionGoal != null) {
 					exception.ExceptionGoal = dialog.ExceptionGoal;
-					// TODO this.controller.Model.Update (exception);
+					this.Updated (exception);
 					dialog.Destroy ();
 				} else if (args.ResponseId == ResponseType.Cancel) {
 					dialog.Destroy ();

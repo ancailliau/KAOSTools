@@ -46,6 +46,14 @@ namespace KaosEditor.Controllers
 			}
 		}
 		
+		public delegate void HandleResponsibilityAdded (Responsibility agent);
+		public delegate void HandleResponsibilityRemoved (Responsibility agent);
+		public delegate void HandleResponsibilityUpdated (Responsibility agent);
+		
+		public event HandleResponsibilityAdded ResponsibilityAdded;
+		public event HandleResponsibilityRemoved ResponsibilityRemoved;
+		public event HandleResponsibilityUpdated ResponsibilityUpdated;
+		
 		private MainController controller;
 		private List<Responsibility> responsibilities = new List<Responsibility>();
 		
@@ -68,11 +76,24 @@ namespace KaosEditor.Controllers
 		public void Add (Responsibility responsibility)
 		{
 			this.responsibilities.Add (responsibility);
+			if (ResponsibilityAdded != null) {
+				ResponsibilityAdded (responsibility);
+			}
 		}
 		
 		public void Remove (Responsibility responsibility)
 		{
 			this.responsibilities.Remove (responsibility);
+			if (ResponsibilityRemoved != null) {
+				ResponsibilityRemoved (responsibility);
+			}
+		}
+		
+		public void Update (Responsibility responsibility)
+		{
+			if (ResponsibilityUpdated != null) {
+				ResponsibilityUpdated (responsibility);
+			}
 		}
 		
 		public Responsibility Get (string id)
@@ -117,7 +138,7 @@ namespace KaosEditor.Controllers
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.ResponsibleAgent != null) {
 					responsibility.Agent = dialog.ResponsibleAgent;
-					// TODO this.controller.Model.Update (responsibility);
+					this.Update (responsibility);
 				}
 				dialog.Destroy ();
 			};

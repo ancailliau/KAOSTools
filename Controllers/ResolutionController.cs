@@ -47,6 +47,14 @@ namespace KaosEditor.Controllers
 			}
 		}
 		
+		public delegate void HandleResolutionAdded (Resolution agent);
+		public delegate void HandleResolutionRemoved (Resolution agent);
+		public delegate void HandleResolutionUpdated (Resolution agent);
+		
+		public event HandleResolutionAdded ResolutionAdded;
+		public event HandleResolutionRemoved ResolutionRemoved;
+		public event HandleResolutionUpdated ResolutionUpdated;
+		
 		private MainController controller;
 		private List<Resolution> resolutions = new List<Resolution>();
 		
@@ -74,11 +82,24 @@ namespace KaosEditor.Controllers
 		public void Add (Resolution resolution)
 		{
 			this.resolutions.Add (resolution);
+			if (ResolutionAdded != null) {
+				ResolutionAdded (resolution);
+			}
 		}
 		
 		public void Remove (Resolution resolution)
 		{
 			this.resolutions.Remove (resolution);
+			if (ResolutionRemoved != null) {
+				ResolutionRemoved (resolution);
+			}
+		}
+		
+		public void Update (Resolution resolution)
+		{
+			if (ResolutionUpdated != null) {
+				ResolutionUpdated (resolution);
+			}
 		}
 		
 		public Resolution Get (string id)
@@ -119,7 +140,7 @@ namespace KaosEditor.Controllers
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.ResolvingGoal != null) {
 					resolution.Goal = dialog.ResolvingGoal;
-					// TODO this.controller.Model.Update (resolution);
+					this.Update (resolution);
 				}
 				dialog.Destroy ();
 			};

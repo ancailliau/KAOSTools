@@ -48,6 +48,14 @@ namespace KaosEditor.Controllers
 			}
 		}
 		
+		public delegate void HandleObstacleAdded (Obstacle agent);
+		public delegate void HandleObstacleRemoved (Obstacle agent);
+		public delegate void HandleObstacleUpdated (Obstacle agent);
+		
+		public event HandleObstacleAdded ObstacleAdded;
+		public event HandleObstacleRemoved ObstacleRemoved;
+		public event HandleObstacleUpdated ObstacleUpdated;
+		
 		private MainController controller;
 		private List<Obstacle> obstacles = new List<Obstacle>();
 		
@@ -66,11 +74,24 @@ namespace KaosEditor.Controllers
 		public void Add (Obstacle obstacle)
 		{
 			this.obstacles.Add (obstacle);
+			if (ObstacleAdded != null) {
+				ObstacleAdded (obstacle);
+			}
 		}
 		
 		public void Remove (Obstacle obstacle)
 		{
 			this.obstacles.Remove (obstacle);
+			if (ObstacleRemoved != null) {
+				ObstacleRemoved (obstacle);
+			}
+		}
+		
+		public void Update (Obstacle obstacle)
+		{
+			if (ObstacleUpdated != null) {
+				ObstacleUpdated (obstacle);
+			}
 		}
 		
 		public Obstacle Get (string id)
@@ -110,7 +131,7 @@ namespace KaosEditor.Controllers
 				if (args.ResponseId == Gtk.ResponseType.Ok) {
 					obstacle.Name = dialog.ObstacleName;
 					obstacle.Definition = dialog.ObstacleDefinition;
-					// TODO controller.Model.Update (obstacle);
+					this.Update (obstacle);
 				}
 				dialog.Destroy();
 			};

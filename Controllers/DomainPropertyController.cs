@@ -48,6 +48,14 @@ namespace KaosEditor.Controllers
 			}
 		}
 		
+		public delegate void HandleDomainPropertyAdded (DomainProperty domProp);
+		public delegate void HandleDomainPropertyRemoved (DomainProperty domProp);
+		public delegate void HandleDomainPropertyUpdated (DomainProperty domProp);
+		
+		public event HandleDomainPropertyAdded DomainPropertyAdded;
+		public event HandleDomainPropertyRemoved DomainPropertyRemoved;
+		public event HandleDomainPropertyUpdated DomainPropertyUpdated;
+		
 		private MainController controller;
 		private List<DomainProperty> domainProperties = new List<DomainProperty>();
 		
@@ -66,11 +74,24 @@ namespace KaosEditor.Controllers
 		public void Add (DomainProperty domProp)
 		{
 			this.domainProperties.Add (domProp);
+			if (DomainPropertyAdded != null) {
+				DomainPropertyAdded (domProp);
+			}
 		}
 		
 		public void Remove (DomainProperty domProp)
 		{
 			this.domainProperties.Remove (domProp);
+			if (DomainPropertyRemoved != null) {
+				DomainPropertyRemoved (domProp);
+			}
+		}
+		
+		public void Update (DomainProperty domProp)
+		{
+			if (DomainPropertyUpdated != null) {
+				DomainPropertyUpdated (domProp);
+			}
 		}
 		
 		public DomainProperty Get (string id)
@@ -108,6 +129,7 @@ namespace KaosEditor.Controllers
 				if (args.ResponseId == Gtk.ResponseType.Ok) {
 					domProp.Name = dialog.DomainPropertyName;
 					domProp.Definition = dialog.DomainPropertyDefinition;
+					this.Update (domProp);
 				}
 				dialog.Destroy();
 			};

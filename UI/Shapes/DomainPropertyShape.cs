@@ -72,8 +72,6 @@ namespace KaosEditor.UI.Shapes
 			var drawingArea = view.DrawingArea;
 			var oldSource = context.Source;
 			
-			Console.WriteLine (" ? " + this.RepresentedElement == null);
-			
 			var pangoLayout = new Pango.Layout(drawingArea.PangoContext);
 			pangoLayout.Alignment = Pango.Alignment.Center;
 			pangoLayout.SetText(((DomainProperty) this.RepresentedElement).Name);

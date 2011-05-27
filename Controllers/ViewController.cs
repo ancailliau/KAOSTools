@@ -50,6 +50,14 @@ namespace KaosEditor.Controllers
 			}
 		}
 		
+		public delegate void HandleViewAdded (Agent agent);
+		public delegate void HandleViewRemoved (Agent agent);
+		public delegate void HandleViewUpdated (Agent agent);
+		
+		public event HandleViewAdded ViewAdded;
+		public event HandleViewRemoved ViewRemoved;
+		public event HandleViewUpdated ViewUpdated;
+		
 		private MainController controller;
 		private List<ModelView> views = new List<ModelView> ();
 		
@@ -70,11 +78,24 @@ namespace KaosEditor.Controllers
 		public void Add (ModelView view)
 		{
 			this.views.Add (view);
+			if (ViewAdded != null) {
+				ViewAdded (view);
+			}
 		}
 		
 		public void Remove (ModelView view)
 		{
 			this.views.Remove (view);
+			if (ViewRemoved != null) {
+				ViewRemoved (view);
+			}
+		}
+		
+		public void Update (ModelView view)
+		{
+			if (ViewUpdated != null) {
+				ViewUpdated (view);
+			}
 		}
 		
 		public ModelView Get (string name)
@@ -87,7 +108,9 @@ namespace KaosEditor.Controllers
 			var addViewDialog = new AddViewDialog (this.controller.Window);
 			addViewDialog.Response += delegate(object sender, Gtk.ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Ok & addViewDialog.ViewName != "") {
-					this.Add (new ModelView (addViewDialog.ViewName, this.controller));
+					ModelView view = new ModelView (addViewDialog.ViewName, this.controller);
+					this.Add (view);
+					this.DisplayView (view);
 				}
 				addViewDialog.Destroy ();
 			};
@@ -104,7 +127,7 @@ namespace KaosEditor.Controllers
 						newView.Add (s.Copy ());
 					}
 					this.Add (newView);
-					// TODO this.controller.Window.DisplayView (addViewDialog.ViewName);
+					this.DisplayView (newView);
 				}
 				addViewDialog.Destroy ();
 			};
@@ -117,7 +140,7 @@ namespace KaosEditor.Controllers
 			dialog.Response += delegate(object sender, Gtk.ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Ok & dialog.ViewName != "") {
 					view.Name = dialog.ViewName;
-					// TODO this.controller.Window.DisplayView (dialog.ViewName);
+					this.Update (view);
 				}
 				dialog.Destroy ();
 			};
@@ -138,6 +161,11 @@ namespace KaosEditor.Controllers
 		{
 			this.controller.Window.viewsNotebook.AddToCurrentView (element, 10, 10);
 		}
+		
+		public void RemoveFromCurrentView (IShape element)
+		{
+			this.controller.Window.viewsNotebook.CurrentView.Shapes.Remove (element);
+		}
 				
 		private void ElementActivated (object element)
 		{
@@ -148,16 +176,15 @@ namespace KaosEditor.Controllers
 		
 		public void PopulateContextMenu (Menu menu, object source, object clickedElement)
 		{
-			if (clickedElement != null & clickedElement is IShape & (source is DiagramArea)) {
+			if (clickedElement != null && clickedElement is IShape) {
 				var removeFromCurrentViewItem = new MenuItem("Remove from current view...");
 				removeFromCurrentViewItem.Activated += delegate(object sender2, EventArgs e) {
-					// TODO this.controller.Window.RemoveFromCurrentView (clickedElement as IShape);
+					this.RemoveFromCurrentView (clickedElement as IShape);
 				};
 				menu.Add (removeFromCurrentViewItem);
-				menu.Add (new SeparatorMenuItem ());
 			}
 			
-			if (clickedElement != null & clickedElement is KAOSElement) {
+			if (clickedElement != null && clickedElement is KAOSElement) {
 				var addToCurrentViewItem = new MenuItem("Add to current view...");
 				addToCurrentViewItem.Activated += delegate(object sender2, EventArgs e) {
 					this.AddToCurrentView (clickedElement as KAOSElement);

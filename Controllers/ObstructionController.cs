@@ -47,6 +47,14 @@ namespace KaosEditor.Controllers
 			}
 		}
 		
+		public delegate void HandleObstructionAdded (Obstruction agent);
+		public delegate void HandleObstructionRemoved (Obstruction agent);
+		public delegate void HandleObstructionUpdated (Obstruction agent);
+		
+		public event HandleObstructionAdded ObstructionAdded;
+		public event HandleObstructionRemoved ObstructionRemoved;
+		public event HandleObstructionUpdated ObstructionUpdated;
+		
 		private MainController controller;
 		private List<Obstruction> obstructions = new List<Obstruction> ();
 		
@@ -74,11 +82,24 @@ namespace KaosEditor.Controllers
 		public void Add (Obstruction obstruction)
 		{
 			this.obstructions.Add (obstruction);
+			if (ObstructionAdded != null) {
+				ObstructionAdded (obstruction);
+			}
 		}
 		
 		public void Remove (Obstruction obstruction)
 		{
 			this.obstructions.Remove (obstruction);
+			if (ObstructionRemoved != null) {
+				ObstructionRemoved (obstruction);
+			}
+		}
+		
+		public void Update (Obstruction obstruction)
+		{
+			if (ObstructionUpdated != null) {
+				ObstructionUpdated (obstruction);
+			}
 		}
 		
 		public Obstruction Get (string id)
@@ -123,7 +144,7 @@ namespace KaosEditor.Controllers
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.Obstacle != null) {
 					obstruction.Obstacle = dialog.Obstacle;
-					// TODO this.controller.Model.Update (obstruction);
+					this.Update (obstruction);
 				}
 				dialog.Destroy ();
 			};

@@ -47,6 +47,14 @@ namespace KaosEditor.Controllers
 			}
 		}
 		
+		public delegate void HandleGoalAdded (Goal goal);
+		public delegate void HandleGoalRemoved (Goal goal);
+		public delegate void HandleGoalUpdated (Goal goal);
+		
+		public event HandleGoalAdded GoalAdded;
+		public event HandleGoalRemoved GoalRemoved;
+		public event HandleGoalUpdated GoalUpdated;
+		
 		private MainController controller;
 		private List<Goal> goals = new List<Goal> ();
 		
@@ -65,11 +73,24 @@ namespace KaosEditor.Controllers
 		public void Add (Goal goal)
 		{
 			this.goals.Add (goal);
+			if (GoalAdded != null) {
+				GoalAdded (goal);
+			}
 		}
 		
 		public void Remove (Goal goal)
 		{
 			this.goals.Remove (goal);
+			if (GoalRemoved != null) {
+				GoalRemoved (goal);
+			}
+		}
+		
+		public void Update (Goal goal)
+		{
+			if (GoalUpdated != null) {
+				GoalUpdated (goal);
+			}
 		}
 		
 		public Goal Get (string id)
@@ -107,6 +128,7 @@ namespace KaosEditor.Controllers
 				if (args.ResponseId == Gtk.ResponseType.Ok) {
 					goal.Name = dialog.GoalName;
 					goal.Definition = dialog.GoalDefinition;
+					this.Update (goal);
 				}
 				dialog.Destroy();
 			};

@@ -47,6 +47,14 @@ namespace KaosEditor.Controllers
 			}
 		}
 		
+		public delegate void HandleRefinementAdded (Refinement agent);
+		public delegate void HandleRefinementRemoved (Refinement agent);
+		public delegate void HandleRefinementUpdated (Refinement agent);
+		
+		public event HandleRefinementAdded RefinementAdded;
+		public event HandleRefinementRemoved RefinementRemoved;
+		public event HandleRefinementUpdated RefinementUpdated;
+		
 		private MainController controller;
 		private List<Refinement> refinements = new List<Refinement>();
 		
@@ -69,11 +77,24 @@ namespace KaosEditor.Controllers
 		public void Add (Refinement refinement)
 		{
 			this.refinements.Add (refinement);
+			if (RefinementAdded != null) {
+				RefinementAdded (refinement);
+			}
 		}
 		
 		public void Remove (Refinement refinement)
 		{
 			this.refinements.Remove (refinement);
+			if (RefinementRemoved != null) {
+				RefinementRemoved (refinement);
+			}
+		}
+		
+		public void Update (Refinement refinement)
+		{
+			if (RefinementUpdated != null) {
+				RefinementUpdated (refinement);
+			}
 		}
 		
 		public Refinement Get (string id)
@@ -106,7 +127,7 @@ namespace KaosEditor.Controllers
 					foreach (var element in dialog.Refinees) {
 						refinement.Add(element);
 					}
-					// TODO this.Update (refinement);
+					this.Update (refinement);
 				}
 				dialog.Destroy ();
 			};

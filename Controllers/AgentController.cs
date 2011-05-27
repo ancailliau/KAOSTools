@@ -47,6 +47,14 @@ namespace KaosEditor.Controllers
 			}
 		}
 		
+		public delegate void HandleAgentAdded (Agent agent);
+		public delegate void HandleAgentRemoved (Agent agent);
+		public delegate void HandleAgentUpdated (Agent agent);
+		
+		public event HandleAgentAdded AgentAdded;
+		public event HandleAgentRemoved AgentRemoved;
+		public event HandleAgentUpdated AgentUpdated;
+		
 		private List<Agent> agents = new List<Agent>();
 		
 		private MainController controller;
@@ -66,11 +74,24 @@ namespace KaosEditor.Controllers
 		public void Add (Agent agent)
 		{
 			this.agents.Add (agent);
+			if (AgentAdded != null) {
+				AgentAdded (agent);
+			}
 		}
 		
 		public void Remove (Agent agent)
 		{
 			this.agents.Remove (agent);
+			if (AgentRemoved != null) {
+				AgentRemoved (agent);
+			}
+		}
+		
+		public void Update (Agent agent)
+		{
+			if (AgentUpdated != null) {
+				AgentUpdated (agent);
+			}
 		}
 		
 		public Agent Get (string id)
@@ -108,7 +129,7 @@ namespace KaosEditor.Controllers
 			dialog.Response += delegate(object o, Gtk.ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Ok) {
 					agent.Name = dialog.AgentName;
-					// TODO this.controller.Model.Update (agent);
+					this.Update (agent);
 				}
 				dialog.Destroy ();
 			};
