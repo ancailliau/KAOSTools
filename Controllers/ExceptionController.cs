@@ -163,25 +163,29 @@ namespace KaosEditor.Controllers
 			dialog.Present ();
 		}
 		
-		public void PopulateContextMenu (Menu menu, object source, object clickedElement)
+		public bool PopulateContextMenu (Menu menu, object source, object clickedElement)
 		{
-			if (clickedElement is Goal) {	
+			bool retVal = false;
+			if (clickedElement is Goal) {
 				var clickedGoal = clickedElement as Goal;
+				var exceptions = this.GetAll (clickedGoal);
+				
+				var exceptionMenu = new Menu ();
+				
 				var assignItem = new MenuItem("Add exception...");
 				assignItem.Activated += delegate(object sender2, EventArgs e) {
 					this.AddException (clickedGoal);
 				};
-				menu.Add(assignItem);
-			
-				var exceptions = this.GetAll ();
-				
-				if (exceptions.Count () > 0) {
-					menu.Add (new SeparatorMenuItem ());
+				if (exceptions.Count() > 0) {
+					exceptionMenu.Add(assignItem);
+				} else {
+					menu.Add (assignItem);
+					retVal = true;
 				}
-				
+			
 				int i = 1;
 				foreach (var e in exceptions) {
-					var subMenuItem = new MenuItem (string.Format ("Exception {0}", i));
+					var subMenuItem = new MenuItem (string.Format ("Exception {0}", i++));
 					subMenuItem.TooltipText = string.Format ("Exception to '{0}' by '{1}'",
 						clickedGoal.Name, e.ExceptionGoal.Name);
 					subMenuItem.HasTooltip = true;
@@ -201,9 +205,35 @@ namespace KaosEditor.Controllers
 					subMenu.Add(deleteItem);
 					
 					subMenuItem.Submenu = subMenu;
-					menu.Add (subMenuItem);
+					exceptionMenu.Add (subMenuItem);
+				}
+				
+				if (exceptions.Count() > 0) {
+					var exceptionMenuItem = new MenuItem ("Exception");
+					exceptionMenuItem.Submenu = exceptionMenu;
+					menu.Add (exceptionMenuItem);
+					retVal = true;
 				}
 			}
+			
+			if (clickedElement is ExceptionLink) {
+				var clickedException = (ExceptionLink) clickedElement;
+				
+				var editItem = new MenuItem("Edit...");
+				editItem.Activated += delegate(object sender2, EventArgs args) {
+					this.EditException (clickedException);
+				};
+				menu.Add(editItem);
+				
+				var deleteItem = new MenuItem("Delete");
+				deleteItem.Activated += delegate(object sender2, EventArgs args) {
+					this.RemoveException (clickedException);
+				};
+				menu.Add(deleteItem);
+				retVal = true;
+			}
+			
+			return retVal;
 		}
 		
 		public void Populate (TreeStore store)

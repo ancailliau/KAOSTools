@@ -178,8 +178,10 @@ namespace KaosEditor.Controllers
 			dialog.Present ();
 		}
 		
-		public void PopulateContextMenu (Menu menu, object source, object clickedElement)
+		public bool PopulateContextMenu (Menu menu, object source, object clickedElement)
 		{
+			bool retVal = false;
+			
 			if (clickedElement is Obstacle) {	
 				var clickedObstacle = clickedElement as Obstacle;
 				var assignItem = new MenuItem("Resolve...");
@@ -187,6 +189,7 @@ namespace KaosEditor.Controllers
 					this.AddResolution (clickedObstacle);
 				};
 				menu.Add(assignItem);
+				retVal = true;
 			}
 			
 			if (clickedElement is Resolution) {
@@ -203,8 +206,10 @@ namespace KaosEditor.Controllers
 					this.RemoveResolution (clickedResolution);
 				};
 				menu.Add(deleteItem);
+				retVal = true;
 			}
 			
+			return retVal;
 		}
 		
 		public void Populate (TreeStore store)

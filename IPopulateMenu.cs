@@ -30,7 +30,7 @@ namespace KaosEditor
 {
 	public interface IPopulateMenu
 	{
-		void PopulateContextMenu (Menu menu, object source, object clickedElement);
+		bool PopulateContextMenu (Menu menu, object source, object clickedElement);
 	}
 }
 

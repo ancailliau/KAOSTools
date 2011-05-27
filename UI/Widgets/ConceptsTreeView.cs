@@ -127,9 +127,14 @@ namespace KaosEditor.UI.Widgets
 					if (store.GetIter(out iter, path)) {
 						object o = store.GetValue(iter, 1);
 						var menu = new Menu();
+						SeparatorMenuItem separator = null;
 						foreach (var p in menuPopulater) {
-							p.PopulateContextMenu (menu, this, o);
+							if (p.PopulateContextMenu (menu, this, o)) {
+								separator = new SeparatorMenuItem ();
+								menu.Add (separator);
+							}
 						}
+						menu.Remove (separator);
 						menu.ShowAll ();
 						menu.Popup ();
 					}
@@ -240,7 +245,6 @@ namespace KaosEditor.UI.Widgets
 			store.Clear();
 			
 			foreach (var p in treePopulater) {
-				Logger.Info (string.Format ("Populate list with '{0}'", p.GetType()));
 				p.Populate (store);
 			}
 			

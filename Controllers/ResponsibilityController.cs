@@ -177,19 +177,58 @@ namespace KaosEditor.Controllers
 			dialog.Present ();
 		}
 		
-		public void PopulateContextMenu (Menu menu, object source, object clickedElement)
+		public bool PopulateContextMenu (Menu menu, object source, object clickedElement)
 		{
-			if (clickedElement is Goal) {	
+			bool retVal = false;
+			
+			if (clickedElement is Goal) {
 				var clickedGoal = clickedElement as Goal;
+				var responsibilities = this.GetAll (clickedGoal);
+				
+				
 				var assignItem = new MenuItem("Assign responsibility...");
 				assignItem.Activated += delegate(object sender2, EventArgs e) {
 					this.AddResponsibility (clickedGoal);
 				};
-				menu.Add(assignItem);
+				if (responsibilities.Count() > 0) {
+					var responsibilityMenu = new Menu ();
+					responsibilityMenu.Add (assignItem);
+					
+					int i = 0;
+					foreach (var responsibility in responsibilities) {
+						var subMenu = new Menu();
+						var clickedResponsibility = clickedElement as Responsibility;
+						
+						var editItem = new MenuItem("Edit...");
+						editItem.Activated += delegate(object sender2, EventArgs e) {
+							this.EditResponsibility (responsibility);
+						};
+						subMenu.Add(editItem);
+						
+						var deleteItem = new MenuItem("Delete");
+						deleteItem.Activated += delegate(object sender2, EventArgs e) {
+							this.RemoveResponsibility (responsibility);
+						};
+						subMenu.Add(deleteItem);
+						
+						var subMenuItem = new MenuItem (string.Format ("Responsibility for '{0}'", responsibility.Agent.Name));
+						subMenuItem.Submenu = subMenu;
+						responsibilityMenu.Add (subMenuItem);
+					}
+					
+					var menuItem = new MenuItem ("Responsibilities");
+					menuItem.Submenu = responsibilityMenu;
+					menu.Add (menuItem);
+					retVal = true;
+					
+				} else {
+					menu.Add(assignItem);
+					retVal = true;
+				}
 			}
 			
 			if (clickedElement is Responsibility) {
-				var clickedResponsibility = clickedElement as Responsibility;
+				var clickedResponsibility = (Responsibility) clickedElement;
 				
 				var editItem = new MenuItem("Edit...");
 				editItem.Activated += delegate(object sender2, EventArgs e) {
@@ -202,8 +241,10 @@ namespace KaosEditor.Controllers
 					this.RemoveResponsibility (clickedResponsibility);
 				};
 				menu.Add(deleteItem);
+				retVal = true;
 			}
 			
+			return retVal;
 		}
 		
 		public void Populate (TreeStore store)

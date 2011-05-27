@@ -167,14 +167,17 @@ namespace KaosEditor.Controllers
 			dialog.Present ();
 		}
 		
-		public void PopulateContextMenu (Menu menu, object source, object clickedElement)
+		public bool PopulateContextMenu (Menu menu, object source, object clickedElement)
 		{
+			bool retVal = false;
+			
 			if (clickedElement == null & source is ConceptsTreeView) {				
 				var addItem = new MenuItem("Add goal...");
 				addItem.Activated += delegate(object sender2, EventArgs e) {
 					this.AddGoal ();
 				};
 				menu.Add(addItem);
+				retVal = true;
 			}
 			
 			if (clickedElement is Goal) {
@@ -192,9 +195,10 @@ namespace KaosEditor.Controllers
 				};
 				menu.Add(deleteItem);
 				
-				menu.Add (new SeparatorMenuItem ());
-				
+				retVal = true;
 			}
+			
+			return retVal;
 		}
 		
 		public void Populate (TreeStore store)

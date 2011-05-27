@@ -183,8 +183,9 @@ namespace KaosEditor.Controllers
 			dialog.Present ();
 		}
 		
-		public void PopulateContextMenu (Menu menu, object source, object clickedElement)
+		public bool PopulateContextMenu (Menu menu, object source, object clickedElement)
 		{
+			bool retVal = false;
 			if (clickedElement is Goal) {	
 				var refinements = this.GetAll ();
 				if (refinements.Count() == 0) {
@@ -194,6 +195,7 @@ namespace KaosEditor.Controllers
 						this.AddObstruction (clickedGoal);
 					};
 					menu.Add(assignItem);
+					retVal = true;
 				}
 			}
 			
@@ -211,8 +213,10 @@ namespace KaosEditor.Controllers
 					this.RemoveObstruction (clickedObstruction);
 				};
 				menu.Add(deleteItem);
+				retVal = true;
 			}
 			
+			return retVal;
 		}
 		
 		public void Populate (TreeStore store)

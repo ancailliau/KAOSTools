@@ -169,14 +169,17 @@ namespace KaosEditor.Controllers
 		}
 		
 		
-		public void PopulateContextMenu (Menu menu, object source, object clickedElement)
+		public bool PopulateContextMenu (Menu menu, object source, object clickedElement)
 		{
+			bool retVal = false;
+			
 			if (clickedElement == null & source is ConceptsTreeView) {				
 				var addItem = new MenuItem("Add agent...");
 				addItem.Activated += delegate(object sender2, EventArgs e) {
 					this.AddAgent ();
 				};
 				menu.Add(addItem);
+				retVal = true;
 			}
 			
 			if (clickedElement is Agent) {
@@ -193,7 +196,10 @@ namespace KaosEditor.Controllers
 					this.RemoveAgent (clickedAgent);
 				};
 				menu.Add(deleteItem);
+				retVal = true;
 			}
+			
+			return retVal;
 		}
 		
 		public void Populate (TreeStore store)

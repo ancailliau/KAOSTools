@@ -171,14 +171,17 @@ namespace KaosEditor.Controllers
 			dialog.Present ();
 		}
 		
-		public void PopulateContextMenu (Menu menu, object source, object clickedElement)
+		public bool PopulateContextMenu (Menu menu, object source, object clickedElement)
 		{
+			bool retVal = false;
+			
 			if (clickedElement == null & source is ConceptsTreeView) {				
 				var addItem = new MenuItem("Add obstacle...");
 				addItem.Activated += delegate(object sender2, EventArgs e) {
 					this.AddObstacle ();
 				};
 				menu.Add(addItem);
+				retVal = true;
 			}
 			
 			if (clickedElement is Obstacle) {
@@ -195,11 +198,11 @@ namespace KaosEditor.Controllers
 					this.RemoveObstacle (clickedObstacle);
 				};
 				menu.Add(deleteItem);
-				
-				menu.Add (new SeparatorMenuItem ());
-				
+				retVal = true;
 			}
+			return retVal;
 		}
+		
 		public void Populate (TreeStore store)
 		{
 			var iter = store.AppendValues ("Obstacles", null, pixbuf);

@@ -64,11 +64,12 @@ namespace KaosEditor.Controllers
 		public ViewController (MainController controller)
 		{
 			this.controller = controller;
+			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this);
+			
 			this.controller.Window.conceptTreeView.RegisterForMenu (this);
 			this.controller.Window.viewList.RegisterForTree (this);
 			this.controller.Window.viewList.RegisterForMenu (this);
 			this.controller.Window.viewList.ElementActivated += ElementActivated;
-			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this);
 		
 			this.ViewAdded += UpdateLists;
 			this.ViewRemoved += UpdateLists;
@@ -210,22 +211,26 @@ namespace KaosEditor.Controllers
 			}
 		}
 		
-		public void PopulateContextMenu (Menu menu, object source, object clickedElement)
+		public bool PopulateContextMenu (Menu menu, object source, object clickedElement)
 		{
+			bool retVal = false;
+			
 			if (clickedElement != null && clickedElement is IShape) {
 				var removeFromCurrentViewItem = new MenuItem("Remove from current view...");
 				removeFromCurrentViewItem.Activated += delegate(object sender2, EventArgs e) {
 					this.RemoveFromCurrentView (clickedElement as IShape);
 				};
 				menu.Add (removeFromCurrentViewItem);
+				retVal = true;
 			}
 			
-			if (clickedElement != null && clickedElement is KAOSElement) {
+			if (clickedElement != null && clickedElement is KAOSElement & !(source is DiagramArea)) {
 				var addToCurrentViewItem = new MenuItem("Add to current view...");
 				addToCurrentViewItem.Activated += delegate(object sender2, EventArgs e) {
 					this.AddToCurrentView (clickedElement as KAOSElement);
 				};
 				menu.Add(addToCurrentViewItem);
+				retVal = true;
 			}
 			
 			if (clickedElement == null) {
@@ -234,6 +239,7 @@ namespace KaosEditor.Controllers
 					this.AddView ();
 				};
 				menu.Add(addViewItem);
+				retVal = true;
 			}
 			
 			if (clickedElement is ModelView) {
@@ -256,7 +262,10 @@ namespace KaosEditor.Controllers
 					this.RemoveView (clickedView);
 				};
 				menu.Add(removeItem);
+				retVal = true;
 			}
+			
+			return retVal;
 		}
 		
 		public void Populate (TreeStore store)

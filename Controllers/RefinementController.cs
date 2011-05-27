@@ -166,8 +166,10 @@ namespace KaosEditor.Controllers
 			dialog.Present ();
 		}
 		
-		public void PopulateContextMenu (Menu menu, object source, object clickedElement)
+		public bool PopulateContextMenu (Menu menu, object source, object clickedElement)
 		{
+			bool retVal = false;
+			
 			if (clickedElement is Goal) {
 				var clickedGoal = (Goal) clickedElement;				
 				var refineItem = new MenuItem("Refine...");
@@ -175,7 +177,7 @@ namespace KaosEditor.Controllers
 					this.AddRefinement (clickedGoal);
 				};
 				menu.Add(refineItem);
-				
+				retVal = true;
 			}
 			
 			if (clickedElement is Refinement) {
@@ -192,7 +194,10 @@ namespace KaosEditor.Controllers
 					this.RemoveRefinement (clickedRefinement);
 				};
 				menu.Add(deleteItem);
+				retVal = true;
 			}
+			
+			return retVal;
 		}
 		
 		public void Populate (TreeStore store)

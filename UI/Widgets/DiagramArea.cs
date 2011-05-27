@@ -236,16 +236,20 @@ namespace KaosEditor.UI.Widgets
 				var clickedShape = FindShapeAtPosition(evnt.X, evnt.Y);
 				
 				var menu = new Menu ();
+				SeparatorMenuItem separator = null;
 				foreach (var p in menuPopulater) {
-					Logger.Info (string.Format ("Populate menu with '{0}'", p.GetType()));
-					p.PopulateContextMenu (menu, this, clickedShape);
+					bool retVal = p.PopulateContextMenu (menu, this, clickedShape);
 					if (clickedShape != null) {
-						p.PopulateContextMenu (menu, this, clickedShape.RepresentedElement);
+						retVal |= p.PopulateContextMenu (menu, this, clickedShape.RepresentedElement);
+					}
+					if (retVal) {
+						separator = new SeparatorMenuItem ();
+						menu.Add (separator);
 					}
 				}
+				menu.Remove (separator);
 				menu.ShowAll ();
 				menu.Popup ();
-				
 			}
 			
 			return true;

@@ -143,6 +143,7 @@ namespace KaosEditor.Controllers
 			this.Window = window;
 			this.Window.Controller = this;
 			
+			ViewController = new ViewController (this);
 			GoalController = new GoalController (this);
 			AgentController = new AgentController (this);
 			RefinementController = new RefinementController (this);
@@ -152,14 +153,14 @@ namespace KaosEditor.Controllers
 			ResolutionController = new ResolutionController (this);
 			ObstacleRefinementController = new ObstacleRefinementController (this);
 			ExceptionController = new ExceptionController (this);
-			ViewController = new ViewController (this);
 			DomainPropertyController = new DomainPropertyController (this);
 			
 			controllers.AddRange (new IController[] {
 				ViewController,	GoalController, AgentController, RefinementController, 
 				ResponsibilityController, ObstacleController,
 				ObstructionController, ResolutionController,
-				ObstacleRefinementController, DomainPropertyController
+				ObstacleRefinementController, ExceptionController,
+				DomainPropertyController
 			});
 			
 			// Finish loading application
