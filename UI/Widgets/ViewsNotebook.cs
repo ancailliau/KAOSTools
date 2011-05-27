@@ -94,7 +94,7 @@ namespace KaosEditor.UI.Widgets
 			
 			// Add the page if the page does not exists
 			var scroll = new ScrolledWindow ();
-			var diagram = new DiagramArea(view, controller);
+			var diagram = new DiagramArea(view);
 			view.DrawingArea = diagram;
 			var tabLabel = new TabLabel (view.Name);
 			tabLabel.CloseClicked += delegate(object sender, EventArgs args) {
@@ -107,9 +107,15 @@ namespace KaosEditor.UI.Widgets
 				}
 			};
 			scroll.AddWithViewport(diagram);
+			
+			foreach (var p in menuPopulater) {
+				diagram.RegisterForMenu (p);
+			}
+			
 			int page = this.AppendPage(scroll, tabLabel);
 			this.ShowAll();
 			this.CurrentPage = page;
+			
 		}
 		
 		public void CloseView (ModelView view)
@@ -118,7 +124,7 @@ namespace KaosEditor.UI.Widgets
 				var scroll = (ScrolledWindow) child;
 				var viewport = (Viewport) scroll.Child;
 				var diagram = (DiagramArea) viewport.Child;
-				if (diagram.CurrentView == view) {
+				if (diagram.View == view) {
 					int pageNum = this.PageNum (child);
 					Hide (pageNum);
 				}
@@ -153,6 +159,14 @@ namespace KaosEditor.UI.Widgets
 				var shape = ShapeFactory.Create(element, x, y);
 				this.CurrentView.Add(shape);
 			}
+		}
+		
+		
+		private List<IPopulateMenu> menuPopulater = new List<IPopulateMenu>();
+		
+		public void RegisterForDiagramMenu (IPopulateMenu populater)
+		{
+			this.menuPopulater.Add (populater);
 		}
 	}
 }

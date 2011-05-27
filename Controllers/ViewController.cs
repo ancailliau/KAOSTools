@@ -68,6 +68,7 @@ namespace KaosEditor.Controllers
 			this.controller.Window.viewList.RegisterForTree (this);
 			this.controller.Window.viewList.RegisterForMenu (this);
 			this.controller.Window.viewList.ElementActivated += ElementActivated;
+			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this);
 		
 			this.ViewAdded += UpdateLists;
 			this.ViewRemoved += UpdateLists;

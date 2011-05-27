@@ -63,6 +63,7 @@ namespace KaosEditor.Controllers
 			this.controller = controller;
 			this.controller.Window.conceptTreeView.RegisterForTree (this);
 			this.controller.Window.conceptTreeView.RegisterForMenu (this);
+			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this);
 			
 			this.GoalAdded += UpdateLists;
 			this.GoalRemoved += UpdateLists;

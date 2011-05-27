@@ -33,6 +33,7 @@ using KaosEditor.Controllers;
 using System;
 using KaosEditor.UI.Dialogs;
 using KaosEditor.Views;
+using KaosEditor.Logging;
 
 namespace KaosEditor.UI.Widgets
 {
@@ -48,20 +49,13 @@ namespace KaosEditor.UI.Widgets
 		/// <value>
 		/// The view.
 		/// </value>
-		public ModelView CurrentView {
+		public ModelView View {
 			get;
 			set;
 		}
 		
-		private MainController controller;
-		
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KaosEditor.UI.Widgets.DiagramArea"/> class.
-		/// </summary>
-		public DiagramArea (MainController controller)
+		public DiagramArea (ModelView view) 
 		{
-			this.controller = controller;
-			
 			this.AddEvents((int) Gdk.EventMask.PointerMotionMask
 				| (int) Gdk.EventMask.ButtonPressMask
 				| (int) Gdk.EventMask.ButtonReleaseMask
@@ -69,19 +63,8 @@ namespace KaosEditor.UI.Widgets
 				| (int) Gdk.EventMask.KeyReleaseMask);
 			
 			this.CanFocus = true;
-		}
-		
-		/// <summary>
-		/// Initializes a new instance of the <see cref="KaosEditor.UI.Widgets.DiagramArea"/> class.
-		/// </summary>
-		/// <param name='view'>
-		/// View.
-		/// </param>
-		public DiagramArea (ModelView view, MainController controller) 
-			: this (controller)
-		{
-			this.CurrentView = view;
-			this.CurrentView.DrawingArea = this;
+			this.View = view;
+			this.View.DrawingArea = this;
 		}
 		
 		/// <summary>
@@ -92,7 +75,7 @@ namespace KaosEditor.UI.Widgets
 		/// </param>
 		public void UpdateView (ModelView view) 
 		{
-			this.CurrentView = view;
+			this.View = view;
 			view.DrawingArea = this;
 			this.QueueDraw();
 		}
@@ -115,21 +98,11 @@ namespace KaosEditor.UI.Widgets
 				context.Translate(0.5, 0.5);				
 				context.LineWidth = 1;				
 				
-				CurrentView.Display(context);
+				View.Display(context);
 			}
 			return true;
 		}
 		
-		
-		
-		
-		
-		/// <summary>
-		/// Paints the background.
-		/// </summary>
-		/// <param name='context'>
-		/// Context.
-		/// </param>
 		private void PaintBackground(Context context)
 		{
 			var oldSource = context.Source;
@@ -140,7 +113,16 @@ namespace KaosEditor.UI.Widgets
 		
 		protected override void OnSizeRequested (ref Gtk.Requisition requisition)
 		{
-			this.CurrentView.OnSizeRequested(ref requisition);
+			int width = 0;
+			int height = 0;
+			
+			foreach (var shape in this.View.Shapes) {
+				height = Math.Max(shape.GetBounds().MaxY, height);
+				width = Math.Max(shape.GetBounds().MaxX, width);
+			}
+			
+			requisition.Width = width + 50;
+			requisition.Height = height + 50;
 		}
 		
 		public void Update ()
@@ -180,7 +162,7 @@ namespace KaosEditor.UI.Widgets
 				int width = 0;
 				int height = 0;
 				
-				foreach (var shape in this.CurrentView.Shapes) {
+				foreach (var shape in this.View.Shapes) {
 					height = Math.Max(shape.GetBounds().MaxY, height);
 					width = Math.Max(shape.GetBounds().MaxX, width);
 				}
@@ -252,16 +234,17 @@ namespace KaosEditor.UI.Widgets
 			} else if (evnt.Button == 3) { // Right click
 				
 				var clickedShape = FindShapeAtPosition(evnt.X, evnt.Y);
-				if (clickedShape != null) {
-					// FIXME
-					var menu = new Menu ();
-					this.CurrentView.Controller.ViewController.PopulateContextMenu (menu, this, clickedShape);
-					menu.ShowAll ();
-					menu.Popup ();
-					
-				} else {
-					// TODO this.controller.PopulateContextMenu (this, (KAOSElement) null);
+				
+				var menu = new Menu ();
+				foreach (var p in menuPopulater) {
+					Logger.Info (string.Format ("Populate menu with '{0}'", p.GetType()));
+					p.PopulateContextMenu (menu, this, clickedShape);
+					if (clickedShape != null) {
+						p.PopulateContextMenu (menu, this, clickedShape.RepresentedElement);
+					}
 				}
+				menu.ShowAll ();
+				menu.Popup ();
 				
 			}
 			
@@ -318,7 +301,7 @@ namespace KaosEditor.UI.Widgets
 				| evnt.Key == Gdk.Key.A)) {
 				
 				selectedShapes.Clear ();
-				selectedShapes.AddRange (this.CurrentView.Shapes);
+				selectedShapes.AddRange (this.View.Shapes);
 				foreach (var s in selectedShapes) {
 					s.Selected = true;
 				}
@@ -344,7 +327,7 @@ namespace KaosEditor.UI.Widgets
 		{
 			PointD selectedPoint;
 			IShape selectedShape = null;
-			foreach (var shape in this.CurrentView.Shapes) {
+			foreach (var shape in this.View.Shapes) {
 				if (shape.InBoundingBox(x, y, out selectedPoint)) {
 					if (selectedShape == null || shape.Depth > selectedShape.Depth) { 
 						selectedShape = shape;
@@ -352,6 +335,13 @@ namespace KaosEditor.UI.Widgets
 				}
 			}
 			return selectedShape;
+		}
+		
+		private List<IPopulateMenu> menuPopulater = new List<IPopulateMenu>();
+		
+		public void RegisterForMenu (IPopulateMenu populater)
+		{
+			this.menuPopulater.Add (populater);
 		}
 		
 	}

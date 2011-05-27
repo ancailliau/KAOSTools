@@ -252,20 +252,6 @@ namespace KaosEditor.Views
 			}
 		}
 		
-		public void OnSizeRequested (ref Gtk.Requisition requisition)
-		{
-			int width = 0;
-			int height = 0;
-			
-			foreach (var shape in Shapes) {
-				height = Math.Max(shape.GetBounds().MaxY, height);
-				width = Math.Max(shape.GetBounds().MaxX, width);
-			}
-			
-			requisition.Width = width + 50;
-			requisition.Height = height + 50;
-		}
-		
 	}
 }
 

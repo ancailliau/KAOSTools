@@ -62,6 +62,7 @@ namespace KaosEditor.Controllers
 		{
 			this.controller = controller;
 			this.controller.Window.conceptTreeView.RegisterForMenu (this);
+			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this);
 		
 			this.ObstacleRefinementAdded += UpdateLists;
 			this.ObstacleRefinementRemoved += UpdateLists;
