@@ -87,8 +87,41 @@ namespace Beaver.UI.Shapes
 					End = goalShape
 				};
 				arrow.Display(context, view);
-			}
+				
+				double xEndAnchor = arrow.End.GetAnchor(arrow.Start.Position).X;
+				double yEndAnchor = arrow.End.GetAnchor(arrow.Start.Position).Y;
+				
+				double xStartAnchor = arrow.Start.GetAnchor(arrow.End.Position).X;
+				double yStartAnchor = arrow.Start.GetAnchor(arrow.End.Position).Y;
+				
+				double x = xEndAnchor - .5 * ( xEndAnchor - xStartAnchor );
+				double y = yEndAnchor - .5 * ( yEndAnchor - yStartAnchor );
+				
+				context.MoveTo (x, y);
+				context.Arc (x, y, 10, 0, Math.PI * 2);
+				context.SetColor ("#000");
+				context.LineWidth = 2;
+				context.StrokePreserve ();
+				context.LineWidth = 1;
+				context.SetColor ("#fff");
+				context.Fill ();
+				
+				var pangoLayout = new Pango.Layout(view.DrawingArea.PangoContext);
+				pangoLayout.Alignment = Pango.Alignment.Center;
+				pangoLayout.SetMarkup("!");
+				
+				var fontDescr = new Pango.FontDescription ();
+				fontDescr.Size = (int) (14 * Pango.Scale.PangoScale);
+				fontDescr.Weight = Pango.Weight.Bold;
+				pangoLayout.FontDescription = fontDescr;					
+				
+				int textWidth, textHeight;
+				pangoLayout.GetPixelSize(out textWidth, out textHeight);
+				context.SetColor ("#000");
+				context.MoveTo(x - textWidth/2f, y - textHeight/2f);
+				Pango.CairoHelper.ShowLayout(context, pangoLayout);
 			
+			}
 			
 			context.Source = oldSource;
 			context.LineWidth = oldLineWidth;
