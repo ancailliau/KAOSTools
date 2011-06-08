@@ -378,50 +378,6 @@ namespace Beaver.Controllers
 		
 		#endregion
 		
-		#if false
-		public void PopulateTree (TreeStore store, bool header)
-		{
-			foreach (var c in controllers) {
-				c.PopulateTree (store, header);
-			}
-		}
-		
-		public void PopulateTree (TreeStore store, TreeIter iter, bool header)
-		{
-			foreach (var c in controllers) {
-				c.PopulateTree (store, iter, header);
-			}
-		}
-		
-		public void PopulateTree (KAOSElement[] elements, TreeStore store, TreeIter iter)
-		{
-			foreach (var c in controllers) {
-				c.PopulateTree (elements, store, iter);
-			}
-		}
-		
-		public void PopulateContextMenu (object source, object clickedElement)
-		{
-			var menu = new Menu ();
-			Temp (source, clickedElement, menu);
-			if (clickedElement is IShape) {
-				Temp (source, (clickedElement as IShape).RepresentedElement, menu);
-			}
-		}
-		
-		public void Temp (object source, object clickedElement, Menu menu)
-		{
-			foreach (var c in controllers) {
-				c.PopulateContextMenu (menu, source, clickedElement);
-			}
-			
-			if (menu.Children.Length > 0) {
-				menu.ShowAll ();
-				menu.Popup ();	
-			}
-		}
-		#endif
-		
 		public KAOSElement Get (string id)
 		{
 			if (GoalController.Get (id) != null)
