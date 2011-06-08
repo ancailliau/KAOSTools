@@ -41,10 +41,6 @@ namespace Beaver.UI.Shapes
 	public class DomainPropertyShape : Shape
 	{
 		
-		private string fillColor = "#ad7fa8";
-		private string strokeColor = "#5c3566";
-		private string textColor = "#000";
-	
 		private int width;
 		private int height;
 		
@@ -96,11 +92,11 @@ namespace Beaver.UI.Shapes
 			context.RelLineTo(- width, 0);
 			context.ClosePath();
 			
-			context.SetColor(this.fillColor);
+			context.SetColor(view.Controller.CurrentColorScheme.DomainPropertyFillColor);
 			context.FillPreserve();
 			
 			var oldLineWidth = context.LineWidth;
-			context.SetColor(this.strokeColor);
+			context.SetColor(view.Controller.CurrentColorScheme.DomainPropertyStrokeColor);
 			if (Selected) {
 				context.LineWidth = 2.5;
 			}
@@ -119,7 +115,7 @@ namespace Beaver.UI.Shapes
 				context.Stroke ();
 			}
 			
-			context.SetColor (this.textColor);
+			context.SetColor (view.Controller.CurrentColorScheme.DomainPropertyTextColor);
 			context.MoveTo(Position.X - 150/2, Position.Y - textHeight/2);
 			Pango.CairoHelper.ShowLayout(context, pangoLayout);
 			
@@ -188,10 +184,10 @@ namespace Beaver.UI.Shapes
 		public override Bounds GetBounds ()
 		{
 			return new Bounds () {
-				MinX = (int) (Position.X - width / 2 - 4),
-				MaxX = (int) (Position.X + width / 2 + 4),
-				MinY = (int) (Position.Y - height / 2),
-				MaxY = (int) (Position.Y + height / 2)
+				MinX = (int) (Position.X - width / 2 - 4) - 1,
+				MaxX = (int) (Position.X + width / 2 + 4) + 1,
+				MinY = (int) (Position.Y - height / 2) - 1,
+				MaxY = (int) (Position.Y + height / 2) + 1
 			};
 		}
 		

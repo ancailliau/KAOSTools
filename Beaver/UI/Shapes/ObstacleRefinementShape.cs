@@ -40,9 +40,6 @@ namespace Beaver.UI.Shapes
 	public class ObstacleRefinementShape : Shape
 	{
 		
-		private string fillColor = "#cc0000";
-		private string strokeColor = "#000";
-		
 		/// <summary>
 		/// The radius.
 		/// </summary>
@@ -83,10 +80,10 @@ namespace Beaver.UI.Shapes
 			context.MoveTo(Position.X + radius, Position.Y);
 			context.Arc(Position.X, Position.Y, radius, 0, Math.PI * 2);
 			
-			context.SetColor(this.fillColor);
+			context.SetColor(view.Controller.CurrentColorScheme.ObstacleRefinementFillColor);
 			context.FillPreserve();
 			
-			context.SetColor (this.strokeColor);
+			context.SetColor (view.Controller.CurrentColorScheme.ObstacleRefinementStrokeColor);
 			context.Stroke();
 			
 			if (!Selected) {
@@ -101,7 +98,7 @@ namespace Beaver.UI.Shapes
 				var arrow = new FilledArrow() {
 					Start = this,
 					End = refinedShape,
-					FillColor = this.fillColor
+					FillColor = view.Controller.CurrentColorScheme.ObstacleRefinementStrokeColor
 				};
 				arrow.Display(context, view);
 			}
@@ -169,10 +166,10 @@ namespace Beaver.UI.Shapes
 		public override Bounds GetBounds ()
 		{
 			return new Bounds () {
-				MinX = (int) (Position.X - radius),
-				MaxX = (int) (Position.X + radius),
-				MinY = (int) (Position.Y - radius),
-				MaxY = (int) (Position.Y + radius)
+				MinX = (int) (Position.X - radius) - 1,
+				MaxX = (int) (Position.X + radius) + 1,
+				MinY = (int) (Position.Y - radius) - 1,
+				MaxY = (int) (Position.Y + radius) + 1
 			};
 		}
 		

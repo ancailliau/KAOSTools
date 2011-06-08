@@ -41,11 +41,6 @@ namespace Beaver.UI.Shapes
 	public class GoalShape : Shape
 	{
 		
-		private string fillColor = "#729fcf";
-		private string strokeColor = "#204a87";
-		private string textColor = "#000";
-	
-		
 		/// <summary>
 		/// The width.
 		/// </summary>
@@ -118,11 +113,11 @@ namespace Beaver.UI.Shapes
 			context.RelLineTo(- width, 0);
 			context.ClosePath();
 			
-			context.SetColor(this.fillColor);
+			context.SetColor(view.Controller.CurrentColorScheme.GoalFillColor);
 			context.FillPreserve();
 			
 			var oldLineWidth = context.LineWidth;
-			context.SetColor(this.strokeColor);
+			context.SetColor(view.Controller.CurrentColorScheme.GoalStrokeColor);
 			if (Selected) {
 				context.LineWidth = 2.5;
 			}
@@ -140,7 +135,7 @@ namespace Beaver.UI.Shapes
 				context.Stroke ();
 			}
 			
-			context.SetColor (this.textColor);
+			context.SetColor (view.Controller.CurrentColorScheme.GoalTextColor);
 			context.MoveTo(Position.X - 150/2, Position.Y - textHeight/2);
 			Pango.CairoHelper.ShowLayout(context, pangoLayout);
 			
@@ -209,10 +204,10 @@ namespace Beaver.UI.Shapes
 		public override Bounds GetBounds ()
 		{
 			return new Bounds () {
-				MinX = (int) (Position.X - width / 2 - 4),
-				MaxX = (int) (Position.X + width / 2 + 4),
-				MinY = (int) (Position.Y - height / 2),
-				MaxY = (int) (Position.Y + height / 2)
+				MinX = (int) (Position.X - width / 2 - 4) - 1,
+				MaxX = (int) (Position.X + width / 2 + 4) + 1,
+				MinY = (int) (Position.Y - height / 2) - 1,
+				MaxY = (int) (Position.Y + height / 2) + 1
 			};
 		}
 		

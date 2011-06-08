@@ -99,11 +99,11 @@ namespace Beaver.UI.Shapes
 				
 				context.MoveTo (x, y);
 				context.Arc (x, y, 10, 0, Math.PI * 2);
-				context.SetColor ("#000");
+				context.SetColor (view.Controller.CurrentColorScheme.ExceptionStrokeColor);
 				context.LineWidth = 2;
 				context.StrokePreserve ();
 				context.LineWidth = 1;
-				context.SetColor ("#fff");
+				context.SetColor (view.Controller.CurrentColorScheme.ExceptionFillColor);
 				context.Fill ();
 				
 				var pangoLayout = new Pango.Layout(view.DrawingArea.PangoContext);
@@ -117,7 +117,7 @@ namespace Beaver.UI.Shapes
 				
 				int textWidth, textHeight;
 				pangoLayout.GetPixelSize(out textWidth, out textHeight);
-				context.SetColor ("#000");
+				context.SetColor (view.Controller.CurrentColorScheme.ExceptionTextColor);
 				context.MoveTo(x - textWidth/2f, y - textHeight/2f);
 				Pango.CairoHelper.ShowLayout(context, pangoLayout);
 			

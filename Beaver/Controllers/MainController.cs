@@ -35,6 +35,7 @@ using Beaver.UI.Widgets;
 using Beaver.UI.Shapes;
 using System.Collections.Generic;
 using Beaver.Views;
+using Beaver.UI.ColorSchemes;
 
 namespace Beaver.Controllers
 {
@@ -101,6 +102,10 @@ namespace Beaver.Controllers
 		
 		private List<IController> controllers = new List<IController> ();
 		
+		public IColorScheme CurrentColorScheme {
+			get;
+			set;
+		}
 		
 		/// <summary>
 		/// The current filename (empty if not yet saved)
@@ -140,6 +145,8 @@ namespace Beaver.Controllers
 		/// </param>
 		public MainController (MainWindow window)
 		{	
+			CurrentColorScheme = new BWColorScheme ();
+			
 			this.Window = window;
 			this.Window.Controller = this;
 			

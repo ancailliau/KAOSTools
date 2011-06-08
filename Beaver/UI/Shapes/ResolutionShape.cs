@@ -73,7 +73,7 @@ namespace Beaver.UI.Shapes
 				StrikedArrow arrow = new StrikedArrow() {
 					Start = goalShape,
 					End = obstacleShape,
-					FillColor = "#5b953f"
+					FillColor = view.Controller.CurrentColorScheme.ResolutionFillColor
 				};
 				arrow.Display(context, view);
 			}
