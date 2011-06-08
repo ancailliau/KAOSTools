@@ -245,10 +245,13 @@ namespace Beaver.Views
 			maxY = 0;
 			
 			foreach (var shape in Shapes) {
-				minY = Math.Min(shape.GetBounds().MinY, minY);
-				minX = Math.Min(shape.GetBounds().MinX, minX);
-				maxY = Math.Max(shape.GetBounds().MaxY, maxY);
-				maxX = Math.Max(shape.GetBounds().MaxX, maxX);
+				Bounds bounds = shape.GetBounds ();
+				if (bounds.MinX != bounds.MaxX & bounds.MinY != bounds.MaxY) {
+					minY = Math.Min(bounds.MinY, minY);
+					minX = Math.Min(bounds.MinX, minX);
+					maxY = Math.Max(bounds.MaxY, maxY);
+					maxX = Math.Max(bounds.MaxX, maxX);
+				}
 			}
 		}
 		
