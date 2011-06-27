@@ -63,6 +63,7 @@ namespace Beaver
 		private class FutureException {
 			public string id = "";
 			public string goalId = "";
+			public string condition = "";
 		}
 		
 		private class FutureView {
@@ -184,7 +185,8 @@ namespace Beaver
 						} else if (reader.IsStartElement ("exception")) {
 							var exception = new FutureException () {
 								id = reader.GetAttribute ("id"),
-								goalId = reader.GetAttribute ("goal-id")
+								goalId = reader.GetAttribute ("goal-id"),
+								condition = reader.GetAttribute ("condition") ?? ""
 							};
 							futureGoal.futureExceptions.Add (exception);
 							
@@ -344,7 +346,8 @@ namespace Beaver
 				foreach (var futureException in futureGoal.futureExceptions) {
 					this.controller.ExceptionController.Add(new ExceptionLink (
 						this.controller.GoalController.Get(futureGoal.id),
-						this.controller.GoalController.Get(futureException.goalId)) { Id = futureException.id}, false);
+						this.controller.GoalController.Get(futureException.goalId),
+						futureException.condition) { Id = futureException.id}, false);
 				}
 			}
 			

@@ -161,6 +161,7 @@ namespace Beaver
 				writer.WriteStartElement("exception");
 				writer.WriteAttributeString("id", exception.Id);
 				writer.WriteAttributeString("goal-id", exception.ExceptionGoal.Id);
+				writer.WriteAttributeString("condition", exception.Condition);
 				writer.WriteEndElement();
 			}
 			

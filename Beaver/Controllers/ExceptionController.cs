@@ -122,7 +122,7 @@ namespace Beaver.Controllers
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.ExceptionGoal != null) {
 					var newException = new ExceptionLink (
-						goal, dialog.ExceptionGoal);
+						goal, dialog.ExceptionGoal, dialog.Condition);
 					this.Add (newException);
 					dialog.Destroy ();
 				} else if (args.ResponseId == ResponseType.Cancel) {
@@ -134,10 +134,13 @@ namespace Beaver.Controllers
 		
 		public void EditException (ExceptionLink exception)
 		{
-			var dialog = new AddExceptionDialog (this.controller, exception.Goal, exception.ExceptionGoal);
+			var dialog = new AddExceptionDialog (this.controller, exception.Goal, exception.ExceptionGoal) {
+				Condition = exception.Condition
+			};
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.ExceptionGoal != null) {
 					exception.ExceptionGoal = dialog.ExceptionGoal;
+					exception.Condition = dialog.Condition;
 					this.Update (exception);
 					dialog.Destroy ();
 				} else if (args.ResponseId == ResponseType.Cancel) {

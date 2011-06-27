@@ -50,6 +50,15 @@ namespace Beaver.UI.Dialogs
 			}
 		}
 		
+		public string Condition {
+			get {
+				return conditionEntry.Text;
+			}
+			set {
+				conditionEntry.Text = value;
+			}
+		}
+		
 		public AddExceptionDialog (MainController window, Goal goal)
 			: this (window, goal, null)
 		{

@@ -45,12 +45,18 @@ namespace Beaver.Model
 			set;
 		}
 		
-		public ExceptionLink (Goal goal, Goal exceptionGoal)
+		public string Condition {
+			get;
+			set;
+		}
+		
+		public ExceptionLink (Goal goal, Goal exceptionGoal, string condition)
 			: base ()
 		{
 			Id = Guid.NewGuid ().ToString ();
 			Goal = goal;
 			ExceptionGoal = exceptionGoal;
+			Condition = condition;
 		}
 	}
 }

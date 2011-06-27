@@ -120,6 +120,22 @@ namespace Beaver.UI.Shapes
 				context.SetColor (view.Controller.CurrentColorScheme.ExceptionTextColor);
 				context.MoveTo(x - textWidth/2f, y - textHeight/2f);
 				Pango.CairoHelper.ShowLayout(context, pangoLayout);
+				
+				// Displaying condition
+				int widthCondition = 100;
+				pangoLayout = new Pango.Layout(view.DrawingArea.PangoContext);
+				pangoLayout.Alignment = Pango.Alignment.Center;
+				pangoLayout.SetMarkup(((ExceptionLink) RepresentedElement).Condition);
+				pangoLayout.Width = Pango.Units.FromPixels(widthCondition);
+				
+				fontDescr = new Pango.FontDescription ();
+				fontDescr.Size = (int) (9 * Pango.Scale.PangoScale);
+				pangoLayout.FontDescription = fontDescr;					
+				
+				pangoLayout.GetPixelSize(out textWidth, out textHeight);
+				context.SetColor (view.Controller.CurrentColorScheme.ExceptionTextColor);
+				context.MoveTo(x - widthCondition/2f, y + 15 /* - textHeight/2f */ );
+				Pango.CairoHelper.ShowLayout(context, pangoLayout);
 			
 			}
 			
@@ -163,7 +179,12 @@ namespace Beaver.UI.Shapes
 			
 		public override Bounds GetBounds ()
 		{
-			return new Bounds () {};
+			return new Bounds () {
+				MinX = (int) (Position.X - 10) - 2,
+				MaxX = (int) (Position.X + 10) + 2,
+				MinY = (int) (Position.Y - 10) - 2,
+				MaxY = (int) (Position.Y + 10) + 2
+			};
 		}
 		
 		public override IShape Copy ()
