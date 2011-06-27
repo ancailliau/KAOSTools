@@ -17,6 +17,8 @@ namespace Beaver.UI.Windows
 		private global::Gtk.Action revertToSavedAction;
 		private global::Gtk.Action ViewsAction;
 		private global::Gtk.Action ExportCurrentViewAction;
+		private global::Gtk.Action newAction;
+		private global::Gtk.Action ExportCurrentViewAsPDFAction;
 		private global::Gtk.VBox mainVBox;
 		private global::Gtk.MenuBar mainMenu;
 		private global::Gtk.Toolbar toolbar1;
@@ -61,6 +63,11 @@ namespace Beaver.UI.Windows
 			this.ExportCurrentViewAction = new global::Gtk.Action ("ExportCurrentViewAction", global::Mono.Unix.Catalog.GetString ("Export current view"), null, null);
 			this.ExportCurrentViewAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Export current view");
 			w1.Add (this.ExportCurrentViewAction, null);
+			this.newAction = new global::Gtk.Action ("newAction", null, null, "gtk-new");
+			w1.Add (this.newAction, null);
+			this.ExportCurrentViewAsPDFAction = new global::Gtk.Action ("ExportCurrentViewAsPDFAction", global::Mono.Unix.Catalog.GetString ("Export current view as PDF"), null, null);
+			this.ExportCurrentViewAsPDFAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Export current view as PDF");
+			w1.Add (this.ExportCurrentViewAsPDFAction, null);
 			this.UIManager.InsertActionGroup (w1, 0);
 			this.AddAccelGroup (this.UIManager.AccelGroup);
 			this.Name = "Beaver.UI.Windows.MainWindow";
@@ -72,7 +79,7 @@ namespace Beaver.UI.Windows
 			this.mainVBox = new global::Gtk.VBox ();
 			this.mainVBox.Name = "mainVBox";
 			// Container child mainVBox.Gtk.Box+BoxChild
-			this.UIManager.AddUiFromString ("<ui><menubar name='mainMenu'><menu name='ApplicationAction' action='ApplicationAction'><menuitem name='quitAction' action='quitAction'/></menu><menu name='ModelAction' action='ModelAction'><menuitem name='openAction' action='openAction'/><separator/><menuitem name='saveAction' action='saveAction'/><menuitem name='saveAsAction' action='saveAsAction'/></menu><menu name='ViewsAction' action='ViewsAction'><menuitem name='ExportCurrentViewAction' action='ExportCurrentViewAction'/></menu></menubar></ui>");
+			this.UIManager.AddUiFromString ("<ui><menubar name='mainMenu'><menu name='ApplicationAction' action='ApplicationAction'><menuitem name='quitAction' action='quitAction'/></menu><menu name='ModelAction' action='ModelAction'><menuitem name='openAction' action='openAction'/><separator/><menuitem name='saveAction' action='saveAction'/><menuitem name='saveAsAction' action='saveAsAction'/></menu><menu name='ViewsAction' action='ViewsAction'><menuitem name='ExportCurrentViewAction' action='ExportCurrentViewAction'/><menuitem name='ExportCurrentViewAsPDFAction' action='ExportCurrentViewAsPDFAction'/></menu></menubar></ui>");
 			this.mainMenu = ((global::Gtk.MenuBar)(this.UIManager.GetWidget ("/mainMenu")));
 			this.mainMenu.Name = "mainMenu";
 			this.mainVBox.Add (this.mainMenu);
@@ -81,7 +88,7 @@ namespace Beaver.UI.Windows
 			w2.Expand = false;
 			w2.Fill = false;
 			// Container child mainVBox.Gtk.Box+BoxChild
-			this.UIManager.AddUiFromString ("<ui><toolbar name='toolbar1'><toolitem name='openAction1' action='openAction1'/><separator/><toolitem name='saveAction1' action='saveAction1'/><toolitem name='saveAsAction1' action='saveAsAction1'/><toolitem name='revertToSavedAction' action='revertToSavedAction'/></toolbar></ui>");
+			this.UIManager.AddUiFromString ("<ui><toolbar name='toolbar1'><toolitem name='newAction' action='newAction'/><toolitem name='openAction1' action='openAction1'/><separator/><toolitem name='saveAction1' action='saveAction1'/><toolitem name='saveAsAction1' action='saveAsAction1'/><toolitem name='revertToSavedAction' action='revertToSavedAction'/></toolbar></ui>");
 			this.toolbar1 = ((global::Gtk.Toolbar)(this.UIManager.GetWidget ("/toolbar1")));
 			this.toolbar1.Name = "toolbar1";
 			this.toolbar1.ShowArrow = false;
@@ -125,6 +132,8 @@ namespace Beaver.UI.Windows
 			this.saveAsAction1.Activated += new global::System.EventHandler (this.OnSaveAsActionActivated);
 			this.revertToSavedAction.Activated += new global::System.EventHandler (this.OnRevertToSavedActionActivated);
 			this.ExportCurrentViewAction.Activated += new global::System.EventHandler (this.OnExportCurrentViewActionActivated);
+			this.newAction.Activated += new global::System.EventHandler (this.OnNewActionActivated);
+			this.ExportCurrentViewAsPDFAction.Activated += new global::System.EventHandler (this.OnExportCurrentViewAsPDFActionActivated);
 		}
 	}
 }

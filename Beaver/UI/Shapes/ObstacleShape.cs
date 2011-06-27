@@ -122,7 +122,7 @@ namespace Beaver.UI.Shapes
 			context.Stroke();
 			context.LineWidth = oldLineWidth;
 		
-			if (!Selected) {	
+			if (!Selected & view.Controller.CurrentColorScheme.effect) {	
 				context.MoveTo(Position.X - width / 2 + shear / 2 + 1,
 					Position.Y - height/2 + 1);
 				context.RelLineTo (width - 2, 0);
@@ -203,10 +203,10 @@ namespace Beaver.UI.Shapes
 		public override Bounds GetBounds ()
 		{
 			return new Bounds () {
-				MinX = (int) (Position.X - width / 2 - 4) - 1,
-				MaxX = (int) (Position.X + width / 2 + 4) + 1,
-				MinY = (int) (Position.Y - height / 2) - 1,
-				MaxY = (int) (Position.Y + height / 2) + 1
+				MinX = (int) (Position.X - width / 2 - 4) - 2,
+				MaxX = (int) (Position.X + width / 2 + 4) + 2,
+				MinY = (int) (Position.Y - height / 2) - 2,
+				MaxY = (int) (Position.Y + height / 2) + 2
 			};
 		}
 		

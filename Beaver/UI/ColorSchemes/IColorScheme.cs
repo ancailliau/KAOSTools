@@ -32,6 +32,8 @@ namespace Beaver.UI.ColorSchemes
 	public interface IColorScheme
 	{
 		
+		bool effect { get ; }
+		
 		string AgentFillColor { get ; }		
 		string AgentStrokeColor { get ; }
 		string AgentTextColor { get ; }

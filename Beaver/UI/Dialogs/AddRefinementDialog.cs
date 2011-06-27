@@ -117,6 +117,8 @@ namespace Beaver.UI.Dialogs
 			foreach (var refinee in refinees) {
 				AddRefinee (refinee as Goal);
 			}
+			
+			childrenComboBox.GrabFocus ();
 		}
 		
 		[GLib.ConnectBeforeAttribute]
@@ -169,6 +171,8 @@ namespace Beaver.UI.Dialogs
 							this.controller.GoalController.AddGoal (newGoalName, delegate (Goal newGoal) {
 								childrenComboStore.AppendValues(newGoal.Name, newGoal);
 								AddRefinee (newGoal);
+								childrenComboBox.TextColumn = -1;
+								childrenComboBox.GrabFocus ();
 							});
 						}
 						dialog.Destroy ();

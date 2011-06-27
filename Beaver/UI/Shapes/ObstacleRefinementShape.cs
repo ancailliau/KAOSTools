@@ -86,7 +86,7 @@ namespace Beaver.UI.Shapes
 			context.SetColor (view.Controller.CurrentColorScheme.ObstacleRefinementStrokeColor);
 			context.Stroke();
 			
-			if (!Selected) {
+			if (!Selected & view.Controller.CurrentColorScheme.effect) {
 				context.Arc(Position.X, Position.Y, radius - 1, 0, Math.PI * 2);
 				context.SetColor ("#fff", .3f);
 				context.Stroke ();

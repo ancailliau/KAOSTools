@@ -191,5 +191,16 @@ namespace Beaver.UI.Windows {
 		{
 			this.Controller.ViewController.ExportCurrentView ();
 		}
+
+		protected void OnNewActionActivated (object sender, System.EventArgs e)
+		{
+			this.Controller.NewProject ();
+		}
+
+		protected void OnExportCurrentViewAsPDFActionActivated (object sender, System.EventArgs e)
+		{
+			this.Controller.ViewController.ExportCurrentViewAsPdf ();
+		}
+
 	}
 }

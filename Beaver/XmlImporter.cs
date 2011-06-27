@@ -316,7 +316,12 @@ namespace Beaver
 					if (goal != null) {
 						var refinement = new Refinement(goal) { Id = futureRefinement.id };
 						foreach (var futureElement in futureRefinement.refinees) {
-							refinement.Add((IGoalRefinee) this.controller.Get(futureElement));
+							IGoalRefinee iGoalRefinee = (IGoalRefinee)this.controller.Get (futureElement);
+							if (iGoalRefinee != null) {
+								refinement.Add(iGoalRefinee);
+							} else {
+								Logger.Warning ("Ignoring '{0}'", futureElement);
+							}
 						}
 						this.controller.RefinementController.Add (refinement, false);
 					}

@@ -222,9 +222,7 @@ namespace Beaver.Controllers
 		{
 			foreach (var resolution in from e in elements where e is Resolution select (Resolution) e) {
 				var subIter = store.AppendValues (iter, "Resolution", resolution, pixbuf);
-				this.controller.GoalController.Populate (new List<KAOSElement> () { 
-					resolution.Goal
-				}, store, subIter);
+				store.AppendValues (subIter, resolution.Goal.Name, resolution.Goal, pixbuf);
 			}
 		}
 	}

@@ -92,6 +92,7 @@ namespace Beaver.Controllers
 		
 		public void Add (Refinement refinement, bool notify)
 		{
+			Logger.Info ("Refinement added for goal '{0}'", refinement.Refined.Name);
 			this.refinements.Add (refinement);
 			if (RefinementAdded != null & notify) {
 				RefinementAdded (refinement);
@@ -127,7 +128,7 @@ namespace Beaver.Controllers
 					foreach (var element in dialog.Refinees) {
 						newRefinement.Add(element);
 					}
-					this.Add(newRefinement);
+					this.Add (newRefinement);
 				}
 				dialog.Destroy ();
 			};
@@ -141,7 +142,7 @@ namespace Beaver.Controllers
 				if (args.ResponseId == ResponseType.Ok) {
 					refinement.Refinees.Clear();
 					foreach (var element in dialog.Refinees) {
-						refinement.Add(element);
+						refinement.Add (element);
 					}
 					this.Update (refinement);
 				}

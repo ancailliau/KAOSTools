@@ -245,6 +245,7 @@ namespace Beaver.UI.Widgets
 			store.Clear();
 			
 			foreach (var p in treePopulater) {
+				Logger.Debug ("Populated '{0}'", p);
 				p.Populate (store);
 			}
 			

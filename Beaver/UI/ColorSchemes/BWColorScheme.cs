@@ -30,6 +30,8 @@ namespace Beaver.UI.ColorSchemes
 	public class BWColorScheme : IColorScheme
 	{
 		
+		public bool effect { get { return false; } }
+		
 		public string AgentFillColor { get { return  "#fff"; } }
 		public string AgentStrokeColor { get { return  "#000"; } }
 		public string AgentTextColor { get { return  "#000"; } }

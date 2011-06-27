@@ -36,7 +36,9 @@
                     <property name="MemberName" />
                     <property name="CanFocus">True</property>
                     <property name="ShowScrollbars">True</property>
+                    <property name="AcceptsTab">False</property>
                     <property name="Text" translatable="yes" />
+                    <property name="WrapMode">Word</property>
                   </widget>
                 </child>
               </widget>
@@ -351,6 +353,18 @@
         <property name="ShortLabel" translatable="yes">Export current view</property>
         <signal name="Activated" handler="OnExportCurrentViewActionActivated" />
       </action>
+      <action id="newAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes" />
+        <property name="StockId">gtk-new</property>
+        <signal name="Activated" handler="OnNewActionActivated" />
+      </action>
+      <action id="ExportCurrentViewAsPDFAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Export current view as PDF</property>
+        <property name="ShortLabel" translatable="yes">Export current view as PDF</property>
+        <signal name="Activated" handler="OnExportCurrentViewAsPDFActionActivated" />
+      </action>
     </action-group>
     <property name="MemberName" />
     <property name="Title" translatable="yes">A simple Kaos Editor</property>
@@ -376,6 +390,7 @@
               </node>
               <node type="Menu" action="ViewsAction">
                 <node type="Menuitem" action="ExportCurrentViewAction" />
+                <node type="Menuitem" action="ExportCurrentViewAsPDFAction" />
               </node>
             </node>
           </widget>
@@ -393,6 +408,7 @@
             <property name="ButtonStyle">Icons</property>
             <property name="IconSize">SmallToolbar</property>
             <node name="toolbar1" type="Toolbar">
+              <node type="Toolitem" action="newAction" />
               <node type="Toolitem" action="openAction1" />
               <node type="Separator" />
               <node type="Toolitem" action="saveAction1" />
@@ -903,7 +919,9 @@
                     <property name="MemberName" />
                     <property name="CanFocus">True</property>
                     <property name="ShowScrollbars">True</property>
+                    <property name="AcceptsTab">False</property>
                     <property name="Text" translatable="yes" />
+                    <property name="WrapMode">Word</property>
                   </widget>
                 </child>
               </widget>

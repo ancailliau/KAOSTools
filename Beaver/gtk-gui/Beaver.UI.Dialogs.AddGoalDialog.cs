@@ -39,6 +39,8 @@ namespace Beaver.UI.Dialogs
 			this.definitionTextView = new global::Gtk.TextView ();
 			this.definitionTextView.CanFocus = true;
 			this.definitionTextView.Name = "definitionTextView";
+			this.definitionTextView.AcceptsTab = false;
+			this.definitionTextView.WrapMode = ((global::Gtk.WrapMode)(2));
 			this.GtkScrolledWindow.Add (this.definitionTextView);
 			this.table1.Add (this.GtkScrolledWindow);
 			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.table1 [this.GtkScrolledWindow]));

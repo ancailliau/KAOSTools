@@ -47,6 +47,7 @@ namespace Beaver.UI.Dialogs
 		{
 			this.Build ();
 			nameEntry.Text = futureGoalName;
+			nameEntry.GrabFocus ();
 		}
 		
 		public AddGoalDialog (MainWindow window, Goal goal)

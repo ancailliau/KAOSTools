@@ -34,6 +34,7 @@ using Beaver.UI.Shapes;
 using Beaver.Views;
 using System.Collections.Generic;
 using Cairo;
+using Beaver.UI.ColorSchemes;
 
 namespace Beaver.Controllers
 {
@@ -192,6 +193,12 @@ namespace Beaver.Controllers
 			this.RefreshCurrentView ();
 		}
 		
+		public void AddToCurrentView (KAOSElement element, double x, double y)
+		{
+			this.controller.Window.viewsNotebook.AddToCurrentView (element, x, y);
+			this.RefreshCurrentView ();
+		}
+		
 		public void RemoveFromCurrentView (IShape element)
 		{
 			this.controller.Window.viewsNotebook.CurrentView.Shapes.Remove (element);
@@ -286,29 +293,72 @@ namespace Beaver.Controllers
 			FileChooserAction.Save, "Cancel", ResponseType.Cancel, "Save", ResponseType.Accept);
 			
 			if (dialog.Run() == (int) ResponseType.Accept) {
+				string filename = dialog.Filename.EndsWith (".png") ? dialog.Filename : dialog.Filename + ".png";
+				
 				int minX , minY, maxX, maxY;
 				var currentView = this.controller.Window.viewsNotebook.CurrentView;
+				
+				var oldTheme = this.controller.CurrentColorScheme;
+				this.controller.CurrentColorScheme = new BWColorScheme ();
 				
 				currentView.GetSize (out minX, out maxX, out minY, out maxY);
 				
 				using (var surface = new ImageSurface (Format.Argb32, maxX, maxY)) {
 					using (Context context = new Context (surface)) {
 						currentView.Display (context);
-						surface.WriteToPng (dialog.Filename);
+						surface.WriteToPng (filename);
 					}
 				}
 				
 				int padding = 10;
-				using (var surface = new ImageSurface (dialog.Filename)) {
+				using (var surface = new ImageSurface (filename)) {
 					using (var surface2 = new ImageSurface (Format.Argb32, maxX-minX+2*padding, maxY-minY+2*padding)) {
 						using (Context context = new Context (surface2)) {
+							var oldSource = context.Source;
+							context.SetColor("#fff");
+							context.Paint();
+							context.Source = oldSource;
+							
 							context.SetSourceSurface (surface, -minX+padding, -minY+padding);
 							context.Rectangle (padding,padding,maxX-minX,maxY-minY);
 							context.Fill ();
-							surface2.WriteToPng (dialog.Filename);
+							surface2.WriteToPng (filename);
 						}
 					}
 				}
+				
+				this.controller.CurrentColorScheme = oldTheme;
+			}
+			
+			dialog.Destroy();	
+			
+			
+		}
+		
+		public void ExportCurrentViewAsPdf ()
+		{
+			var dialog = new FileChooserDialog("Save image as...", this.controller.Window,
+			FileChooserAction.Save, "Cancel", ResponseType.Cancel, "Save", ResponseType.Accept);
+			
+			if (dialog.Run() == (int) ResponseType.Accept) {
+				string filename = dialog.Filename.EndsWith (".pdf") ? dialog.Filename : dialog.Filename + ".pdf";
+				
+				int minX , minY, maxX, maxY;
+				var currentView = this.controller.Window.viewsNotebook.CurrentView;
+				
+				var oldTheme = this.controller.CurrentColorScheme;
+				this.controller.CurrentColorScheme = new BWColorScheme ();
+				
+				currentView.GetSize (out minX, out maxX, out minY, out maxY);
+				
+				using (var surface = new PdfSurface (filename, maxX-minX, maxY-minY)) {
+					using (Context context = new Context (surface)) {
+						context.Translate (-minX, -minY);
+						currentView.Display (context);
+						context.ShowPage ();
+					}
+				}
+				this.controller.CurrentColorScheme = oldTheme;
 			}
 			
 			dialog.Destroy();	

@@ -187,7 +187,7 @@ namespace Beaver.Controllers
 		{
 			bool retVal = false;
 			if (clickedElement is Goal) {	
-				var refinements = this.GetAll ();
+				var refinements = this.controller.RefinementController.GetAll (clickedElement as Goal);
 				if (refinements.Count() == 0) {
 					var clickedGoal = clickedElement as Goal;
 					var assignItem = new MenuItem("Obstruct...");

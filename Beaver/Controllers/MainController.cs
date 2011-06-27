@@ -145,11 +145,20 @@ namespace Beaver.Controllers
 		/// </param>
 		public MainController (MainWindow window)
 		{	
-			CurrentColorScheme = new BWColorScheme ();
+			CurrentColorScheme = new TangoColorScheme ();
 			
 			this.Window = window;
 			this.Window.Controller = this;
 			
+			InitControllers ();
+			
+			// Finish loading application
+			this.LoadConfiguration();
+			this.LoadPlugins();
+		}
+
+		private void InitControllers ()
+		{
 			ViewController = new ViewController (this);
 			GoalController = new GoalController (this);
 			AgentController = new AgentController (this);
@@ -162,6 +171,7 @@ namespace Beaver.Controllers
 			ExceptionController = new ExceptionController (this);
 			DomainPropertyController = new DomainPropertyController (this);
 			
+			controllers = new List<IController> ();
 			controllers.AddRange (new IController[] {
 				ViewController,	GoalController, AgentController, RefinementController, 
 				ResponsibilityController, ObstacleController,
@@ -169,10 +179,6 @@ namespace Beaver.Controllers
 				ObstacleRefinementController, ExceptionController,
 				DomainPropertyController
 			});
-			
-			// Finish loading application
-			this.LoadConfiguration();
-			this.LoadPlugins();
 		}
 		
 		/// <summary>
@@ -202,7 +208,13 @@ namespace Beaver.Controllers
 			Application.Quit();
 		}
 		
-		#region Load/Save project
+		#region New/Load/Save project
+		
+		public void NewProject ()
+		{
+			InitControllers ();
+			Window.Update ();
+		}
 		
 		/// <summary>
 		/// Saves the project.

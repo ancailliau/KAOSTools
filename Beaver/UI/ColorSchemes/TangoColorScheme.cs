@@ -30,6 +30,8 @@ namespace Beaver.UI.ColorSchemes
 	public class TangoColorScheme : IColorScheme
 	{
 		
+		public bool effect { get { return false; } }
+		
 		public string AgentFillColor { get { return  "#fce94f"; } }
 		public string AgentStrokeColor { get { return  "#c4a000"; } }
 		public string AgentTextColor { get { return  "#000"; } }
