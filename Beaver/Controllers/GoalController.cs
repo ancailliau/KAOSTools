@@ -171,10 +171,14 @@ namespace Beaver.Controllers
 		{
 			bool retVal = false;
 			
-			if (clickedElement == null & source is ConceptsTreeView) {				
+			if (clickedElement == null) {
 				var addItem = new MenuItem("Add goal...");
 				addItem.Activated += delegate(object sender2, EventArgs e) {
-					this.AddGoal ();
+					this.AddGoal ("", (obj) => {
+						if (source is DiagramArea) {
+							this.controller.ViewController.AddToCurrentView (obj);
+						}
+					});
 				};
 				menu.Add(addItem);
 				retVal = true;
