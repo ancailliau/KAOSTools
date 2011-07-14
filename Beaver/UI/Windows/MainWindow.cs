@@ -112,6 +112,13 @@ namespace Beaver.UI.Windows {
 			hpaned1.Add2 (viewsNotebook);
 			hpaned1.ShowAll();
 		}
+
+		public void Reset ()
+		{
+			viewsNotebook.CloseAll ();
+			conceptTreeView.Clear ();
+			viewList.Clear ();
+		}
 		
 		public void Update ()
 		{

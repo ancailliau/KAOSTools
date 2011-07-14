@@ -77,6 +77,13 @@ namespace Beaver.UI.Widgets
 			// Set up the content
 			this.Update ();
 		}
+
+		public void Clear ()
+		{
+			this.store.Clear ();
+			treePopulater.RemoveAll ((x) => true);
+			menuPopulater.RemoveAll ((x) => true);
+		}
 		
 		/// <summary>
 		/// Handles the event row activated.

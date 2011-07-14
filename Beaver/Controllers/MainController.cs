@@ -212,6 +212,7 @@ namespace Beaver.Controllers
 		
 		public void NewProject ()
 		{
+			Window.Reset ();
 			InitControllers ();
 			Window.Update ();
 		}

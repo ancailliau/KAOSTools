@@ -73,6 +73,17 @@ namespace Beaver.UI.Widgets
 			this.controller = null;
 			this.Scrollable = true;
 		}
+
+		public void CloseAll ()
+		{
+			foreach (var child in this.Children) {
+				var scroll = (ScrolledWindow) child;
+				var viewport = (Viewport) scroll.Child;
+				var diagram = (DiagramArea) viewport.Child;
+				int pageNum = this.PageNum (child);
+				Hide (pageNum);
+			}
+		}
 		
 		/// <summary>
 		/// Displaies the view.
