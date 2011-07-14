@@ -25,6 +25,7 @@ namespace Beaver
 			public string id = "";
 			public string name = "";
 			public string definition = "";
+			public float likelihood = 1f;
 			public List<FutureRefinement> refinements = new List<FutureRefinement>();
 			public List<FutureResponsibility> futureResponsibilities = new List<FutureResponsibility>();
 			public List<FutureObstruction> futureObstructions = new List<FutureObstruction>();
@@ -81,6 +82,7 @@ namespace Beaver
 			public string id = "";
 			public string name = "";
 			public string definition = "";
+			public float likelihood = 1f;
 			public List<FutureObstacleRefinement> refinements = new List<FutureObstacleRefinement>();
 		}
 		
@@ -139,7 +141,8 @@ namespace Beaver
 				if (reader.IsStartElement ("goal")) {
 					string id = reader.GetAttribute ("id") ?? Guid.NewGuid().ToString();
 					string name = reader.GetAttribute ("name");
-					var futureGoal = new FutureGoal () { id = id, name = name };
+					float likelihood = float.Parse(reader.GetAttribute ("likelihood") ?? "1");
+					var futureGoal = new FutureGoal () { id = id, name = name, likelihood = likelihood };
 					this.futureGoals.Add (futureGoal);
 					
 					while (reader.Read()) {
@@ -224,7 +227,8 @@ namespace Beaver
 				} else if (reader.IsStartElement ("obstacle")) {
 					string id = reader.GetAttribute ("id") ?? Guid.NewGuid().ToString();
 					string name = reader.GetAttribute ("name");
-					var futurObstacle = new FutureObstacle () { id = id, name = name };
+					float likelihood = float.Parse(reader.GetAttribute ("likelihood") ?? "1");
+					var futurObstacle = new FutureObstacle () { id = id, name = name, likelihood = likelihood };
 					while (!reader.IsEmptyElement && reader.Read()) {
 						if (reader.IsStartElement("refinement")) {
 							var refinement = new FutureObstacleRefinement() {
@@ -292,7 +296,8 @@ namespace Beaver
 		{
 			foreach (var futureGoal in futureGoals) {
 				this.controller.GoalController.Add (new Goal(futureGoal.name, futureGoal.definition) {
-					Id = futureGoal.id
+					Id = futureGoal.id,
+					Likelihood = futureGoal.likelihood
 				}, false);
 			}
 			
@@ -301,7 +306,7 @@ namespace Beaver
 			}
 			
 			foreach (var futureObstacle in futureObstacles) {
-				this.controller.ObstacleController.Add(new Obstacle (futureObstacle.name, futureObstacle.definition) {
+				this.controller.ObstacleController.Add(new Obstacle (futureObstacle.name, futureObstacle.definition, futureObstacle.likelihood) {
 					Id = futureObstacle.id
 				}, false);
 			}

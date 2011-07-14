@@ -54,6 +54,11 @@ namespace Beaver.Model
 			set;
 		}
 		
+		public float Likelihood {
+			get;
+			set;
+		}
+		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Beaver.Model.Goal"/> class.
 		/// </summary>

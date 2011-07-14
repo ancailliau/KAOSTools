@@ -130,7 +130,7 @@ namespace Beaver.Controllers
 			var dialog = new AddObstacleDialog(controller.Window, obstacleName);
 			dialog.Response += delegate(object o, Gtk.ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Ok) {
-					var obstacle = new Obstacle(dialog.ObstacleName, dialog.ObstacleDefinition);
+					var obstacle = new Obstacle(dialog.ObstacleName, dialog.ObstacleDefinition, dialog.Likelihood);
 					this.Add (obstacle);
 					action (obstacle);
 				}
@@ -147,6 +147,7 @@ namespace Beaver.Controllers
 				if (args.ResponseId == Gtk.ResponseType.Ok) {
 					obstacle.Name = dialog.ObstacleName;
 					obstacle.Definition = dialog.ObstacleDefinition;
+					obstacle.Likelihood = dialog.Likelihood;
 					this.Update (obstacle);
 				}
 				dialog.Destroy();
@@ -197,7 +198,16 @@ namespace Beaver.Controllers
 				deleteItem.Activated += delegate(object sender2, EventArgs e) {
 					this.RemoveObstacle (clickedObstacle);
 				};
-				menu.Add(deleteItem);
+				menu.Add(deleteItem);				
+				
+				var computeItem = new MenuItem("Compute likelihood");
+				computeItem.Activated += delegate(object sender2, EventArgs e) {
+					this.ComputeLikelihood (clickedObstacle);
+					if (ObstacleUpdated != null)
+						ObstacleUpdated (clickedObstacle);
+				};
+				menu.Add(computeItem);
+				
 				retVal = true;
 			}
 			return retVal;
@@ -220,6 +230,19 @@ namespace Beaver.Controllers
 				var resolutions = this.controller.ResolutionController.GetAll (obstacle).Cast<KAOSElement> ();
 				this.controller.ResolutionController.Populate (resolutions, store, subIter);
 			}
+		}
+
+		public float ComputeLikelihood (Obstacle obstacle)
+		{
+			float l = 0;
+			IEnumerable<ObstacleRefinement> refinements = this.controller.ObstacleRefinementController.GetAll (obstacle);
+			if (refinements.Count () > 0) {
+				foreach (var refinement in refinements) {
+					l += this.controller.ObstacleRefinementController.ComputeLikelihood (refinement);
+				}
+				obstacle.Likelihood = Math.Min (1, Math.Max (0, l));;
+			}
+			return obstacle.Likelihood;
 		}
 	}
 }

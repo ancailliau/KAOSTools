@@ -138,6 +138,34 @@ namespace Beaver.UI.Shapes
 			context.MoveTo(Position.X - 150/2, Position.Y - textHeight/2);
 			Pango.CairoHelper.ShowLayout(context, pangoLayout);
 			
+			// Display likelihood
+			
+			pangoLayout = new Pango.Layout(view.DrawingArea.PangoContext);
+			pangoLayout.Alignment = Pango.Alignment.Center;
+			pangoLayout.SetMarkup(string.Format ("{0:0.00}",
+				((Goal) RepresentedElement).Likelihood));
+			
+			var fontDescr = new Pango.FontDescription ();
+			fontDescr.Size = (int) (9 * Pango.Scale.PangoScale);
+			pangoLayout.FontDescription = fontDescr;
+			
+			pangoLayout.GetPixelSize(out textWidth, out textHeight);
+			
+			int paddingLikelihood = 4;
+			context.MoveTo (Position.X - width / 2f + shear / 2f - textWidth / 2f - paddingLikelihood / 2f,
+				Position.Y - height / 2f - textHeight / 2f  - paddingLikelihood / 2f);
+			context.Rectangle (Position.X - width / 2f + shear / 2f - textWidth / 2f - paddingLikelihood / 2f,
+				Position.Y - height / 2f - textHeight / 2f - paddingLikelihood / 2f, textWidth + paddingLikelihood, textHeight + paddingLikelihood);
+			context.SetColor ("#000");
+			context.StrokePreserve ();
+			context.SetColor ("#fff");
+			context.Fill ();
+			
+			context.SetColor (view.Controller.CurrentColorScheme.ExceptionTextColor);
+			context.MoveTo(Position.X - width / 2f + shear / 2f - textWidth / 2f,
+				Position.Y - height / 2f - textHeight / 2f);
+			Pango.CairoHelper.ShowLayout(context, pangoLayout);
+			
 			context.Source = oldSource;
 		}
 		

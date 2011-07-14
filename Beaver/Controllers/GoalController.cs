@@ -199,6 +199,14 @@ namespace Beaver.Controllers
 				};
 				menu.Add(deleteItem);
 				
+				var computeItem = new MenuItem("Compute likelihood");
+				computeItem.Activated += delegate(object sender2, EventArgs e) {
+					this.ComputeLikelihood (clickedGoal);
+					if (GoalUpdated != null)
+						GoalUpdated (clickedGoal);
+				};
+				menu.Add(computeItem);
+				
 				retVal = true;
 			}
 			
@@ -229,6 +237,26 @@ namespace Beaver.Controllers
 				this.controller.ExceptionController.Populate (exceptions, store, subIter);
 				
 			}
+		}
+		
+		public float ComputeLikelihood (Goal g)
+		{
+			float l = 0;
+			if (this.controller.ResponsibilityController.GetAll(g).Count() > 0) {
+				l = 1;
+				foreach (var obst in this.controller.ObstructionController.GetAll (g)) {
+					l -= this.controller.ObstacleController.ComputeLikelihood (obst.Obstacle);
+				}
+				
+			} else {
+				l = 0;
+				foreach (var refinement in this.controller.RefinementController.GetAll (g)) {
+					l += this.controller.RefinementController.ComputeLikelihood (refinement);
+				}
+			}
+			g.Likelihood = Math.Min (1, Math.Max (0, l));
+			
+			return l;
 		}
 	}
 }

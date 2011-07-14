@@ -217,6 +217,20 @@ namespace Beaver.Controllers
 			}
 		}
 		
+		public float ComputeLikelihood (Refinement refinement)
+		{
+			float l = 1;
+			foreach (var refinee in refinement.Refinees) {
+				if (refinee is Goal) {
+					l *= this.controller.GoalController.ComputeLikelihood (refinee as Goal);
+				} else if (refinee is DomainProperty) {
+					l *= this.controller.DomainPropertyController.ComputeLikelihood (refinee as DomainProperty);
+				} else {
+					Console.WriteLine ("Cannot compute likelihood for {0}", refinee.GetType ().ToString ());
+				}
+			}
+			return l;
+		}
 	}
 }
 

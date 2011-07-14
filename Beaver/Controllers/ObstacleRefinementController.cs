@@ -213,6 +213,21 @@ namespace Beaver.Controllers
 				this.controller.ObstacleController.Populate (refinement.Refinees, store, subIter);
 			}
 		}
+
+		public float ComputeLikelihood (ObstacleRefinement refinement)
+		{
+			float l = 1;
+			foreach (var refinee in refinement.Refinees) {
+				if (refinee is Obstacle) {
+					l *= this.controller.ObstacleController.ComputeLikelihood (refinee as Obstacle);
+				} else if (refinee is DomainProperty) {
+					l *= this.controller.DomainPropertyController.ComputeLikelihood (refinee as DomainProperty);
+				} else {
+					Console.WriteLine ("Cannot compute likelihood for {0}", refinee.GetType ().ToString ());
+				}
+			}
+			return l;
+		}
 	}
 }
 

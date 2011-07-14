@@ -214,6 +214,11 @@ namespace Beaver.Controllers
 				store.AppendValues (iter, domProp.Name, domProp, pixbuf);
 			}
 		}
+		
+		public float ComputeLikelihood (DomainProperty g)
+		{
+			return 1;
+		}
 	}
 }
 

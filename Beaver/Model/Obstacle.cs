@@ -44,12 +44,18 @@ namespace Beaver.Model
 			set;
 		}
 		
-		public Obstacle (string name, string definition)
+		public float Likelihood {
+			get;
+			set;
+		}
+		
+		public Obstacle (string name, string definition, float likelihood)
 			: base ()
 		{
 			Id = Guid.NewGuid ().ToString ();
 			Name = name;
 			Definition = definition;
+			Likelihood = likelihood;
 		}
 		
 		public override bool Equals (object obj)

@@ -45,6 +45,11 @@ namespace Beaver.UI.Dialogs
 			}
 		}
 		
+		public float Likelihood {
+			get { return (float) Math.Min( Math.Max (likelihoodSpin.Value, 0), 1); }
+			set { likelihoodSpin.Value = Math.Min( Math.Max (value, 0), 1); }
+		}
+		
 		public AddObstacleDialog (MainWindow window)
 			: this (window, "")
 		{
@@ -66,6 +71,7 @@ namespace Beaver.UI.Dialogs
 			if (obstacle != null) {
 				nameEntry.Text = obstacle.Name;
 				definitionTextview.Buffer.Text = obstacle.Definition;
+				Likelihood = obstacle.Likelihood;
 			}
 		}
 	}

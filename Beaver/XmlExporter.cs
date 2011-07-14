@@ -88,6 +88,7 @@ namespace Beaver
 			writer.WriteStartElement("obstacle");
 			writer.WriteAttributeString("id", obstacle.Id);
 			writer.WriteAttributeString("name", obstacle.Name);
+			writer.WriteAttributeString("likelihood", obstacle.Likelihood.ToString());
 			writer.WriteElementString("definition", obstacle.Definition);
 			
 			var refinements = this.controller.ObstacleRefinementController.GetAll (obstacle);
@@ -111,6 +112,7 @@ namespace Beaver
 				
 			writer.WriteAttributeString("id", goal.Id);
 			writer.WriteAttributeString("name", goal.Name);
+			writer.WriteAttributeString("likelihood", goal.Likelihood.ToString ());
 			
 			writer.WriteElementString("definition", goal.Definition);
 				
