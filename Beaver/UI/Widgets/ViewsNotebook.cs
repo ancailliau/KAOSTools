@@ -83,6 +83,7 @@ namespace Beaver.UI.Widgets
 				int pageNum = this.PageNum (child);
 				Hide (pageNum);
 			}
+			menuPopulater.Clear ();
 		}
 		
 		/// <summary>
