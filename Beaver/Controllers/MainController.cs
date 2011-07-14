@@ -427,6 +427,15 @@ namespace Beaver.Controllers
 			
 			return null;
 		}
+		
+		public void CheckModel () 
+		{
+			this.Window.ErrorList.Clear ();
+			this.GoalController.CheckModel ();
+		}
+		
+		
 	}
+	
 }
 

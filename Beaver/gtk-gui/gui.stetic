@@ -8,7 +8,7 @@
     <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <widget-library name="../bin/Debug/Beaver.exe" internal="true" />
   </import>
-  <widget class="Gtk.Dialog" id="Beaver.UI.Dialogs.AddGoalDialog" design-size="400 167">
+  <widget class="Gtk.Dialog" id="Beaver.UI.Dialogs.AddGoalDialog" design-size="400 257">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Add new goal...</property>
     <property name="WindowPosition">CenterOnParent</property>
@@ -22,7 +22,7 @@
         <child>
           <widget class="Gtk.Table" id="table1">
             <property name="MemberName" />
-            <property name="NRows">2</property>
+            <property name="NRows">5</property>
             <property name="NColumns">2</property>
             <property name="RowSpacing">6</property>
             <property name="ColumnSpacing">6</property>
@@ -45,6 +45,28 @@
               <packing>
                 <property name="TopAttach">1</property>
                 <property name="BottomAttach">2</property>
+                <property name="LeftAttach">1</property>
+                <property name="RightAttach">2</property>
+                <property name="AutoSize">True</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">True</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Entry" id="hardThresholdEntry">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="IsEditable">True</property>
+                <property name="InvisibleChar">●</property>
+              </widget>
+              <packing>
+                <property name="TopAttach">3</property>
+                <property name="BottomAttach">4</property>
                 <property name="LeftAttach">1</property>
                 <property name="RightAttach">2</property>
                 <property name="AutoSize">True</property>
@@ -98,6 +120,89 @@
               </packing>
             </child>
             <child>
+              <widget class="Gtk.Label" id="label3">
+                <property name="MemberName" />
+                <property name="Xalign">0</property>
+                <property name="LabelProp" translatable="yes">Soft threshold</property>
+              </widget>
+              <packing>
+                <property name="TopAttach">2</property>
+                <property name="BottomAttach">3</property>
+                <property name="AutoSize">True</property>
+                <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">False</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label4">
+                <property name="MemberName" />
+                <property name="Xalign">0</property>
+                <property name="LabelProp" translatable="yes">Hard threshold</property>
+              </widget>
+              <packing>
+                <property name="TopAttach">3</property>
+                <property name="BottomAttach">4</property>
+                <property name="AutoSize">True</property>
+                <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">False</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label5">
+                <property name="MemberName" />
+                <property name="Xalign">0</property>
+                <property name="LabelProp" translatable="yes">Computed likelihood</property>
+              </widget>
+              <packing>
+                <property name="TopAttach">4</property>
+                <property name="BottomAttach">5</property>
+                <property name="AutoSize">True</property>
+                <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">False</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Entry" id="likelihoodEntry">
+                <property name="MemberName" />
+                <property name="Sensitive">False</property>
+                <property name="CanFocus">True</property>
+                <property name="IsEditable">False</property>
+                <property name="InvisibleChar">●</property>
+              </widget>
+              <packing>
+                <property name="TopAttach">4</property>
+                <property name="BottomAttach">5</property>
+                <property name="LeftAttach">1</property>
+                <property name="RightAttach">2</property>
+                <property name="AutoSize">True</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">True</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
               <widget class="Gtk.Entry" id="nameEntry">
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
@@ -105,6 +210,28 @@
                 <property name="InvisibleChar">●</property>
               </widget>
               <packing>
+                <property name="LeftAttach">1</property>
+                <property name="RightAttach">2</property>
+                <property name="AutoSize">True</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">True</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Entry" id="softThresholdEntry">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="IsEditable">True</property>
+                <property name="InvisibleChar">●</property>
+              </widget>
+              <packing>
+                <property name="TopAttach">2</property>
+                <property name="BottomAttach">3</property>
                 <property name="LeftAttach">1</property>
                 <property name="RightAttach">2</property>
                 <property name="AutoSize">True</property>
@@ -278,7 +405,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Window" id="Beaver.UI.Windows.MainWindow" design-size="461 300">
+  <widget class="Gtk.Window" id="Beaver.UI.Windows.MainWindow" design-size="508 300">
     <action-group name="Default">
       <action id="ApplicationAction">
         <property name="Type">Action</property>
@@ -365,6 +492,23 @@
         <property name="ShortLabel" translatable="yes">Export current view as PDF</property>
         <signal name="Activated" handler="OnExportCurrentViewAsPDFActionActivated" />
       </action>
+      <action id="ProbaAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Proba</property>
+        <property name="ShortLabel" translatable="yes">Proba</property>
+      </action>
+      <action id="GetFalsifiedGoalsAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Get falsified goals</property>
+        <property name="ShortLabel" translatable="yes">Get falsified goals</property>
+        <signal name="Activated" handler="OnGetFalsifiedGoalsActionActivated" />
+      </action>
+      <action id="CheckAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Check</property>
+        <property name="ShortLabel" translatable="yes">Check</property>
+        <signal name="Activated" handler="OnCheckActionActivated" />
+      </action>
     </action-group>
     <property name="MemberName" />
     <property name="Title" translatable="yes">A simple Kaos Editor</property>
@@ -387,6 +531,8 @@
                 <node type="Separator" />
                 <node type="Menuitem" action="saveAction" />
                 <node type="Menuitem" action="saveAsAction" />
+                <node type="Separator" />
+                <node type="Menuitem" action="CheckAction" />
               </node>
               <node type="Menu" action="ViewsAction">
                 <node type="Menuitem" action="ExportCurrentViewAction" />

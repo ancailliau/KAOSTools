@@ -155,6 +155,7 @@
     <Compile Include="UI\ColorSchemes\IColorScheme.cs" />
     <Compile Include="UI\ColorSchemes\TangoColorScheme.cs" />
     <Compile Include="UI\ColorSchemes\BWColorScheme.cs" />
+    <Compile Include="UI\Widgets\ErrorList.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

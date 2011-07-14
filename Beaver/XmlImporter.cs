@@ -26,6 +26,8 @@ namespace Beaver
 			public string name = "";
 			public string definition = "";
 			public float likelihood = 1f;
+			public float softthreshold = 1f;
+			public float hardthreshold = 1f;
 			public List<FutureRefinement> refinements = new List<FutureRefinement>();
 			public List<FutureResponsibility> futureResponsibilities = new List<FutureResponsibility>();
 			public List<FutureObstruction> futureObstructions = new List<FutureObstruction>();
@@ -144,7 +146,11 @@ namespace Beaver
 					string id = reader.GetAttribute ("id") ?? Guid.NewGuid().ToString();
 					string name = reader.GetAttribute ("name");
 					float likelihood = float.Parse(reader.GetAttribute ("likelihood") ?? "1");
-					var futureGoal = new FutureGoal () { id = id, name = name, likelihood = likelihood };
+					var futureGoal = new FutureGoal () { id = id, name = name, 
+						likelihood = likelihood,
+						softthreshold = float.Parse(reader.GetAttribute ("softthreshold") ?? "1"),
+						hardthreshold = float.Parse(reader.GetAttribute ("hardthreshold") ?? "1")
+					};
 					this.futureGoals.Add (futureGoal);
 					
 					while (reader.Read()) {
@@ -301,7 +307,9 @@ namespace Beaver
 			foreach (var futureGoal in futureGoals) {
 				this.controller.GoalController.Add (new Goal(futureGoal.name, futureGoal.definition) {
 					Id = futureGoal.id,
-					Likelihood = futureGoal.likelihood
+					Likelihood = futureGoal.likelihood,
+					SoftThreshold = futureGoal.softthreshold,
+					HardThreshold = futureGoal.hardthreshold
 				}, false);
 			}
 			

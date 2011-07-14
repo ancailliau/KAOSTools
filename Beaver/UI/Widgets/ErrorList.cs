@@ -1,5 +1,5 @@
 // 
-// Goal.cs
+// ErrorList.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -23,85 +23,49 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using System.Collections.Generic;
 using Gtk;
-using Beaver.UI.Windows;
-using Beaver.UI.Dialogs;
-using Beaver.UI;
 
-namespace Beaver.Model
+namespace Beaver.UI.Widgets
 {
-	
-	/// <summary>
-	/// Represents a goal.
-	/// </summary>
-	public class Goal : IGoalRefinee
+	public class ErrorList : TreeView
 	{
-		public string Name {
-			get;
-			set;
-		}
+		public TreeStore store;
 		
-		public string Definition {
-			get;
-			set;
-		}
-		
-		public string Id {
-			get;
-			set;
-		}
-		
-		public float Likelihood {
-			get;
-			set;
-		}
-		
-		public float SoftThreshold {
-			get;
-			set;
-		}
-		
-		public float HardThreshold {
-			get;
-			set;
-		}
-		
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Beaver.Model.Goal"/> class.
-		/// </summary>
-		/// <param name='name'>
-		/// Name.
-		/// </param>
-		public Goal (string name, string definition) 
+		public ErrorList ()
 		{
-			Id = Guid.NewGuid().ToString();
-			Definition = definition;
-			Name = name;
-			Likelihood = 1;
-			SoftThreshold = 1;
-			HardThreshold = 1;
+			// Build column and renderers	
+			var column = new TreeViewColumn ();
+			this.AppendColumn (column);
+			this.HeadersVisible = false;
+			
+			var cell = new CellRendererText();
+			var iconCell = new CellRendererPixbuf();
+			column.PackStart(iconCell, false);
+			column.PackStart(cell, true);
+			column.AddAttribute (iconCell, "pixbuf", 1);
+			column.AddAttribute (cell, "text", 0);
+			
+			// Bind the model
+			store = new TreeStore(typeof(string), typeof(Gdk.Pixbuf));
+			this.Model = store;
 		}
 		
-		public override bool Equals (object obj)
+		public void AddError (string error) 
 		{
-			if (obj == null)
-				return false;
-			if (ReferenceEquals (this, obj))
-				return true;
-			if (obj.GetType () != typeof(Goal))
-				return false;
-			Model.Goal other = (Model.Goal)obj;
-			return Id == other.Id;
+			store.AppendValues (error, this.RenderIcon (Stock.DialogError, IconSize.Menu, null));
 		}
-
-		public override int GetHashCode ()
+		
+		public void AddWarning (string error) 
 		{
-			unchecked {
-				return (Id != null ? Id.GetHashCode () : 0);
-			}
+			store.AppendValues (error, this.RenderIcon (Stock.DialogWarning, IconSize.Menu, null));
 		}
+		
+		public void Clear ()
+		{
+			store.Clear ();
+		}
+		
 	}
 }
+

@@ -71,6 +71,11 @@ namespace Beaver.UI.Windows {
 		
 		public ConceptsTreeView viewList;
 		
+		public ErrorList ErrorList {
+			get;
+			set;
+		}
+		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Beaver.UI.Windows.MainWindow"/> class.
 		/// </summary>
@@ -109,7 +114,25 @@ namespace Beaver.UI.Windows {
 			notebookModelView.AppendPage (scroll2, viewLabel);
 			
 			hpaned1.Add1 (notebookModelView);
-			hpaned1.Add2 (viewsNotebook);
+			
+			var vpaned = new VPaned ();
+			vpaned.Add1 (viewsNotebook);
+			ErrorList = new ErrorList ();
+			
+			var nb = new Notebook ();
+			
+			var errorLabel = new HBox ();
+			errorLabel.PackEnd (new Label ("Warnings and errors"), true, true, 0);
+			errorLabel.ShowAll ();
+			
+			var errorScroll = new ScrolledWindow ();
+			errorScroll.Add (ErrorList);
+			nb.AppendPage (errorScroll, errorLabel);
+			
+			vpaned.Add2 (nb);
+			vpaned.Position = 360;
+			hpaned1.Add2 (vpaned);
+			
 			hpaned1.ShowAll();
 		}
 
@@ -209,5 +232,9 @@ namespace Beaver.UI.Windows {
 			this.Controller.ViewController.ExportCurrentViewAsPdf ();
 		}
 
+		protected void OnCheckActionActivated (object sender, System.EventArgs e)
+		{
+			this.Controller.CheckModel ();
+		}
 	}
 }

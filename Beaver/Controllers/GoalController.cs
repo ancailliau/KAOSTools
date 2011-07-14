@@ -118,7 +118,10 @@ namespace Beaver.Controllers
 			var dialog = new AddGoalDialog(controller.Window, goalName);
 			dialog.Response += delegate(object o, Gtk.ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Ok) {
-					var goal = new Goal(dialog.GoalName, dialog.GoalDefinition);
+					var goal = new Goal(dialog.GoalName, dialog.GoalDefinition) {
+						SoftThreshold = dialog.SoftThreshold,
+						HardThreshold = dialog.HardThreshold
+					};
 					this.Add (goal);
 					action(goal);
 				}
@@ -143,6 +146,8 @@ namespace Beaver.Controllers
 				if (args.ResponseId == Gtk.ResponseType.Ok) {
 					goal.Name = dialog.GoalName;
 					goal.Definition = dialog.GoalDefinition;
+					goal.SoftThreshold = dialog.SoftThreshold;
+					goal.HardThreshold = dialog.HardThreshold;
 					this.Update (goal);
 				}
 				dialog.Destroy();
@@ -257,6 +262,26 @@ namespace Beaver.Controllers
 			g.Likelihood = Math.Min (1, Math.Max (0, l));
 			
 			return l;
+		}
+		
+		public void CheckModel ()
+		{
+			var goals = this.GetAll ();
+			foreach (var g in goals) {
+				if (g.HardThreshold > g.SoftThreshold) {
+					this.controller.Window.ErrorList.AddError (string.Format ("Goal '{0}' has incoherent thresholds (Soft: {1} < Hard: {2})", g.Name, g.SoftThreshold, g.HardThreshold));
+				}
+				
+				if (g.Likelihood < g.HardThreshold) {
+					this.controller.Window.ErrorList.AddError (string.Format ("Goal '{0}' is hard-violated (Likelihood: {1}, Limit: {2})", g.Name, g.Likelihood, g.HardThreshold));
+				} else if (g.Likelihood < g.SoftThreshold) {
+					this.controller.Window.ErrorList.AddError (string.Format ("Goal '{0}' is soft-violated (Likelihood: {1}, Limit: {2})", g.Name, g.Likelihood, g.SoftThreshold));
+				}
+				
+				if (g.Likelihood == 0) {
+					this.controller.Window.ErrorList.AddWarning (string.Format ("Goal '{0}' has a zero likelihood", g.Name));
+				}
+			}
 		}
 	}
 }

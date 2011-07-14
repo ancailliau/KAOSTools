@@ -19,6 +19,9 @@ namespace Beaver.UI.Windows
 		private global::Gtk.Action ExportCurrentViewAction;
 		private global::Gtk.Action newAction;
 		private global::Gtk.Action ExportCurrentViewAsPDFAction;
+		private global::Gtk.Action ProbaAction;
+		private global::Gtk.Action GetFalsifiedGoalsAction;
+		private global::Gtk.Action CheckAction;
 		private global::Gtk.VBox mainVBox;
 		private global::Gtk.MenuBar mainMenu;
 		private global::Gtk.Toolbar toolbar1;
@@ -68,6 +71,15 @@ namespace Beaver.UI.Windows
 			this.ExportCurrentViewAsPDFAction = new global::Gtk.Action ("ExportCurrentViewAsPDFAction", global::Mono.Unix.Catalog.GetString ("Export current view as PDF"), null, null);
 			this.ExportCurrentViewAsPDFAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Export current view as PDF");
 			w1.Add (this.ExportCurrentViewAsPDFAction, null);
+			this.ProbaAction = new global::Gtk.Action ("ProbaAction", global::Mono.Unix.Catalog.GetString ("Proba"), null, null);
+			this.ProbaAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Proba");
+			w1.Add (this.ProbaAction, null);
+			this.GetFalsifiedGoalsAction = new global::Gtk.Action ("GetFalsifiedGoalsAction", global::Mono.Unix.Catalog.GetString ("Get falsified goals"), null, null);
+			this.GetFalsifiedGoalsAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Get falsified goals");
+			w1.Add (this.GetFalsifiedGoalsAction, null);
+			this.CheckAction = new global::Gtk.Action ("CheckAction", global::Mono.Unix.Catalog.GetString ("Check"), null, null);
+			this.CheckAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Check");
+			w1.Add (this.CheckAction, null);
 			this.UIManager.InsertActionGroup (w1, 0);
 			this.AddAccelGroup (this.UIManager.AccelGroup);
 			this.Name = "Beaver.UI.Windows.MainWindow";
@@ -79,7 +91,7 @@ namespace Beaver.UI.Windows
 			this.mainVBox = new global::Gtk.VBox ();
 			this.mainVBox.Name = "mainVBox";
 			// Container child mainVBox.Gtk.Box+BoxChild
-			this.UIManager.AddUiFromString ("<ui><menubar name='mainMenu'><menu name='ApplicationAction' action='ApplicationAction'><menuitem name='quitAction' action='quitAction'/></menu><menu name='ModelAction' action='ModelAction'><menuitem name='openAction' action='openAction'/><separator/><menuitem name='saveAction' action='saveAction'/><menuitem name='saveAsAction' action='saveAsAction'/></menu><menu name='ViewsAction' action='ViewsAction'><menuitem name='ExportCurrentViewAction' action='ExportCurrentViewAction'/><menuitem name='ExportCurrentViewAsPDFAction' action='ExportCurrentViewAsPDFAction'/></menu></menubar></ui>");
+			this.UIManager.AddUiFromString ("<ui><menubar name='mainMenu'><menu name='ApplicationAction' action='ApplicationAction'><menuitem name='quitAction' action='quitAction'/></menu><menu name='ModelAction' action='ModelAction'><menuitem name='openAction' action='openAction'/><separator/><menuitem name='saveAction' action='saveAction'/><menuitem name='saveAsAction' action='saveAsAction'/><separator/><menuitem name='CheckAction' action='CheckAction'/></menu><menu name='ViewsAction' action='ViewsAction'><menuitem name='ExportCurrentViewAction' action='ExportCurrentViewAction'/><menuitem name='ExportCurrentViewAsPDFAction' action='ExportCurrentViewAsPDFAction'/></menu></menubar></ui>");
 			this.mainMenu = ((global::Gtk.MenuBar)(this.UIManager.GetWidget ("/mainMenu")));
 			this.mainMenu.Name = "mainMenu";
 			this.mainVBox.Add (this.mainMenu);
@@ -134,6 +146,7 @@ namespace Beaver.UI.Windows
 			this.ExportCurrentViewAction.Activated += new global::System.EventHandler (this.OnExportCurrentViewActionActivated);
 			this.newAction.Activated += new global::System.EventHandler (this.OnNewActionActivated);
 			this.ExportCurrentViewAsPDFAction.Activated += new global::System.EventHandler (this.OnExportCurrentViewAsPDFActionActivated);
+			this.CheckAction.Activated += new global::System.EventHandler (this.OnCheckActionActivated);
 		}
 	}
 }

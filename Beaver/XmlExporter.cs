@@ -114,6 +114,9 @@ namespace Beaver
 			writer.WriteAttributeString("name", goal.Name);
 			writer.WriteAttributeString("likelihood", goal.Likelihood.ToString ());
 			
+			writer.WriteAttributeString("softthreshold", goal.SoftThreshold.ToString ());
+			writer.WriteAttributeString("hardthreshold", goal.HardThreshold.ToString ());
+						
 			writer.WriteElementString("definition", goal.Definition);
 				
 			var refinements = this.controller.RefinementController.GetAll (goal);

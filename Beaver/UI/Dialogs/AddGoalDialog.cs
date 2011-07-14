@@ -59,6 +59,9 @@ namespace Beaver.UI.Dialogs
 			if (goal != null) {
 				nameEntry.Text = goal.Name;
 				definitionTextView.Buffer.Text = goal.Definition;
+				likelihoodEntry.Text = goal.Likelihood.ToString ();
+				SoftThreshold = goal.SoftThreshold;
+				HardThreshold = goal.HardThreshold;
 			}
 		}
 		
@@ -71,6 +74,30 @@ namespace Beaver.UI.Dialogs
 		public string GoalDefinition {
 			get {
 				return definitionTextView.Buffer.Text.Trim();
+			}
+		}
+		
+		public float SoftThreshold {
+			get { try {
+					return Math.Max (0, Math.Min (1, float.Parse(softThresholdEntry.Text)));
+				} catch (Exception e) {
+				}
+				return 1;
+			}
+			set {
+				softThresholdEntry.Text = value.ToString ();
+			}
+		}
+		
+		public float HardThreshold {
+			get { try {
+					return Math.Max (0, Math.Min (1, float.Parse(hardThresholdEntry.Text)));
+				} catch (Exception e) {
+				}
+				return 1;
+			}
+			set {
+				hardThresholdEntry.Text = value.ToString ();
 			}
 		}
 		

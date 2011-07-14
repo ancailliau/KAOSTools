@@ -7,9 +7,15 @@ namespace Beaver.UI.Dialogs
 		private global::Gtk.Table table1;
 		private global::Gtk.ScrolledWindow GtkScrolledWindow;
 		private global::Gtk.TextView definitionTextView;
+		private global::Gtk.Entry hardThresholdEntry;
 		private global::Gtk.Label label1;
 		private global::Gtk.Label label2;
+		private global::Gtk.Label label3;
+		private global::Gtk.Label label4;
+		private global::Gtk.Label label5;
+		private global::Gtk.Entry likelihoodEntry;
 		private global::Gtk.Entry nameEntry;
+		private global::Gtk.Entry softThresholdEntry;
 		private global::Gtk.Button buttonCancel;
 		private global::Gtk.Button buttonOk;
         
@@ -26,7 +32,7 @@ namespace Beaver.UI.Dialogs
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
 			// Container child dialog1_VBox.Gtk.Box+BoxChild
-			this.table1 = new global::Gtk.Table (((uint)(2)), ((uint)(2)), false);
+			this.table1 = new global::Gtk.Table (((uint)(5)), ((uint)(2)), false);
 			this.table1.Name = "table1";
 			this.table1.RowSpacing = ((uint)(6));
 			this.table1.ColumnSpacing = ((uint)(6));
@@ -50,15 +56,28 @@ namespace Beaver.UI.Dialogs
 			w3.RightAttach = ((uint)(2));
 			w3.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
+			this.hardThresholdEntry = new global::Gtk.Entry ();
+			this.hardThresholdEntry.CanFocus = true;
+			this.hardThresholdEntry.Name = "hardThresholdEntry";
+			this.hardThresholdEntry.IsEditable = true;
+			this.hardThresholdEntry.InvisibleChar = '●';
+			this.table1.Add (this.hardThresholdEntry);
+			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table1 [this.hardThresholdEntry]));
+			w4.TopAttach = ((uint)(3));
+			w4.BottomAttach = ((uint)(4));
+			w4.LeftAttach = ((uint)(1));
+			w4.RightAttach = ((uint)(2));
+			w4.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child table1.Gtk.Table+TableChild
 			this.label1 = new global::Gtk.Label ();
 			this.label1.Name = "label1";
 			this.label1.Xalign = 0F;
 			this.label1.Yalign = 0F;
 			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Name");
 			this.table1.Add (this.label1);
-			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table1 [this.label1]));
-			w4.XOptions = ((global::Gtk.AttachOptions)(4));
-			w4.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.table1 [this.label1]));
+			w5.XOptions = ((global::Gtk.AttachOptions)(4));
+			w5.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
@@ -66,11 +85,58 @@ namespace Beaver.UI.Dialogs
 			this.label2.Yalign = 0F;
 			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("Definition");
 			this.table1.Add (this.label2);
-			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.table1 [this.label2]));
-			w5.TopAttach = ((uint)(1));
-			w5.BottomAttach = ((uint)(2));
-			w5.XOptions = ((global::Gtk.AttachOptions)(4));
-			w5.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.table1 [this.label2]));
+			w6.TopAttach = ((uint)(1));
+			w6.BottomAttach = ((uint)(2));
+			w6.XOptions = ((global::Gtk.AttachOptions)(4));
+			w6.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child table1.Gtk.Table+TableChild
+			this.label3 = new global::Gtk.Label ();
+			this.label3.Name = "label3";
+			this.label3.Xalign = 0F;
+			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("Soft threshold");
+			this.table1.Add (this.label3);
+			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.table1 [this.label3]));
+			w7.TopAttach = ((uint)(2));
+			w7.BottomAttach = ((uint)(3));
+			w7.XOptions = ((global::Gtk.AttachOptions)(4));
+			w7.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child table1.Gtk.Table+TableChild
+			this.label4 = new global::Gtk.Label ();
+			this.label4.Name = "label4";
+			this.label4.Xalign = 0F;
+			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("Hard threshold");
+			this.table1.Add (this.label4);
+			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.table1 [this.label4]));
+			w8.TopAttach = ((uint)(3));
+			w8.BottomAttach = ((uint)(4));
+			w8.XOptions = ((global::Gtk.AttachOptions)(4));
+			w8.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child table1.Gtk.Table+TableChild
+			this.label5 = new global::Gtk.Label ();
+			this.label5.Name = "label5";
+			this.label5.Xalign = 0F;
+			this.label5.LabelProp = global::Mono.Unix.Catalog.GetString ("Computed likelihood");
+			this.table1.Add (this.label5);
+			global::Gtk.Table.TableChild w9 = ((global::Gtk.Table.TableChild)(this.table1 [this.label5]));
+			w9.TopAttach = ((uint)(4));
+			w9.BottomAttach = ((uint)(5));
+			w9.XOptions = ((global::Gtk.AttachOptions)(4));
+			w9.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child table1.Gtk.Table+TableChild
+			this.likelihoodEntry = new global::Gtk.Entry ();
+			this.likelihoodEntry.Sensitive = false;
+			this.likelihoodEntry.CanFocus = true;
+			this.likelihoodEntry.Name = "likelihoodEntry";
+			this.likelihoodEntry.IsEditable = false;
+			this.likelihoodEntry.InvisibleChar = '●';
+			this.table1.Add (this.likelihoodEntry);
+			global::Gtk.Table.TableChild w10 = ((global::Gtk.Table.TableChild)(this.table1 [this.likelihoodEntry]));
+			w10.TopAttach = ((uint)(4));
+			w10.BottomAttach = ((uint)(5));
+			w10.LeftAttach = ((uint)(1));
+			w10.RightAttach = ((uint)(2));
+			w10.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.nameEntry = new global::Gtk.Entry ();
 			this.nameEntry.CanFocus = true;
@@ -78,21 +144,34 @@ namespace Beaver.UI.Dialogs
 			this.nameEntry.IsEditable = true;
 			this.nameEntry.InvisibleChar = '●';
 			this.table1.Add (this.nameEntry);
-			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.table1 [this.nameEntry]));
-			w6.LeftAttach = ((uint)(1));
-			w6.RightAttach = ((uint)(2));
-			w6.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w11 = ((global::Gtk.Table.TableChild)(this.table1 [this.nameEntry]));
+			w11.LeftAttach = ((uint)(1));
+			w11.RightAttach = ((uint)(2));
+			w11.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child table1.Gtk.Table+TableChild
+			this.softThresholdEntry = new global::Gtk.Entry ();
+			this.softThresholdEntry.CanFocus = true;
+			this.softThresholdEntry.Name = "softThresholdEntry";
+			this.softThresholdEntry.IsEditable = true;
+			this.softThresholdEntry.InvisibleChar = '●';
+			this.table1.Add (this.softThresholdEntry);
+			global::Gtk.Table.TableChild w12 = ((global::Gtk.Table.TableChild)(this.table1 [this.softThresholdEntry]));
+			w12.TopAttach = ((uint)(2));
+			w12.BottomAttach = ((uint)(3));
+			w12.LeftAttach = ((uint)(1));
+			w12.RightAttach = ((uint)(2));
+			w12.YOptions = ((global::Gtk.AttachOptions)(4));
 			w1.Add (this.table1);
-			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(w1 [this.table1]));
-			w7.Position = 0;
-			w7.Expand = false;
-			w7.Fill = false;
+			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(w1 [this.table1]));
+			w13.Position = 0;
+			w13.Expand = false;
+			w13.Fill = false;
 			// Internal child Beaver.UI.Dialogs.AddGoalDialog.ActionArea
-			global::Gtk.HButtonBox w8 = this.ActionArea;
-			w8.Name = "dialog1_ActionArea";
-			w8.Spacing = 10;
-			w8.BorderWidth = ((uint)(5));
-			w8.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
+			global::Gtk.HButtonBox w14 = this.ActionArea;
+			w14.Name = "dialog1_ActionArea";
+			w14.Spacing = 10;
+			w14.BorderWidth = ((uint)(5));
+			w14.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonCancel = new global::Gtk.Button ();
 			this.buttonCancel.CanDefault = true;
@@ -102,9 +181,9 @@ namespace Beaver.UI.Dialogs
 			this.buttonCancel.UseUnderline = true;
 			this.buttonCancel.Label = "gtk-cancel";
 			this.AddActionWidget (this.buttonCancel, -6);
-			global::Gtk.ButtonBox.ButtonBoxChild w9 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w8 [this.buttonCancel]));
-			w9.Expand = false;
-			w9.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w15 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w14 [this.buttonCancel]));
+			w15.Expand = false;
+			w15.Fill = false;
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonOk = new global::Gtk.Button ();
 			this.buttonOk.CanDefault = true;
@@ -114,15 +193,15 @@ namespace Beaver.UI.Dialogs
 			this.buttonOk.UseUnderline = true;
 			this.buttonOk.Label = "gtk-ok";
 			this.AddActionWidget (this.buttonOk, -5);
-			global::Gtk.ButtonBox.ButtonBoxChild w10 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w8 [this.buttonOk]));
-			w10.Position = 1;
-			w10.Expand = false;
-			w10.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w16 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w14 [this.buttonOk]));
+			w16.Position = 1;
+			w16.Expand = false;
+			w16.Fill = false;
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
 			this.DefaultWidth = 400;
-			this.DefaultHeight = 167;
+			this.DefaultHeight = 257;
 			this.Show ();
 		}
 	}
