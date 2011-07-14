@@ -49,6 +49,12 @@ namespace Beaver.Model
 			set;
 		}
 		
+		
+		public float ComputedLikelihood {
+			get;
+			set;
+		}
+		
 		public Obstacle (string name, string definition, float likelihood)
 			: base ()
 		{

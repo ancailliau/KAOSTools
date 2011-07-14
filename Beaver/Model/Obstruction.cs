@@ -33,12 +33,18 @@ namespace Beaver.Model
 			get;
 			set;
 		}
+		
 		public Goal Goal {
 			get;
 			set;
 		}
 		
 		public Obstacle Obstacle {
+			get;
+			set;
+		}
+		
+		public float Likelihood {
 			get;
 			set;
 		}

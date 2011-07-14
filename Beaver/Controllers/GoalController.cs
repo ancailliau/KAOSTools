@@ -245,7 +245,7 @@ namespace Beaver.Controllers
 			if (this.controller.ResponsibilityController.GetAll(g).Count() > 0) {
 				l = 1;
 				foreach (var obst in this.controller.ObstructionController.GetAll (g)) {
-					l -= this.controller.ObstacleController.ComputeLikelihood (obst.Obstacle);
+					l -= obst.Likelihood * this.controller.ObstacleController.ComputeLikelihood (obst.Obstacle);
 				}
 				
 			} else {

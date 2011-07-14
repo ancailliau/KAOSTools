@@ -44,6 +44,11 @@ namespace Beaver.Model
 			set;
 		}
 		
+		public float Likelihood {
+			get;
+			set;
+		}
+		
 		public Resolution (Obstacle obstacle, Goal goal)
 			: base()
 		{

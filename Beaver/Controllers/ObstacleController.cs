@@ -240,9 +240,22 @@ namespace Beaver.Controllers
 				foreach (var refinement in refinements) {
 					l += this.controller.ObstacleRefinementController.ComputeLikelihood (refinement);
 				}
-				obstacle.Likelihood = Math.Min (1, Math.Max (0, l));;
+				obstacle.ComputedLikelihood = Math.Min (1, Math.Max (0, l));;
+			} else {
+				var resolutions = this.controller.ResolutionController.GetAll (obstacle);
+				if (resolutions.Count () > 0) {
+					l = obstacle.Likelihood;
+					foreach (var r in resolutions) {
+						var contrib = r.Likelihood * this.controller.GoalController.ComputeLikelihood (r.Goal);
+						l -= l * contrib;
+					}
+					obstacle.ComputedLikelihood = l;
+					
+				} else {
+					obstacle.ComputedLikelihood = obstacle.Likelihood;
+				}
 			}
-			return obstacle.Likelihood;
+			return obstacle.ComputedLikelihood;
 		}
 	}
 }

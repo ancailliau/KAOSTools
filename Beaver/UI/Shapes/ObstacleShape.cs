@@ -144,7 +144,7 @@ namespace Beaver.UI.Shapes
 			pangoLayout = new Pango.Layout(view.DrawingArea.PangoContext);
 			pangoLayout.Alignment = Pango.Alignment.Center;
 			pangoLayout.SetMarkup(string.Format ("{0:0.00}",
-				((Obstacle) RepresentedElement).Likelihood));
+				((Obstacle) RepresentedElement).ComputedLikelihood));
 			
 			var fontDescr = new Pango.FontDescription ();
 			fontDescr.Size = (int) (9 * Pango.Scale.PangoScale);

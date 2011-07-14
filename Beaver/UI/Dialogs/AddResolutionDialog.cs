@@ -60,13 +60,19 @@ namespace Beaver.UI.Dialogs
 			}
 		}
 		
+		public float Likelihood {
+			get { return (float) Math.Min( Math.Max (likelihoodSpin.Value, 0), 1); }
+			set { likelihoodSpin.Value = Math.Min( Math.Max (value, 0), 1); }
+		}
+		
 		public AddResolutionDialog (MainController controller, Obstacle obstacle)
-			: this (controller, obstacle, null)
+			: this (controller, new Resolution (obstacle, null))
 		{
 		}
 		
-		public AddResolutionDialog (MainController controller, Obstacle obstacle, Goal goal)
-			: base ("Assign responsibility", controller.Window, DialogFlags.DestroyWithParent)
+		public AddResolutionDialog (MainController controller, Resolution resolution)
+			: base (string.Format ("Add resolution to '{0}'", resolution.Obstacle.Name),
+				controller.Window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
 			this.controller = controller;
@@ -78,7 +84,8 @@ namespace Beaver.UI.Dialogs
 			// agentComboBox.PackStart(cell, false);
 			goalCombo.AddAttribute(cell, "text", 0);
 			
-			UpdateList (goal);
+			UpdateList (resolution.Goal);
+			Likelihood = resolution.Likelihood;
 		}
 
 		void UpdateList (Goal goal)

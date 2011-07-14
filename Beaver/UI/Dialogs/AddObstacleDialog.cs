@@ -68,10 +68,13 @@ namespace Beaver.UI.Dialogs
 		{
 			this.Build ();
 			
+			this.likelihoodText.Text = "Not computed";
+			
 			if (obstacle != null) {
 				nameEntry.Text = obstacle.Name;
 				definitionTextview.Buffer.Text = obstacle.Definition;
 				Likelihood = obstacle.Likelihood;
+				this.likelihoodText.Text = obstacle.ComputedLikelihood.ToString ();
 			}
 		}
 	}

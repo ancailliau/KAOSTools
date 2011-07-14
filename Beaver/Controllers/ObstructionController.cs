@@ -129,7 +129,7 @@ namespace Beaver.Controllers
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.Obstacle != null) {
 					var newObstruction = new Obstruction (
-						goal, dialog.Obstacle);
+						goal, dialog.Obstacle) { Likelihood = dialog.Likelihood } ;
 					this.Add (newObstruction);
 					dialog.Destroy ();
 					
@@ -156,10 +156,11 @@ namespace Beaver.Controllers
 		
 		public void EditObstruction (Obstruction obstruction)
 		{
-			var dialog = new AddObstructionDialog (this.controller, obstruction.Goal, obstruction.Obstacle);
+			var dialog = new AddObstructionDialog (this.controller, obstruction);
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.Obstacle != null) {
 					obstruction.Obstacle = dialog.Obstacle;
+					obstruction.Likelihood = dialog.Likelihood;
 					this.Update (obstruction);
 				}
 				dialog.Destroy ();

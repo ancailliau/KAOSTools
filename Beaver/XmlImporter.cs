@@ -54,11 +54,13 @@ namespace Beaver
 		private class FutureObstruction {
 			public string id = "";
 			public string obstacleId = "";
+			public float likelihood = 1f;
 		}
 		
 		private class FutureResolution {
 			public string id = "";
 			public string obstacleId = "";
+			public float likelihood = 1f;
 		}
 		
 		private class FutureException {
@@ -174,14 +176,16 @@ namespace Beaver
 						} else if (reader.IsStartElement ("obstruction")) {
 							var obstruction = new FutureObstruction () {
 								id = reader.GetAttribute ("id"),
-								obstacleId = reader.GetAttribute ("obstacle-id")
+								obstacleId = reader.GetAttribute ("obstacle-id"),
+								likelihood = float.Parse(reader.GetAttribute ("likelihood") ?? "1")
 							};
 							futureGoal.futureObstructions.Add (obstruction);
 							
 						} else if (reader.IsStartElement ("resolution")) {
 							var resolution = new FutureResolution () {
 								id = reader.GetAttribute ("id"),
-								obstacleId = reader.GetAttribute ("obstacle-id")
+								obstacleId = reader.GetAttribute ("obstacle-id"),
+								likelihood = float.Parse(reader.GetAttribute ("likelihood") ?? "1")
 							};
 							futureGoal.futureResolutions.Add (resolution);
 						
@@ -341,12 +345,12 @@ namespace Beaver
 				foreach (var futureObstruction in futureGoal.futureObstructions) {
 					this.controller.ObstructionController.Add(new Obstruction (
 						this.controller.GoalController.Get(futureGoal.id),
-						this.controller.ObstacleController.Get(futureObstruction.obstacleId)) { Id = futureObstruction.id}, false);
+						this.controller.ObstacleController.Get(futureObstruction.obstacleId)) { Id = futureObstruction.id, Likelihood = futureObstruction.likelihood }, false);
 				}
 				foreach (var futureResolution in futureGoal.futureResolutions) {
 					this.controller.ResolutionController.Add(new Resolution (
 						this.controller.ObstacleController.Get(futureResolution.obstacleId),
-						this.controller.GoalController.Get(futureGoal.id)) { Id = futureResolution.id}, false);
+						this.controller.GoalController.Get(futureGoal.id)) { Id = futureResolution.id, Likelihood = futureResolution.likelihood }, false);
 				}
 				foreach (var futureException in futureGoal.futureExceptions) {
 					this.controller.ExceptionController.Add(new ExceptionLink (

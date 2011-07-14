@@ -144,6 +144,7 @@ namespace Beaver
 			foreach (var obstruction in obstructions) {
 				writer.WriteStartElement("obstruction");
 				writer.WriteAttributeString("id", obstruction.Id);
+				writer.WriteAttributeString("likelihood", obstruction.Likelihood.ToString ());
 				writer.WriteAttributeString("obstacle-id", obstruction.Obstacle.Id);
 				writer.WriteEndElement();
 			}
@@ -153,6 +154,7 @@ namespace Beaver
 			foreach (var resolution in resolutions) {
 				writer.WriteStartElement("resolution");
 				writer.WriteAttributeString("id", resolution.Id);
+				writer.WriteAttributeString("likelihood", resolution.Likelihood.ToString ());
 				writer.WriteAttributeString("obstacle-id", resolution.Obstacle.Id);
 				writer.WriteEndElement();
 			}

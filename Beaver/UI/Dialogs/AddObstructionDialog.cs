@@ -60,13 +60,18 @@ namespace Beaver.UI.Dialogs
 			}
 		}
 		
+		public float Likelihood {
+			get { return (float) Math.Min( Math.Max (likelihoodSpin.Value, 0), 1); }
+			set { likelihoodSpin.Value = Math.Min( Math.Max (value, 0), 1); }
+		}
+		
 		public AddObstructionDialog (MainController controller, Goal goal)
-			: this (controller, goal, null)
+			: this (controller, new Obstruction (goal, null))
 		{
 		}
 		
-		public AddObstructionDialog (MainController controller, Goal goal, Obstacle obstacle)
-			: base (string.Format ("Add obstruction to '{0}'", goal.Name), 
+		public AddObstructionDialog (MainController controller, Obstruction obstruction)
+			: base (string.Format ("Add obstruction to '{0}'", obstruction.Goal.Name), 
 				controller.Window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
@@ -79,7 +84,8 @@ namespace Beaver.UI.Dialogs
 			// agentComboBox.PackStart(cell, false);
 			obstacleCombo.AddAttribute(cell, "text", 0);
 			
-			UpdateList (obstacle);
+			UpdateList (obstruction.Obstacle);
+			Likelihood = obstruction.Likelihood;
 		}
 
 		void UpdateList (Obstacle obstacle)

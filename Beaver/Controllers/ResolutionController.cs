@@ -128,7 +128,7 @@ namespace Beaver.Controllers
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.ResolvingGoal != null) {
 					var newObstruction = new Resolution (
-						obstacle, dialog.ResolvingGoal);
+						obstacle, dialog.ResolvingGoal) { Likelihood = dialog.Likelihood };
 					this.Add (newObstruction);
 					dialog.Destroy ();
 				} else if (args.ResponseId == ResponseType.Ok && dialog.ResolvingGoalName != "") {
@@ -151,10 +151,11 @@ namespace Beaver.Controllers
 		
 		public void EditResolution (Resolution resolution)
 		{
-			var dialog = new AddResolutionDialog (this.controller, resolution.Obstacle, resolution.Goal);
+			var dialog = new AddResolutionDialog (this.controller, resolution);
 			dialog.Response += delegate(object o, ResponseArgs args) {
 				if (args.ResponseId == ResponseType.Ok && dialog.ResolvingGoal != null) {
 					resolution.Goal = dialog.ResolvingGoal;
+					resolution.Likelihood = dialog.Likelihood;
 					this.Update (resolution);
 				}
 				dialog.Destroy ();
