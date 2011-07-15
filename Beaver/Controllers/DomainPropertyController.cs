@@ -31,10 +31,11 @@ using Gtk;
 using Beaver.UI.Widgets;
 using Beaver.Logging;
 using System.Collections.Generic;
+using Beaver.UI;
 
 namespace Beaver.Controllers
 {
-	public class DomainPropertyController : IController, IPopulateTree, IPopulateMenu
+	public class DomainPropertyController : IController, IPopulateTree
 	{
 		
 		private static Gdk.Pixbuf pixbuf;
@@ -63,8 +64,8 @@ namespace Beaver.Controllers
 		{
 			this.controller = controller;
 			this.controller.Window.conceptTreeView.RegisterForTree (this);
-			this.controller.Window.conceptTreeView.RegisterForMenu (this);
-			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this);
+			this.controller.Window.conceptTreeView.RegisterForMenu (this.PopulateContextMenu);
+			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this.PopulateContextMenu);
 		
 			this.DomainPropertyAdded += UpdateLists;
 			this.DomainPropertyRemoved += UpdateLists;
@@ -120,7 +121,7 @@ namespace Beaver.Controllers
 			var dialog = new AddDomainPropertyDialog(controller.Window, domPropName);
 			dialog.Response += delegate(object o, Gtk.ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Ok) {
-					var domProp = new DomainProperty(dialog.DomainPropertyName, dialog.DomainPropertyDefinition);
+					var domProp = new DomainProperty(dialog.PropertyName, dialog.Definition);
 					this.Add (domProp);
 					action(domProp);
 				}
@@ -140,11 +141,11 @@ namespace Beaver.Controllers
 		
 		public void EditDomainProperty (DomainProperty domProp)
 		{
-			var dialog = new AddDomainPropertyDialog(controller.Window, domProp.Name);
+			var dialog = new AddDomainPropertyDialog(controller.Window, domProp, true);
 			dialog.Response += delegate(object o, Gtk.ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Ok) {
-					domProp.Name = dialog.DomainPropertyName;
-					domProp.Definition = dialog.DomainPropertyDefinition;
+					domProp.Name = dialog.PropertyName;
+					domProp.Definition = dialog.Definition;
 					this.Update (domProp);
 				}
 				dialog.Destroy();
@@ -167,39 +168,36 @@ namespace Beaver.Controllers
 			dialog.Present ();
 		}
 		
-		public bool PopulateContextMenu (Menu menu, object source, object clickedElement)
+		public void PopulateContextMenu (PopulateMenuArgs args)
 		{
-			bool retVal = false;
-			
-			if (clickedElement == null & source is ConceptsTreeView) {				
+			if ((args.ClickedElement == null) 
+				| (args.ClickedElement is TitleItem && (args.ClickedElement as TitleItem).Name == "Domain properties")) {
 				var addItem = new MenuItem("Add domain property...");
 				addItem.Activated += delegate(object sender2, EventArgs e) {
 					this.AddDomainProperty ();
 				};
-				menu.Add(addItem);
-				retVal = true;
+				args.Menu.Add(addItem);
+				args.ElementsAdded = true;
 			}
 			
-			if (clickedElement is DomainProperty) {
-				var clickedDomProp = (DomainProperty) clickedElement;
+			if (args.ClickedElement is DomainProperty) {
+				var clickedDomProp = (DomainProperty) args.ClickedElement;
 				
 				var editItem = new MenuItem("Edit...");
 				editItem.Activated += delegate(object sender2, EventArgs e) {
 					this.EditDomainProperty (clickedDomProp);
 				};
-				menu.Add(editItem);
+				args.Menu.Add(editItem);
 				
 				var deleteItem = new MenuItem("Delete");
 				deleteItem.Activated += delegate(object sender2, EventArgs e) {
 					this.RemoveDomainProperty (clickedDomProp);
 				};
-				menu.Add(deleteItem);
+				args.Menu.Add(deleteItem);
 				
-				menu.Add (new SeparatorMenuItem ());
-				retVal = true;				
+				args.Menu.Add (new SeparatorMenuItem ());
+				args.ElementsAdded = true;
 			}
-			
-			return retVal;
 		}
 		
 		public void Populate (TreeStore store)

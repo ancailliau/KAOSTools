@@ -86,7 +86,7 @@ namespace Beaver.UI.Windows {
 		{
 			Build ();
 			
-			viewsNotebook = new ViewsNotebook();
+			viewsNotebook = new ViewsNotebook(this);
 			conceptTreeView = new ConceptsTreeView ();
 			
 			var notebookModelView = new Notebook ();
@@ -235,6 +235,19 @@ namespace Beaver.UI.Windows {
 		protected void OnCheckActionActivated (object sender, System.EventArgs e)
 		{
 			this.Controller.CheckModel ();
+		}
+		
+		protected void OnGetFalsifiedGoalsActionActivated (object sender, System.EventArgs e)
+		{
+			throw new NotImplementedException ();
+		}
+		
+		private string lastMessage = "";
+		
+		public void PushStatus (string message)
+		{
+			if (message != lastMessage)
+				this.statusBar.Push (1, message);
 		}
 	}
 }

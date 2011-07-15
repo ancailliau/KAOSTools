@@ -26,35 +26,50 @@
 using System;
 using Beaver.UI.Windows;
 using Gtk;
+using Beaver.Model;
 
 namespace Beaver.UI.Dialogs
 {
 	public partial class AddDomainPropertyDialog : Gtk.Dialog
 	{
-		public string DomainPropertyName {
+		
+		#region Value of fields
+		
+		public string PropertyName {
 			get {
 				return nameEntry.Text.Trim ();
 			}
-		}
-		
-		public string DomainPropertyDefinition {
-			get {
-				return definitionTextview.Buffer.Text.Trim ();
+			set {
+				nameEntry.Text = value;
 			}
 		}
 		
-		private MainWindow window;
+		public string Definition {
+			get {
+				return definitionTextview.Buffer.Text.Trim ();
+			}
+			set {
+				definitionTextview.Buffer.Text = value;
+			}
+		}
+		
+		#endregion
 	
-		public AddDomainPropertyDialog (MainWindow window)
-			: this (window, "")
+		public AddDomainPropertyDialog (MainWindow window, string domPropName)
+			: this (window, new DomainProperty (domPropName, ""), false)
 		{
 		}
 		
-		public AddDomainPropertyDialog (MainWindow window, string name)
-			: base ("Add domain property", window, DialogFlags.DestroyWithParent)
+		public AddDomainPropertyDialog (MainWindow window, DomainProperty domProp, bool edit)
+			: base (edit ? string.Format ("Edit domain property '{0}'", domProp.Name) : "Add domain property", 
+				window, DialogFlags.DestroyWithParent)
 		{
+			if (domProp == null)
+				throw new ArgumentNullException ("domProp");
+			
 			this.Build ();
-			nameEntry.Text = name;
+			PropertyName = domProp.Name;
+			Definition = domProp.Definition;
 		}
 	}
 }

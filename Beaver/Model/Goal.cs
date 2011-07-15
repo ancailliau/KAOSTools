@@ -69,6 +69,11 @@ namespace Beaver.Model
 			set;
 		}
 		
+		public Goal (string name)
+			: this (name, "")
+		{
+		}
+		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Beaver.Model.Goal"/> class.
 		/// </summary>

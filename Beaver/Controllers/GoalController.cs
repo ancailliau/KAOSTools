@@ -31,10 +31,11 @@ using Gtk;
 using Beaver.UI.Widgets;
 using Beaver.Logging;
 using System.Collections.Generic;
+using Beaver.UI;
 
 namespace Beaver.Controllers
 {
-	public class GoalController : IController, IPopulateTree, IPopulateMenu
+	public class GoalController : IController, IPopulateTree
 	{
 		private static Gdk.Pixbuf pixbuf;
 		
@@ -62,8 +63,8 @@ namespace Beaver.Controllers
 		{
 			this.controller = controller;
 			this.controller.Window.conceptTreeView.RegisterForTree (this);
-			this.controller.Window.conceptTreeView.RegisterForMenu (this);
-			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this);
+			this.controller.Window.conceptTreeView.RegisterForMenu (this.PopulateContextMenu);
+			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this.PopulateContextMenu);
 			
 			this.GoalAdded += UpdateLists;
 			this.GoalRemoved += UpdateLists;
@@ -113,25 +114,52 @@ namespace Beaver.Controllers
 			return this.goals.Find ((obj) => obj.Id == id);
 		}
 		
-		public void AddGoal (string goalName, System.Action<Goal> action)
+		public void AddGoal (string goalName, System.Action<Goal> action, 
+			int x, int y, bool addToCurrentView)
 		{
-			var dialog = new AddGoalDialog(controller.Window, goalName);
+			var dialog = new AddGoalDialog(controller.Window, goalName) {
+				AddToCurrentView = addToCurrentView
+			};
 			dialog.Response += delegate(object o, Gtk.ResponseArgs args) {
-				if (args.ResponseId == Gtk.ResponseType.Ok) {
+				
+				// If user clicked 'Ok' and the fields are valid
+				if (args.ResponseId == Gtk.ResponseType.Ok & dialog.IsValid) {
+					
+					// Create the goal
 					var goal = new Goal(dialog.GoalName, dialog.GoalDefinition) {
 						SoftThreshold = dialog.SoftThreshold,
 						HardThreshold = dialog.HardThreshold
 					};
 					this.Add (goal);
+					
+					// Add it to current view if needed
+					if (dialog.AddToCurrentView) {
+						this.controller.ViewController.AddToCurrentView (goal, x, y);
+					}
+					
+					// Execute callback actions
 					action(goal);
 				}
-				dialog.Destroy();
+				
+				if (dialog.IsValid) {
+					dialog.Destroy();
+				}
 			};
+		}
+		
+		public void AddGoal (string goalName, System.Action<Goal> action)
+		{
+			AddGoal (goalName, action, 10, 10, false);
+		}
+		
+		public void AddGoal (string goalName, int x, int y)
+		{
+			AddGoal (goalName, (obj) => {}, x, y, false);
 		}
 		
 		public void AddGoal (string goalName)
 		{
-			AddGoal (goalName, (obj) => {});
+			AddGoal (goalName, (obj) => {}, 10, 10, false);
 		}
 		
 		public void AddGoal ()
@@ -141,9 +169,9 @@ namespace Beaver.Controllers
 		
 		public void EditGoal (Goal goal)
 		{
-			var dialog = new AddGoalDialog(controller.Window, goal);
+			var dialog = new AddGoalDialog(controller.Window, goal, true);
 			dialog.Response += delegate(object o, Gtk.ResponseArgs args) {
-				if (args.ResponseId == Gtk.ResponseType.Ok) {
+				if (args.ResponseId == Gtk.ResponseType.Ok & dialog.IsValid) {
 					goal.Name = dialog.GoalName;
 					goal.Definition = dialog.GoalDefinition;
 					goal.SoftThreshold = dialog.SoftThreshold;
@@ -172,55 +200,49 @@ namespace Beaver.Controllers
 			dialog.Present ();
 		}
 		
-		public bool PopulateContextMenu (Menu menu, object source, object clickedElement)
+		public void PopulateContextMenu (PopulateMenuArgs args)
 		{
-			bool retVal = false;
-			
-			if (clickedElement == null) {
+			if ((args.ClickedElement == null) | (args.ClickedElement is TitleItem && (args.ClickedElement as TitleItem).Name == "Goals")) {
 				var addItem = new MenuItem("Add goal...");
 				addItem.Activated += delegate(object sender2, EventArgs e) {
-					this.AddGoal ("", (obj) => {
-						if (source is DiagramArea) {
-							this.controller.ViewController.AddToCurrentView (obj);
-						}
-					});
+					this.AddGoal ("", (obj) => {}, (int) args.X, (int) args.Y, args.Source is DiagramArea);
 				};
-				menu.Add(addItem);
-				retVal = true;
+				args.Menu.Add(addItem);
+				args.ElementsAdded = true;
 			}
 			
-			if (clickedElement is Goal) {
-				var clickedGoal = (Goal) clickedElement;
+			if (args.ClickedElement is Goal) {
+				var clickedGoal = (Goal) args.ClickedElement;
 				
 				var editItem = new MenuItem("Edit...");
 				editItem.Activated += delegate(object sender2, EventArgs e) {
 					this.EditGoal (clickedGoal);
 				};
-				menu.Add(editItem);
+				args.Menu.Add(editItem);
 				
 				var deleteItem = new MenuItem("Delete");
 				deleteItem.Activated += delegate(object sender2, EventArgs e) {
 					this.RemoveGoal (clickedGoal);
 				};
-				menu.Add(deleteItem);
+				args.Menu.Add(deleteItem);
 				
 				var computeItem = new MenuItem("Compute likelihood");
 				computeItem.Activated += delegate(object sender2, EventArgs e) {
+					this.controller.Window.PushStatus ("Computing likelihoods...");
 					this.ComputeLikelihood (clickedGoal);
 					if (GoalUpdated != null)
 						GoalUpdated (clickedGoal);
+					this.controller.Window.PushStatus ("Likelihoods computed");
 				};
-				menu.Add(computeItem);
+				args.Menu.Add(computeItem);
 				
-				retVal = true;
+				args.ElementsAdded = true;
 			}
-			
-			return retVal;
 		}
 		
 		public void Populate (TreeStore store)
 		{
-			var iter = store.AppendValues ("Goals", null, pixbuf);
+			var iter = store.AppendValues ("Goals", new TitleItem () { Name = "Goals" }, pixbuf);
 			Populate (this.GetAll().Cast<KAOSElement>(), store, iter);
 		}
 		

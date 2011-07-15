@@ -30,10 +30,11 @@ using Gtk;
 using Beaver.UI.Dialogs;
 using System.Collections.Generic;
 using Beaver.Logging;
+using Beaver.UI;
 
 namespace Beaver.Controllers
 {
-	public class ExceptionController : IController, IPopulateTree, IPopulateMenu
+	public class ExceptionController : IController, IPopulateTree
 	{
 		private static Gdk.Pixbuf pixbuf;
 		
@@ -60,8 +61,8 @@ namespace Beaver.Controllers
 		public ExceptionController (MainController controller)
 		{
 			this.controller = controller;
-			this.controller.Window.conceptTreeView.RegisterForMenu (this);
-			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this);
+			this.controller.Window.conceptTreeView.RegisterForMenu (this.PopulateContextMenu);
+			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this.PopulateContextMenu);
 		
 			this.ExceptionAdded += UpdateLists;
 			this.ExceptionRemoved += UpdateLists;
@@ -134,7 +135,7 @@ namespace Beaver.Controllers
 		
 		public void EditException (ExceptionLink exception)
 		{
-			var dialog = new AddExceptionDialog (this.controller, exception.Goal, exception.ExceptionGoal) {
+			var dialog = new AddExceptionDialog (this.controller, exception.Goal, exception.ExceptionGoal, true) {
 				Condition = exception.Condition
 			};
 			dialog.Response += delegate(object o, ResponseArgs args) {
@@ -166,11 +167,10 @@ namespace Beaver.Controllers
 			dialog.Present ();
 		}
 		
-		public bool PopulateContextMenu (Menu menu, object source, object clickedElement)
+		public void PopulateContextMenu (PopulateMenuArgs args)
 		{
-			bool retVal = false;
-			if (clickedElement is Goal) {
-				var clickedGoal = clickedElement as Goal;
+			if (args.ClickedElement is Goal) {
+				var clickedGoal = args.ClickedElement as Goal;
 				var exceptions = this.GetAll (clickedGoal);
 				
 				var exceptionMenu = new Menu ();
@@ -179,64 +179,26 @@ namespace Beaver.Controllers
 				assignItem.Activated += delegate(object sender2, EventArgs e) {
 					this.AddException (clickedGoal);
 				};
-				if (exceptions.Count() > 0) {
-					exceptionMenu.Add(assignItem);
-				} else {
-					menu.Add (assignItem);
-					retVal = true;
-				}
-			
-				int i = 1;
-				foreach (var e in exceptions) {
-					var subMenuItem = new MenuItem (string.Format ("Exception {0}", i++));
-					subMenuItem.TooltipText = string.Format ("Exception to '{0}' by '{1}'",
-						clickedGoal.Name, e.ExceptionGoal.Name);
-					subMenuItem.HasTooltip = true;
-					
-					var subMenu = new Menu ();
-					
-					var editItem = new MenuItem("Edit...");
-					editItem.Activated += delegate(object sender2, EventArgs args) {
-						this.EditException (e);
-					};
-					subMenu.Add(editItem);
-					
-					var deleteItem = new MenuItem("Delete");
-					deleteItem.Activated += delegate(object sender2, EventArgs args) {
-						this.RemoveException (e);
-					};
-					subMenu.Add(deleteItem);
-					
-					subMenuItem.Submenu = subMenu;
-					exceptionMenu.Add (subMenuItem);
-				}
-				
-				if (exceptions.Count() > 0) {
-					var exceptionMenuItem = new MenuItem ("Exception");
-					exceptionMenuItem.Submenu = exceptionMenu;
-					menu.Add (exceptionMenuItem);
-					retVal = true;
-				}
+				args.Menu.Add (assignItem);
+				args.ElementsAdded = true;
 			}
 			
-			if (clickedElement is ExceptionLink) {
-				var clickedException = (ExceptionLink) clickedElement;
+			if (args.ClickedElement is ExceptionLink) {
+				var clickedException = (ExceptionLink) args.ClickedElement;
 				
 				var editItem = new MenuItem("Edit...");
-				editItem.Activated += delegate(object sender2, EventArgs args) {
+				editItem.Activated += delegate(object sender2, EventArgs e) {
 					this.EditException (clickedException);
 				};
-				menu.Add(editItem);
+				args.Menu.Add(editItem);
 				
 				var deleteItem = new MenuItem("Delete");
-				deleteItem.Activated += delegate(object sender2, EventArgs args) {
+				deleteItem.Activated += delegate(object sender2, EventArgs e) {
 					this.RemoveException (clickedException);
 				};
-				menu.Add(deleteItem);
-				retVal = true;
+				args.Menu.Add(deleteItem);
+				args.ElementsAdded = true;
 			}
-			
-			return retVal;
 		}
 		
 		public void Populate (TreeStore store)

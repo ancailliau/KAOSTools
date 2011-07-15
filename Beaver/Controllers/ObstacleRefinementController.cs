@@ -30,10 +30,11 @@ using Gtk;
 using Beaver.UI.Dialogs;
 using Beaver.Logging;
 using System.Collections.Generic;
+using Beaver.UI;
 
 namespace Beaver.Controllers
 {
-	public class ObstacleRefinementController : IController, IPopulateMenu
+	public class ObstacleRefinementController : IController
 	{
 		
 		private static Gdk.Pixbuf pixbuf;
@@ -61,8 +62,8 @@ namespace Beaver.Controllers
 		public ObstacleRefinementController (MainController controller)
 		{
 			this.controller = controller;
-			this.controller.Window.conceptTreeView.RegisterForMenu (this);
-			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this);
+			this.controller.Window.conceptTreeView.RegisterForMenu (this.PopulateContextMenu);
+			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this.PopulateContextMenu);
 		
 			this.ObstacleRefinementAdded += UpdateLists;
 			this.ObstacleRefinementRemoved += UpdateLists;
@@ -166,38 +167,34 @@ namespace Beaver.Controllers
 			dialog.Present ();
 		}
 		
-		public bool PopulateContextMenu (Menu menu, object source, object clickedElement)
+		public void PopulateContextMenu (PopulateMenuArgs args)
 		{
-			bool retVal = false;
-			
-			if (clickedElement is Obstacle) {
-				var clickedObstacle = (Obstacle) clickedElement;				
+			if (args.ClickedElement is Obstacle) {
+				var clickedObstacle = args.ClickedElement as Obstacle;
 				var refineItem = new MenuItem("Refine...");
 				refineItem.Activated += delegate(object sender2, EventArgs e) {
 					this.AddRefinement (clickedObstacle);
 				};
-				menu.Add(refineItem);
-				retVal = true;
+				args.Menu.Add(refineItem);
+				args.ElementsAdded = true;
 			}
 			
-			if (clickedElement is ObstacleRefinement) {
-				var clickedRefinement = clickedElement as ObstacleRefinement;
+			if (args.ClickedElement is ObstacleRefinement) {
+				var clickedRefinement = args.ClickedElement as ObstacleRefinement;
 				
 				var editItem = new MenuItem("Edit...");
 				editItem.Activated += delegate(object sender2, EventArgs e) {
 					this.EditRefinement (clickedRefinement);
 				};
-				menu.Add(editItem);
+				args.Menu.Add(editItem);
 				
 				var deleteItem = new MenuItem("Delete");
 				deleteItem.Activated += delegate(object sender2, EventArgs e) {
 					this.RemoveRefinement (clickedRefinement);
 				};
-				menu.Add(deleteItem);
-				retVal = true;
+				args.Menu.Add(deleteItem);
+				args.ElementsAdded = true;
 			}
-			
-			return retVal;
 		}
 		
 		public void Populate (TreeStore store)

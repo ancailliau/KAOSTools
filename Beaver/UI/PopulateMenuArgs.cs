@@ -1,5 +1,5 @@
 // 
-// IPopulateMenu.cs
+// PopulateMenuArgs.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -24,13 +24,44 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Gtk;
 
-namespace Beaver
+namespace Beaver.UI
 {
-	public interface IPopulateMenu
+	public class PopulateMenuArgs
 	{
-		bool PopulateContextMenu (Menu menu, object source, object clickedElement);
+		public Gtk.Menu Menu {
+			get;
+			set;
+		}
+		
+		public object Source {
+			get;
+			set;
+		}
+		
+		public object ClickedElement {
+			get;
+			set;
+		}
+		
+		public bool ElementsAdded {
+			get;
+			set;
+		}
+		
+		public double X {
+			get;
+			set;
+		}
+		
+		public double Y {
+			get;
+			set;
+		}
+		
+		public PopulateMenuArgs ()
+		{
+		}
 	}
 }
 

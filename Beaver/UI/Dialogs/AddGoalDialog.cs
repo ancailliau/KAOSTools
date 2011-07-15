@@ -35,35 +35,8 @@ namespace Beaver.UI.Dialogs
 	
 	public partial class AddGoalDialog : Gtk.Dialog
 	{
-		
-		public AddGoalDialog (MainWindow window)
-			: this (window, "")
-		{
-		}
-		
-		public AddGoalDialog (MainWindow window, string futureGoalName)
-			: base ("Add new goal", 
-				window, DialogFlags.DestroyWithParent)
-		{
-			this.Build ();
-			nameEntry.Text = futureGoalName;
-			nameEntry.GrabFocus ();
-		}
-		
-		public AddGoalDialog (MainWindow window, Goal goal)
-			: base (goal == null ? "Add new goal" : "Edit goal", 
-				window, DialogFlags.DestroyWithParent)
-		{
-			this.Build ();
-			
-			if (goal != null) {
-				nameEntry.Text = goal.Name;
-				definitionTextView.Buffer.Text = goal.Definition;
-				likelihoodEntry.Text = goal.Likelihood.ToString ();
-				SoftThreshold = goal.SoftThreshold;
-				HardThreshold = goal.HardThreshold;
-			}
-		}
+				
+		#region Fields value
 		
 		public string GoalName {
 			get {
@@ -81,6 +54,7 @@ namespace Beaver.UI.Dialogs
 			get { try {
 					return Math.Max (0, Math.Min (1, float.Parse(softThresholdEntry.Text)));
 				} catch (Exception e) {
+					Logging.Logger.Error ("Soft threshold '{0}' cannot be parsed to float value ({1})", softThresholdEntry.Text, e.Message);
 				}
 				return 1;
 			}
@@ -93,12 +67,51 @@ namespace Beaver.UI.Dialogs
 			get { try {
 					return Math.Max (0, Math.Min (1, float.Parse(hardThresholdEntry.Text)));
 				} catch (Exception e) {
+					Logging.Logger.Error ("Hard threshold '{0}' cannot be parsed to float value ({1})", hardThresholdEntry.Text, e.Message);
 				}
 				return 1;
 			}
 			set {
 				hardThresholdEntry.Text = value.ToString ();
 			}
+		}
+		
+		public bool AddToCurrentView {
+			get { 
+				return this.addToCurrentViewCheck.Active;
+			}
+			set {
+				this.addToCurrentViewCheck.Active = value;
+			}
+		}
+		
+		#endregion
+			
+		public bool IsValid {
+			get {
+				return !string.IsNullOrEmpty (GoalName);
+			}
+		}
+		
+		public AddGoalDialog (MainWindow window, string futureGoalName)
+			: this (window, new Goal (futureGoalName), false)
+		{
+		}
+		
+		public AddGoalDialog (MainWindow window, Goal goal, bool edit)
+			: base (edit ? string.Format ("Edit goal '{0}'", goal) : "Add new goal", 
+				window, DialogFlags.DestroyWithParent)
+		{
+			if (goal == null) 
+				throw new ArgumentNullException ("goal");
+			
+			this.Build ();
+			
+			nameEntry.Text = goal.Name;
+			definitionTextView.Buffer.Text = goal.Definition;
+			likelihoodEntry.Text = goal.Likelihood.ToString ();
+			SoftThreshold = goal.SoftThreshold;
+			HardThreshold = goal.HardThreshold;
 		}
 		
 	}

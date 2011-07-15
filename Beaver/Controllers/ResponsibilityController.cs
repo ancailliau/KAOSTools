@@ -30,10 +30,11 @@ using Gtk;
 using Beaver.UI.Dialogs;
 using Beaver.Logging;
 using System.Collections.Generic;
+using Beaver.UI;
 
 namespace Beaver.Controllers
 {
-	public class ResponsibilityController : IController, IPopulateMenu
+	public class ResponsibilityController : IController
 	{
 		private static Gdk.Pixbuf pixbuf;
 		
@@ -60,8 +61,8 @@ namespace Beaver.Controllers
 		public ResponsibilityController (MainController controller)
 		{
 			this.controller = controller;
-			this.controller.Window.conceptTreeView.RegisterForMenu (this);
-			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this);
+			this.controller.Window.conceptTreeView.RegisterForMenu (this.PopulateContextMenu);
+			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this.PopulateContextMenu);
 		
 			this.ResponsibilityAdded += UpdateLists;
 			this.ResponsibilityRemoved += UpdateLists;
@@ -177,12 +178,10 @@ namespace Beaver.Controllers
 			dialog.Present ();
 		}
 		
-		public bool PopulateContextMenu (Menu menu, object source, object clickedElement)
+		public void PopulateContextMenu (PopulateMenuArgs args)
 		{
-			bool retVal = false;
-			
-			if (clickedElement is Goal) {
-				var clickedGoal = clickedElement as Goal;
+			if (args.ClickedElement is Goal) {
+				var clickedGoal = args.ClickedElement as Goal;
 				var responsibilities = this.GetAll (clickedGoal);
 				
 				
@@ -190,61 +189,26 @@ namespace Beaver.Controllers
 				assignItem.Activated += delegate(object sender2, EventArgs e) {
 					this.AddResponsibility (clickedGoal);
 				};
-				if (responsibilities.Count() > 0) {
-					var responsibilityMenu = new Menu ();
-					responsibilityMenu.Add (assignItem);
-					
-					int i = 0;
-					foreach (var responsibility in responsibilities) {
-						var subMenu = new Menu();
-						var clickedResponsibility = clickedElement as Responsibility;
-						
-						var editItem = new MenuItem("Edit...");
-						editItem.Activated += delegate(object sender2, EventArgs e) {
-							this.EditResponsibility (responsibility);
-						};
-						subMenu.Add(editItem);
-						
-						var deleteItem = new MenuItem("Delete");
-						deleteItem.Activated += delegate(object sender2, EventArgs e) {
-							this.RemoveResponsibility (responsibility);
-						};
-						subMenu.Add(deleteItem);
-						
-						var subMenuItem = new MenuItem (string.Format ("Responsibility for '{0}'", responsibility.Agent.Name));
-						subMenuItem.Submenu = subMenu;
-						responsibilityMenu.Add (subMenuItem);
-					}
-					
-					var menuItem = new MenuItem ("Responsibilities");
-					menuItem.Submenu = responsibilityMenu;
-					menu.Add (menuItem);
-					retVal = true;
-					
-				} else {
-					menu.Add(assignItem);
-					retVal = true;
-				}
+				args.Menu.Add(assignItem);
+				args.ElementsAdded = true;
 			}
 			
-			if (clickedElement is Responsibility) {
-				var clickedResponsibility = (Responsibility) clickedElement;
+			if (args.ClickedElement is Responsibility) {
+				var clickedResponsibility = args.ClickedElement as Responsibility;
 				
 				var editItem = new MenuItem("Edit...");
 				editItem.Activated += delegate(object sender2, EventArgs e) {
 					this.EditResponsibility (clickedResponsibility);
 				};
-				menu.Add(editItem);
+				args.Menu.Add(editItem);
 				
 				var deleteItem = new MenuItem("Delete");
 				deleteItem.Activated += delegate(object sender2, EventArgs e) {
 					this.RemoveResponsibility (clickedResponsibility);
 				};
-				menu.Add(deleteItem);
-				retVal = true;
+				args.Menu.Add(deleteItem);
+				args.ElementsAdded = true;
 			}
-			
-			return retVal;
 		}
 		
 		public void Populate (TreeStore store)

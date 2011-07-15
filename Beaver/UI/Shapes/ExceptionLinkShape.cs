@@ -38,6 +38,8 @@ namespace Beaver.UI.Shapes
 	public class ExceptionLinkShape : Shape
 	{
 		
+		private int radius = 10;
+		
 		public ExceptionLinkShape (ExceptionLink exception) : base ()
 		{
 			RepresentedElement = exception;
@@ -97,8 +99,12 @@ namespace Beaver.UI.Shapes
 				double x = xEndAnchor - .5 * ( xEndAnchor - xStartAnchor );
 				double y = yEndAnchor - .5 * ( yEndAnchor - yStartAnchor );
 				
+				Position = new PointD (x, y);
+				
+				Console.WriteLine (Position.X + "," + Position.Y);
+				
 				context.MoveTo (x, y);
-				context.Arc (x, y, 10, 0, Math.PI * 2);
+				context.Arc (x, y, radius, 0, Math.PI * 2);
 				context.SetColor (view.Controller.CurrentColorScheme.ExceptionStrokeColor);
 				context.LineWidth = 2;
 				context.StrokePreserve ();
@@ -160,6 +166,17 @@ namespace Beaver.UI.Shapes
 		/// </param>
 		public override bool InBoundingBox (double x, double y, out PointD delta)
 		{
+			Console.WriteLine ("test " +Position.X + "," + Position.Y);
+			double centerX = Position.X;
+			double centerY = Position.Y;
+			double xx = (x - centerX);
+			double yy = (y - centerY);
+			if (Math.Sqrt(xx * xx + yy * yy) <= radius) {
+				delta.X = Position.X - x;
+				delta.Y = Position.Y - y;
+				Console.WriteLine ("true");
+				return true;
+			}
 			return false;
 		}		
 		

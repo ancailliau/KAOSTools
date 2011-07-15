@@ -51,6 +51,8 @@ namespace Beaver.UI.Shapes
 		/// </summary>
 		private int height;
 		
+		private int delta = 4;
+		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Beaver.UI.Shapes.AgentShape"/> class.
 		/// </summary>
@@ -103,7 +105,6 @@ namespace Beaver.UI.Shapes
 			
 			// context.Rectangle(Position.X - width / 2, Position.Y - height / 2, width, height);
 			
-			int delta = 4;
 			context.MoveTo (Position.X - width / 2 + delta, Position.Y - height / 2);
 			context.LineTo (Position.X - width / 2, Position.Y);
 			context.LineTo (Position.X - width / 2 + delta, Position.Y + height / 2);
@@ -157,12 +158,20 @@ namespace Beaver.UI.Shapes
 		/// <param name='delta'>
 		/// If set to <c>true</c> delta.
 		/// </param>
-		public override bool InBoundingBox (double x, double y, out PointD delta)
+		public override bool InBoundingBox (double x, double y, out PointD deltaPos)
 		{
-			if ((x > Position.X - width/2 && x < Position.X + width/2)
-				& (y > Position.Y - height /2 && y < Position.Y + height/2)) {
-				delta.X = Position.X - x;
-				delta.Y = Position.Y - y;
+			var points = new PointD [] {
+				new PointD (Position.X - width / 2 + delta, Position.Y - height / 2),
+				new PointD (Position.X - width / 2, Position.Y),
+				new PointD (Position.X - width / 2 + delta, Position.Y + height / 2),
+				new PointD (Position.X + width / 2 - delta, Position.Y + height / 2),
+				new PointD (Position.X + width / 2, Position.Y),
+				new PointD (Position.X + width / 2 - delta, Position.Y - height / 2),
+			};
+			
+			if (points.PointInPolygon (new PointD (x, y))) {
+				deltaPos.X = Position.X - x;
+				deltaPos.Y = Position.Y - y;
 				return true;
 			} 
 			return false;

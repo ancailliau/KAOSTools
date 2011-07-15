@@ -1,5 +1,5 @@
 // 
-// AddAgent.cs
+// TitleItem.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -23,46 +23,19 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Beaver.Controllers;
-using Beaver.Model;
-using Beaver.UI.Windows;
-using Gtk;
 
-namespace Beaver.UI.Dialogs
+namespace Beaver.UI
 {
-	/// <summary>
-	/// Represents the dialog to add a new agent to the system
-	/// </summary>
-	public partial class AddAgentDialog : Gtk.Dialog
+	public class TitleItem
 	{
-		
-		#region Values of fields
-		
-		public string AgentName {
-			get { return nameEntry.Text.Trim(); }
+		public string Name {
+			get;
+			set;
 		}
 		
-		#endregion
-		
-		public AddAgentDialog  (MainWindow window, string agentName)
-			: this (window, new Agent (agentName), false)
+		public TitleItem ()
 		{
-			this.Build ();
-			nameEntry.Text = agentName;
-		}
-		
-		public AddAgentDialog  (MainWindow window, Agent agent, bool edit)
-			: base (edit ? string.Format ("Edit agent '{0}'", agent.Name) : "Add new agent", 
-				window, DialogFlags.DestroyWithParent)
-		{
-			if (agent == null) 
-				throw new ArgumentNullException ("agent");
-			
-			this.Build ();
-			
-			nameEntry.Text = agent.Name;
 		}
 	}
 }

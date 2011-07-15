@@ -35,10 +35,11 @@ using Beaver.Views;
 using System.Collections.Generic;
 using Cairo;
 using Beaver.UI.ColorSchemes;
+using Beaver.UI;
 
 namespace Beaver.Controllers
 {
-	public class ViewController : IController, IPopulateTree, IPopulateMenu
+	public class ViewController : IController, IPopulateTree
 	{
 		private static Gdk.Pixbuf pixbuf;
 		
@@ -65,11 +66,12 @@ namespace Beaver.Controllers
 		public ViewController (MainController controller)
 		{
 			this.controller = controller;
-			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this);
+			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this.PopulateContextMenu);
 			
-			this.controller.Window.conceptTreeView.RegisterForMenu (this);
+			this.controller.Window.conceptTreeView.RegisterForMenu (this.PopulateContextMenu);
 			this.controller.Window.viewList.RegisterForTree (this);
-			this.controller.Window.viewList.RegisterForMenu (this);
+			this.controller.Window.viewList.RegisterForMenu (this.PopulateContextMenu);
+			this.controller.Window.viewList.RegisterForMenu (this.PopulateContextMenuView);
 			this.controller.Window.viewList.ElementActivated += ElementActivated;
 		
 			this.ViewAdded += UpdateLists;
@@ -218,61 +220,60 @@ namespace Beaver.Controllers
 			}
 		}
 		
-		public bool PopulateContextMenu (Menu menu, object source, object clickedElement)
+		public void PopulateContextMenu (PopulateMenuArgs args)
 		{
-			bool retVal = false;
-			
-			if (clickedElement != null && clickedElement is IShape) {
+			if (args.ClickedElement != null && args.ClickedElement is IShape) {
 				var removeFromCurrentViewItem = new MenuItem("Remove from current view...");
 				removeFromCurrentViewItem.Activated += delegate(object sender2, EventArgs e) {
-					this.RemoveFromCurrentView (clickedElement as IShape);
+					this.RemoveFromCurrentView (args.ClickedElement as IShape);
 				};
-				menu.Add (removeFromCurrentViewItem);
-				retVal = true;
+				args.Menu.Add (removeFromCurrentViewItem);
+				args.ElementsAdded = true;
 			}
 			
-			if (clickedElement != null && clickedElement is KAOSElement & !(source is DiagramArea)) {
+			if (args.ClickedElement != null && args.ClickedElement is KAOSElement & !(args.Source is DiagramArea)) {
 				var addToCurrentViewItem = new MenuItem("Add to current view...");
 				addToCurrentViewItem.Activated += delegate(object sender2, EventArgs e) {
-					this.AddToCurrentView (clickedElement as KAOSElement);
+					this.AddToCurrentView (args.ClickedElement as KAOSElement);
 				};
-				menu.Add(addToCurrentViewItem);
-				retVal = true;
+				args.Menu.Add(addToCurrentViewItem);
+				args.ElementsAdded = true;
 			}
 			
-			if (clickedElement == null) {
-				var addViewItem = new MenuItem("Add view...");
-				addViewItem.Activated += delegate(object sender2, EventArgs e) {
-					this.AddView ();
-				};
-				menu.Add(addViewItem);
-				retVal = true;
-			}
-			
-			if (clickedElement is ModelView) {
-				var clickedView = clickedElement as ModelView;
+			if (args.ClickedElement is ModelView) {
+				var clickedView = args.ClickedElement as ModelView;
 				
 				var editItem = new MenuItem("Edit...");
 				editItem.Activated += delegate(object sender2, EventArgs e) {
 					this.EditView (clickedView);
 				};
-				menu.Add(editItem);
+				args.Menu.Add(editItem);
 				
 				var duplicateItem = new MenuItem("Duplicate...");
 				duplicateItem.Activated += delegate(object sender2, EventArgs e) {
 					this.DuplicateView (clickedView);
 				};
-				menu.Add(duplicateItem);
+				args.Menu.Add(duplicateItem);
 				
 				var removeItem = new MenuItem("Delete");
 				removeItem.Activated += delegate(object sender2, EventArgs e) {
 					this.RemoveView (clickedView);
 				};
-				menu.Add(removeItem);
-				retVal = true;
+				args.Menu.Add(removeItem);
+				args.ElementsAdded = true;
 			}
-			
-			return retVal;
+		}
+		
+		public void PopulateContextMenuView (PopulateMenuArgs args)
+		{
+			if (args.ClickedElement == null) {
+				var addViewItem = new MenuItem("Add view...");
+				addViewItem.Activated += delegate(object sender2, EventArgs e) {
+					this.AddView ();
+				};
+				args.Menu.Add(addViewItem);
+				args.ElementsAdded = true;
+			}
 		}
 		
 		public void Populate (TreeStore store)

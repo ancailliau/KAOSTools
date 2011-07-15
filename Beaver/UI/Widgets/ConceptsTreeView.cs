@@ -124,7 +124,13 @@ namespace Beaver.UI.Widgets
 				if (path == null) {
 					var menu = new Menu();
 					foreach (var p in menuPopulater) {
-						p.PopulateContextMenu (menu, this, null);
+						p.Invoke (new PopulateMenuArgs() {
+							Menu = menu,
+							Source = this,
+							ClickedElement = null, 
+							X = args.Event.X, 
+							Y = args.Event.Y 
+						});
 					}
 					menu.ShowAll ();
 					menu.Popup ();
@@ -136,7 +142,9 @@ namespace Beaver.UI.Widgets
 						var menu = new Menu();
 						SeparatorMenuItem separator = null;
 						foreach (var p in menuPopulater) {
-							if (p.PopulateContextMenu (menu, this, o)) {
+							var menuArgs = new PopulateMenuArgs { Menu = menu, Source = this, ClickedElement = o, X = args.Event.X, Y = args.Event.Y };
+							p.Invoke (menuArgs);
+							if (menuArgs.ElementsAdded) {
 								separator = new SeparatorMenuItem ();
 								menu.Add (separator);
 							}
@@ -260,14 +268,14 @@ namespace Beaver.UI.Widgets
 		}
 		
 		private List<IPopulateTree> treePopulater = new List<IPopulateTree>();
-		private List<IPopulateMenu> menuPopulater = new List<IPopulateMenu>();
+		private List<System.Action<PopulateMenuArgs>> menuPopulater = new List<System.Action<PopulateMenuArgs>>();
 		
 		public void RegisterForTree (IPopulateTree populater)
 		{
 			this.treePopulater.Add (populater);
 		}
 		
-		public void RegisterForMenu (IPopulateMenu populater)
+		public void RegisterForMenu (System.Action<PopulateMenuArgs> populater)
 		{
 			this.menuPopulater.Add (populater);
 		}

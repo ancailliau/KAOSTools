@@ -42,11 +42,10 @@ namespace Beaver.UI.Shapes
 		
 		public override void Display (Context context, ModelView view)
 		{
-			var oldLineWidth = context.LineWidth;
+			context.Save ();
 			if (Selected) {
 				context.LineWidth = 2.5;
 			}
-			var oldSource = context.Source;
 			
 			var element = (Resolution) RepresentedElement;
 			
@@ -78,8 +77,37 @@ namespace Beaver.UI.Shapes
 				arrow.Display(context, view);
 			}
 			
-			context.Source = oldSource;
-			context.LineWidth = oldLineWidth;
+			float likelihood = ((Resolution) RepresentedElement).Likelihood;
+			if (likelihood < 1) {
+				var pangoLayout = new Pango.Layout(view.DrawingArea.PangoContext);
+				pangoLayout.Alignment = Pango.Alignment.Center;
+				pangoLayout.SetMarkup(string.Format ("{0:0.00}",
+					likelihood));
+				
+				var fontDescr = new Pango.FontDescription ();
+				fontDescr.Size = (int) (9 * Pango.Scale.PangoScale);
+				pangoLayout.FontDescription = fontDescr;
+				int textWidth, textHeight;
+				pangoLayout.GetPixelSize(out textWidth, out textHeight);
+				
+				int paddingLikelihood = 4;
+				
+				double x = goalShape.Position.X - (goalShape.Position.X - obstacleShape.Position.X)/2 - textWidth / 2f - paddingLikelihood / 2f;
+				double y = goalShape.Position.Y - (goalShape.Position.Y - obstacleShape.Position.Y)/2 - textHeight / 2f - paddingLikelihood / 2f;
+				
+				context.MoveTo (x, y);
+				context.RoundedRectangle (x, y, textWidth + paddingLikelihood, textHeight + paddingLikelihood, 3);
+				context.SetColor ("#000");
+				context.StrokePreserve ();
+				context.SetColor ("#fff");
+				context.Fill ();
+				
+				context.SetColor (view.Controller.CurrentColorScheme.ExceptionTextColor);
+				context.MoveTo(x + paddingLikelihood / 2f, y + paddingLikelihood / 2f);
+				Pango.CairoHelper.ShowLayout(context, pangoLayout);
+			}
+			
+			context.Restore ();
 		}
 		
 		/// <summary>

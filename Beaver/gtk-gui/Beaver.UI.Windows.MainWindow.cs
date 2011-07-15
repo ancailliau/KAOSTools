@@ -146,6 +146,7 @@ namespace Beaver.UI.Windows
 			this.ExportCurrentViewAction.Activated += new global::System.EventHandler (this.OnExportCurrentViewActionActivated);
 			this.newAction.Activated += new global::System.EventHandler (this.OnNewActionActivated);
 			this.ExportCurrentViewAsPDFAction.Activated += new global::System.EventHandler (this.OnExportCurrentViewAsPDFActionActivated);
+			this.GetFalsifiedGoalsAction.Activated += new global::System.EventHandler (this.OnGetFalsifiedGoalsActionActivated);
 			this.CheckAction.Activated += new global::System.EventHandler (this.OnCheckActionActivated);
 		}
 	}

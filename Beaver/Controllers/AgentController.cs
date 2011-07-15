@@ -31,10 +31,11 @@ using Gtk;
 using Beaver.UI.Widgets;
 using Beaver.Logging;
 using System.Collections.Generic;
+using Beaver.UI;
 
 namespace Beaver.Controllers
 {
-	public class AgentController : IController, IPopulateTree, IPopulateMenu
+	public class AgentController : IController, IPopulateTree
 	{
 		private static Gdk.Pixbuf pixbuf;
 		
@@ -63,8 +64,8 @@ namespace Beaver.Controllers
 		{
 			this.controller = controller;
 			this.controller.Window.conceptTreeView.RegisterForTree (this);
-			this.controller.Window.conceptTreeView.RegisterForMenu (this);
-			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this);
+			this.controller.Window.conceptTreeView.RegisterForMenu (this.PopulateContextMenu);
+			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this.PopulateContextMenu);
 		
 			this.AgentAdded += UpdateLists;
 			this.AgentRemoved += UpdateLists;
@@ -141,7 +142,7 @@ namespace Beaver.Controllers
 		
 		public void EditAgent (Agent agent)
 		{
-			var dialog = new AddAgentDialog (this.controller.Window, agent);
+			var dialog = new AddAgentDialog (this.controller.Window, agent, true);
 			dialog.Response += delegate(object o, Gtk.ResponseArgs args) {
 				if (args.ResponseId == Gtk.ResponseType.Ok) {
 					agent.Name = dialog.AgentName;
@@ -169,42 +170,39 @@ namespace Beaver.Controllers
 		}
 		
 		
-		public bool PopulateContextMenu (Menu menu, object source, object clickedElement)
+		public void PopulateContextMenu (PopulateMenuArgs args)
 		{
-			bool retVal = false;
-			
-			if (clickedElement == null & source is ConceptsTreeView) {				
+			if ((args.ClickedElement == null) 
+				| (args.ClickedElement is TitleItem && (args.ClickedElement as TitleItem).Name == "Agents")) {
 				var addItem = new MenuItem("Add agent...");
 				addItem.Activated += delegate(object sender2, EventArgs e) {
 					this.AddAgent ();
 				};
-				menu.Add(addItem);
-				retVal = true;
+				args.Menu.Add(addItem);
+				args.ElementsAdded = true;
 			}
 			
-			if (clickedElement is Agent) {
-				var clickedAgent = (Agent) clickedElement;
+			if (args.ClickedElement is Agent) {
+				var clickedAgent = (Agent) args.ClickedElement;
 				
 				var editItem = new MenuItem("Edit...");
 				editItem.Activated += delegate(object sender2, EventArgs e) {
 					this.EditAgent (clickedAgent);
 				};
-				menu.Add(editItem);
+				args.Menu.Add(editItem);
 				
 				var deleteItem = new MenuItem("Delete");
 				deleteItem.Activated += delegate(object sender2, EventArgs e) {
 					this.RemoveAgent (clickedAgent);
 				};
-				menu.Add(deleteItem);
-				retVal = true;
+				args.Menu.Add(deleteItem);
+				args.ElementsAdded = true;
 			}
-			
-			return retVal;
 		}
 		
 		public void Populate (TreeStore store)
 		{
-			var iter = store.AppendValues ("Agents", null, pixbuf);
+			var iter = store.AppendValues ("Agents", new TitleItem () { Name = "Agents" }, pixbuf);
 			Populate (this.GetAll().Cast<KAOSElement>(), store, iter);
 		}
 		

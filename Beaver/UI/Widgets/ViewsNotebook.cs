@@ -31,6 +31,7 @@ using Beaver.Model;
 using Beaver.UI.Shapes;
 using Beaver.Controllers;
 using Beaver.Views;
+using Beaver.UI.Windows;
 
 namespace Beaver.UI.Widgets
 {
@@ -62,15 +63,15 @@ namespace Beaver.UI.Widgets
 			}
 		}
 		
-		private MainController controller;
+		private MainWindow window;
 		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Beaver.UI.Widgets.ViewsNotebook"/> class.
 		/// </summary>
-		public ViewsNotebook ()
+		public ViewsNotebook (MainWindow window)
 		{
 			displayedViews = new List<ModelView>();
-			this.controller = null;
+			this.window = window;
 			this.Scrollable = true;
 		}
 
@@ -103,6 +104,7 @@ namespace Beaver.UI.Widgets
 			}
 			
 			displayedViews.Add(view);
+			this.window.Controller.Configuration.OpenedViews.Add (view.Name);
 			
 			// Add the page if the page does not exists
 			var scroll = new ScrolledWindow ();
@@ -141,6 +143,7 @@ namespace Beaver.UI.Widgets
 					Hide (pageNum);
 				}
 			}
+			this.window.Controller.Configuration.OpenedViews.Remove (view.Name);
 		}
 		
 		/// <summary>
@@ -174,9 +177,9 @@ namespace Beaver.UI.Widgets
 		}
 		
 		
-		private List<IPopulateMenu> menuPopulater = new List<IPopulateMenu>();
+		private List<System.Action<PopulateMenuArgs>> menuPopulater = new List<System.Action<PopulateMenuArgs>>();
 		
-		public void RegisterForDiagramMenu (IPopulateMenu populater)
+		public void RegisterForDiagramMenu (System.Action<PopulateMenuArgs> populater)
 		{
 			this.menuPopulater.Add (populater);
 		}

@@ -30,17 +30,20 @@ using Gtk;
 using Beaver.UI.Dialogs;
 using Beaver.Logging;
 using System.Collections.Generic;
+using Beaver.UI;
 
 namespace Beaver.Controllers
 {
-	public class ResolutionController : IController, IPopulateMenu
+	public class ResolutionController : IController
 	{
 		
 		private static Gdk.Pixbuf pixbuf;
+		private static Gdk.Pixbuf goalPixbuf;
 		
 		static ResolutionController () {
 			try {
 				pixbuf = Gdk.Pixbuf.LoadFromResource("Beaver.Images.Resolution.png");
+				goalPixbuf = Gdk.Pixbuf.LoadFromResource("Beaver.Images.Goal.png");
 				
 			} catch (Exception e) {
 				Logger.Warning ("Cannot load images from ressources", e);
@@ -61,7 +64,7 @@ namespace Beaver.Controllers
 		public ResolutionController (MainController controller)
 		{
 			this.controller = controller;
-			this.controller.Window.conceptTreeView.RegisterForMenu (this);
+			this.controller.Window.conceptTreeView.RegisterForMenu (this.PopulateContextMenu);
 		
 			this.ResolutionAdded += UpdateLists;
 			this.ResolutionRemoved += UpdateLists;
@@ -71,7 +74,7 @@ namespace Beaver.Controllers
 		private void UpdateLists (Resolution resolution) {
 			this.controller.Window.conceptTreeView.Update ();
 			this.controller.ViewController.RefreshCurrentView ();
-			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this);
+			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this.PopulateContextMenu);
 		}
 		
 		public IEnumerable<Resolution> GetAll ()
@@ -179,38 +182,34 @@ namespace Beaver.Controllers
 			dialog.Present ();
 		}
 		
-		public bool PopulateContextMenu (Menu menu, object source, object clickedElement)
+		public void PopulateContextMenu (PopulateMenuArgs args)
 		{
-			bool retVal = false;
-			
-			if (clickedElement is Obstacle) {	
-				var clickedObstacle = clickedElement as Obstacle;
+			if (args.ClickedElement is Obstacle) {	
+				var clickedObstacle = args.ClickedElement as Obstacle;
 				var assignItem = new MenuItem("Resolve...");
 				assignItem.Activated += delegate(object sender2, EventArgs e) {
 					this.AddResolution (clickedObstacle);
 				};
-				menu.Add(assignItem);
-				retVal = true;
+				args.Menu.Add(assignItem);
+				args.ElementsAdded = true;
 			}
 			
-			if (clickedElement is Resolution) {
-				var clickedResolution = clickedElement as Resolution;
+			if (args.ClickedElement is Resolution) {
+				var clickedResolution = args.ClickedElement as Resolution;
 				
 				var editItem = new MenuItem("Edit...");
 				editItem.Activated += delegate(object sender2, EventArgs e) {
 					this.EditResolution (clickedResolution);
 				};
-				menu.Add(editItem);
+				args.Menu.Add(editItem);
 				
 				var deleteItem = new MenuItem("Delete");
 				deleteItem.Activated += delegate(object sender2, EventArgs e) {
 					this.RemoveResolution (clickedResolution);
 				};
-				menu.Add(deleteItem);
-				retVal = true;
+				args.Menu.Add(deleteItem);
+				args.ElementsAdded = true;
 			}
-			
-			return retVal;
 		}
 		
 		public void Populate (TreeStore store)
@@ -223,7 +222,7 @@ namespace Beaver.Controllers
 		{
 			foreach (var resolution in from e in elements where e is Resolution select (Resolution) e) {
 				var subIter = store.AppendValues (iter, "Resolution", resolution, pixbuf);
-				store.AppendValues (subIter, resolution.Goal.Name, resolution.Goal, pixbuf);
+				store.AppendValues (subIter, resolution.Goal.Name, resolution.Goal, goalPixbuf);
 			}
 		}
 	}

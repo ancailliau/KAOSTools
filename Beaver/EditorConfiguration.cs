@@ -72,6 +72,11 @@ namespace Beaver
 			set;
 		}
 		
+		public List<string> OpenedViews {
+			get;
+			set;
+		}
+		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Beaver.EditorConfiguration"/> class.
 		/// </summary>
@@ -80,6 +85,7 @@ namespace Beaver
 			Maximized = false;
 			Plugins = new List<Plugin> ();
 			LastOpenedFilename = "";
+			OpenedViews = new List<string> ();
 		}
 		
 		/// <summary>

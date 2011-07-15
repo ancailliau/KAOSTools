@@ -30,10 +30,11 @@ using Gtk;
 using Beaver.UI.Dialogs;
 using Beaver.Logging;
 using System.Collections.Generic;
+using Beaver.UI;
 
 namespace Beaver.Controllers
 {
-	public class RefinementController : IController, IPopulateTree, IPopulateMenu
+	public class RefinementController : IController, IPopulateTree
 	{
 		
 		private static Gdk.Pixbuf pixbuf;
@@ -61,8 +62,8 @@ namespace Beaver.Controllers
 		public RefinementController (MainController controller)
 		{
 			this.controller = controller;
-			this.controller.Window.conceptTreeView.RegisterForMenu (this);
-			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this);
+			this.controller.Window.conceptTreeView.RegisterForMenu (this.PopulateContextMenu);
+			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this.PopulateContextMenu);
 		
 			this.RefinementAdded += UpdateLists;
 			this.RefinementRemoved += UpdateLists;
@@ -167,38 +168,34 @@ namespace Beaver.Controllers
 			dialog.Present ();
 		}
 		
-		public bool PopulateContextMenu (Menu menu, object source, object clickedElement)
+		public void PopulateContextMenu (PopulateMenuArgs args)
 		{
-			bool retVal = false;
-			
-			if (clickedElement is Goal) {
-				var clickedGoal = (Goal) clickedElement;				
+			if (args.ClickedElement is Goal) {
+				var clickedGoal = (Goal) args.ClickedElement;
 				var refineItem = new MenuItem("Refine...");
 				refineItem.Activated += delegate(object sender2, EventArgs e) {
 					this.AddRefinement (clickedGoal);
 				};
-				menu.Add(refineItem);
-				retVal = true;
+				args.Menu.Add(refineItem);
+				args.ElementsAdded = true;
 			}
 			
-			if (clickedElement is Refinement) {
-				var clickedRefinement = clickedElement as Refinement;
+			if (args.ClickedElement is Refinement) {
+				var clickedRefinement = args.ClickedElement as Refinement;
 				
 				var editItem = new MenuItem("Edit...");
 				editItem.Activated += delegate(object sender2, EventArgs e) {
 					this.EditRefinement (clickedRefinement);
 				};
-				menu.Add(editItem);
+				args.Menu.Add(editItem);
 				
 				var deleteItem = new MenuItem("Delete");
 				deleteItem.Activated += delegate(object sender2, EventArgs e) {
 					this.RemoveRefinement (clickedRefinement);
 				};
-				menu.Add(deleteItem);
-				retVal = true;
+				args.Menu.Add(deleteItem);
+				args.ElementsAdded = true;
 			}
-			
-			return retVal;
 		}
 		
 		public void Populate (TreeStore store)

@@ -30,10 +30,11 @@ using Gtk;
 using Beaver.UI.Dialogs;
 using Beaver.Logging;
 using System.Collections.Generic;
+using Beaver.UI;
 
 namespace Beaver.Controllers
 {
-	public class ObstructionController : IController, IPopulateTree, IPopulateMenu
+	public class ObstructionController : IController, IPopulateTree
 	{
 		
 		private static Gdk.Pixbuf pixbuf;
@@ -61,8 +62,8 @@ namespace Beaver.Controllers
 		public ObstructionController (MainController controller)
 		{
 			this.controller = controller;
-			this.controller.Window.conceptTreeView.RegisterForMenu (this);
-			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this);
+			this.controller.Window.conceptTreeView.RegisterForMenu (this.PopulateContextMenu);
+			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this.PopulateContextMenu);
 		
 			this.ObstructionAdded += UpdateLists;
 			this.ObstructionRemoved += UpdateLists;
@@ -184,40 +185,37 @@ namespace Beaver.Controllers
 			dialog.Present ();
 		}
 		
-		public bool PopulateContextMenu (Menu menu, object source, object clickedElement)
+		public void PopulateContextMenu (PopulateMenuArgs args)
 		{
-			bool retVal = false;
-			if (clickedElement is Goal) {	
-				var refinements = this.controller.RefinementController.GetAll (clickedElement as Goal);
+			if (args.ClickedElement is Goal) {	
+				var refinements = this.controller.RefinementController.GetAll (args.ClickedElement as Goal);
 				if (refinements.Count() == 0) {
-					var clickedGoal = clickedElement as Goal;
+					var clickedGoal = args.ClickedElement as Goal;
 					var assignItem = new MenuItem("Obstruct...");
 					assignItem.Activated += delegate(object sender2, EventArgs e) {
 						this.AddObstruction (clickedGoal);
 					};
-					menu.Add(assignItem);
-					retVal = true;
+					args.Menu.Add(assignItem);
+					args.ElementsAdded = true;
 				}
 			}
 			
-			if (clickedElement is Obstruction) {
-				var clickedObstruction = clickedElement as Obstruction;
+			if (args.ClickedElement is Obstruction) {
+				var clickedObstruction = args.ClickedElement as Obstruction;
 				
 				var editItem = new MenuItem("Edit...");
 				editItem.Activated += delegate(object sender2, EventArgs e) {
 					this.EditObstruction (clickedObstruction);
 				};
-				menu.Add(editItem);
+				args.Menu.Add(editItem);
 				
 				var deleteItem = new MenuItem("Delete");
 				deleteItem.Activated += delegate(object sender2, EventArgs e) {
 					this.RemoveObstruction (clickedObstruction);
 				};
-				menu.Add(deleteItem);
-				retVal = true;
+				args.Menu.Add(deleteItem);
+				args.ElementsAdded = true;
 			}
-			
-			return retVal;
 		}
 		
 		public void Populate (TreeStore store)

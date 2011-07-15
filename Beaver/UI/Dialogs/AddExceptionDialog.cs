@@ -36,6 +36,8 @@ namespace Beaver.UI.Dialogs
 		private ListStore store;
 		private MainController controller;
 		
+		#region Value of fields
+		
 		public Goal ExceptionGoal {
 			get {
 				var iter = new TreeIter();
@@ -59,13 +61,16 @@ namespace Beaver.UI.Dialogs
 			}
 		}
 		
+		#endregion
+		
 		public AddExceptionDialog (MainController window, Goal goal)
-			: this (window, goal, null)
+			: this (window, goal, null, false)
 		{
 		}
 		
-		public AddExceptionDialog (MainController controller, Goal goal, Goal exceptionGoal)
-			: base ("Add exception", controller.Window, DialogFlags.DestroyWithParent)
+		public AddExceptionDialog (MainController controller, Goal goal, Goal exceptionGoal, bool edit)
+			: base (edit ? string.Format ("Edit exception for goal '{0}'", goal.Name) : "Add exception",
+				controller.Window, DialogFlags.DestroyWithParent)
 		{
 			this.Build ();
 			this.controller = controller;

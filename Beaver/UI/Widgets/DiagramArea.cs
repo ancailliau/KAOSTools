@@ -238,11 +238,25 @@ namespace Beaver.UI.Widgets
 				var menu = new Menu ();
 				SeparatorMenuItem separator = null;
 				foreach (var p in menuPopulater) {
-					bool retVal = p.PopulateContextMenu (menu, this, clickedShape);
+					
+					// Populate menu for the shap
+					var populateArgs = new PopulateMenuArgs () {
+						Menu = menu,
+						Source = this,
+						ClickedElement = clickedShape,
+						X = evnt.X,
+						Y = evnt.Y
+					};
+					p.Invoke (populateArgs);
+					
+					// And for the represented element
 					if (clickedShape != null) {
-						retVal |= p.PopulateContextMenu (menu, this, clickedShape.RepresentedElement);
+						populateArgs.ClickedElement = clickedShape.RepresentedElement;
+						p.Invoke (populateArgs);
 					}
-					if (retVal) {
+					
+					// Add separator if needed
+					if (populateArgs.ElementsAdded) {
 						separator = new SeparatorMenuItem ();
 						menu.Add (separator);
 					}
@@ -268,7 +282,7 @@ namespace Beaver.UI.Widgets
 			} else if (evnt.Key == Gdk.Key.Left) {
 				foreach (var s in selectedShapes) {
 					s.Position = new PointD (
-						s.Position.X - 1,
+						s.Position.X - (shiftPressed ? 5 : 1),
 						s.Position.Y
 						);
 				}	
@@ -277,7 +291,7 @@ namespace Beaver.UI.Widgets
 			} else if (evnt.Key == Gdk.Key.Right) {
 				foreach (var s in selectedShapes) {
 					s.Position = new PointD (
-						s.Position.X + 1,
+						s.Position.X + (shiftPressed ? 5 : 1),
 						s.Position.Y
 						);
 				}	
@@ -287,7 +301,7 @@ namespace Beaver.UI.Widgets
 				foreach (var s in selectedShapes) {
 					s.Position = new PointD (
 						s.Position.X,
-						s.Position.Y - 1
+						s.Position.Y - (shiftPressed ? 5 : 1)
 						);
 				}	
 				this.QueueDraw ();
@@ -296,7 +310,7 @@ namespace Beaver.UI.Widgets
 				foreach (var s in selectedShapes) {
 					s.Position = new PointD (
 						s.Position.X,
-						s.Position.Y + 1
+						s.Position.Y + (shiftPressed ? 5 : 1)
 						);
 				}	
 				this.QueueDraw ();
@@ -341,9 +355,9 @@ namespace Beaver.UI.Widgets
 			return selectedShape;
 		}
 		
-		private List<IPopulateMenu> menuPopulater = new List<IPopulateMenu>();
+		private List<System.Action<PopulateMenuArgs>> menuPopulater = new List<System.Action<PopulateMenuArgs>>();
 		
-		public void RegisterForMenu (IPopulateMenu populater)
+		public void RegisterForMenu (System.Action<PopulateMenuArgs> populater)
 		{
 			this.menuPopulater.Add (populater);
 		}

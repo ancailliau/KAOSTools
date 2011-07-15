@@ -31,10 +31,11 @@ using Gtk;
 using Beaver.UI.Widgets;
 using Beaver.Logging;
 using System.Collections.Generic;
+using Beaver.UI;
 
 namespace Beaver.Controllers
 {
-	public class ObstacleController : IController, IPopulateTree, IPopulateMenu
+	public class ObstacleController : IController, IPopulateTree
 	{
 		
 		private static Gdk.Pixbuf pixbuf;
@@ -63,8 +64,8 @@ namespace Beaver.Controllers
 		{
 			this.controller = controller;
 			this.controller.Window.conceptTreeView.RegisterForTree (this);
-			this.controller.Window.conceptTreeView.RegisterForMenu (this);
-			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this);
+			this.controller.Window.conceptTreeView.RegisterForMenu (this.PopulateContextMenu);
+			this.controller.Window.viewsNotebook.RegisterForDiagramMenu (this.PopulateContextMenu);
 		
 			this.ObstacleAdded += UpdateLists;
 			this.ObstacleRemoved += UpdateLists;
@@ -172,50 +173,50 @@ namespace Beaver.Controllers
 			dialog.Present ();
 		}
 		
-		public bool PopulateContextMenu (Menu menu, object source, object clickedElement)
+		public void PopulateContextMenu (PopulateMenuArgs args)
 		{
-			bool retVal = false;
-			
-			if (clickedElement == null & source is ConceptsTreeView) {				
+			if ((args.ClickedElement == null) |
+				(args.ClickedElement is TitleItem && (args.ClickedElement as TitleItem).Name == "Obstacles")) {				
 				var addItem = new MenuItem("Add obstacle...");
 				addItem.Activated += delegate(object sender2, EventArgs e) {
 					this.AddObstacle ();
 				};
-				menu.Add(addItem);
-				retVal = true;
+				args.Menu.Add(addItem);
+				args.ElementsAdded = true;
 			}
 			
-			if (clickedElement is Obstacle) {
-				var clickedObstacle = (Obstacle) clickedElement;
+			if (args.ClickedElement is Obstacle) {
+				var clickedObstacle = (Obstacle) args.ClickedElement;
 				
 				var editItem = new MenuItem("Edit...");
 				editItem.Activated += delegate(object sender2, EventArgs e) {
 					this.EditObstacle (clickedObstacle);
 				};
-				menu.Add(editItem);
+				args.Menu.Add(editItem);
 				
 				var deleteItem = new MenuItem("Delete");
 				deleteItem.Activated += delegate(object sender2, EventArgs e) {
 					this.RemoveObstacle (clickedObstacle);
 				};
-				menu.Add(deleteItem);				
+				args.Menu.Add(deleteItem);				
 				
 				var computeItem = new MenuItem("Compute likelihood");
 				computeItem.Activated += delegate(object sender2, EventArgs e) {
+					this.controller.Window.PushStatus ("Computing likelihoods...");
 					this.ComputeLikelihood (clickedObstacle);
 					if (ObstacleUpdated != null)
 						ObstacleUpdated (clickedObstacle);
+					this.controller.Window.PushStatus ("Likelihoods computed");
 				};
-				menu.Add(computeItem);
+				args.Menu.Add(computeItem);
 				
-				retVal = true;
+				args.ElementsAdded = true;
 			}
-			return retVal;
 		}
 		
 		public void Populate (TreeStore store)
 		{
-			var iter = store.AppendValues ("Obstacles", null, pixbuf);
+			var iter = store.AppendValues ("Obstacles", new TitleItem () { Name = "Obstacles" }, pixbuf);
 			Populate (this.GetAll().Cast<KAOSElement>(), store, iter);
 		}
 		

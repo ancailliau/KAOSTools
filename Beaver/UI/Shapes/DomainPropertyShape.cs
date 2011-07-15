@@ -43,6 +43,7 @@ namespace Beaver.UI.Shapes
 		
 		private int width;
 		private int height;
+		private int shear = 10;
 		
 		public DomainPropertyShape (DomainProperty domProp) : base () 
 		{
@@ -82,8 +83,6 @@ namespace Beaver.UI.Shapes
 			height = (int) ( textHeight + 2 * YPadding );
 			
 			//context.Rectangle(Position.X - width / 2, Position.Y - height / 2, width, height);
-			var shear = 6;
-			
 			context.MoveTo(Position.X - width / 2,
 				Position.Y - height/2);
 			context.RelLineTo(width / 2, - shear);
@@ -139,8 +138,15 @@ namespace Beaver.UI.Shapes
 		/// </param>
 		public override bool InBoundingBox (double x, double y, out PointD delta)
 		{
-			if ((x > Position.X - width/2 && x < Position.X + width/2)
-				& (y > Position.Y - height /2 && y < Position.Y + height/2)) {
+			var points = new PointD[] {
+				new PointD (Position.X - width / 2f, Position.Y - height / 2f),
+				new PointD (Position.X, Position.Y - height / 2f - shear),
+				new PointD (Position.X + width / 2, Position.Y - height / 2f),
+				new PointD (Position.X + width / 2f, Position.Y + height / 2f),
+				new PointD (Position.X - width / 2f, Position.Y + height / 2f)
+			};
+			
+			if (points.PointInPolygon (new PointD (x, y))) {
 				delta.X = Position.X - x;
 				delta.Y = Position.Y - y;
 				return true;

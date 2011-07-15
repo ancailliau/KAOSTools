@@ -195,6 +195,14 @@ namespace Beaver.Controllers
 			if (this.Configuration.Maximized) {
 				Window.Maximize();
 			}
+			
+			string[] views = this.Configuration.OpenedViews.ToArray ();
+			this.Configuration.OpenedViews.Clear ();
+			foreach (var v in views) {
+				var mv = this.ViewController.Get (v);
+				this.ViewController.DisplayView (mv);
+			}
+			
 			Window.Update ();
 			Window.Present ();
 		}
@@ -430,8 +438,10 @@ namespace Beaver.Controllers
 		
 		public void CheckModel () 
 		{
+			this.Window.PushStatus ("Checking model...");
 			this.Window.ErrorList.Clear ();
 			this.GoalController.CheckModel ();
+			this.Window.PushStatus ("Model checked");
 		}
 		
 		

@@ -51,6 +51,8 @@ namespace Beaver.UI.Shapes
 		/// </summary>
 		private int height;
 		
+		private int shear = 4;
+		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Beaver.UI.Shapes.GoalShape"/> class.
 		/// </summary>
@@ -102,7 +104,6 @@ namespace Beaver.UI.Shapes
 			height = (int) ( textHeight + 2 * YPadding );
 			
 			//context.Rectangle(Position.X - width / 2, Position.Y - height / 2, width, height);
-			var shear = -4;
 			
 			context.MoveTo(Position.X - width / 2 + shear / 2,
 				Position.Y - height/2);
@@ -153,17 +154,17 @@ namespace Beaver.UI.Shapes
 			pangoLayout.GetPixelSize(out textWidth, out textHeight);
 			
 			int paddingLikelihood = 4;
-			context.MoveTo (Position.X - width / 2f + shear / 2f - textWidth / 2f - paddingLikelihood / 2f,
+			context.MoveTo (Position.X + width / 2f + shear / 2f - textWidth / 2f - paddingLikelihood / 2f,
 				Position.Y - height / 2f - textHeight / 2f  - paddingLikelihood / 2f);
-			context.Rectangle (Position.X - width / 2f + shear / 2f - textWidth / 2f - paddingLikelihood / 2f,
-				Position.Y - height / 2f - textHeight / 2f - paddingLikelihood / 2f, textWidth + paddingLikelihood, textHeight + paddingLikelihood);
+			context.RoundedRectangle (Position.X + width / 2f + shear / 2f - textWidth / 2f - paddingLikelihood / 2f,
+				Position.Y - height / 2f - textHeight / 2f - paddingLikelihood / 2f, textWidth + paddingLikelihood, textHeight + paddingLikelihood, 3);
 			context.SetColor ("#000");
 			context.StrokePreserve ();
 			context.SetColor ("#fff");
 			context.Fill ();
 			
 			context.SetColor (view.Controller.CurrentColorScheme.ExceptionTextColor);
-			context.MoveTo(Position.X - width / 2f + shear / 2f - textWidth / 2f,
+			context.MoveTo(Position.X + width / 2f + shear / 2f - textWidth / 2f,
 				Position.Y - height / 2f - textHeight / 2f);
 			Pango.CairoHelper.ShowLayout(context, pangoLayout);
 			
@@ -187,12 +188,19 @@ namespace Beaver.UI.Shapes
 		/// </param>
 		public override bool InBoundingBox (double x, double y, out PointD delta)
 		{
-			if ((x > Position.X - width/2 && x < Position.X + width/2)
-				& (y > Position.Y - height /2 && y < Position.Y + height/2)) {
+			var points = new PointD[] {
+				new PointD (Position.X - width / 2 + shear / 2, Position.Y - height/2),
+				new PointD (Position.X + width / 2 + shear / 2, Position.Y - height/2),
+				new PointD (Position.X + width / 2 - shear / 2, Position.Y + height/2),
+				new PointD (Position.X - width / 2 - shear / 2, Position.Y + height/2)
+			};
+			
+			if (points.PointInPolygon (new PointD (x, y))) {
 				delta.X = Position.X - x;
 				delta.Y = Position.Y - y;
 				return true;
 			} 
+			
 			return false;
 		}
 		
