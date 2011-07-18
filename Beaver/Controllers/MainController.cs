@@ -134,6 +134,10 @@ namespace Beaver.Controllers
 			set ;
 		}
 		
+		public delegate void HandleProjectLoaded ();
+		public event HandleProjectLoaded ProjetLoaded;
+		
+		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Editor.Controllers.MainController"/> class.
 		/// </summary>
@@ -311,6 +315,10 @@ namespace Beaver.Controllers
 			importer.Import();
 			
 			Window.Title = string.Format("KAOS Editor - " + this.currentFilename);
+			
+			if (ProjetLoaded != null)
+				ProjetLoaded ();
+			
 		}
 		
 		#endregion

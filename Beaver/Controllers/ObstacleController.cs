@@ -235,26 +235,25 @@ namespace Beaver.Controllers
 
 		public float ComputeLikelihood (Obstacle obstacle)
 		{
+			Logger.Debug ("Computing likelihood for {0}", obstacle.ToString());
+			this.controller.Window.PushStatus (string.Format ("Computing likelihood for {0}", obstacle.ToString()));
+
 			float l = 0;
 			IEnumerable<ObstacleRefinement> refinements = this.controller.ObstacleRefinementController.GetAll (obstacle);
 			if (refinements.Count () > 0) {
-				foreach (var refinement in refinements) {
-					l += this.controller.ObstacleRefinementController.ComputeLikelihood (refinement);
-				}
+				
+				l = (from r in refinements 
+					 select this.controller.ObstacleRefinementController.ComputeLikelihood (r)
+					).Sum ();
 				obstacle.ComputedLikelihood = Math.Min (1, Math.Max (0, l));;
+				
 			} else {
 				var resolutions = this.controller.ResolutionController.GetAll (obstacle);
-				if (resolutions.Count () > 0) {
-					l = obstacle.Likelihood;
-					foreach (var r in resolutions) {
-						var contrib = r.Likelihood * this.controller.GoalController.ComputeLikelihood (r.Goal);
-						l -= l * contrib;
-					}
-					obstacle.ComputedLikelihood = l;
-					
-				} else {
-					obstacle.ComputedLikelihood = obstacle.Likelihood;
-				}
+				
+				obstacle.ComputedLikelihood = obstacle.Likelihood - 
+					(from r in resolutions 
+						select (l * r.Likelihood * this.controller.GoalController.ComputeLikelihood (r.Goal))
+					).Sum ();
 			}
 			return obstacle.ComputedLikelihood;
 		}

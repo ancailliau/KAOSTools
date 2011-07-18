@@ -101,8 +101,6 @@ namespace Beaver.UI.Shapes
 				
 				Position = new PointD (x, y);
 				
-				Console.WriteLine (Position.X + "," + Position.Y);
-				
 				context.MoveTo (x, y);
 				context.Arc (x, y, radius, 0, Math.PI * 2);
 				context.SetColor (view.Controller.CurrentColorScheme.ExceptionStrokeColor);
@@ -166,7 +164,6 @@ namespace Beaver.UI.Shapes
 		/// </param>
 		public override bool InBoundingBox (double x, double y, out PointD delta)
 		{
-			Console.WriteLine ("test " +Position.X + "," + Position.Y);
 			double centerX = Position.X;
 			double centerY = Position.Y;
 			double xx = (x - centerX);
@@ -174,7 +171,6 @@ namespace Beaver.UI.Shapes
 			if (Math.Sqrt(xx * xx + yy * yy) <= radius) {
 				delta.X = Position.X - x;
 				delta.Y = Position.Y - y;
-				Console.WriteLine ("true");
 				return true;
 			}
 			return false;

@@ -69,6 +69,13 @@ namespace Beaver.Controllers
 			this.GoalAdded += UpdateLists;
 			this.GoalRemoved += UpdateLists;
 			this.GoalUpdated += UpdateLists;
+			
+			this.controller.ProjetLoaded += () => {
+				this.GetRoots ().Select ((arg) => {
+					this.ComputeLikelihood(arg);
+					return arg;
+				}).ToArray ();
+			};
 		}
 		
 		private void UpdateLists (Goal goal) {
@@ -79,6 +86,17 @@ namespace Beaver.Controllers
 		public IEnumerable<Goal> GetAll ()
 		{
 			return this.goals.AsEnumerable ();
+		}
+		
+		public IEnumerable<Goal> GetRoots ()
+		{
+			var refinements = this.controller.RefinementController.GetAll ();
+			var roots = from goal in goals
+				from refinment in refinements
+				where !refinment.Refinees.Contains (goal)
+				select goal;
+			
+			return roots;
 		}
 		
 		public void Add (Goal goal)
@@ -268,6 +286,9 @@ namespace Beaver.Controllers
 		
 		public float ComputeLikelihood (Goal g)
 		{
+			Logger.Debug ("Computing likelihood for {0}", g.ToString());
+			this.controller.Window.PushStatus (string.Format ("Computing likelihood for {0}", g.ToString()));
+			
 			float l = 0;
 			if (this.controller.ResponsibilityController.GetAll(g).Count() > 0) {
 				l = 1;

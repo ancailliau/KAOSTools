@@ -108,5 +108,11 @@ namespace Beaver.Model
 				return (Id != null ? Id.GetHashCode () : 0);
 			}
 		}
+		
+		public override string ToString ()
+		{
+			return string.Format ("[Goal: Name={0}]", Name);
+		}
+		
 	}
 }
