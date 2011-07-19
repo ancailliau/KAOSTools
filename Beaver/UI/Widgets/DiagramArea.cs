@@ -95,7 +95,7 @@ namespace Beaver.UI.Widgets
 				PaintBackground(context);
 				
 				// For crisp lines
-				context.Translate(0.5, 0.5);				
+				context.Translate(0.5, 0.5);			
 				context.LineWidth = 1;				
 				
 				View.Display(context);
@@ -117,8 +117,8 @@ namespace Beaver.UI.Widgets
 			int height = 0;
 			
 			foreach (var shape in this.View.Shapes) {
-				height = Math.Max(shape.GetBounds().MaxY, height);
-				width = Math.Max(shape.GetBounds().MaxX, width);
+				height = Math.Max(shape.GetBounds(this.View).MaxY, height);
+				width = Math.Max(shape.GetBounds(this.View).MaxX, width);
 			}
 			
 			requisition.Width = width + 50;
@@ -130,12 +130,12 @@ namespace Beaver.UI.Widgets
 			this.QueueDraw();
 		}
 		
-		private List<IShape> selectedShapes = new List<IShape>();
+		private List<Shape> selectedShapes = new List<Shape>();
 		private PointD lastClickedPoint;
 		
 		private bool moveShapes = false;
 		private bool hasMoved = false;
-		private IShape removalCandidate;
+		private Shape removalCandidate;
 		
 		private bool controlPressed = false;
 		private bool shiftPressed = false;
@@ -163,8 +163,8 @@ namespace Beaver.UI.Widgets
 				int height = 0;
 				
 				foreach (var shape in this.View.Shapes) {
-					height = Math.Max(shape.GetBounds().MaxY, height);
-					width = Math.Max(shape.GetBounds().MaxX, width);
+					height = Math.Max(shape.GetBounds(this.View).MaxY, height);
+					width = Math.Max(shape.GetBounds(this.View).MaxX, width);
 				}
 				this.SetSizeRequest (width + 50, height + 50);
 				
@@ -341,13 +341,13 @@ namespace Beaver.UI.Widgets
 			return true;
 		}
 		
-		protected IShape FindShapeAtPosition(double x, double y)
+		protected Shape FindShapeAtPosition(double x, double y)
 		{
 			PointD selectedPoint;
-			IShape selectedShape = null;
+			Shape selectedShape = null;
 			foreach (var shape in this.View.Shapes) {
-				if (shape.InBoundingBox(x, y, out selectedPoint)) {
-					if (selectedShape == null || shape.Depth > selectedShape.Depth) { 
+				if (shape.InBoundingBox(x, y, out selectedPoint, this.View)) {
+					if (selectedShape == null) { 
 						selectedShape = shape;
 					}
 				}

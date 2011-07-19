@@ -196,7 +196,6 @@ namespace Beaver
 					writer.WriteAttributeString("element-id", shape.RepresentedElement.Id);
 					writer.WriteAttributeString("x", shape.Position.X.ToString());
 					writer.WriteAttributeString("y", shape.Position.Y.ToString());
-					writer.WriteAttributeString("depth", shape.Depth.ToString());
 					writer.WriteEndElement();
 				}
 				writer.WriteEndElement();

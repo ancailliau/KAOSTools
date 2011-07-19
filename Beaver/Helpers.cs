@@ -1,6 +1,8 @@
 using System;
 using System.Xml;
 using Cairo;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Beaver
 {
@@ -45,19 +47,19 @@ namespace Beaver
 			gr.Restore ();
 		}
 		
-		public static bool PointInPolygon (this PointD[] poly, PointD p)
+		public static bool PointInPolygon (this IEnumerable<PointD> poly, PointD p)
 		{
 			PointD p1, p2;
 			bool inside = false;
-			if (poly.Length < 3) {
+			int length = poly.Count ();
+			if (length < 3) {
 				return inside;
 			}
 
-			PointD oldPoint = new PointD (
-				poly [poly.Length - 1].X, poly [poly.Length - 1].Y);
+			PointD oldPoint = poly.Last();
 
-			for (int i = 0; i < poly.Length; i++) {
-				PointD newPoint = new PointD (poly [i].X, poly [i].Y);
+			foreach (var pp in poly) {
+				PointD newPoint = new PointD (pp.X, pp.Y);
 				if (newPoint.X > oldPoint.X) {
 					p1 = oldPoint;
 					p2 = newPoint;

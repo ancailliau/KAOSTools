@@ -44,7 +44,7 @@ namespace Beaver.UI.Arrows
 		/// <value>
 		/// The start.
 		/// </value>
-		IShape Start {
+		Shape Start {
 			get;
 			set;
 		}
@@ -55,7 +55,7 @@ namespace Beaver.UI.Arrows
 		/// <value>
 		/// The end.
 		/// </value>
-		IShape End {
+		Shape End {
 			get;
 			set;
 		}

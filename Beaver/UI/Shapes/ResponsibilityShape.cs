@@ -37,144 +37,23 @@ namespace Beaver.UI.Shapes
 	/// <summary>
 	/// Represents the shape for responsibility.
 	/// </summary>
-	public class ResponsibilityShape : Shape
+	public class ResponsibilityShape : CircleShape
 	{
-		/// <summary>
-		/// The radius.
-		/// </summary>
-		private double radius;
+		private Link agentLink;
+		private ArrowLink goalLink;
 		
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Beaver.UI.Shapes.RefinementShape"/> class.
-		/// </summary>
-		/// <param name='refinement'>
-		/// Refinement.
-		/// </param>
-		public ResponsibilityShape (Responsibility responsibility) : base ()
+		public ResponsibilityShape (Responsibility responsibility, PointD position) 
+			: base (responsibility, position)
 		{
-			RepresentedElement = responsibility;
-			radius = 4;
-			Position = new PointD(10, 10);
-		}
-				
-		/// <summary>
-		/// Display the shape on the specified context and view.
-		/// </summary>
-		/// <param name='context'>
-		/// Context.
-		/// </param>
-		/// <param name='view'>
-		/// View.
-		/// </param>
-		public override void Display (Context context, ModelView view)
-		{
-			var oldLineWidth = context.LineWidth;
-			if (Selected) {
-				context.LineWidth = 2.5;
-			}
-			var oldSource = context.Source;
-			
-			context.MoveTo(Position.X + radius, Position.Y);
-			context.Arc(Position.X, Position.Y, radius, 0, Math.PI * 2);
-			
-			context.SetColor (view.Controller.CurrentColorScheme.ResponsibilityFillColor);
-			context.FillPreserve();
-			
-			context.SetColor (view.Controller.CurrentColorScheme.ResponsibilityStrokeColor);
-			context.Stroke();
-			
-			if (!Selected) {
-				context.Arc(Position.X, Position.Y, radius - 1, 0, Math.PI * 2);
-				context.SetColor ("#fff", .5f);
-				context.Stroke();
-			}
-			
-			var element = (Responsibility) RepresentedElement;
-			
-			IShape goalShape = view.GetNearestShapeFor(element.Goal, this.Position);
-			IShape agentShape = view.GetNearestShapeFor(element.Agent, this.Position);
-			
-			if (goalShape != null) {
-				FilledArrow arrow = new FilledArrow() {
-					Start = this,
-					End = goalShape,
-					FillColor = view.Controller.CurrentColorScheme.ResponsibilityFillColor
-				};
-				arrow.Display(context, view);
-			}
-			
-			if (agentShape != null) {
-				Arrow arrow2 = new Arrow () {
-					Start = agentShape,
-					End = this
-				};
-				arrow2.Display(context, view);
-			}
-			
-			context.Source = oldSource;
-			context.LineWidth = oldLineWidth;
+			agentLink = new Link (responsibility.Agent, responsibility, position);
+			goalLink = new ArrowLink (responsibility.Goal, responsibility, position);
 		}
 		
-		/// <summary>
-		/// Determines whether coordinates are in the form.
-		/// </summary>
-		/// <returns>
-		/// The bounding box.
-		/// </returns>
-		/// <param name='x'>
-		/// If set to <c>true</c> x.
-		/// </param>
-		/// <param name='y'>
-		/// If set to <c>true</c> y.
-		/// </param>
-		/// <param name='delta'>
-		/// If set to <c>true</c> delta.
-		/// </param>
-		public override bool InBoundingBox (double x, double y, out PointD delta)
+		public override void AbstractDisplay (Context cairoContext, Pango.Context pangoContext, ModelView view)
 		{
-			double centerX = Position.X;
-			double centerY = Position.Y;
-			double xx = (x - centerX);
-			double yy = (y - centerY);
-			if (Math.Sqrt(xx * xx + yy * yy) <= radius) {
-				delta.X = Position.X - x;
-				delta.Y = Position.Y - y;
-				return true;
-			}
-			return false;
-		}		
-		
-		/// <summary>
-		/// Gets the anchor corresponding for the given point.
-		/// </summary>
-		/// <returns>
-		/// The anchor.
-		/// </returns>
-		/// <param name='point'>
-		/// Point.
-		/// </param>
-		public override PointD GetAnchor (PointD point)
-		{
-			// Compute the angle between point and center
-			double angle = Math.Atan2(Position.Y - point.Y, Position.X - point.X);
-			return new PointD(Position.X - radius * Math.Cos(angle), Position.Y - radius * Math.Sin(angle));
-		}
-			
-		public override Bounds GetBounds ()
-		{
-			return new Bounds () {
-				MinX = (int) (Position.X - radius) - 1,
-				MaxX = (int) (Position.X + radius) + 1,
-				MinY = (int) (Position.Y - radius) - 1,
-				MaxY = (int) (Position.Y + radius) + 1
-			};
-		}
-		
-		public override IShape Copy ()
-		{
-			return new ResponsibilityShape (this.RepresentedElement as Responsibility) {
-				Position = new PointD (Position.X, Position.Y)
-			};
+			this.agentLink.AbstractDisplay(cairoContext, pangoContext, view);
+			this.goalLink.AbstractDisplay(cairoContext, pangoContext, view);
+			base.AbstractDisplay (cairoContext, pangoContext, view);
 		}
 	}
 }

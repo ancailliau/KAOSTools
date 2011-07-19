@@ -45,7 +45,7 @@ namespace Beaver.UI.Arrows
 		/// <value>
 		/// The start.
 		/// </value>
-		public IShape Start {
+		public Shape Start {
 			get ;
 			set ;
 		}
@@ -57,7 +57,7 @@ namespace Beaver.UI.Arrows
 		/// <value>
 		/// The end.
 		/// </value>
-		public IShape End {
+		public Shape End {
 			get ;
 			set ;
 		}
@@ -80,6 +80,7 @@ namespace Beaver.UI.Arrows
 		/// </param>
 		public void Display (Context context, ModelView view)
 		{
+			/*
 			var drawingArea = view.DrawingArea;
 			var startPosition = Start.GetAnchor(End.Position);
 			var endPosition = End.GetAnchor(Start.Position);
@@ -97,6 +98,7 @@ namespace Beaver.UI.Arrows
 			context.Restore();
 			
 			context.Source = oldSource;
+			*/
 		}
 	}
 }

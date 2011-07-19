@@ -30,7 +30,11 @@ namespace Beaver.UI.ColorSchemes
 	public class BWColorScheme : IColorScheme
 	{
 		
-		public bool effect { get { return false; } }
+		protected override System.Collections.Generic.Dictionary<string, string> colors {
+			get {
+				throw new NotImplementedException ();
+			}
+		}
 		
 		public string AgentFillColor { get { return  "#fff"; } }
 		public string AgentStrokeColor { get { return  "#000"; } }

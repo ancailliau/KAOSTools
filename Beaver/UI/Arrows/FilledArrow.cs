@@ -78,7 +78,7 @@ namespace Beaver.UI.Arrows
 		/// </param>
 		public void Display (Context context, ModelView view)
 		{
-			base.Display(context, view);
+			/* base.Display(context, view);
 			
 			var startPosition = Start.GetAnchor(End.Position);
 			var endPosition = End.GetAnchor(Start.Position);
@@ -107,6 +107,7 @@ namespace Beaver.UI.Arrows
 			
 			
 			context.Source = oldSource;
+			*/
 		}
 		
 	}

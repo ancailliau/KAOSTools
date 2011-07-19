@@ -71,7 +71,7 @@ namespace Beaver.Views
 		/// <value>
 		/// The shapes.
 		/// </value>
-		public List<IShape> Shapes {
+		public List<Shape> Shapes {
 			get;
 			private set;
 		}
@@ -82,12 +82,12 @@ namespace Beaver.Views
 		/// <value>
 		/// The selected shape.
 		/// </value>
-		public IShape SelectedShape {
+		public Shape SelectedShape {
 			get;
 			set;
 		}
 		
-		public IShape ShapeToMove {
+		public Shape ShapeToMove {
 			get;
 			set;
 		}
@@ -137,7 +137,7 @@ namespace Beaver.Views
 		public ModelView (string name, MainController controller)
 		{
 			Name = name;
-			Shapes = new List<IShape>();
+			Shapes = new List<Shape>();
 			
 			Controller = controller;
 		}
@@ -152,7 +152,7 @@ namespace Beaver.Views
 		{
 			// Draw all shapes
 			foreach (var rect in Shapes) {
-				rect.Display(context, this);
+				rect.AbstractDisplay (context, this.DrawingArea.PangoContext, this);
 			}
 		}
 		
@@ -162,7 +162,7 @@ namespace Beaver.Views
 		/// <param name='shape'>
 		/// Shape.
 		/// </param>
-		public void Add (IShape shape)
+		public void Add (Shape shape)
 		{
 			if (shape != null) {
 				Shapes.Add (shape);
@@ -170,7 +170,7 @@ namespace Beaver.Views
 			}
 		}
 		
-		public void Remove (IShape shape)
+		public void Remove (Shape shape)
 		{
 			Shapes.Remove (shape);
 			NotifyChange ();
@@ -186,42 +186,31 @@ namespace Beaver.Views
 			}
 		}
 		
-		public IShape[] GetAllShapesFor (KAOSElement element) 
+		public Shape[] GetAllShapesFor (KAOSElement element) 
 		{
 			return Shapes.FindAll (x => {
 				return x.RepresentedElement.Equals (element);
 			}).ToArray();
 		}
 		
-		/// <summary>
-		/// Gets the nearest shape for a given kaos element
-		/// </summary>
-		/// <returns>
-		/// The nearest shape for.
-		/// </returns>
-		/// <param name='element'>
-		/// Element.
-		/// </param>
-		/// <param name='origin'>
-		/// Origin.
-		/// </param>
-		public IShape GetNearestShapeFor (KAOSElement element, PointD origin)
+		public Shape GetNearestShapeFor (Shape s1, KAOSElement element, out PointD anchor1, out PointD anchor2)
 		{
-			double squaredDistance = double.PositiveInfinity;
-			IShape shapeToReturn = null;
-			var consideredShapes = Shapes.FindAll(v => { 
-				return v.RepresentedElement.Equals(element);
-			});
-			foreach (IShape shape in consideredShapes) {
-				double xx = shape.GetAnchor(origin).X - origin.X;
-				double yy = shape.GetAnchor(origin).Y - origin.Y;
-				double dist = (xx * xx + yy * yy);
-				if (dist < squaredDistance) {
-					shapeToReturn = shape;
-					squaredDistance = dist;
+			Shape s = null;
+			double dist = double.MaxValue;
+			var shapes = this.GetAllShapesFor (element);
+			foreach (var _s in shapes) {
+				PointD _anchor1, _anchor2;
+				s1.GetAnchors (_s, out _anchor1, out _anchor2, this);
+				double _dist = (_anchor1.X - _anchor2.X) * (_anchor1.X - _anchor2.X) 
+					+ (_anchor1.Y - _anchor2.Y) * (_anchor1.Y - _anchor2.Y);
+				if (_dist < dist) {
+					anchor1 = _anchor1;
+					anchor2 = _anchor2;
+					dist = _dist;
+					s = _s;
 				}
 			}
-			return shapeToReturn;
+			return s;
 		}
 		
 		/// <summary>
@@ -245,7 +234,7 @@ namespace Beaver.Views
 			maxY = 0;
 			
 			foreach (var shape in Shapes) {
-				Bounds bounds = shape.GetBounds ();
+				Bounds bounds = shape.GetBounds (this);
 				if (bounds.MinX != bounds.MaxX & bounds.MinY != bounds.MaxY) {
 					minY = Math.Min(bounds.MinY, minY);
 					minX = Math.Min(bounds.MinX, minX);

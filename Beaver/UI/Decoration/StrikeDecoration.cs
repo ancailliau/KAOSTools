@@ -1,5 +1,5 @@
 // 
-// GoalShape.cs
+// StrikeDecoration.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -23,44 +23,43 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Cairo;
-using Beaver;
-using Beaver.Model;
-using Gtk;
-using Beaver.UI.Windows;
-using Beaver.Views;
 
-namespace Beaver.UI.Shapes
+namespace Beaver.UI.Decoration
 {
-	
-	/// <summary>
-	/// Represents the shape for goals.
-	/// </summary>
-	public class DomainPropertyShape : PolygonalShape
+	public class StrikeDecoration : IDecoration
 	{
+		public double Position {
+			get;
+			set;
+		}
 		
-		private int shear = 4;
+		private double distance = 15;
+		private double delta = 3;
+		private double width = 5;
+		private Func<double> getAngle;
 		
-		public DomainPropertyShape (DomainProperty domProp, PointD position) 
-			: base (domProp, position) 
+		public StrikeDecoration (Func<double> getAngle)
 		{
-			xPadding = 10;
-			yPadding = 4;
+			this.getAngle = getAngle;
+		}
+
+		public void Render (Cairo.Context cairoContext, Pango.Context pangoContext, double x, double y)
+		{
+			cairoContext.Save ();
 			
-			points.Add (() => new PointD (Position.X - width / 2f, 	Position.Y - height / 2f));
-			points.Add (() => new PointD (Position.X, 				Position.Y - height / 2f - shear));
-			points.Add (() => new PointD (Position.X + width / 2,	Position.Y - height / 2f));
-			points.Add (() => new PointD (Position.X + width / 2,	Position.Y));
-			points.Add (() => new PointD (Position.X + width / 2f,	Position.Y + height / 2f));
-			points.Add (() => new PointD (Position.X,				Position.Y + height / 2f));
-			points.Add (() => new PointD (Position.X - width / 2f,	Position.Y + height / 2f));
-			points.Add (() => new PointD (Position.X - width / 2f,	Position.Y));
+			double alpha = getAngle ();
 			
-			getContent = () => {
-				return domProp.Name;
-			};
+			cairoContext.MoveTo (
+				x + (distance - delta / 2f) * Math.Cos(alpha) + width * Math.Sin(alpha), 
+				y + (distance - delta / 2f) * Math.Sin(alpha) - width * Math.Cos(alpha));
+			
+			cairoContext.LineTo (
+				x + (distance + delta / 2f) * Math.Cos(alpha) - width * Math.Sin(alpha), 
+				y + (distance + delta / 2f) * Math.Sin(alpha) + width * Math.Cos(alpha));
+			
+			
+			cairoContext.Restore ();
 		}
 	}
 }

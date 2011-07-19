@@ -39,6 +39,7 @@ namespace Beaver.UI.Arrows
 		
 		public void Display (Context context, ModelView view)
 		{
+			/*
 			base.Display (context, view);
 			
 			var startPosition = Start.GetAnchor(End.Position);
@@ -57,6 +58,7 @@ namespace Beaver.UI.Arrows
 			context.LineTo (endPosition.X + distanceFromPoint * Math.Cos(alpha) - width * Math.Sin(alpha), 
 				endPosition.Y + distanceFromPoint * Math.Sin(alpha) + width * Math.Cos(alpha));
 			context.Stroke ();
+			*/
 		}
 	}
 }

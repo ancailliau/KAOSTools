@@ -1,5 +1,5 @@
 // 
-// GoalShape.cs
+// ResolutionShape.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -23,45 +23,29 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Cairo;
-using Beaver;
 using Beaver.Model;
-using Gtk;
-using Beaver.UI.Windows;
+using Cairo;
+using Beaver.UI.Arrows;
 using Beaver.Views;
+using Beaver.UI.Decoration;
 
 namespace Beaver.UI.Shapes
 {
-	
-	/// <summary>
-	/// Represents the shape for goals.
-	/// </summary>
-	public class DomainPropertyShape : PolygonalShape
+	public class ArrowLink : LineShape
 	{
 		
-		private int shear = 4;
-		
-		public DomainPropertyShape (DomainProperty domProp, PointD position) 
-			: base (domProp, position) 
+		public ArrowLink (KAOSElement start, KAOSElement end, PointD position)
+			: base (null, position)
 		{
-			xPadding = 10;
-			yPadding = 4;
+			getStart = () => start;
+			getEnd = () => end;
 			
-			points.Add (() => new PointD (Position.X - width / 2f, 	Position.Y - height / 2f));
-			points.Add (() => new PointD (Position.X, 				Position.Y - height / 2f - shear));
-			points.Add (() => new PointD (Position.X + width / 2,	Position.Y - height / 2f));
-			points.Add (() => new PointD (Position.X + width / 2,	Position.Y));
-			points.Add (() => new PointD (Position.X + width / 2f,	Position.Y + height / 2f));
-			points.Add (() => new PointD (Position.X,				Position.Y + height / 2f));
-			points.Add (() => new PointD (Position.X - width / 2f,	Position.Y + height / 2f));
-			points.Add (() => new PointD (Position.X - width / 2f,	Position.Y));
-			
-			getContent = () => {
-				return domProp.Name;
-			};
+			decorations.Add (new ArrowDecoration (() => {
+				return Math.Atan2 (anchor1.Y - anchor2.Y, anchor1.X - anchor2.X) - Math.PI ;
+			}) { Position = 0, FillColor = this.FillColor, StrokeColor = this.StrokeColor });
 		}
+		
 	}
 }
 

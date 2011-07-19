@@ -9,7 +9,7 @@ namespace Beaver
 {
 	class MainClass
 	{
-		private static MainController controller;
+		public static MainController Controller;
 		private static MainWindow window;
 		
 		public static void Main (string[] args)
@@ -17,9 +17,9 @@ namespace Beaver
 			Application.Init ();
 			
 			window = new MainWindow ();
-			controller = new MainController(window);
+			Controller = new MainController(window);
 			
-			controller.Show ();
+			Controller.Show ();
 			
 			ExceptionManager.UnhandledException += HandleExceptionManagerUnhandledException;
 			

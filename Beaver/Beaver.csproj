@@ -75,8 +75,6 @@
     <Compile Include="EditorConfiguration.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Logging\Logger.cs" />
-    <Compile Include="UI\Shapes\IShape.cs" />
-    <Compile Include="UI\Shapes\Shape.cs" />
     <Compile Include="UI\Shapes\GoalShape.cs" />
     <Compile Include="UI\Shapes\ShapeFactory.cs" />
     <Compile Include="UI\Shapes\RefinementShape.cs" />
@@ -157,6 +155,17 @@
     <Compile Include="UI\Widgets\ErrorList.cs" />
     <Compile Include="UI\TitleItem.cs" />
     <Compile Include="UI\PopulateMenuArgs.cs" />
+    <Compile Include="UI\Decoration\RoundedBoxDecoration.cs" />
+    <Compile Include="UI\Shapes\Parallelogram.cs" />
+    <Compile Include="UI\Shapes\PolygonalShape.cs" />
+    <Compile Include="UI\Shapes\Shape.cs" />
+    <Compile Include="UI\Shapes\CircleShape.cs" />
+    <Compile Include="UI\Shapes\LineShape.cs" />
+    <Compile Include="UI\Decoration\ArrowDecoration.cs" />
+    <Compile Include="UI\Decoration\IDecoration.cs" />
+    <Compile Include="UI\Decoration\StrikeDecoration.cs" />
+    <Compile Include="UI\Shapes\ArrowLink.cs" />
+    <Compile Include="UI\Shapes\Link.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -167,6 +176,7 @@
     <Folder Include="UI\" />
     <Folder Include="Views\" />
     <Folder Include="UI\ColorSchemes\" />
+    <Folder Include="UI\Decoration\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

@@ -37,7 +37,7 @@ namespace Beaver.UI.Shapes
 	public static class ShapeFactory
 	{
 		
-		public static IShape Create(KAOSElement element)
+		public static Shape Create(KAOSElement element)
 		{
 			return Create(element, 10, 10);
 		}
@@ -48,37 +48,37 @@ namespace Beaver.UI.Shapes
 		/// <param name='element'>
 		/// Element.
 		/// </param>
-		public static IShape Create(KAOSElement element, double x, double y)
+		public static Shape Create(KAOSElement element, double x, double y)
 		{
 			if (element is Goal) {
-				return new GoalShape(element as Goal) { Position = new PointD(x,y) };
+				return new GoalShape(element as Goal, new PointD(x,y));
 			
 			} else if (element is Refinement) {
-				return new RefinementShape(element as Refinement) { Position = new PointD(x,y) };
+				return new RefinementShape(element as Refinement, new PointD(x,y));
 			
 			} else if (element is Agent) {
-				return new AgentShape(element as Agent) { Position = new PointD(x,y) };
+				return new AgentShape(element as Agent, new PointD(x,y));
 			
 			} else if (element is Responsibility) {
-				return new ResponsibilityShape(element as Responsibility) { Position = new PointD(x,y) };
+				return new ResponsibilityShape(element as Responsibility, new PointD(x,y));
 				
 			} else if (element is Obstacle) {
-				return new ObstacleShape (element as Obstacle) { Position = new PointD(x,y) };
+				return new ObstacleShape (element as Obstacle, new PointD(x,y));
 				
 			} else if (element is Obstruction) {
-				return new ObstructionShape (element as Obstruction) { Position = new PointD(x,y) };
+				return new ObstructionShape (element as Obstruction, new PointD(x,y));
 				
 			} else if (element is Resolution) {
-				return new ResolutionShape (element as Resolution) { Position = new PointD(x,y) };
+				return new ResolutionShape (element as Resolution, new PointD(x,y));
 			
 			} else if (element is ObstacleRefinement) {
-				return new ObstacleRefinementShape (element as ObstacleRefinement) { Position = new PointD(x,y) };
+				return new ObstacleRefinementShape (element as ObstacleRefinement, new PointD(x,y));
 			
 			} else if (element is ExceptionLink) {
-				return new ExceptionLinkShape (element as ExceptionLink) { Position = new PointD(x,y) };
+				return new ExceptionLinkShape (element as ExceptionLink, new PointD(x,y));
 				
 			} else if (element is DomainProperty) {
-				return new DomainPropertyShape (element as DomainProperty) { Position = new PointD(x,y) };
+				return new DomainPropertyShape (element as DomainProperty, new PointD(x,y));
 				
 			} else {
 				if (element != null)

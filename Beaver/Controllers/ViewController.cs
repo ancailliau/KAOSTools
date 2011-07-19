@@ -42,11 +42,29 @@ namespace Beaver.Controllers
 	public class ViewController : IController, IPopulateTree
 	{
 		private static Gdk.Pixbuf pixbuf;
+		private static Gdk.Pixbuf responsibilityPixbuf;
+		private static Gdk.Pixbuf agentPixbuf;
+		private static Gdk.Pixbuf domainPropertyPixbuf;
+		private static Gdk.Pixbuf exceptionPixbuf;
+		private static Gdk.Pixbuf goalPixbuf;
+		private static Gdk.Pixbuf obstaclePixbuf;
+		private static Gdk.Pixbuf refinementPixbuf;
+		private static Gdk.Pixbuf obstructionPixbuf;
+		private static Gdk.Pixbuf resolutionPixbuf;
 		
 		static ViewController () {
 			try {
 				pixbuf = Gdk.Pixbuf.LoadFromResource("Beaver.Images.View.png");
-				
+				responsibilityPixbuf = Gdk.Pixbuf.LoadFromResource("Beaver.Images.Responsibility.png");
+				agentPixbuf = Gdk.Pixbuf.LoadFromResource("Beaver.Images.Agent.png");
+				domainPropertyPixbuf = Gdk.Pixbuf.LoadFromResource("Beaver.Images.DomainProperty.png");
+				exceptionPixbuf = Gdk.Pixbuf.LoadFromResource("Beaver.Images.Exception.png");
+				goalPixbuf = Gdk.Pixbuf.LoadFromResource("Beaver.Images.Goal.png");
+				obstaclePixbuf = Gdk.Pixbuf.LoadFromResource("Beaver.Images.Obstacle.png");
+				refinementPixbuf = Gdk.Pixbuf.LoadFromResource("Beaver.Images.Refinement.png");
+				obstructionPixbuf = Gdk.Pixbuf.LoadFromResource("Beaver.Images.Obstruction.png");
+				resolutionPixbuf = Gdk.Pixbuf.LoadFromResource("Beaver.Images.Resolution.png");
+
 			} catch (Exception e) {
 				Logger.Warning ("Cannot load images from ressources", e);
 			}
@@ -138,23 +156,6 @@ namespace Beaver.Controllers
 			addViewDialog.Present ();	
 		}
 		
-		public void DuplicateView (ModelView view)
-		{
-			var addViewDialog = new AddViewDialog (this.controller.Window, view.Name + " (copy)");
-			addViewDialog.Response += delegate(object sender, Gtk.ResponseArgs args) {
-				if (args.ResponseId == Gtk.ResponseType.Ok & addViewDialog.ViewName != "") {
-					var newView = new ModelView (addViewDialog.ViewName, this.controller);
-					foreach (var s in view.Shapes) {
-						newView.Add (s.Copy ());
-					}
-					this.Add (newView);
-					this.DisplayView (newView);
-				}
-				addViewDialog.Destroy ();
-			};
-			addViewDialog.Present ();
-		}
-		
 		public void EditView (ModelView view)
 		{
 			var dialog = new AddViewDialog (this.controller.Window, view);
@@ -201,7 +202,7 @@ namespace Beaver.Controllers
 			this.RefreshCurrentView ();
 		}
 		
-		public void RemoveFromCurrentView (IShape element)
+		public void RemoveFromCurrentView (Shape element)
 		{
 			this.controller.Window.viewsNotebook.CurrentView.Shapes.Remove (element);
 			this.RefreshCurrentView ();
@@ -222,10 +223,10 @@ namespace Beaver.Controllers
 		
 		public void PopulateContextMenu (PopulateMenuArgs args)
 		{
-			if (args.ClickedElement != null && args.ClickedElement is IShape) {
+			if (args.ClickedElement != null && args.ClickedElement is Shape) {
 				var removeFromCurrentViewItem = new MenuItem("Remove from current view...");
 				removeFromCurrentViewItem.Activated += delegate(object sender2, EventArgs e) {
-					this.RemoveFromCurrentView (args.ClickedElement as IShape);
+					this.RemoveFromCurrentView (args.ClickedElement as Shape);
 				};
 				args.Menu.Add (removeFromCurrentViewItem);
 				args.ElementsAdded = true;
@@ -248,12 +249,6 @@ namespace Beaver.Controllers
 					this.EditView (clickedView);
 				};
 				args.Menu.Add(editItem);
-				
-				var duplicateItem = new MenuItem("Duplicate...");
-				duplicateItem.Activated += delegate(object sender2, EventArgs e) {
-					this.DuplicateView (clickedView);
-				};
-				args.Menu.Add(duplicateItem);
 				
 				var removeItem = new MenuItem("Delete");
 				removeItem.Activated += delegate(object sender2, EventArgs e) {
@@ -279,7 +274,65 @@ namespace Beaver.Controllers
 		public void Populate (TreeStore store)
 		{
 			foreach (var view in this.GetAll ()) {
-				store.AppendValues (view.Name, view, pixbuf);
+				var iter = store.AppendValues (view.Name, view, pixbuf);
+				
+				Func<KAOSElement, string> getName = (arg) => {
+					if (arg is Agent) {
+						return (arg as Agent).Name;
+					} else if (arg is DomainProperty) {
+						return (arg as DomainProperty).Name;
+					} else if (arg is ExceptionLink) {
+						return string.Format ("Exception to '{0}'", (arg as ExceptionLink).Goal.Name);
+					} else if (arg is Goal) {
+						return (arg as Goal).Name;
+					} else if (arg is Obstacle) {
+						return (arg as Obstacle).Name;
+					} else if (arg is ObstacleRefinement) {
+						return string.Format("Refinement for '{0}'", (arg as ObstacleRefinement).Refined.Name);
+					} else if (arg is Obstruction) {
+						return string.Format("Obstruction to '{0}'", (arg as Obstruction).Goal.Name);
+					} else if (arg is Refinement) {
+						return string.Format("Refinement for '{0}'", (arg as Refinement).Refined.Name);
+					} else if (arg is Resolution) {
+						return string.Format("Resolution to '{0}'", (arg as Resolution).Obstacle.Name);
+					} else if (arg is Responsibility) {
+						return string.Format("Responsibility for '{0}'", (arg as Responsibility).Agent.Name);
+					} else {
+						Logger.Error ("Unable to get the name of '{0}'", arg.GetType().Name);
+						return "";
+					}
+				};
+				
+				Func<KAOSElement, Gdk.Pixbuf> getPixbuf = (arg) => {
+					if (arg is Agent) {
+						return agentPixbuf;
+					} else if (arg is DomainProperty) {
+						return domainPropertyPixbuf;
+					} else if (arg is ExceptionLink) {
+						return exceptionPixbuf;
+					} else if (arg is Goal) {
+						return goalPixbuf;
+					} else if (arg is Obstacle) {
+						return obstaclePixbuf;
+					} else if (arg is ObstacleRefinement) {
+						return refinementPixbuf;
+					} else if (arg is Obstruction) {
+						return obstructionPixbuf;
+					} else if (arg is Refinement) {
+						return refinementPixbuf;
+					} else if (arg is Resolution) {
+						return resolutionPixbuf;
+					} else if (arg is Responsibility) {
+						return responsibilityPixbuf;
+					} else {
+						Logger.Error ("Unable to get the pixbuf of '{0}'", arg.GetType().Name);
+						return null;
+					}
+				};
+				
+				foreach (var shape in view.Shapes) {
+					store.AppendValues (iter, getName(shape.RepresentedElement), shape, getPixbuf (shape.RepresentedElement));
+				}
 			}
 		}
 		

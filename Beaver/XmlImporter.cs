@@ -284,11 +284,9 @@ namespace Beaver
 							string elementId = reader.GetAttribute("element-id");
 							string x = reader.GetAttribute("x");
 							string y = reader.GetAttribute("y");
-							string depth = reader.GetAttribute("depth");
 							view.elements.Add(new FutureShape() { 
 								elementId = elementId,
 								position = new PointD(Double.Parse(x), Double.Parse(y)),
-								depth = int.Parse(depth)
 							});
 							
 						} else if (reader.IsEndElement ("view")) {
@@ -384,12 +382,12 @@ namespace Beaver
 			foreach (var futureView in futureViews) {
 				var view = new ModelView(futureView.name, controller);
 				foreach (var futureElement in futureView.elements) {
-					var element = ShapeFactory.Create(this.controller.Get(futureElement.elementId));
-					if (element != null) {
-						element.Position = futureElement.position;
-						element.Depth = futureElement.depth;
+					var element = ShapeFactory.Create
+						(this.controller.Get(futureElement.elementId),
+							futureElement.position.X,
+							futureElement.position.Y);
+					if (element != null)	
 						view.Add(element);
-					}
 				}
 				this.controller.ViewController.Add(view, false);
 			}

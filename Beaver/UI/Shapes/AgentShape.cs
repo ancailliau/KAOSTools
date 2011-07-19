@@ -36,194 +36,33 @@ namespace Beaver.UI.Shapes
 	/// <summary>
 	/// Represent the shape for agents.
 	/// </summary>
-	public class AgentShape : Shape
+	public class AgentShape : PolygonalShape
 	{
-		
-		/// <summary>
-		/// The width.
-		/// </summary>
-		/// 
-		/// 
-		private int width;
-		
-		/// <summary>
-		/// The height.
-		/// </summary>
-		private int height;
-		
 		private int delta = 4;
 		
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Beaver.UI.Shapes.AgentShape"/> class.
-		/// </summary>
-		/// <param name='agent'>
-		/// Agent.
-		/// </param>
-		public AgentShape (Agent agent) : base () 
-		{
-			XPadding = 10;
-			YPadding = 4;
-			RepresentedElement = agent;
-			
-			// Computing size of the shape
-			var pangoLayout = new Pango.Layout(Gdk.PangoHelper.ContextGetForScreen(Gdk.Screen.Default));
-			pangoLayout.Width = 100;			
-			pangoLayout.Alignment = Pango.Alignment.Center;
-			pangoLayout.SetText(((Agent) this.RepresentedElement).Name);
-			
-			int textWidth, textHeight;
-			pangoLayout.GetPixelSize(out textWidth, out textHeight);
-			
-			width = (int) ( textWidth + 2 * XPadding );
-			height = (int) ( textHeight + 2 * YPadding );
-		}
+		public AgentShape (Agent agent) 
+			: this (agent, new PointD())
+		{}
 		
-		/// <summary>
-		/// Display the shape on the specified context and view.
-		/// </summary>
-		/// <param name='context'>
-		/// Context.
-		/// </param>
-		/// <param name='view'>
-		/// View.
-		/// </param>
-		public override void Display (Context context, ModelView view)
+		public AgentShape (Agent agent, PointD position) 
+			: base (agent, position) 
 		{
-			var drawingArea = view.DrawingArea;
-			var oldSource = context.Source;
+			xPadding = 10;
+			yPadding = 4;
 			
-			var pangoLayout = new Pango.Layout(drawingArea.PangoContext);
-			pangoLayout.Width = Pango.Units.FromPixels(100);			
-			pangoLayout.Alignment = Pango.Alignment.Center;
-			pangoLayout.SetText(((Agent) this.RepresentedElement).Name);
+			points.Add (() => new PointD (Position.X + width / 2 - delta, 	Position.Y - height / 2));	
+			points.Add (() => new PointD (Position.X + width / 2, 			Position.Y));
+			anchors.Add (() => new PointD (Position.X + width / 2, 			Position.Y));
+			points.Add (() => new PointD (Position.X + width / 2 - delta, 	Position.Y + height / 2));
+			anchors.Add (() => new PointD (Position.X, 						Position.Y + height / 2));
+			points.Add (() => new PointD (Position.X - width / 2 + delta, 	Position.Y + height / 2));
+			points.Add (() => new PointD (Position.X - width / 2, 			Position.Y));
+			anchors.Add (() => new PointD (Position.X - width / 2, 			Position.Y));
+			points.Add (() => new PointD (Position.X - width / 2 + delta, 	Position.Y - height / 2));
+			anchors.Add (() => new PointD (Position.X, 						Position.Y - height / 2));	
 			
-			int textWidth, textHeight;
-			pangoLayout.GetPixelSize(out textWidth, out textHeight);
-			
-			width = (int) ( textWidth + 2 * XPadding );
-			height = (int) ( textHeight + 2 * YPadding );
-			
-			// context.Rectangle(Position.X - width / 2, Position.Y - height / 2, width, height);
-			
-			context.MoveTo (Position.X - width / 2 + delta, Position.Y - height / 2);
-			context.LineTo (Position.X - width / 2, Position.Y);
-			context.LineTo (Position.X - width / 2 + delta, Position.Y + height / 2);
-			context.LineTo (Position.X + width / 2 - delta, Position.Y + height / 2);
-			context.LineTo (Position.X + width / 2, Position.Y);
-			context.LineTo (Position.X + width / 2 - delta, Position.Y - height / 2);
-			context.ClosePath ();
-			
-			context.SetColor(view.Controller.CurrentColorScheme.AgentFillColor);
-			context.FillPreserve();
-			
-			var oldLineWidth = context.LineWidth;
-			context.SetColor (view.Controller.CurrentColorScheme.AgentStrokeColor);
-			if (Selected) {
-				context.LineWidth = 2.5;
-			}
-			context.Stroke();
-			context.LineWidth = oldLineWidth;
-			
-			if (!Selected) {
-				context.MoveTo (Position.X - width / 2 + delta + 1, Position.Y - height / 2 + 1);
-				context.LineTo (Position.X - width / 2 + 1, Position.Y);
-				context.LineTo (Position.X - width / 2 + delta + 1, Position.Y + height / 2 - 1);
-				context.LineTo (Position.X + width / 2 - delta - 1, Position.Y + height / 2 - 1);
-				context.LineTo (Position.X + width / 2 - 1, Position.Y);
-				context.LineTo (Position.X + width / 2 - delta - 1, Position.Y - height / 2 + 1);
-				context.ClosePath ();
-				context.SetColor ("#fff", .5f);
-				context.Stroke ();
-			}
-			
-			context.SetColor (view.Controller.CurrentColorScheme.AgentTextColor);
-			context.MoveTo(Position.X - 100/2, Position.Y - textHeight/2);
-			Pango.CairoHelper.ShowLayout(context, pangoLayout);
-			
-			context.Source = oldSource;
-		}
-		
-		/// <summary>
-		/// Determines whether coordinates are in the form.
-		/// </summary>
-		/// <returns>
-		/// The bounding box.
-		/// </returns>
-		/// <param name='x'>
-		/// If set to <c>true</c> x.
-		/// </param>
-		/// <param name='y'>
-		/// If set to <c>true</c> y.
-		/// </param>
-		/// <param name='delta'>
-		/// If set to <c>true</c> delta.
-		/// </param>
-		public override bool InBoundingBox (double x, double y, out PointD deltaPos)
-		{
-			var points = new PointD [] {
-				new PointD (Position.X - width / 2 + delta, Position.Y - height / 2),
-				new PointD (Position.X - width / 2, Position.Y),
-				new PointD (Position.X - width / 2 + delta, Position.Y + height / 2),
-				new PointD (Position.X + width / 2 - delta, Position.Y + height / 2),
-				new PointD (Position.X + width / 2, Position.Y),
-				new PointD (Position.X + width / 2 - delta, Position.Y - height / 2),
-			};
-			
-			if (points.PointInPolygon (new PointD (x, y))) {
-				deltaPos.X = Position.X - x;
-				deltaPos.Y = Position.Y - y;
-				return true;
-			} 
-			return false;
-		}
-		
-		/// <summary>
-		/// Gets the anchor corresponding for the given point.
-		/// </summary>
-		/// <returns>
-		/// The anchor.
-		/// </returns>
-		/// <param name='point'>
-		/// Point.
-		/// </param>
-		public override PointD GetAnchor (PointD point)
-		{
-			double refAngle = Math.Atan2(height,width);
-			double angle = Math.Atan2(Position.Y - point.Y, Position.X - point.X);
-			
-			if (angle < refAngle & angle > - refAngle) {
-				// left
-				return new PointD(Position.X - width/2, Position.Y);
-				
-			} else if (angle > - Math.PI + refAngle & angle < - refAngle) {
-				// bottom
-				return new PointD(Position.X, Position.Y + height / 2);
-				
-			} else if (angle > refAngle & angle < Math.PI - refAngle) {
-				// top
-				return new PointD(Position.X, Position.Y - height / 2);
-				
-			} else {
-				// right
-				return new PointD(Position.X + width / 2, Position.Y);
-				
-			}
-		}
-		
-		public override Bounds GetBounds ()
-		{
-			return new Bounds () {
-				MinX = (int) (Position.X - width / 2) - 1,
-				MaxX = (int) (Position.X + width / 2) + 1,
-				MinY = (int) (Position.Y - height / 2) - 1,
-				MaxY = (int) (Position.Y + height / 2) + 1
-			};
-		}
-		
-		public override IShape Copy ()
-		{
-			return new AgentShape (this.RepresentedElement as Agent) {
-				Position = new PointD (Position.X, Position.Y)
+			getContent = () => {
+				return agent.Name;
 			};
 		}
 	}

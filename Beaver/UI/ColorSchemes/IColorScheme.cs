@@ -26,53 +26,22 @@
 using System;
 using Cairo;
 using Beaver;
+using System.Collections.Generic;
 
 namespace Beaver.UI.ColorSchemes
 {
-	public interface IColorScheme
+	public abstract class IColorScheme
 	{
+		protected abstract Dictionary<string, string> colors { get ; }
 		
-		bool effect { get ; }
-		
-		string AgentFillColor { get ; }		
-		string AgentStrokeColor { get ; }
-		string AgentTextColor { get ; }
-		
-		string DomainPropertyFillColor { get ; }
-		string DomainPropertyStrokeColor { get ; }
-		string DomainPropertyTextColor { get ; }
-		
-		string ExceptionFillColor { get ; }
-		string ExceptionStrokeColor { get ; }
-		string ExceptionTextColor { get ; }
-		
-		string GoalFillColor { get ; }
-		string GoalStrokeColor { get ; }
-		string GoalTextColor { get ; }
-		
-		string ObstacleFillColor { get ; }
-		string ObstacleStrokeColor { get ; }
-		string ObstacleTextColor { get ; }
-		
-		string ObstacleRefinementFillColor { get ; }
-		string ObstacleRefinementStrokeColor { get ; }
-		string ObstacleRefinementTextColor { get ; }
-		
-		string ObstructionFillColor { get ; }
-		string ObstructionStrokeColor { get ; }
-		string ObstructionTextColor { get ; }
-		
-		string RefinementFillColor { get ; }
-		string RefinementStrokeColor { get ; }
-		string RefinementTextColor { get ; }
-		
-		string ResolutionFillColor { get ; }
-		string ResolutionStrokeColor { get ; }
-		string ResolutionTextColor { get ; }
-		
-		string ResponsibilityFillColor { get ; }
-		string ResponsibilityStrokeColor { get ; }
-		string ResponsibilityTextColor { get ; }
+		public string Get (string key) {
+			if (colors.ContainsKey (key)) {
+				return colors[key];
+			} else {
+				Logging.Logger.Warning ("Color {0} not found", key);
+				return "#000";
+			}
+		}
 		
 	}
 }

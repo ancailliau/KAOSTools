@@ -24,53 +24,61 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Collections.Generic;
 
 namespace Beaver.UI.ColorSchemes
 {
 	public class TangoColorScheme : IColorScheme
 	{
 		
-		public bool effect { get { return false; } }
+		private static Dictionary<string, string> c = new Dictionary<string, string>() {
+			{ "AgentFillColor", "#fce94f" },
+			{ "AgentStrokeColor", "#c4a000" },
+			{ "AgentTextColor", "#000" },
+			
+			{ "DomainPropertyFillColor", "#ad7fa8" },
+			{ "DomainPropertyStrokeColor", "#5c3566" },
+			{ "DomainPropertyTextColor", "#000" },
+			
+			{ "ExceptionFillColor", "#fff" },
+			{ "ExceptionStrokeColor", "#000" },
+			{ "ExceptionTextColor", "#000" },
+			
+			{ "GoalFillColor", "#729fcf" },
+			{ "GoalStrokeColor", "#204a87" },
+			{ "GoalTextColor", "#000" },
+			
+			{ "ObstacleFillColor", "#ef2929" },
+			{ "ObstacleStrokeColor", "#a40000" },
+			{ "ObstacleTextColor", "#000" },
+			
+			{ "ObstacleRefinementFillColor", "#cc0000" },
+			{ "ObstacleRefinementStrokeColor", "#000" },
+			{ "ObstacleRefinementTextColor", "#000" },
+			
+			{ "ObstructionFillColor", "#f54326" },
+			{ "ObstructionStrokeColor", "#000" },
+			{ "ObstructionTextColor", "#000" },
+			
+			{ "RefinementFillColor", "#cc0000" },
+			{ "RefinementStrokeColor", "#000" },
+			{ "RefinementTextColor", "#000" },
+			
+			{ "ResolutionFillColor", "#5b953f" },
+			{ "ResolutionStrokeColor", "#000" },
+			{ "ResolutionTextColor", "#000" },
+			
+			{ "ResponsibilityFillColor", "#cc0000" },
+			{ "ResponsibilityStrokeColor", "#000" },
+			{ "ResponsibilityTextColor", "#000" }
+			
+		};
 		
-		public string AgentFillColor { get { return  "#fce94f"; } }
-		public string AgentStrokeColor { get { return  "#c4a000"; } }
-		public string AgentTextColor { get { return  "#000"; } }
-		
-		public string DomainPropertyFillColor { get { return  "#ad7fa8"; } }
-		public string DomainPropertyStrokeColor { get { return  "#5c3566"; } }
-		public string DomainPropertyTextColor { get { return  "#000"; } }
-		
-		public string ExceptionFillColor { get { return  "#fff"; } }
-		public string ExceptionStrokeColor { get { return  "#000"; } }
-		public string ExceptionTextColor { get { return  "#000"; } }
-		
-		public string GoalFillColor { get { return  "#729fcf"; } }
-		public string GoalStrokeColor { get { return  "#204a87"; } }
-		public string GoalTextColor { get { return  "#000"; } }
-		
-		public string ObstacleFillColor { get { return  "#ef2929"; } }
-		public string ObstacleStrokeColor { get { return  "#a40000"; } }
-		public string ObstacleTextColor { get { return  "#000"; } }
-		
-		public string ObstacleRefinementFillColor { get { return  "#cc0000"; } }
-		public string ObstacleRefinementStrokeColor { get { return  "#000"; } }
-		public string ObstacleRefinementTextColor { get { return  "#000"; } }
-		
-		public string ObstructionFillColor { get { return  "#f54326"; } }
-		public string ObstructionStrokeColor { get { return  "#000"; } }
-		public string ObstructionTextColor { get { return  "#000"; } }
-		
-		public string RefinementFillColor { get { return  "#cc0000"; } }
-		public string RefinementStrokeColor { get { return  "#000"; } }
-		public string RefinementTextColor { get { return  "#000"; } }
-		
-		public string ResolutionFillColor { get { return  "#5b953f"; } }
-		public string ResolutionStrokeColor { get { return  "#000"; } }
-		public string ResolutionTextColor { get { return  "#000"; } }
-		
-		public string ResponsibilityFillColor { get { return  "#cc0000"; } }
-		public string ResponsibilityStrokeColor { get { return  "#000"; } }
-		public string ResponsibilityTextColor { get { return  "#000"; } }
+		protected override Dictionary<string, string> colors {
+			get {
+				 return c;
+			}
+		}
 		
 	}
 }

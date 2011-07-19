@@ -31,181 +31,26 @@ using Beaver.Model;
 using Beaver.UI.Arrows;
 using Beaver.Logging;
 using Beaver.Views;
+using Beaver.UI.Decoration;
 
 namespace Beaver.UI.Shapes
 {
 	
-	public class ExceptionLinkShape : Shape
+	public class ExceptionLinkShape : LineShape
 	{
 		
-		private int radius = 10;
-		
-		public ExceptionLinkShape (ExceptionLink exception) : base ()
+		public ExceptionLinkShape (ExceptionLink exception, PointD position) 
+			: base (exception, position)
 		{
-			RepresentedElement = exception;
-		}
-				
-		/// <summary>
-		/// Display the shape on the specified context and view.
-		/// </summary>
-		/// <param name='context'>
-		/// Context.
-		/// </param>
-		/// <param name='view'>
-		/// View.
-		/// </param>
-		public override void Display (Context context, ModelView view)
-		{
-			var oldLineWidth = context.LineWidth;
-			if (Selected) {
-				context.LineWidth = 2.5;
-			}
-			var oldSource = context.Source;
+			getStart = () => exception.Goal;
+			getEnd = () => exception.ExceptionGoal;
 			
-			var element = (ExceptionLink) RepresentedElement;
 			
-			var goalShapes = view.GetAllShapesFor (element.Goal);
-			var exceptionGoalShapes = view.GetAllShapesFor (element.ExceptionGoal);
-			
-			IShape goalShape = null;
-			IShape exceptionGoalShape = null;
-			double minDist = double.PositiveInfinity;
-			foreach (var s in goalShapes) {
-				foreach (var s2 in exceptionGoalShapes) {
-					var a = s.Position.X - s2.Position.X;
-					var b = s.Position.Y - s2.Position.Y;
-					var c = a * a + b * b;
-					if (c < minDist) {
-						minDist = c;
-						goalShape = s;
-						exceptionGoalShape = s2;
-					}
-				}
-			}
-			
-			if (goalShape != null & exceptionGoalShape != null) {
-				DashedArrow arrow = new DashedArrow() {
-					Start = exceptionGoalShape,
-					End = goalShape
-				};
-				arrow.Display(context, view);
-				
-				double xEndAnchor = arrow.End.GetAnchor(arrow.Start.Position).X;
-				double yEndAnchor = arrow.End.GetAnchor(arrow.Start.Position).Y;
-				
-				double xStartAnchor = arrow.Start.GetAnchor(arrow.End.Position).X;
-				double yStartAnchor = arrow.Start.GetAnchor(arrow.End.Position).Y;
-				
-				double x = xEndAnchor - .5 * ( xEndAnchor - xStartAnchor );
-				double y = yEndAnchor - .5 * ( yEndAnchor - yStartAnchor );
-				
-				Position = new PointD (x, y);
-				
-				context.MoveTo (x, y);
-				context.Arc (x, y, radius, 0, Math.PI * 2);
-				context.SetColor (view.Controller.CurrentColorScheme.ExceptionStrokeColor);
-				context.LineWidth = 2;
-				context.StrokePreserve ();
-				context.LineWidth = 1;
-				context.SetColor (view.Controller.CurrentColorScheme.ExceptionFillColor);
-				context.Fill ();
-				
-				var pangoLayout = new Pango.Layout(view.DrawingArea.PangoContext);
-				pangoLayout.Alignment = Pango.Alignment.Center;
-				pangoLayout.SetMarkup("!");
-				
-				var fontDescr = new Pango.FontDescription ();
-				fontDescr.Size = (int) (14 * Pango.Scale.PangoScale);
-				fontDescr.Weight = Pango.Weight.Bold;
-				pangoLayout.FontDescription = fontDescr;					
-				
-				int textWidth, textHeight;
-				pangoLayout.GetPixelSize(out textWidth, out textHeight);
-				context.SetColor (view.Controller.CurrentColorScheme.ExceptionTextColor);
-				context.MoveTo(x - textWidth/2f, y - textHeight/2f);
-				Pango.CairoHelper.ShowLayout(context, pangoLayout);
-				
-				// Displaying condition
-				int widthCondition = 100;
-				pangoLayout = new Pango.Layout(view.DrawingArea.PangoContext);
-				pangoLayout.Alignment = Pango.Alignment.Center;
-				pangoLayout.SetMarkup(((ExceptionLink) RepresentedElement).Condition);
-				pangoLayout.Width = Pango.Units.FromPixels(widthCondition);
-				
-				fontDescr = new Pango.FontDescription ();
-				fontDescr.Size = (int) (9 * Pango.Scale.PangoScale);
-				pangoLayout.FontDescription = fontDescr;					
-				
-				pangoLayout.GetPixelSize(out textWidth, out textHeight);
-				context.SetColor (view.Controller.CurrentColorScheme.ExceptionTextColor);
-				context.MoveTo(x - widthCondition/2f, y + 15 /* - textHeight/2f */ );
-				Pango.CairoHelper.ShowLayout(context, pangoLayout);
-			
-			}
-			
-			context.Source = oldSource;
-			context.LineWidth = oldLineWidth;
+			decorations.Add (new RoundedBoxDecoration (() => {
+				return exception.Condition;
+			}) { Position = 0.5f });
 		}
 		
-		/// <summary>
-		/// Determines whether coordinates are in the form.
-		/// </summary>
-		/// <returns>
-		/// The bounding box.
-		/// </returns>
-		/// <param name='x'>
-		/// If set to <c>true</c> x.
-		/// </param>
-		/// <param name='y'>
-		/// If set to <c>true</c> y.
-		/// </param>
-		/// <param name='delta'>
-		/// If set to <c>true</c> delta.
-		/// </param>
-		public override bool InBoundingBox (double x, double y, out PointD delta)
-		{
-			double centerX = Position.X;
-			double centerY = Position.Y;
-			double xx = (x - centerX);
-			double yy = (y - centerY);
-			if (Math.Sqrt(xx * xx + yy * yy) <= radius) {
-				delta.X = Position.X - x;
-				delta.Y = Position.Y - y;
-				return true;
-			}
-			return false;
-		}		
-		
-		/// <summary>
-		/// Gets the anchor corresponding for the given point.
-		/// </summary>
-		/// <returns>
-		/// The anchor.
-		/// </returns>
-		/// <param name='point'>
-		/// Point.
-		/// </param>
-		public override PointD GetAnchor (PointD point)
-		{
-			return new PointD ();
-		}
-			
-		public override Bounds GetBounds ()
-		{
-			return new Bounds () {
-				MinX = (int) (Position.X - 10) - 2,
-				MaxX = (int) (Position.X + 10) + 2,
-				MinY = (int) (Position.Y - 10) - 2,
-				MaxY = (int) (Position.Y + 10) + 2
-			};
-		}
-		
-		public override IShape Copy ()
-		{
-			return new ExceptionLinkShape (this.RepresentedElement as ExceptionLink) {
-				Position = new PointD (Position.X, Position.Y)
-			};
-		}
 	}
 }
 

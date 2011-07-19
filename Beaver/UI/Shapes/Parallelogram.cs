@@ -1,5 +1,5 @@
 // 
-// GoalShape.cs
+// Parallelogram.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -23,44 +23,35 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
 using Cairo;
-using Beaver;
 using Beaver.Model;
-using Gtk;
-using Beaver.UI.Windows;
-using Beaver.Views;
 
 namespace Beaver.UI.Shapes
 {
-	
-	/// <summary>
-	/// Represents the shape for goals.
-	/// </summary>
-	public class DomainPropertyShape : PolygonalShape
+	public abstract class Parallelogram : PolygonalShape
 	{
+		protected int shear = 4;
 		
-		private int shear = 4;
+		public Parallelogram (KAOSElement element)
+			: this (element, new PointD(0,0))
+		{}
 		
-		public DomainPropertyShape (DomainProperty domProp, PointD position) 
-			: base (domProp, position) 
+		public Parallelogram (KAOSElement element, PointD position)
+			: base (element, position)
 		{
 			xPadding = 10;
 			yPadding = 4;
 			
-			points.Add (() => new PointD (Position.X - width / 2f, 	Position.Y - height / 2f));
-			points.Add (() => new PointD (Position.X, 				Position.Y - height / 2f - shear));
-			points.Add (() => new PointD (Position.X + width / 2,	Position.Y - height / 2f));
-			points.Add (() => new PointD (Position.X + width / 2,	Position.Y));
-			points.Add (() => new PointD (Position.X + width / 2f,	Position.Y + height / 2f));
-			points.Add (() => new PointD (Position.X,				Position.Y + height / 2f));
-			points.Add (() => new PointD (Position.X - width / 2f,	Position.Y + height / 2f));
-			points.Add (() => new PointD (Position.X - width / 2f,	Position.Y));
+			points.Add (() => new PointD (Position.X - width / 2f + shear / 2f,	Position.Y - height / 2f	));
+			points.Add (() => new PointD (Position.X + width / 2f + shear / 2f,	Position.Y - height / 2f	));
+			points.Add (() => new PointD (Position.X + width / 2f - shear / 2f,	Position.Y + height / 2f	));
+			points.Add (() => new PointD (Position.X - width / 2f - shear / 2f,	Position.Y + height / 2f	));
 			
-			getContent = () => {
-				return domProp.Name;
-			};
+			anchors.Add (() => new PointD (Position.X - width / 2f, 				Position.Y					));
+			anchors.Add (() => new PointD (Position.X - shear / 2f,					Position.Y + height / 2f	));
+			anchors.Add (() => new PointD (Position.X + width / 2f, 				Position.Y					));
+			anchors.Add (() => new PointD (Position.X + shear / 2f, 				Position.Y - height / 2f	));
 		}
 	}
 }

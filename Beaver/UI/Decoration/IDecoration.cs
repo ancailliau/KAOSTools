@@ -1,5 +1,5 @@
 // 
-// GoalShape.cs
+// IDecoration.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -23,45 +23,14 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using Cairo;
-using Beaver;
-using Beaver.Model;
-using Gtk;
-using Beaver.UI.Windows;
-using Beaver.Views;
 
-namespace Beaver.UI.Shapes
+namespace Beaver.UI.Decoration
 {
-	
-	/// <summary>
-	/// Represents the shape for goals.
-	/// </summary>
-	public class DomainPropertyShape : PolygonalShape
+	public interface IDecoration
 	{
-		
-		private int shear = 4;
-		
-		public DomainPropertyShape (DomainProperty domProp, PointD position) 
-			: base (domProp, position) 
-		{
-			xPadding = 10;
-			yPadding = 4;
-			
-			points.Add (() => new PointD (Position.X - width / 2f, 	Position.Y - height / 2f));
-			points.Add (() => new PointD (Position.X, 				Position.Y - height / 2f - shear));
-			points.Add (() => new PointD (Position.X + width / 2,	Position.Y - height / 2f));
-			points.Add (() => new PointD (Position.X + width / 2,	Position.Y));
-			points.Add (() => new PointD (Position.X + width / 2f,	Position.Y + height / 2f));
-			points.Add (() => new PointD (Position.X,				Position.Y + height / 2f));
-			points.Add (() => new PointD (Position.X - width / 2f,	Position.Y + height / 2f));
-			points.Add (() => new PointD (Position.X - width / 2f,	Position.Y));
-			
-			getContent = () => {
-				return domProp.Name;
-			};
-		}
+		double Position { get; }
+		void Render (Cairo.Context cairoContext, Pango.Context pangoContext, double x, double y);
 	}
 }
 

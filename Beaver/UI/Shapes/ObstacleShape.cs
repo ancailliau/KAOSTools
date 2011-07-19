@@ -31,230 +31,28 @@ using Beaver.Model;
 using Gtk;
 using Beaver.UI.Windows;
 using Beaver.Views;
+using Beaver.UI.Decoration;
 
 namespace Beaver.UI.Shapes
 {
-	
-	/// <summary>
-	/// Represents the shape for goals.
-	/// </summary>
-	public class ObstacleShape : Shape
+
+	public class ObstacleShape : Parallelogram
 	{
-		
-		/// <summary>
-		/// The width.
-		/// </summary>
-		private int width;
-		
-		/// <summary>
-		/// The height.
-		/// </summary>
-		private int height;
-		
-		private int shear = 4;
-		
-		/// <summary>
-		/// Initializes a new instance of the <see cref="Beaver.UI.Shapes.GoalShape"/> class.
-		/// </summary>
-		/// <param name='goal'>
-		/// Goal.
-		/// </param>
-		public ObstacleShape (Obstacle obstacle) : base () 
+		public ObstacleShape (Obstacle obstacle, PointD position) 
+			: base (obstacle, position) 
 		{
-			XPadding = 10;
-			YPadding = 4;
-			RepresentedElement = obstacle;
+			xPadding = 10;
+			yPadding = 4;
+			shear = -4;
 			
-			// Computing size of the shape
-			var pangoLayout = new Pango.Layout(Gdk.PangoHelper.ContextGetForScreen(Gdk.Screen.Default));
-			pangoLayout.Width = Pango.Units.FromPixels(150);
-			pangoLayout.Alignment = Pango.Alignment.Center;
-			pangoLayout.SetText(((Obstacle) this.RepresentedElement).Name);
-			
-			int textWidth, textHeight;
-			pangoLayout.GetPixelSize(out textWidth, out textHeight);
-			
-			width = (int) ( textWidth + 2 * XPadding );
-			height = (int) ( textHeight + 2 * YPadding );
-		}
-		
-		/// <summary>
-		/// Display the shape on the specified context and view.
-		/// </summary>
-		/// <param name='context'>
-		/// Context.
-		/// </param>
-		/// <param name='view'>
-		/// View.
-		/// </param>
-		public override void Display (Context context, ModelView view)
-		{
-			var drawingArea = view.DrawingArea;
-			var oldSource = context.Source;
-			
-			var pangoLayout = new Pango.Layout(drawingArea.PangoContext);
-			pangoLayout.Width = Pango.Units.FromPixels(150);
-			pangoLayout.Alignment = Pango.Alignment.Center;
-			pangoLayout.SetText(((Obstacle) this.RepresentedElement).Name);
-			
-			int textWidth, textHeight;
-			pangoLayout.GetPixelSize(out textWidth, out textHeight);
-			
-			width = (int) ( textWidth + 2 * XPadding );
-			height = (int) ( textHeight + 2 * YPadding );
-			
-			//context.Rectangle(Position.X - width / 2, Position.Y - height / 2, width, height);
-			
-			context.MoveTo(Position.X - width / 2 + shear / 2,
-				Position.Y - height/2);
-			context.RelLineTo(width, 0);
-			context.RelLineTo(-shear, height);
-			context.RelLineTo(- width, 0);
-			context.ClosePath();
-			
-			context.SetColor(view.Controller.CurrentColorScheme.ObstacleFillColor);
-			context.FillPreserve();
-			
-			var oldLineWidth = context.LineWidth;
-			context.SetColor(view.Controller.CurrentColorScheme.ObstacleStrokeColor);
-			if (Selected) {
-				context.LineWidth = 2.5;
-			}
-			context.Stroke();
-			context.LineWidth = oldLineWidth;
-		
-			if (!Selected & view.Controller.CurrentColorScheme.effect) {	
-				context.MoveTo(Position.X - width / 2 + shear / 2 + 1,
-					Position.Y - height/2 + 1);
-				context.RelLineTo (width - 2, 0);
-				context.RelLineTo (-shear, height - 2);
-				context.RelLineTo (- width + 2, 0);
-				context.ClosePath ();
-				context.SetColor ("#fff", .3f);
-				context.Stroke ();
-			}
-			
-			context.SetColor (view.Controller.CurrentColorScheme.ObstacleTextColor);
-			
-			context.MoveTo(Position.X - 150/2, Position.Y - textHeight/2);
-			Pango.CairoHelper.ShowLayout(context, pangoLayout);
-			
-			
-			// Displaying likelihood
-			
-			pangoLayout = new Pango.Layout(view.DrawingArea.PangoContext);
-			pangoLayout.Alignment = Pango.Alignment.Center;
-			pangoLayout.SetMarkup(string.Format ("{0:0.00}",
-				((Obstacle) RepresentedElement).ComputedLikelihood));
-			
-			var fontDescr = new Pango.FontDescription ();
-			fontDescr.Size = (int) (9 * Pango.Scale.PangoScale);
-			pangoLayout.FontDescription = fontDescr;
-			
-			pangoLayout.GetPixelSize(out textWidth, out textHeight);
-			
-			int paddingLikelihood = 4;
-			context.MoveTo (Position.X + width / 2f + shear / 2f - textWidth / 2f - paddingLikelihood / 2f,
-				Position.Y - height / 2f - textHeight / 2f  - paddingLikelihood / 2f);
-			context.RoundedRectangle (Position.X + width / 2f + shear / 2f - textWidth / 2f - paddingLikelihood / 2f,
-				Position.Y - height / 2f - textHeight / 2f - paddingLikelihood / 2f, textWidth + paddingLikelihood, textHeight + paddingLikelihood, 3);
-			context.SetColor ("#000");
-			context.StrokePreserve ();
-			context.SetColor ("#fff");
-			context.Fill ();
-			
-			context.SetColor (view.Controller.CurrentColorScheme.ExceptionTextColor);
-			context.MoveTo(Position.X + width / 2f + shear / 2f - textWidth / 2f,
-				Position.Y - height / 2f - textHeight / 2f);
-			Pango.CairoHelper.ShowLayout(context, pangoLayout);
-			
-			context.Source = oldSource;
-		}
-		
-		/// <summary>
-		/// Determines whether coordinates are in the form.
-		/// </summary>
-		/// <returns>
-		/// The bounding box.
-		/// </returns>
-		/// <param name='x'>
-		/// If set to <c>true</c> x.
-		/// </param>
-		/// <param name='y'>
-		/// If set to <c>true</c> y.
-		/// </param>
-		/// <param name='delta'>
-		/// If set to <c>true</c> delta.
-		/// </param>
-		public override bool InBoundingBox (double x, double y, out PointD delta)
-		{
-			var points = new PointD[] {
-				new PointD (Position.X - width / 2 + shear / 2, Position.Y - height/2),
-				new PointD (Position.X + width / 2 + shear / 2, Position.Y - height/2),
-				new PointD (Position.X + width / 2 - shear / 2, Position.Y + height/2),
-				new PointD (Position.X - width / 2 - shear / 2, Position.Y + height/2)
+			getContent = () => {
+				return obstacle.Name;
 			};
 			
-			if (points.PointInPolygon (new PointD (x, y))) {
-				delta.X = Position.X - x;
-				delta.Y = Position.Y - y;
-				return true;
-			} 
-			
-			return false;
+			decorations.Add (new RoundedBoxDecoration (() => {
+				return string.Format ("{0:0.00}", ((Obstacle) RepresentedElement).Likelihood);
+			}) { Position = 2 });
 		}
-		
-		/// <summary>
-		/// Gets the anchor corresponding for the given point.
-		/// </summary>
-		/// <returns>
-		/// The anchor.
-		/// </returns>
-		/// <param name='point'>
-		/// Point.
-		/// </param>
-		public override PointD GetAnchor (PointD point)
-		{
-			double refAngle = Math.Atan2(height,width);
-			double angle = Math.Atan2(Position.Y - point.Y, Position.X - point.X);
-			
-			if (angle < refAngle & angle > - refAngle) {
-				// left
-				return new PointD(Position.X - width/2, Position.Y);
-				
-			} else if (angle > - Math.PI + refAngle & angle < - refAngle) {
-				// bottom
-				return new PointD(Position.X, Position.Y + height / 2);
-				
-			} else if (angle > refAngle & angle < Math.PI - refAngle) {
-				// top
-				return new PointD(Position.X, Position.Y - height / 2);
-				
-			} else {
-				// right
-				return new PointD(Position.X + width / 2, Position.Y);
-				
-			}
-		}
-		
-		public override Bounds GetBounds ()
-		{
-			return new Bounds () {
-				MinX = (int) (Position.X - width / 2 - 4) - 2,
-				MaxX = (int) (Position.X + width / 2 + 4) + 2,
-				MinY = (int) (Position.Y - height / 2) - 2,
-				MaxY = (int) (Position.Y + height / 2) + 2
-			};
-		}
-		
-		
-		public override IShape Copy ()
-		{
-			return new ObstacleShape (this.RepresentedElement as Obstacle) {
-				Position = new PointD (Position.X, Position.Y)
-			};
-		}
-		
 	}
 }
 

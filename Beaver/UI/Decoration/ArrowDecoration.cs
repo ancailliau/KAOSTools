@@ -1,5 +1,5 @@
 // 
-// GoalShape.cs
+// ArrowDecoration.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -23,45 +23,61 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
 using Cairo;
-using Beaver;
-using Beaver.Model;
-using Gtk;
-using Beaver.UI.Windows;
-using Beaver.Views;
 
-namespace Beaver.UI.Shapes
+namespace Beaver.UI.Decoration
 {
-	
-	/// <summary>
-	/// Represents the shape for goals.
-	/// </summary>
-	public class DomainPropertyShape : PolygonalShape
+	public class ArrowDecoration : IDecoration
 	{
-		
-		private int shear = 4;
-		
-		public DomainPropertyShape (DomainProperty domProp, PointD position) 
-			: base (domProp, position) 
-		{
-			xPadding = 10;
-			yPadding = 4;
-			
-			points.Add (() => new PointD (Position.X - width / 2f, 	Position.Y - height / 2f));
-			points.Add (() => new PointD (Position.X, 				Position.Y - height / 2f - shear));
-			points.Add (() => new PointD (Position.X + width / 2,	Position.Y - height / 2f));
-			points.Add (() => new PointD (Position.X + width / 2,	Position.Y));
-			points.Add (() => new PointD (Position.X + width / 2f,	Position.Y + height / 2f));
-			points.Add (() => new PointD (Position.X,				Position.Y + height / 2f));
-			points.Add (() => new PointD (Position.X - width / 2f,	Position.Y + height / 2f));
-			points.Add (() => new PointD (Position.X - width / 2f,	Position.Y));
-			
-			getContent = () => {
-				return domProp.Name;
-			};
+		public double Position {
+			get;
+			set;
 		}
+		
+		protected Func<double> getAngle;
+		
+		public string FillColor {
+			get;
+			set;
+		}
+		
+		public string StrokeColor {
+			get;
+			set;
+		}
+		
+		public ArrowDecoration (Func<double> getAngle)
+		{
+			this.getAngle = getAngle;
+			FillColor = "#fff";
+			StrokeColor = "#000";
+		}
+		
+		private double haldAngle = Math.Atan2 (5, 10);
+		private double sideWidth = Math.Sqrt (125);
+		
+		public void Render (Context cairoContext, Pango.Context pangoContext, double x, double y)
+		{
+			cairoContext.Save ();
+			cairoContext.MoveTo (x, y);
+			
+			double alpha = getAngle ();
+			
+			double gamma = alpha - haldAngle;
+			cairoContext.LineTo(x + sideWidth * Math.Cos(gamma), y + sideWidth * Math.Sin(gamma));
+			
+			double gamma2 = alpha + haldAngle;
+			cairoContext.LineTo(x + sideWidth * Math.Cos(gamma2), y + sideWidth * Math.Sin(gamma2));
+			cairoContext.ClosePath();
+			
+			cairoContext.SetColor (this.FillColor);
+			cairoContext.FillPreserve ();
+			
+			cairoContext.SetColor (this.StrokeColor);
+			cairoContext.Stroke();
+		}
+		
 	}
 }
 
