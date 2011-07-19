@@ -28,6 +28,7 @@ using System.Linq;
 using Beaver.Model;
 using Cairo;
 using Beaver.Views;
+using System.Collections.Generic;
 
 namespace Beaver.UI.Shapes
 {
@@ -39,11 +40,9 @@ namespace Beaver.UI.Shapes
 			: base (element, position)
 		{}
 		
-		public override IQueryable<Func<PointD>> getAnchors (ModelView view)
+		public override IEnumerable<PointD> GetAnchors (ModelView view)
 		{
-			return new Func<PointD>[] {
-				() => new PointD (this.position.X, this.position.Y)
-			}.AsQueryable();
+			return new PointD[] { Position };
 		}
 
 		public override Bounds GetBounds (ModelView view)

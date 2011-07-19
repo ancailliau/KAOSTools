@@ -90,11 +90,11 @@ namespace Beaver.UI.Shapes
 		
 		
 		// TODO rename
-		public abstract IQueryable<Func<PointD>> getAnchors (ModelView view);
+		public abstract IEnumerable<PointD> GetAnchors (ModelView view);
 		
 		public void GetAnchors (Shape s, out PointD anchor1, out PointD anchor2, ModelView view) {
-			var anchors = (from p1 in this.getAnchors(view).Select ((arg) => arg())
-				from p2 in s.getAnchors(view).Select ((arg) => arg())
+			var anchors = (from p1 in this.GetAnchors(view)
+				from p2 in s.GetAnchors(view)
 				orderby (p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y)
 				select new {
 					anchor1 = p1,

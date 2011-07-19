@@ -28,6 +28,7 @@ using System.Linq;
 using Beaver.Model;
 using Cairo;
 using Beaver.Views;
+using System.Collections.Generic;
 
 namespace Beaver.UI.Shapes
 {
@@ -48,10 +49,11 @@ namespace Beaver.UI.Shapes
 		{
 			double dist = double.MaxValue;
 			Shape s = null;
-			var shapes = view.GetAllShapesFor (startElement).ToArray ();
+			PointD _anchor1, _anchor2;
+			
+			var shapes = view.GetAllShapesFor (startElement);
 			for (int i = 0; i < shapes.Length; i++) {
 				var _s = shapes [i];
-				PointD _anchor1, _anchor2;
 				if (view.GetNearestShapeFor (_s, endElement, out _anchor1, out _anchor2) != null) {
 					var x = _anchor1.X - _anchor2.X;
 					var y = _anchor1.Y - _anchor2.Y;
@@ -67,12 +69,9 @@ namespace Beaver.UI.Shapes
 			return s != null;
 		}
 		
-		public override System.Linq.IQueryable<Func<Cairo.PointD>> getAnchors (ModelView view)
+		public override IEnumerable<PointD> GetAnchors (ModelView view)
 		{
-			return new Func<PointD>[] {
-				() => anchor1,
-				() => anchor2,
-			}.AsQueryable ();
+			return new PointD[] { anchor1, anchor2 };
 		}
 
 		public override Bounds GetBounds (ModelView view)

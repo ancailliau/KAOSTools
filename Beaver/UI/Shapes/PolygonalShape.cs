@@ -98,9 +98,9 @@ namespace Beaver.UI.Shapes
 			return b;
 		}
 		
-		public override IQueryable<Func<PointD>> getAnchors (ModelView view)
+		public override IEnumerable<PointD> GetAnchors (ModelView view)
 		{
-			return this.anchors.AsQueryable();
+			return this.anchors.Select((arg) => arg());
 		}		
 	}
 }

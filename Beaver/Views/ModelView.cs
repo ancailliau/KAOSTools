@@ -198,7 +198,7 @@ namespace Beaver.Views
 		{
 			Shape s = null;
 			double dist = double.MaxValue;
-			var shapes = this.GetAllShapesFor (element).ToArray ();
+			var shapes = this.GetAllShapesFor (element);
 			for (int i = 0; i < shapes.Length; i++) {
 				var _s = shapes[i];
 				PointD _anchor1, _anchor2;
