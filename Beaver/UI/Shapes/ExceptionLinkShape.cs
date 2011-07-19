@@ -42,9 +42,8 @@ namespace Beaver.UI.Shapes
 		public ExceptionLinkShape (ExceptionLink exception, PointD position) 
 			: base (exception, position)
 		{
-			getStart = () => exception.Goal;
-			getEnd = () => exception.ExceptionGoal;
-			
+			startElement = exception.Goal;
+			endElement = exception.ExceptionGoal;
 			
 			decorations.Add (new RoundedBoxDecoration (() => {
 				return exception.Condition;

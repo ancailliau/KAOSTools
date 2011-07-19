@@ -41,8 +41,8 @@ namespace Beaver.UI.Shapes
 		public ObstructionShape (Obstruction obstruction, PointD position) 
 			: base (obstruction, position)
 		{
-			getStart = () => obstruction.Goal;
-			getEnd = () => obstruction.Obstacle;
+			startElement = obstruction.Goal;
+			endElement = obstruction.Obstacle;
 						
 			decorations.Add (new RoundedBoxDecoration (() => {
 				return string.Format ("{0:0.00}", obstruction.Likelihood);

@@ -38,8 +38,8 @@ namespace Beaver.UI.Shapes
 		public ResolutionShape (Resolution resolution, PointD position)
 			: base (resolution, position)
 		{
-			getStart = () => resolution.Obstacle;
-			getEnd = () => resolution.Goal;
+			startElement = resolution.Obstacle;
+			endElement = resolution.Goal;
 			
 			
 			decorations.Add (new RoundedBoxDecoration (() => {

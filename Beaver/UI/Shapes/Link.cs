@@ -38,8 +38,8 @@ namespace Beaver.UI.Shapes
 		public Link (KAOSElement start, KAOSElement end, PointD position)
 			: base (null, position)
 		{
-			getStart = () => start;
-			getEnd = () => end;
+			startElement = start;
+			endElement = end;
 		}
 		
 	}

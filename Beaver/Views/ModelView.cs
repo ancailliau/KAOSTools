@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Cairo;
 using Gtk;
@@ -197,8 +198,9 @@ namespace Beaver.Views
 		{
 			Shape s = null;
 			double dist = double.MaxValue;
-			var shapes = this.GetAllShapesFor (element);
-			foreach (var _s in shapes) {
+			var shapes = this.GetAllShapesFor (element).ToArray ();
+			for (int i = 0; i < shapes.Length; i++) {
+				var _s = shapes[i];
 				PointD _anchor1, _anchor2;
 				s1.GetAnchors (_s, out _anchor1, out _anchor2, this);
 				double _dist = (_anchor1.X - _anchor2.X) * (_anchor1.X - _anchor2.X) 

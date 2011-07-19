@@ -33,8 +33,8 @@ namespace Beaver.UI.Shapes
 {
 	public class LineShape : Shape
 	{
-		protected Func<KAOSElement> getStart;
-		protected Func<KAOSElement> getEnd;
+		protected KAOSElement startElement;
+		protected KAOSElement endElement;
 		
 		protected PointD anchor1;
 		protected PointD anchor2;
@@ -48,9 +48,11 @@ namespace Beaver.UI.Shapes
 		{
 			double dist = double.MaxValue;
 			Shape s = null;
-			foreach (var _s in view.GetAllShapesFor (getStart())) {
+			var shapes = view.GetAllShapesFor (startElement).ToArray ();
+			for (int i = 0; i < shapes.Length; i++) {
+				var _s = shapes [i];
 				PointD _anchor1, _anchor2;
-				if (view.GetNearestShapeFor (_s, getEnd(), out _anchor1, out _anchor2) != null) {
+				if (view.GetNearestShapeFor (_s, endElement, out _anchor1, out _anchor2) != null) {
 					var x = _anchor1.X - _anchor2.X;
 					var y = _anchor1.Y - _anchor2.Y;
 					var _dist = x * x + y * y;

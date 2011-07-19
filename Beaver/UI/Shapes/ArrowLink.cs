@@ -38,8 +38,8 @@ namespace Beaver.UI.Shapes
 		public ArrowLink (KAOSElement start, KAOSElement end, PointD position)
 			: base (null, position)
 		{
-			getStart = () => start;
-			getEnd = () => end;
+			startElement = start;
+			endElement = end;
 			
 			decorations.Add (new ArrowDecoration (() => {
 				return Math.Atan2 (anchor1.Y - anchor2.Y, anchor1.X - anchor2.X) - Math.PI ;
