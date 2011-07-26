@@ -9,6 +9,13 @@ namespace Beaver
 	public static class Helpers
 	{
 		
+		public static int FindBucket (double val)
+		{
+			int i = MainClass.Controller.Configuration.NumBuckets;
+			double @double = Math.Round (Math.Log10 (i),0);
+			return (int) Math.Min(Math.Round (val, (int) @double) * i, i-1);
+		}
+		
 		public static bool IsEndElement (this XmlReader reader, string name)
 		{
 			return reader.NodeType == XmlNodeType.EndElement && reader.Name == name;

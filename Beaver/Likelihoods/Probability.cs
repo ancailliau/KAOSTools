@@ -1,5 +1,5 @@
 // 
-// GoalShape.cs
+// Probability.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -23,39 +23,29 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using System.Linq;
-using Cairo;
-using Beaver;
-using Beaver.Model;
-using Gtk;
-using Beaver.UI.Windows;
-using Beaver.Views;
-using Beaver.UI.Decoration;
 
-namespace Beaver.UI.Shapes
+namespace Beaver.Likelihoods
 {
-
-	public class ObstacleShape : Parallelogram
+	public class Probability : Likelihood
 	{
-		public ObstacleShape (Obstacle obstacle, PointD position) 
-			: base (obstacle, position) 
+		private double value;
+		
+		public Probability (double value)
 		{
-			xPadding = 10;
-			yPadding = 4;
-			shear = -4;
-			
-			getContent = () => {
-				return obstacle.Name;
-			};
-			
-			if (MainClass.Controller.ObstacleRefinementController.GetAll (obstacle).Count () == 0) {
-				decorations.Add (new RoundedBoxDecoration (() => {
-					return string.Format ("{0:0.00}", ((Obstacle) RepresentedElement).Likelihood);
-				}) { Position = 2 });
-			}
+			this.value = value;
 		}
+		
+		public double GetSample ()
+		{
+			return this.value;
+		}		
+		
+		public override string ToString ()
+		{
+			return value.ToString ();
+		}
+		
 	}
 }
 

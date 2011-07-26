@@ -7,15 +7,15 @@ namespace Beaver.UI.Dialogs
 		private global::Gtk.Table table1;
 		private global::Gtk.ScrolledWindow GtkScrolledWindow;
 		private global::Gtk.TextView definitionTextview;
+		private global::Gtk.HBox hbox1;
+		private global::Gtk.Button button2398;
 		private global::Gtk.HSeparator hseparator1;
 		private global::Gtk.Label label1;
 		private global::Gtk.Label label2;
 		private global::Gtk.Label label3;
-		private global::Gtk.Label label4;
 		private global::Gtk.Label label6;
 		private global::Gtk.Label label7;
-		private global::Gtk.SpinButton likelihoodSpin;
-		private global::Gtk.Entry likelihoodText;
+		private global::Gtk.Entry likelihood;
 		private global::Gtk.Entry nameEntry;
 		private global::Gtk.Button buttonCancel;
 		private global::Gtk.Button buttonOk;
@@ -55,27 +55,51 @@ namespace Beaver.UI.Dialogs
 			w3.RightAttach = ((uint)(2));
 			w3.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
+			this.hbox1 = new global::Gtk.HBox ();
+			this.hbox1.Name = "hbox1";
+			this.hbox1.Spacing = 6;
+			// Container child hbox1.Gtk.Box+BoxChild
+			this.button2398 = new global::Gtk.Button ();
+			this.button2398.CanFocus = true;
+			this.button2398.Name = "button2398";
+			this.button2398.UseUnderline = true;
+			this.button2398.Label = global::Mono.Unix.Catalog.GetString ("View simulation results");
+			this.hbox1.Add (this.button2398);
+			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.button2398]));
+			w4.Position = 0;
+			w4.Expand = false;
+			w4.Fill = false;
+			this.table1.Add (this.hbox1);
+			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.table1 [this.hbox1]));
+			w5.TopAttach = ((uint)(6));
+			w5.BottomAttach = ((uint)(7));
+			w5.LeftAttach = ((uint)(1));
+			w5.RightAttach = ((uint)(2));
+			w5.XOptions = ((global::Gtk.AttachOptions)(4));
+			w5.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child table1.Gtk.Table+TableChild
 			this.hseparator1 = new global::Gtk.HSeparator ();
 			this.hseparator1.Name = "hseparator1";
 			this.table1.Add (this.hseparator1);
-			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table1 [this.hseparator1]));
-			w4.TopAttach = ((uint)(3));
-			w4.BottomAttach = ((uint)(4));
-			w4.RightAttach = ((uint)(2));
-			w4.YPadding = ((uint)(3));
-			w4.XOptions = ((global::Gtk.AttachOptions)(4));
-			w4.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.table1 [this.hseparator1]));
+			w6.TopAttach = ((uint)(3));
+			w6.BottomAttach = ((uint)(4));
+			w6.RightAttach = ((uint)(2));
+			w6.YPadding = ((uint)(3));
+			w6.XOptions = ((global::Gtk.AttachOptions)(4));
+			w6.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.label1 = new global::Gtk.Label ();
+			this.label1.Name = "label1";
 			this.label1.Xalign = 0F;
 			this.label1.LabelProp = global::Mono.Unix.Catalog.GetString ("Name");
 			this.table1.Add (this.label1);
-			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.table1 [this.label1]));
-			w5.TopAttach = ((uint)(1));
-			w5.BottomAttach = ((uint)(2));
-			w5.XPadding = ((uint)(6));
-			w5.XOptions = ((global::Gtk.AttachOptions)(4));
-			w5.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.table1 [this.label1]));
+			w7.TopAttach = ((uint)(1));
+			w7.BottomAttach = ((uint)(2));
+			w7.XPadding = ((uint)(6));
+			w7.XOptions = ((global::Gtk.AttachOptions)(4));
+			w7.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.label2 = new global::Gtk.Label ();
 			this.label2.Name = "label2";
@@ -83,36 +107,24 @@ namespace Beaver.UI.Dialogs
 			this.label2.Yalign = 0F;
 			this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("Definition");
 			this.table1.Add (this.label2);
-			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.table1 [this.label2]));
-			w6.TopAttach = ((uint)(2));
-			w6.BottomAttach = ((uint)(3));
-			w6.XPadding = ((uint)(6));
-			w6.XOptions = ((global::Gtk.AttachOptions)(4));
-			w6.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.table1 [this.label2]));
+			w8.TopAttach = ((uint)(2));
+			w8.BottomAttach = ((uint)(3));
+			w8.XPadding = ((uint)(6));
+			w8.XOptions = ((global::Gtk.AttachOptions)(4));
+			w8.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.label3 = new global::Gtk.Label ();
 			this.label3.Name = "label3";
 			this.label3.Xalign = 0F;
 			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("Likelihood");
 			this.table1.Add (this.label3);
-			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.table1 [this.label3]));
-			w7.TopAttach = ((uint)(5));
-			w7.BottomAttach = ((uint)(6));
-			w7.XPadding = ((uint)(6));
-			w7.XOptions = ((global::Gtk.AttachOptions)(4));
-			w7.YOptions = ((global::Gtk.AttachOptions)(4));
-			// Container child table1.Gtk.Table+TableChild
-			this.label4 = new global::Gtk.Label ();
-			this.label4.Name = "label4";
-			this.label4.Xalign = 0F;
-			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("Likelihood (computed)");
-			this.table1.Add (this.label4);
-			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.table1 [this.label4]));
-			w8.TopAttach = ((uint)(6));
-			w8.BottomAttach = ((uint)(7));
-			w8.XPadding = ((uint)(6));
-			w8.XOptions = ((global::Gtk.AttachOptions)(4));
-			w8.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w9 = ((global::Gtk.Table.TableChild)(this.table1 [this.label3]));
+			w9.TopAttach = ((uint)(5));
+			w9.BottomAttach = ((uint)(6));
+			w9.XPadding = ((uint)(6));
+			w9.XOptions = ((global::Gtk.AttachOptions)(4));
+			w9.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.label6 = new global::Gtk.Label ();
 			this.label6.Name = "label6";
@@ -121,11 +133,11 @@ namespace Beaver.UI.Dialogs
 			this.label6.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Basic information</b>");
 			this.label6.UseMarkup = true;
 			this.table1.Add (this.label6);
-			global::Gtk.Table.TableChild w9 = ((global::Gtk.Table.TableChild)(this.table1 [this.label6]));
-			w9.RightAttach = ((uint)(2));
-			w9.YPadding = ((uint)(3));
-			w9.XOptions = ((global::Gtk.AttachOptions)(4));
-			w9.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w10 = ((global::Gtk.Table.TableChild)(this.table1 [this.label6]));
+			w10.RightAttach = ((uint)(2));
+			w10.YPadding = ((uint)(3));
+			w10.XOptions = ((global::Gtk.AttachOptions)(4));
+			w10.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.label7 = new global::Gtk.Label ();
 			this.label7.Name = "label7";
@@ -134,41 +146,23 @@ namespace Beaver.UI.Dialogs
 			this.label7.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Likelihood support</b>");
 			this.label7.UseMarkup = true;
 			this.table1.Add (this.label7);
-			global::Gtk.Table.TableChild w10 = ((global::Gtk.Table.TableChild)(this.table1 [this.label7]));
-			w10.TopAttach = ((uint)(4));
-			w10.BottomAttach = ((uint)(5));
-			w10.RightAttach = ((uint)(2));
-			w10.YPadding = ((uint)(3));
-			w10.XOptions = ((global::Gtk.AttachOptions)(4));
-			w10.YOptions = ((global::Gtk.AttachOptions)(4));
-			// Container child table1.Gtk.Table+TableChild
-			this.likelihoodSpin = new global::Gtk.SpinButton (0, 100, 1);
-			this.likelihoodSpin.CanFocus = true;
-			this.likelihoodSpin.Name = "likelihoodSpin";
-			this.likelihoodSpin.Adjustment.PageIncrement = 10;
-			this.likelihoodSpin.ClimbRate = 0.01;
-			this.likelihoodSpin.Digits = ((uint)(4));
-			this.likelihoodSpin.Numeric = true;
-			this.likelihoodSpin.Value = 1;
-			this.likelihoodSpin.Wrap = true;
-			this.table1.Add (this.likelihoodSpin);
-			global::Gtk.Table.TableChild w11 = ((global::Gtk.Table.TableChild)(this.table1 [this.likelihoodSpin]));
-			w11.TopAttach = ((uint)(5));
-			w11.BottomAttach = ((uint)(6));
-			w11.LeftAttach = ((uint)(1));
+			global::Gtk.Table.TableChild w11 = ((global::Gtk.Table.TableChild)(this.table1 [this.label7]));
+			w11.TopAttach = ((uint)(4));
+			w11.BottomAttach = ((uint)(5));
 			w11.RightAttach = ((uint)(2));
+			w11.YPadding = ((uint)(3));
+			w11.XOptions = ((global::Gtk.AttachOptions)(4));
 			w11.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
-			this.likelihoodText = new global::Gtk.Entry ();
-			this.likelihoodText.Sensitive = false;
-			this.likelihoodText.CanFocus = true;
-			this.likelihoodText.Name = "likelihoodText";
-			this.likelihoodText.IsEditable = false;
-			this.likelihoodText.InvisibleChar = '●';
-			this.table1.Add (this.likelihoodText);
-			global::Gtk.Table.TableChild w12 = ((global::Gtk.Table.TableChild)(this.table1 [this.likelihoodText]));
-			w12.TopAttach = ((uint)(6));
-			w12.BottomAttach = ((uint)(7));
+			this.likelihood = new global::Gtk.Entry ();
+			this.likelihood.CanFocus = true;
+			this.likelihood.Name = "likelihood";
+			this.likelihood.IsEditable = true;
+			this.likelihood.InvisibleChar = '●';
+			this.table1.Add (this.likelihood);
+			global::Gtk.Table.TableChild w12 = ((global::Gtk.Table.TableChild)(this.table1 [this.likelihood]));
+			w12.TopAttach = ((uint)(5));
+			w12.BottomAttach = ((uint)(6));
 			w12.LeftAttach = ((uint)(1));
 			w12.RightAttach = ((uint)(2));
 			w12.XOptions = ((global::Gtk.AttachOptions)(4));
@@ -226,8 +220,10 @@ namespace Beaver.UI.Dialogs
 				this.Child.ShowAll ();
 			}
 			this.DefaultWidth = 472;
-			this.DefaultHeight = 293;
+			this.DefaultHeight = 295;
 			this.Show ();
+			this.button2398.Clicked += new global::System.EventHandler (this.OnViewResultButtonClicked);
+			this.button2398.Activated += new global::System.EventHandler (this.OnViewResultButtonClicked);
 		}
 	}
 }

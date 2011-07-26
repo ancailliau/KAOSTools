@@ -32,6 +32,8 @@ using Beaver.UI.Widgets;
 using Beaver.Logging;
 using System.Collections.Generic;
 using Beaver.UI;
+using System.Text.RegularExpressions;
+using Beaver.Likelihoods;
 
 namespace Beaver.Controllers
 {
@@ -148,7 +150,7 @@ namespace Beaver.Controllers
 				if (args.ResponseId == Gtk.ResponseType.Ok) {
 					obstacle.Name = dialog.ObstacleName;
 					obstacle.Definition = dialog.ObstacleDefinition;
-					obstacle.Likelihood = dialog.Likelihood;
+					obstacle.SetLikelihood (dialog.Likelihood);
 					this.Update (obstacle);
 				}
 				dialog.Destroy();
@@ -233,29 +235,30 @@ namespace Beaver.Controllers
 			}
 		}
 
-		public float ComputeLikelihood (Obstacle obstacle)
+		public double ComputeLikelihood (Obstacle obstacle)
 		{
 			Logger.Debug ("Computing likelihood for {0}", obstacle.ToString());
 			this.controller.Window.PushStatus (string.Format ("Computing likelihood for {0}", obstacle.ToString()));
 
-			float l = 0;
+			double l = 0;
 			IEnumerable<ObstacleRefinement> refinements = this.controller.ObstacleRefinementController.GetAll (obstacle);
 			if (refinements.Count () > 0) {
 				
 				l = (from r in refinements 
 					 select this.controller.ObstacleRefinementController.ComputeLikelihood (r)
 					).Sum ();
-				obstacle.ComputedLikelihood = Math.Min (1, Math.Max (0, l));;
 				
 			} else {
 				var resolutions = this.controller.ResolutionController.GetAll (obstacle);
 				
-				obstacle.ComputedLikelihood = obstacle.Likelihood - 
+				l = obstacle.Likelihood.GetSample () - 
 					(from r in resolutions 
 						select (l * r.Likelihood * this.controller.GoalController.ComputeLikelihood (r.Goal))
 					).Sum ();
+				
 			}
-			return obstacle.ComputedLikelihood;
+			obstacle.ComputedLikelihood[Helpers.FindBucket(l)] += 1;
+			return l;
 		}
 	}
 }

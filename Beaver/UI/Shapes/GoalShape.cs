@@ -46,10 +46,6 @@ namespace Beaver.UI.Shapes
 			getContent = () => {
 				return goal.Name;
 			};
-			
-			decorations.Add (new RoundedBoxDecoration (() => {
-				return string.Format ("{0:0.00}", ((Goal) RepresentedElement).Likelihood);
-			}) { Position = 2 });
 		}
 		
 		public GoalShape (Goal goal)

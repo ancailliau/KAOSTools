@@ -35,6 +35,8 @@ namespace Beaver.UI.Dialogs
 	
 	public partial class AddGoalDialog : Gtk.Dialog
 	{
+		
+		private Goal goal;
 				
 		#region Fields value
 		
@@ -50,9 +52,9 @@ namespace Beaver.UI.Dialogs
 			}
 		}
 		
-		public float SoftThreshold {
+		public double SoftThreshold {
 			get { try {
-					return Math.Max (0, Math.Min (1, float.Parse(softThresholdEntry.Text)));
+					return Math.Max (0, Math.Min (1, double.Parse(softThresholdEntry.Text)));
 				} catch (Exception e) {
 					Logging.Logger.Error ("Soft threshold '{0}' cannot be parsed to float value ({1})", softThresholdEntry.Text, e.Message);
 				}
@@ -63,9 +65,9 @@ namespace Beaver.UI.Dialogs
 			}
 		}
 		
-		public float HardThreshold {
+		public double HardThreshold {
 			get { try {
-					return Math.Max (0, Math.Min (1, float.Parse(hardThresholdEntry.Text)));
+					return Math.Max (0, Math.Min (1, double.Parse(hardThresholdEntry.Text)));
 				} catch (Exception e) {
 					Logging.Logger.Error ("Hard threshold '{0}' cannot be parsed to float value ({1})", hardThresholdEntry.Text, e.Message);
 				}
@@ -107,13 +109,20 @@ namespace Beaver.UI.Dialogs
 			
 			this.Build ();
 			
+			this.goal = goal;
+			
 			nameEntry.Text = goal.Name;
 			definitionTextView.Buffer.Text = goal.Definition;
-			likelihoodEntry.Text = goal.Likelihood.ToString ();
 			SoftThreshold = goal.SoftThreshold;
 			HardThreshold = goal.HardThreshold;
 		}
 		
+		protected void OnViewResultButtonClicked (object sender, System.EventArgs e)
+		{
+			var dd = new SimulationResult (this, this.goal.Likelihood, this.goal.NumSamples);
+			dd.Title = string.Format ("Simulation results for goal '{0}'", this.goal.Name);
+			dd.Present();				
+		}
 	}
 }
 

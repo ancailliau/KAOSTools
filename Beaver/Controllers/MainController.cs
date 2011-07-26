@@ -315,6 +315,7 @@ namespace Beaver.Controllers
 			importer.Import();
 			
 			Window.Title = string.Format("KAOS Editor - " + this.currentFilename);
+			Logger.Info (this.currentFilename);
 			
 			if (ProjetLoaded != null)
 				ProjetLoaded ();

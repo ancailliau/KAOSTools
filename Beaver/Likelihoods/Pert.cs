@@ -1,5 +1,5 @@
 // 
-// GoalShape.cs
+// Triangular.cs
 //  
 // Author:
 //       Antoine Cailliau <antoine.cailliau@uclouvain.be>
@@ -23,39 +23,47 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using System.Linq;
-using Cairo;
-using Beaver;
-using Beaver.Model;
-using Gtk;
-using Beaver.UI.Windows;
-using Beaver.Views;
-using Beaver.UI.Decoration;
+using VisualRegression;
 
-namespace Beaver.UI.Shapes
+namespace Beaver.Likelihoods
 {
-
-	public class ObstacleShape : Parallelogram
+	public class Pert : Likelihood
 	{
-		public ObstacleShape (Obstacle obstacle, PointD position) 
-			: base (obstacle, position) 
+		private double min = 0;
+		private double mode = 0.5;
+		private double max = 1;
+		
+		private double mean;
+		private double alpha1;
+		private double alpha2;
+		
+		private Random r;
+		
+		public Pert (double min, double mode, double max)
 		{
-			xPadding = 10;
-			yPadding = 4;
-			shear = -4;
+			this.min = min;
+			this.mode = mode;
+			this.max = max;
 			
-			getContent = () => {
-				return obstacle.Name;
-			};
+			r = new Random ();
 			
-			if (MainClass.Controller.ObstacleRefinementController.GetAll (obstacle).Count () == 0) {
-				decorations.Add (new RoundedBoxDecoration (() => {
-					return string.Format ("{0:0.00}", ((Obstacle) RepresentedElement).Likelihood);
-				}) { Position = 2 });
-			}
+			mean = (min + 4 * mode + max) / 6;
+			alpha1 = 6 * ( mean - min ) / (max - min);
+			alpha2 = 6 * ( max - mean ) / (max - min);
 		}
+		
+		public double GetSample ()
+		{
+			var randomValue = r.NextDouble ();
+			return Statistics.IINCBETA(alpha1, alpha2, randomValue * Statistics.INCBETA (alpha1, alpha2, 1)) * ( max - min ) + min;
+		}
+		
+		public override string ToString ()
+		{
+			return string.Format ("triangular({0},{1},{2})", min, mode, max);
+		}
+
 	}
 }
 

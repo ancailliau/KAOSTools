@@ -33,6 +33,8 @@ namespace Beaver.UI.Dialogs
 	public partial class AddObstacleDialog : Gtk.Dialog
 	{
 		
+		private Obstacle obstacle;
+		
 		public string ObstacleName {
 			get {
 				return nameEntry.Text.Trim ();
@@ -45,9 +47,9 @@ namespace Beaver.UI.Dialogs
 			}
 		}
 		
-		public float Likelihood {
-			get { return (float) Math.Min( Math.Max (likelihoodSpin.Value, 0), 1); }
-			set { likelihoodSpin.Value = Math.Min( Math.Max (value, 0), 1); }
+		public string Likelihood {
+			get { return likelihood.Text; }
+			set { likelihood.Text = value; }
 		}
 		
 		public AddObstacleDialog (MainWindow window)
@@ -68,14 +70,20 @@ namespace Beaver.UI.Dialogs
 		{
 			this.Build ();
 			
-			this.likelihoodText.Text = "Not computed";
+			this.obstacle = obstacle;
 			
 			if (obstacle != null) {
 				nameEntry.Text = obstacle.Name;
 				definitionTextview.Buffer.Text = obstacle.Definition;
-				Likelihood = obstacle.Likelihood;
-				this.likelihoodText.Text = obstacle.ComputedLikelihood.ToString ();
+				Likelihood = obstacle.Likelihood.ToString ();
 			}
+		}
+		
+		protected void OnViewResultButtonClicked (object sender, System.EventArgs e)
+		{
+			var dd = new SimulationResult (this, this.obstacle.ComputedLikelihood, this.obstacle.NumSamples);
+			dd.Title = string.Format ("Simulation results for obstacle '{0}'", this.obstacle.Name);
+			dd.Present();				
 		}
 	}
 }

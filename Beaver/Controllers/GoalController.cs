@@ -32,6 +32,7 @@ using Beaver.UI.Widgets;
 using Beaver.Logging;
 using System.Collections.Generic;
 using Beaver.UI;
+using System.IO;
 
 namespace Beaver.Controllers
 {
@@ -244,13 +245,56 @@ namespace Beaver.Controllers
 				};
 				args.Menu.Add(deleteItem);
 				
-				var computeItem = new MenuItem("Compute likelihood");
+				var computeItem = new MenuItem("Run likelihood simulation...");
 				computeItem.Activated += delegate(object sender2, EventArgs e) {
-					this.controller.Window.PushStatus ("Computing likelihoods...");
-					this.ComputeLikelihood (clickedGoal);
-					if (GoalUpdated != null)
-						GoalUpdated (clickedGoal);
-					this.controller.Window.PushStatus ("Likelihoods computed");
+					var d = new TextEntryDialog (this.controller.Window, "How many samples do you want to run?", (answers) => {
+						int numSample = 1000;
+						if (int.TryParse (answers, out numSample)) {
+							this.controller.Window.PushStatus ("Computing likelihoods...");
+							
+							clickedGoal.NumSamples = numSample;
+							
+							foreach (var g in this.GetAll ())
+								g.Likelihood = new double[MainClass.Controller.Configuration.NumBuckets];
+							
+							for (int i = 0; i < numSample; i++) {
+								this.ComputeLikelihood (clickedGoal);
+							}
+							
+							
+							/*
+							var dialog = new FileChooserDialog("Save simulation results", this.controller.Window,
+							FileChooserAction.Save, "Cancel", ResponseType.Cancel, "Save", ResponseType.Accept);
+							
+							if (dialog.Run() == (int) ResponseType.Accept) {
+								if (File.Exists (dialog.Filename)) {
+									var dialog2 = new MessageDialog (this.controller.Window,
+										DialogFlags.DestroyWithParent, MessageType.Question,
+										ButtonsType.YesNo, false, string.Format ("Are you sure to override '{0}'?", dialog.Filename));
+									
+									dialog2.Response += delegate(object o2, ResponseArgs args2) {
+										if (args2.ResponseId == Gtk.ResponseType.Yes) {
+											File.Copy (path, dialog.Filename, true);
+											File.Delete (path);
+											dialog.Destroy();	
+										}
+										dialog2.Destroy ();
+									};									
+									dialog2.Present ();
+								}
+							}
+							*/
+							
+							if (GoalUpdated != null)
+								GoalUpdated (clickedGoal);
+							this.controller.Window.PushStatus ("Likelihoods computed");
+							return true;
+							
+						} else {
+							return false;
+						}
+					});
+					d.Run ();
 				};
 				args.Menu.Add(computeItem);
 				
@@ -284,12 +328,12 @@ namespace Beaver.Controllers
 			}
 		}
 		
-		public float ComputeLikelihood (Goal g)
+		public double ComputeLikelihood (Goal g)
 		{
 			Logger.Debug ("Computing likelihood for {0}", g.ToString());
 			this.controller.Window.PushStatus (string.Format ("Computing likelihood for {0}", g.ToString()));
 			
-			float l = 0;
+			double l = 0;
 			if (this.controller.ResponsibilityController.GetAll(g).Count() > 0) {
 				l = 1;
 				foreach (var obst in this.controller.ObstructionController.GetAll (g)) {
@@ -302,7 +346,10 @@ namespace Beaver.Controllers
 					l += this.controller.RefinementController.ComputeLikelihood (refinement);
 				}
 			}
-			g.Likelihood = Math.Min (1, Math.Max (0, l));
+			
+			g.Likelihood[Helpers.FindBucket(l)] += 1;
+			
+			// g.Likelihood = Math.Min (1, Math.Max (0, l));
 			
 			return l;
 		}
@@ -314,7 +361,7 @@ namespace Beaver.Controllers
 				if (g.HardThreshold > g.SoftThreshold) {
 					this.controller.Window.ErrorList.AddError (string.Format ("Goal '{0}' has incoherent thresholds (Soft: {1} < Hard: {2})", g.Name, g.SoftThreshold, g.HardThreshold));
 				}
-				
+				/*
 				if (g.Likelihood < g.HardThreshold) {
 					this.controller.Window.ErrorList.AddError (string.Format ("Goal '{0}' is hard-violated (Likelihood: {1}, Limit: {2})", g.Name, g.Likelihood, g.HardThreshold));
 				} else if (g.Likelihood < g.SoftThreshold) {
@@ -324,6 +371,7 @@ namespace Beaver.Controllers
 				if (g.Likelihood == 0) {
 					this.controller.Window.ErrorList.AddWarning (string.Format ("Goal '{0}' has a zero likelihood", g.Name));
 				}
+				*/
 			}
 		}
 	}

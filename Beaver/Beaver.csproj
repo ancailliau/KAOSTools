@@ -166,6 +166,14 @@
     <Compile Include="UI\Decoration\StrikeDecoration.cs" />
     <Compile Include="UI\Shapes\ArrowLink.cs" />
     <Compile Include="UI\Shapes\Link.cs" />
+    <Compile Include="Likelihoods\Probability.cs" />
+    <Compile Include="Likelihoods\Triangular.cs" />
+    <Compile Include="Likelihoods\Likelihood.cs" />
+    <Compile Include="Likelihoods\Uniform.cs" />
+    <Compile Include="SimulationResult.cs" />
+    <Compile Include="gtk-gui\Beaver.SimulationResult.cs" />
+    <Compile Include="Statistics.cs" />
+    <Compile Include="Likelihoods\Pert.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -177,6 +185,7 @@
     <Folder Include="Views\" />
     <Folder Include="UI\ColorSchemes\" />
     <Folder Include="UI\Decoration\" />
+    <Folder Include="Likelihoods\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>

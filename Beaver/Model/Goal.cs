@@ -54,17 +54,22 @@ namespace Beaver.Model
 			set;
 		}
 		
-		public float Likelihood {
+		public double[] Likelihood {
 			get;
 			set;
 		}
 		
-		public float SoftThreshold {
+		public int NumSamples {
 			get;
 			set;
 		}
 		
-		public float HardThreshold {
+		public double SoftThreshold {
+			get;
+			set;
+		}
+		
+		public double HardThreshold {
 			get;
 			set;
 		}
@@ -85,7 +90,7 @@ namespace Beaver.Model
 			Id = Guid.NewGuid().ToString();
 			Definition = definition;
 			Name = name;
-			Likelihood = 1;
+			Likelihood = new double[MainClass.Controller.Configuration.NumBuckets];
 			SoftThreshold = 1;
 			HardThreshold = 1;
 		}

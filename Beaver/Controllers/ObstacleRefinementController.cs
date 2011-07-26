@@ -211,9 +211,9 @@ namespace Beaver.Controllers
 			}
 		}
 
-		public float ComputeLikelihood (ObstacleRefinement refinement)
+		public double ComputeLikelihood (ObstacleRefinement refinement)
 		{
-			float l = 1;
+			double l = 1;
 			foreach (var refinee in refinement.Refinees) {
 				if (refinee is Obstacle) {
 					l *= this.controller.ObstacleController.ComputeLikelihood (refinee as Obstacle);

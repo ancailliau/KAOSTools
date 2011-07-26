@@ -86,7 +86,7 @@ namespace Beaver
 			public string id = "";
 			public string name = "";
 			public string definition = "";
-			public float likelihood = 1f;
+			public string likelihood = "";
 			public List<FutureObstacleRefinement> refinements = new List<FutureObstacleRefinement>();
 		}
 		
@@ -145,9 +145,9 @@ namespace Beaver
 				if (reader.IsStartElement ("goal")) {
 					string id = reader.GetAttribute ("id") ?? Guid.NewGuid().ToString();
 					string name = reader.GetAttribute ("name");
-					float likelihood = float.Parse(reader.GetAttribute ("likelihood") ?? "1");
+					// float likelihood = float.Parse(reader.GetAttribute ("likelihood") ?? "1");
 					var futureGoal = new FutureGoal () { id = id, name = name, 
-						likelihood = likelihood,
+						// likelihood = likelihood,
 						softthreshold = float.Parse(reader.GetAttribute ("softthreshold") ?? "1"),
 						hardthreshold = float.Parse(reader.GetAttribute ("hardthreshold") ?? "1")
 					};
@@ -237,7 +237,7 @@ namespace Beaver
 				} else if (reader.IsStartElement ("obstacle")) {
 					string id = reader.GetAttribute ("id") ?? Guid.NewGuid().ToString();
 					string name = reader.GetAttribute ("name");
-					float likelihood = float.Parse(reader.GetAttribute ("likelihood") ?? "1");
+					string likelihood = reader.GetAttribute ("likelihood") ?? "1";
 					var futurObstacle = new FutureObstacle () { id = id, name = name, likelihood = likelihood };
 					while (!reader.IsEmptyElement && reader.Read()) {
 						if (reader.IsStartElement("refinement")) {
@@ -305,7 +305,7 @@ namespace Beaver
 			foreach (var futureGoal in futureGoals) {
 				this.controller.GoalController.Add (new Goal(futureGoal.name, futureGoal.definition) {
 					Id = futureGoal.id,
-					Likelihood = futureGoal.likelihood,
+					//Likelihood = futureGoal.likelihood,
 					SoftThreshold = futureGoal.softthreshold,
 					HardThreshold = futureGoal.hardthreshold
 				}, false);

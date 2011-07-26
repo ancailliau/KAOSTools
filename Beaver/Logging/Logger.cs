@@ -43,7 +43,8 @@ namespace Beaver.Logging
 		/// </param>
 		public static void Debug (string message)
 		{
-			Console.WriteLine ("[DEBUG {0}]", message);
+			if (false)
+				Console.WriteLine ("[DEBUG {0}]", message);
 		}
 		
 		/// <summary>

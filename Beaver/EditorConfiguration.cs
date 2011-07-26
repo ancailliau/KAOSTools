@@ -77,6 +77,11 @@ namespace Beaver
 			set;
 		}
 		
+		public int NumBuckets {
+			get;
+			set;
+		}
+		
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Beaver.EditorConfiguration"/> class.
 		/// </summary>
@@ -86,6 +91,7 @@ namespace Beaver
 			Plugins = new List<Plugin> ();
 			LastOpenedFilename = "";
 			OpenedViews = new List<string> ();
+			NumBuckets = 100;
 		}
 		
 		/// <summary>
