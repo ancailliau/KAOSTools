@@ -35,6 +35,10 @@ namespace Beaver.Likelihoods
 		
 		private Random r;
 		
+		private int nbStratification = 10;
+		private bool[] stratification;
+		private int count = 0;
+		
 		public Triangular (double min, double mode, double max)
 		{
 			this.min = min;
@@ -42,11 +46,32 @@ namespace Beaver.Likelihoods
 			this.max = max;
 			
 			r = new Random ();
+			stratification = new bool[nbStratification];
+			for (int i = 0; i < nbStratification; i++) {
+				stratification[i] = false;
+			}
 		}
 		
 		public double GetSample ()
 		{
-			var randomValue = r.NextDouble ();
+			if (count == nbStratification) {
+				for (int i = 0; i < nbStratification; i++) {
+					stratification[i] = false;
+				}
+				count = 0;
+			}
+			count ++;
+			
+			var randomStratification = r.Next (nbStratification);
+			while (stratification[randomStratification] == true) {
+				randomStratification = (randomStratification + 1) % nbStratification;
+			}
+			stratification[randomStratification] = true;
+			
+			var minvalue = ( 1f / nbStratification ) * randomStratification;
+			var maxvalue = ( 1f / nbStratification ) * ( randomStratification + 1);
+			
+			var randomValue = r.NextDouble () * (maxvalue - minvalue) + minvalue;
 			
 			if (randomValue < (mode - min)/(max-min)) {
 				return min + Math.Sqrt (randomValue * (max - min) * (mode - min));

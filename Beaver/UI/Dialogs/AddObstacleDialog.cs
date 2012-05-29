@@ -27,6 +27,7 @@ using System;
 using Gtk;
 using Beaver.UI.Windows;
 using Beaver.Model;
+using Beaver.UI.Widgets;
 
 namespace Beaver.UI.Dialogs
 {
@@ -58,11 +59,8 @@ namespace Beaver.UI.Dialogs
 		}
 		
 		public AddObstacleDialog (MainWindow window, string obstacleName)
-			: base ("Add new obstacle", window, DialogFlags.DestroyWithParent)
+			: this (window, new Obstacle (obstacleName, "", "1"))
 		{
-			this.Build ();
-			
-			nameEntry.Text = obstacleName;
 		}
 		
 		public AddObstacleDialog (MainWindow window, Obstacle obstacle)
@@ -77,13 +75,17 @@ namespace Beaver.UI.Dialogs
 				definitionTextview.Buffer.Text = obstacle.Definition;
 				Likelihood = obstacle.Likelihood.ToString ();
 			}
-		}
-		
-		protected void OnViewResultButtonClicked (object sender, System.EventArgs e)
-		{
-			var dd = new SimulationResult (this, this.obstacle.ComputedLikelihood, this.obstacle.NumSamples);
-			dd.Title = string.Format ("Simulation results for obstacle '{0}'", this.obstacle.Name);
-			dd.Present();				
+			
+			var da = new HistogramArea (obstacle.ComputedLikelihood);
+			da.SetSizeRequest (400, 200);
+			
+			var scroll = new ScrolledWindow ();
+			scroll.VscrollbarPolicy = PolicyType.Never;
+			scroll.HscrollbarPolicy = PolicyType.Never;
+			scroll.AddWithViewport (da);
+			this.vbox2.Add (scroll);
+			vbox2.ShowAll ();
+			
 		}
 	}
 }
