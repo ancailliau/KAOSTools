@@ -13,7 +13,7 @@ namespace Beaver
 		private global::Gtk.NodeView nodeview;
 		private global::Gtk.Label label3;
 		private global::Gtk.Button button66;
-        
+		
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);

@@ -18,7 +18,7 @@ namespace Beaver.UI.Dialogs
 		private global::Gtk.VBox vbox2;
 		private global::Gtk.Button buttonCancel;
 		private global::Gtk.Button buttonOk;
-        
+		
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);

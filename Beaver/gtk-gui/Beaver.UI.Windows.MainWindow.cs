@@ -22,64 +22,195 @@ namespace Beaver.UI.Windows
 		private global::Gtk.Action ProbaAction;
 		private global::Gtk.Action GetFalsifiedGoalsAction;
 		private global::Gtk.Action CheckAction;
+		private global::Gtk.Action addGoal;
+		private global::Gtk.Action addAgent;
+		private global::Gtk.Action addDomProp;
+		private global::Gtk.Action addObstacle;
+		private global::Gtk.Action newAction1;
 		private global::Gtk.VBox mainVBox;
 		private global::Gtk.MenuBar mainMenu;
 		private global::Gtk.Toolbar toolbar1;
 		private global::Gtk.HPaned hpaned1;
 		private global::Gtk.Statusbar statusBar;
-        
+		
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);
 			// Widget Beaver.UI.Windows.MainWindow
 			this.UIManager = new global::Gtk.UIManager ();
 			global::Gtk.ActionGroup w1 = new global::Gtk.ActionGroup ("Default");
-			this.ApplicationAction = new global::Gtk.Action ("ApplicationAction", global::Mono.Unix.Catalog.GetString ("Application"), null, null);
+			this.ApplicationAction = new global::Gtk.Action (
+				"ApplicationAction",
+				global::Mono.Unix.Catalog.GetString("Application"),
+				null,
+				null
+			);
 			this.ApplicationAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Application");
 			w1.Add (this.ApplicationAction, null);
-			this.quitAction = new global::Gtk.Action ("quitAction", global::Mono.Unix.Catalog.GetString ("Quit"), null, "gtk-quit");
+			this.quitAction = new global::Gtk.Action (
+				"quitAction",
+				global::Mono.Unix.Catalog.GetString("Quit"),
+				null,
+				"gtk-quit"
+			);
 			this.quitAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Quit");
 			w1.Add (this.quitAction, null);
-			this.ModelAction = new global::Gtk.Action ("ModelAction", global::Mono.Unix.Catalog.GetString ("Model"), null, null);
+			this.ModelAction = new global::Gtk.Action (
+				"ModelAction",
+				global::Mono.Unix.Catalog.GetString("Model"),
+				null,
+				null
+			);
 			this.ModelAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Model");
 			w1.Add (this.ModelAction, null);
-			this.saveAction = new global::Gtk.Action ("saveAction", global::Mono.Unix.Catalog.GetString ("_Save"), null, "gtk-save");
+			this.saveAction = new global::Gtk.Action (
+				"saveAction",
+				global::Mono.Unix.Catalog.GetString("_Save"),
+				null,
+				"gtk-save"
+			);
 			this.saveAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("_Save");
 			w1.Add (this.saveAction, null);
-			this.openAction = new global::Gtk.Action ("openAction", global::Mono.Unix.Catalog.GetString ("_Open"), null, "gtk-open");
+			this.openAction = new global::Gtk.Action (
+				"openAction",
+				global::Mono.Unix.Catalog.GetString("_Open"),
+				null,
+				"gtk-open"
+			);
 			this.openAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("_Open");
 			w1.Add (this.openAction, null);
-			this.saveAsAction = new global::Gtk.Action ("saveAsAction", global::Mono.Unix.Catalog.GetString ("Save _As"), null, "gtk-save-as");
+			this.saveAsAction = new global::Gtk.Action (
+				"saveAsAction",
+				global::Mono.Unix.Catalog.GetString("Save _As"),
+				null,
+				"gtk-save-as"
+			);
 			this.saveAsAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Save _As");
 			w1.Add (this.saveAsAction, null);
-			this.openAction1 = new global::Gtk.Action ("openAction1", null, null, "gtk-open");
+			this.openAction1 = new global::Gtk.Action (
+				"openAction1",
+				null,
+				null,
+				"gtk-open"
+			);
 			w1.Add (this.openAction1, null);
-			this.saveAction1 = new global::Gtk.Action ("saveAction1", null, null, "gtk-save");
+			this.saveAction1 = new global::Gtk.Action (
+				"saveAction1",
+				null,
+				null,
+				"gtk-save"
+			);
 			w1.Add (this.saveAction1, null);
-			this.saveAsAction1 = new global::Gtk.Action ("saveAsAction1", null, null, "gtk-save-as");
+			this.saveAsAction1 = new global::Gtk.Action (
+				"saveAsAction1",
+				null,
+				null,
+				"gtk-save-as"
+			);
 			w1.Add (this.saveAsAction1, null);
-			this.revertToSavedAction = new global::Gtk.Action ("revertToSavedAction", null, null, "gtk-revert-to-saved");
+			this.revertToSavedAction = new global::Gtk.Action (
+				"revertToSavedAction",
+				null,
+				null,
+				"gtk-revert-to-saved"
+			);
 			w1.Add (this.revertToSavedAction, null);
-			this.ViewsAction = new global::Gtk.Action ("ViewsAction", global::Mono.Unix.Catalog.GetString ("Views"), null, null);
+			this.ViewsAction = new global::Gtk.Action (
+				"ViewsAction",
+				global::Mono.Unix.Catalog.GetString("Views"),
+				null,
+				null
+			);
 			this.ViewsAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Views");
 			w1.Add (this.ViewsAction, null);
-			this.ExportCurrentViewAction = new global::Gtk.Action ("ExportCurrentViewAction", global::Mono.Unix.Catalog.GetString ("Export current view"), null, null);
+			this.ExportCurrentViewAction = new global::Gtk.Action (
+				"ExportCurrentViewAction",
+				global::Mono.Unix.Catalog.GetString("Export current view"),
+				null,
+				null
+			);
 			this.ExportCurrentViewAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Export current view");
 			w1.Add (this.ExportCurrentViewAction, null);
-			this.newAction = new global::Gtk.Action ("newAction", null, null, "gtk-new");
+			this.newAction = new global::Gtk.Action (
+				"newAction",
+				global::Mono.Unix.Catalog.GetString("Add new goal model"),
+				null,
+				"gtk-new"
+			);
+			this.newAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Add new goal model");
 			w1.Add (this.newAction, null);
-			this.ExportCurrentViewAsPDFAction = new global::Gtk.Action ("ExportCurrentViewAsPDFAction", global::Mono.Unix.Catalog.GetString ("Export current view as PDF"), null, null);
+			this.ExportCurrentViewAsPDFAction = new global::Gtk.Action (
+				"ExportCurrentViewAsPDFAction",
+				global::Mono.Unix.Catalog.GetString("Export current view as PDF"),
+				null,
+				null
+			);
 			this.ExportCurrentViewAsPDFAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Export current view as PDF");
 			w1.Add (this.ExportCurrentViewAsPDFAction, null);
-			this.ProbaAction = new global::Gtk.Action ("ProbaAction", global::Mono.Unix.Catalog.GetString ("Proba"), null, null);
+			this.ProbaAction = new global::Gtk.Action (
+				"ProbaAction",
+				global::Mono.Unix.Catalog.GetString("Proba"),
+				null,
+				null
+			);
 			this.ProbaAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Proba");
 			w1.Add (this.ProbaAction, null);
-			this.GetFalsifiedGoalsAction = new global::Gtk.Action ("GetFalsifiedGoalsAction", global::Mono.Unix.Catalog.GetString ("Get falsified goals"), null, null);
+			this.GetFalsifiedGoalsAction = new global::Gtk.Action (
+				"GetFalsifiedGoalsAction",
+				global::Mono.Unix.Catalog.GetString("Get falsified goals"),
+				null,
+				null
+			);
 			this.GetFalsifiedGoalsAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Get falsified goals");
 			w1.Add (this.GetFalsifiedGoalsAction, null);
-			this.CheckAction = new global::Gtk.Action ("CheckAction", global::Mono.Unix.Catalog.GetString ("Check"), null, null);
+			this.CheckAction = new global::Gtk.Action (
+				"CheckAction",
+				global::Mono.Unix.Catalog.GetString("Check"),
+				null,
+				null
+			);
 			this.CheckAction.ShortLabel = global::Mono.Unix.Catalog.GetString ("Check");
 			w1.Add (this.CheckAction, null);
+			this.addGoal = new global::Gtk.Action (
+				"addGoal",
+				global::Mono.Unix.Catalog.GetString("Add goal"),
+				null,
+				"gtk-add"
+			);
+			this.addGoal.ShortLabel = global::Mono.Unix.Catalog.GetString ("Add goal");
+			w1.Add (this.addGoal, null);
+			this.addAgent = new global::Gtk.Action (
+				"addAgent",
+				global::Mono.Unix.Catalog.GetString("Add agent"),
+				null,
+				"gtk-add"
+			);
+			this.addAgent.ShortLabel = global::Mono.Unix.Catalog.GetString ("Add agent");
+			w1.Add (this.addAgent, null);
+			this.addDomProp = new global::Gtk.Action (
+				"addDomProp",
+				global::Mono.Unix.Catalog.GetString("Add Domain Property"),
+				null,
+				"gtk-add"
+			);
+			this.addDomProp.ShortLabel = global::Mono.Unix.Catalog.GetString ("Add Domain Property");
+			w1.Add (this.addDomProp, null);
+			this.addObstacle = new global::Gtk.Action (
+				"addObstacle",
+				global::Mono.Unix.Catalog.GetString("Add Obstacle"),
+				null,
+				"gtk-add"
+			);
+			this.addObstacle.ShortLabel = global::Mono.Unix.Catalog.GetString ("Add Obstacle");
+			w1.Add (this.addObstacle, null);
+			this.newAction1 = new global::Gtk.Action (
+				"newAction1",
+				global::Mono.Unix.Catalog.GetString("Add new behavior model"),
+				null,
+				"gtk-new"
+			);
+			this.newAction1.ShortLabel = global::Mono.Unix.Catalog.GetString ("Add new behavior model");
+			w1.Add (this.newAction1, null);
 			this.UIManager.InsertActionGroup (w1, 0);
 			this.AddAccelGroup (this.UIManager.AccelGroup);
 			this.Name = "Beaver.UI.Windows.MainWindow";
@@ -100,11 +231,11 @@ namespace Beaver.UI.Windows
 			w2.Expand = false;
 			w2.Fill = false;
 			// Container child mainVBox.Gtk.Box+BoxChild
-			this.UIManager.AddUiFromString ("<ui><toolbar name='toolbar1'><toolitem name='newAction' action='newAction'/><toolitem name='openAction1' action='openAction1'/><separator/><toolitem name='saveAction1' action='saveAction1'/><toolitem name='saveAsAction1' action='saveAsAction1'/><toolitem name='revertToSavedAction' action='revertToSavedAction'/></toolbar></ui>");
+			this.UIManager.AddUiFromString ("<ui><toolbar name='toolbar1'><toolitem name='newAction' action='newAction'/><toolitem name='newAction1' action='newAction1'/><separator/><toolitem name='saveAction1' action='saveAction1'/><separator/><toolitem name='addGoal' action='addGoal'/><toolitem name='addAgent' action='addAgent'/><toolitem name='addDomProp' action='addDomProp'/><toolitem name='addObstacle' action='addObstacle'/></toolbar></ui>");
 			this.toolbar1 = ((global::Gtk.Toolbar)(this.UIManager.GetWidget ("/toolbar1")));
 			this.toolbar1.Name = "toolbar1";
 			this.toolbar1.ShowArrow = false;
-			this.toolbar1.ToolbarStyle = ((global::Gtk.ToolbarStyle)(0));
+			this.toolbar1.ToolbarStyle = ((global::Gtk.ToolbarStyle)(2));
 			this.toolbar1.IconSize = ((global::Gtk.IconSize)(2));
 			this.mainVBox.Add (this.toolbar1);
 			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.mainVBox [this.toolbar1]));

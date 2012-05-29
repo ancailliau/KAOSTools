@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <stetic-interface>
   <configuration>
-    <images-root-path>..</images-root-path>
+    <images-root-path>../../Beaver</images-root-path>
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
@@ -547,7 +547,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Window" id="Beaver.UI.Windows.MainWindow" design-size="508 300">
+  <widget class="Gtk.Window" id="Beaver.UI.Windows.MainWindow" design-size="796 300">
     <action-group name="Default">
       <action id="ApplicationAction">
         <property name="Type">Action</property>
@@ -624,7 +624,8 @@
       </action>
       <action id="newAction">
         <property name="Type">Action</property>
-        <property name="Label" translatable="yes" />
+        <property name="Label" translatable="yes">Add new goal model</property>
+        <property name="ShortLabel" translatable="yes">Add new goal model</property>
         <property name="StockId">gtk-new</property>
         <signal name="Activated" handler="OnNewActionActivated" />
       </action>
@@ -650,6 +651,36 @@
         <property name="Label" translatable="yes">Check</property>
         <property name="ShortLabel" translatable="yes">Check</property>
         <signal name="Activated" handler="OnCheckActionActivated" />
+      </action>
+      <action id="addGoal">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Add goal</property>
+        <property name="ShortLabel" translatable="yes">Add goal</property>
+        <property name="StockId">gtk-add</property>
+      </action>
+      <action id="addAgent">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Add agent</property>
+        <property name="ShortLabel" translatable="yes">Add agent</property>
+        <property name="StockId">gtk-add</property>
+      </action>
+      <action id="addDomProp">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Add Domain Property</property>
+        <property name="ShortLabel" translatable="yes">Add Domain Property</property>
+        <property name="StockId">gtk-add</property>
+      </action>
+      <action id="addObstacle">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Add Obstacle</property>
+        <property name="ShortLabel" translatable="yes">Add Obstacle</property>
+        <property name="StockId">gtk-add</property>
+      </action>
+      <action id="newAction1">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes">Add new behavior model</property>
+        <property name="ShortLabel" translatable="yes">Add new behavior model</property>
+        <property name="StockId">gtk-new</property>
       </action>
     </action-group>
     <property name="MemberName" />
@@ -693,15 +724,18 @@
           <widget class="Gtk.Toolbar" id="toolbar1">
             <property name="MemberName" />
             <property name="ShowArrow">False</property>
-            <property name="ButtonStyle">Icons</property>
+            <property name="ButtonStyle">Both</property>
             <property name="IconSize">SmallToolbar</property>
             <node name="toolbar1" type="Toolbar">
               <node type="Toolitem" action="newAction" />
-              <node type="Toolitem" action="openAction1" />
+              <node type="Toolitem" action="newAction1" />
               <node type="Separator" />
               <node type="Toolitem" action="saveAction1" />
-              <node type="Toolitem" action="saveAsAction1" />
-              <node type="Toolitem" action="revertToSavedAction" />
+              <node type="Separator" />
+              <node type="Toolitem" action="addGoal" />
+              <node type="Toolitem" action="addAgent" />
+              <node type="Toolitem" action="addDomProp" />
+              <node type="Toolitem" action="addObstacle" />
             </node>
           </widget>
           <packing>
