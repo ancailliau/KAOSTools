@@ -1,0 +1,985 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRecord xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Results>
+    <UnitTestResult>
+      <TestDate>2012-05-30T10:14:41</TestDate>
+      <Passed>0</Passed>
+      <Errors>0</Errors>
+      <Failures>21</Failures>
+      <Inconclusive>0</Inconclusive>
+      <NotRunnable>0</NotRunnable>
+      <Skipped>0</Skipped>
+      <Ignored>0</Ignored>
+      <Time />
+      <Message>One or more child tests had errors</Message>
+    </UnitTestResult>
+  </Results>
+  <Tests>
+    <TestRecord Name="Beaver">
+      <Results>
+        <UnitTestResult>
+          <TestDate>2012-05-30T10:14:41</TestDate>
+          <Passed>0</Passed>
+          <Errors>0</Errors>
+          <Failures>21</Failures>
+          <Inconclusive>0</Inconclusive>
+          <NotRunnable>0</NotRunnable>
+          <Skipped>0</Skipped>
+          <Ignored>0</Ignored>
+          <Time />
+          <Message>One or more child tests had errors</Message>
+        </UnitTestResult>
+      </Results>
+      <Tests>
+        <TestRecord Name="Tests">
+          <Results>
+            <UnitTestResult>
+              <TestDate>2012-05-30T10:14:41</TestDate>
+              <Passed>0</Passed>
+              <Errors>0</Errors>
+              <Failures>21</Failures>
+              <Inconclusive>0</Inconclusive>
+              <NotRunnable>0</NotRunnable>
+              <Skipped>0</Skipped>
+              <Ignored>0</Ignored>
+              <Time />
+              <Message>One or more child tests had errors</Message>
+            </UnitTestResult>
+          </Results>
+          <Tests>
+            <TestRecord Name="Features">
+              <Results>
+                <UnitTestResult>
+                  <TestDate>2012-05-30T10:14:41</TestDate>
+                  <Passed>0</Passed>
+                  <Errors>0</Errors>
+                  <Failures>21</Failures>
+                  <Inconclusive>0</Inconclusive>
+                  <NotRunnable>0</NotRunnable>
+                  <Skipped>0</Skipped>
+                  <Ignored>0</Ignored>
+                  <Time />
+                  <Message>One or more child tests had errors</Message>
+                </UnitTestResult>
+              </Results>
+              <Tests>
+                <TestRecord Name="ElementsFeature">
+                  <Results>
+                    <UnitTestResult>
+                      <TestDate>2012-05-30T09:51:18</TestDate>
+                      <Passed>0</Passed>
+                      <Errors>0</Errors>
+                      <Failures>0</Failures>
+                      <Inconclusive>2</Inconclusive>
+                      <NotRunnable>0</NotRunnable>
+                      <Skipped>0</Skipped>
+                      <Ignored>0</Ignored>
+                      <Time />
+                      <Message>Test successful
+
+Execution time: 0.37ms</Message>
+                    </UnitTestResult>
+                    <UnitTestResult>
+                      <TestDate>2012-05-30T10:14:41</TestDate>
+                      <Passed>0</Passed>
+                      <Errors>0</Errors>
+                      <Failures>2</Failures>
+                      <Inconclusive>0</Inconclusive>
+                      <NotRunnable>0</NotRunnable>
+                      <Skipped>0</Skipped>
+                      <Ignored>0</Ignored>
+                      <Time />
+                      <Message>SetUp : System.ArgumentException : parsing "^a goal '[A-Za-z0-9_- ]+'$" - [95-32] range in reverse order.
+Parameter name: ^a goal '[A-Za-z0-9_- ]+'$</Message>
+                      <StackTrace>  at System.Text.RegularExpressions.Syntax.Parser.ParseCharacterClass (RegexOptions options) [0x002ba] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/parser.cs:735 
+  at System.Text.RegularExpressions.Syntax.Parser.ParseGroup (System.Text.RegularExpressions.Syntax.Group group, RegexOptions options, System.Text.RegularExpressions.Syntax.Assertion assertion) [0x00183] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/parser.cs:227 
+  at System.Text.RegularExpressions.Syntax.Parser.ParseRegularExpression (System.String pattern, RegexOptions options) [0x00031] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/parser.cs:140 
+  at System.Text.RegularExpressions.Regex.CreateMachineFactory (System.String pattern, RegexOptions options) [0x00006] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/Regex.cs:287 
+  at System.Text.RegularExpressions.Regex.InitNewRegex () [0x00000] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/Regex.cs:268 
+  at System.Text.RegularExpressions.Regex.Init () [0x00027] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/Regex.cs:256 
+  at System.Text.RegularExpressions.Regex..ctor (System.String pattern, RegexOptions options) [0x0002b] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/Regex.cs:217 
+  at TechTalk.SpecFlow.Bindings.StepDefinitionBinding..ctor (TechTalk.SpecFlow.Configuration.RuntimeConfiguration runtimeConfiguration, IErrorProvider errorProvider, BindingType type, System.String regexString, System.Reflection.MethodInfo methodInfo, TechTalk.SpecFlow.Bindings.BindingScope bindingScope) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingFactory.CreateStepBinding (BindingType type, System.String regexString, System.Reflection.MethodInfo methodInfo, TechTalk.SpecFlow.Bindings.BindingScope bindingScope) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.AddStepBinding (System.Reflection.MethodInfo method, TechTalk.SpecFlow.StepDefinitionBaseAttribute stepDefinitionBaseAttr, TechTalk.SpecFlow.Bindings.BindingScope stepScope) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry+&lt;&gt;c__DisplayClass7.&lt;BuildStepBindingFromMethod&gt;b__6 (TechTalk.SpecFlow.Bindings.BindingScope scope) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.ApplyForScope (System.Reflection.MethodInfo method, System.Action`1 action, IEnumerable`1 additionalScopeAttrs) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.BuildStepBindingFromMethod (System.Reflection.MethodInfo method, TechTalk.SpecFlow.StepDefinitionBaseAttribute stepDefinitionBaseAttr) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.BuildBindingsFromType (System.Type type) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.BuildBindingsFromAssembly (System.Reflection.Assembly assembly) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.Initialize (System.Reflection.Assembly[] bindingAssemblies) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunner.InitializeTestRunner (System.Reflection.Assembly[] bindingAssemblies) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Infrastructure.TestRunnerFactory.Create (System.Reflection.Assembly testAssembly) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunnerManager.CreateTestRunner (TechTalk.SpecFlow.TestRunnerKey key) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunnerManager.GetTestRunner (TechTalk.SpecFlow.TestRunnerKey key) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunnerManager.GetTestRunner (System.Reflection.Assembly testAssembly, Boolean async) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunnerManager.GetTestRunner () [0x00000] in &lt;filename unknown&gt;:0 
+  at Beaver.Tests.Features.ElementsFeature.FeatureSetup () [0x00000] in &lt;filename unknown&gt;:0 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (System.Reflection.MonoMethod,object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x000d5] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/corlib/System.Reflection/MonoMethod.cs:226 </StackTrace>
+                    </UnitTestResult>
+                    <UnitTestResult>
+                      <TestDate>2012-05-30T10:14:53</TestDate>
+                      <Passed>0</Passed>
+                      <Errors>0</Errors>
+                      <Failures>2</Failures>
+                      <Inconclusive>0</Inconclusive>
+                      <NotRunnable>0</NotRunnable>
+                      <Skipped>0</Skipped>
+                      <Ignored>0</Ignored>
+                      <Time />
+                      <Message>One or more child tests had errors</Message>
+                    </UnitTestResult>
+                    <UnitTestResult>
+                      <TestDate>2012-05-30T10:18:24</TestDate>
+                      <Passed>0</Passed>
+                      <Errors>0</Errors>
+                      <Failures>2</Failures>
+                      <Inconclusive>0</Inconclusive>
+                      <NotRunnable>0</NotRunnable>
+                      <Skipped>0</Skipped>
+                      <Ignored>0</Ignored>
+                      <Time />
+                      <Message>One or more child tests had errors</Message>
+                    </UnitTestResult>
+                  </Results>
+                  <Tests>
+                    <TestRecord Name="AddElementInModel">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T09:51:18</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>0</Failures>
+                          <Inconclusive>1</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>No matching step definition found for one or more steps.
+[Binding]
+public class StepDefinitions
+{
+    [Given(@"a model")]
+    public void GivenAModel()
+    {
+        ScenarioContext.Current.Pending();
+    }
+    
+    [Then(@"the model contains 'goal-1'")]
+    public void ThenTheModelContainsGoal_1()
+    {
+        ScenarioContext.Current.Pending();
+    }
+    
+    [When(@"I add a goal 'goal-1'")]
+    public void WhenIAddAGoalGoal_1()
+    {
+        ScenarioContext.Current.Pending();
+    }
+}
+</Message>
+                          <StackTrace>at NUnit.Framework.Assert.Inconclusive (string,object[]) &lt;IL 0x00037, 0x0009b&gt;
+at (wrapper dynamic-method) object.lambda_method (System.Runtime.CompilerServices.Closure,string,object[]) &lt;IL 0x00002, 0x00013&gt;
+at TechTalk.SpecFlow.UnitTestProvider.NUnitRuntimeProvider.TestInconclusive (string) &lt;IL 0x00058, 0x000e0&gt;
+at TechTalk.SpecFlow.UnitTestProvider.NUnitRuntimeProvider.TestPending (string) &lt;IL 0x00002, 0x00013&gt;
+at TechTalk.SpecFlow.ErrorHandling.ErrorProvider.ThrowPendingError (TechTalk.SpecFlow.Infrastructure.TestStatus,string) &lt;IL 0x00027, 0x00046&gt;
+at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnAfterLastStep () &lt;IL 0x001c0, 0x0041a&gt;
+at TechTalk.SpecFlow.TestRunner.CollectScenarioErrors () &lt;IL 0x00006, 0x00019&gt;
+at Beaver.Tests.Features.ElementsFeature.ScenarioCleanup () [0x00000] in /Users/acailliau/Projects/KaosEditor/Beaver.Tests/Features/elements.feature:35
+at Beaver.Tests.Features.ElementsFeature.AddElementInModel () [0x00037] in /Users/acailliau/Projects/KaosEditor/Beaver.Tests/Features/elements.feature:13
+at (wrapper managed-to-native) System.Reflection.MonoMethod.InternalInvoke (System.Reflection.MonoMethod,object,object[],System.Exception&amp;) &lt;0x00003&gt;
+at System.Reflection.MonoMethod.Invoke (object,System.Reflection.BindingFlags,System.Reflection.Binder,object[],System.Globalization.CultureInfo) [0x000d5] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/corlib/System.Reflection/MonoMethod.cs:226
+</StackTrace>
+                          <ConsoleOutput>Given a model
+-&gt; No matching step definition found for the step. Use the following code to create one:
+    [Binding]
+    public class StepDefinitions
+    {
+        [Given(@"a model")]
+        public void GivenAModel()
+        {
+            ScenarioContext.Current.Pending();
+        }
+    }
+
+When I add a goal 'goal-1'
+-&gt; No matching step definition found for the step. Use the following code to create one:
+    [Binding]
+    public class StepDefinitions
+    {
+        [When(@"I add a goal 'goal-1'")]
+        public void WhenIAddAGoalGoal_1()
+        {
+            ScenarioContext.Current.Pending();
+        }
+    }
+
+Then the model contains 'goal-1'
+-&gt; No matching step definition found for the step. Use the following code to create one:
+    [Binding]
+    public class StepDefinitions
+    {
+        [Then(@"the model contains 'goal-1'")]
+        public void ThenTheModelContainsGoal_1()
+        {
+            ScenarioContext.Current.Pending();
+        }
+    }
+
+</ConsoleOutput>
+                          <ConsoleError />
+                        </UnitTestResult>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:14:41</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in ElementsFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:14:53</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in ElementsFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:18:24</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in ElementsFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                      <Tests />
+                    </TestRecord>
+                    <TestRecord Name="RemoveElementFromModel">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T09:51:18</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>0</Failures>
+                          <Inconclusive>1</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>No matching step definition found for one or more steps.
+[Binding]
+public class StepDefinitions
+{
+    [Given(@"a goal 'goal-1'")]
+    public void GivenAGoalGoal_1()
+    {
+        ScenarioContext.Current.Pending();
+    }
+    
+    [Given(@"a model")]
+    public void GivenAModel()
+    {
+        ScenarioContext.Current.Pending();
+    }
+    
+    [Then(@"the model does not contains 'goal-1'")]
+    public void ThenTheModelDoesNotContainsGoal_1()
+    {
+        ScenarioContext.Current.Pending();
+    }
+    
+    [When(@"I remove 'goal-1'")]
+    public void WhenIRemoveGoal_1()
+    {
+        ScenarioContext.Current.Pending();
+    }
+}
+</Message>
+                          <StackTrace>at NUnit.Framework.Assert.Inconclusive (string,object[]) &lt;IL 0x00037, 0x0009b&gt;
+at (wrapper dynamic-method) object.lambda_method (System.Runtime.CompilerServices.Closure,string,object[]) &lt;IL 0x00002, 0x00013&gt;
+at TechTalk.SpecFlow.UnitTestProvider.NUnitRuntimeProvider.TestInconclusive (string) &lt;IL 0x00058, 0x000e0&gt;
+at TechTalk.SpecFlow.UnitTestProvider.NUnitRuntimeProvider.TestPending (string) &lt;IL 0x00002, 0x00013&gt;
+at TechTalk.SpecFlow.ErrorHandling.ErrorProvider.ThrowPendingError (TechTalk.SpecFlow.Infrastructure.TestStatus,string) &lt;IL 0x00027, 0x00046&gt;
+at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnAfterLastStep () &lt;IL 0x001c0, 0x0041a&gt;
+at TechTalk.SpecFlow.TestRunner.CollectScenarioErrors () &lt;IL 0x00006, 0x00019&gt;
+at Beaver.Tests.Features.ElementsFeature.ScenarioCleanup () [0x00000] in /Users/acailliau/Projects/KaosEditor/Beaver.Tests/Features/elements.feature:35
+at Beaver.Tests.Features.ElementsFeature.RemoveElementFromModel () [0x00046] in /Users/acailliau/Projects/KaosEditor/Beaver.Tests/Features/elements.feature:18
+at (wrapper managed-to-native) System.Reflection.MonoMethod.InternalInvoke (System.Reflection.MonoMethod,object,object[],System.Exception&amp;) &lt;0x00003&gt;
+at System.Reflection.MonoMethod.Invoke (object,System.Reflection.BindingFlags,System.Reflection.Binder,object[],System.Globalization.CultureInfo) [0x000d5] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/corlib/System.Reflection/MonoMethod.cs:226
+</StackTrace>
+                          <ConsoleOutput>Given a model
+-&gt; No matching step definition found for the step. Use the following code to create one:
+    [Binding]
+    public class StepDefinitions
+    {
+        [Given(@"a model")]
+        public void GivenAModel()
+        {
+            ScenarioContext.Current.Pending();
+        }
+    }
+
+Given a goal 'goal-1'
+-&gt; No matching step definition found for the step. Use the following code to create one:
+    [Binding]
+    public class StepDefinitions
+    {
+        [Given(@"a goal 'goal-1'")]
+        public void GivenAGoalGoal_1()
+        {
+            ScenarioContext.Current.Pending();
+        }
+    }
+
+When I remove 'goal-1'
+-&gt; No matching step definition found for the step. Use the following code to create one:
+    [Binding]
+    public class StepDefinitions
+    {
+        [When(@"I remove 'goal-1'")]
+        public void WhenIRemoveGoal_1()
+        {
+            ScenarioContext.Current.Pending();
+        }
+    }
+
+Then the model does not contains 'goal-1'
+-&gt; No matching step definition found for the step. Use the following code to create one:
+    [Binding]
+    public class StepDefinitions
+    {
+        [Then(@"the model does not contains 'goal-1'")]
+        public void ThenTheModelDoesNotContainsGoal_1()
+        {
+            ScenarioContext.Current.Pending();
+        }
+    }
+
+</ConsoleOutput>
+                          <ConsoleError />
+                        </UnitTestResult>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:14:41</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in ElementsFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:14:53</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in ElementsFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:18:24</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in ElementsFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                      <Tests />
+                    </TestRecord>
+                  </Tests>
+                </TestRecord>
+                <TestRecord Name="ConsistencyForGoalModelsFeature">
+                  <Results>
+                    <UnitTestResult>
+                      <TestDate>2012-05-30T10:14:41</TestDate>
+                      <Passed>0</Passed>
+                      <Errors>0</Errors>
+                      <Failures>1</Failures>
+                      <Inconclusive>0</Inconclusive>
+                      <NotRunnable>0</NotRunnable>
+                      <Skipped>0</Skipped>
+                      <Ignored>0</Ignored>
+                      <Time />
+                      <Message>SetUp : System.ArgumentException : parsing "^a goal '[A-Za-z0-9_- ]+'$" - [95-32] range in reverse order.
+Parameter name: ^a goal '[A-Za-z0-9_- ]+'$</Message>
+                      <StackTrace>  at System.Text.RegularExpressions.Syntax.Parser.ParseCharacterClass (RegexOptions options) [0x002ba] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/parser.cs:735 
+  at System.Text.RegularExpressions.Syntax.Parser.ParseGroup (System.Text.RegularExpressions.Syntax.Group group, RegexOptions options, System.Text.RegularExpressions.Syntax.Assertion assertion) [0x00183] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/parser.cs:227 
+  at System.Text.RegularExpressions.Syntax.Parser.ParseRegularExpression (System.String pattern, RegexOptions options) [0x00031] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/parser.cs:140 
+  at System.Text.RegularExpressions.Regex.CreateMachineFactory (System.String pattern, RegexOptions options) [0x00006] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/Regex.cs:287 
+  at System.Text.RegularExpressions.Regex.InitNewRegex () [0x00000] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/Regex.cs:268 
+  at System.Text.RegularExpressions.Regex.Init () [0x00027] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/Regex.cs:256 
+  at System.Text.RegularExpressions.Regex..ctor (System.String pattern, RegexOptions options) [0x0002b] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/Regex.cs:217 
+  at TechTalk.SpecFlow.Bindings.StepDefinitionBinding..ctor (TechTalk.SpecFlow.Configuration.RuntimeConfiguration runtimeConfiguration, IErrorProvider errorProvider, BindingType type, System.String regexString, System.Reflection.MethodInfo methodInfo, TechTalk.SpecFlow.Bindings.BindingScope bindingScope) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingFactory.CreateStepBinding (BindingType type, System.String regexString, System.Reflection.MethodInfo methodInfo, TechTalk.SpecFlow.Bindings.BindingScope bindingScope) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.AddStepBinding (System.Reflection.MethodInfo method, TechTalk.SpecFlow.StepDefinitionBaseAttribute stepDefinitionBaseAttr, TechTalk.SpecFlow.Bindings.BindingScope stepScope) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry+&lt;&gt;c__DisplayClass7.&lt;BuildStepBindingFromMethod&gt;b__6 (TechTalk.SpecFlow.Bindings.BindingScope scope) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.ApplyForScope (System.Reflection.MethodInfo method, System.Action`1 action, IEnumerable`1 additionalScopeAttrs) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.BuildStepBindingFromMethod (System.Reflection.MethodInfo method, TechTalk.SpecFlow.StepDefinitionBaseAttribute stepDefinitionBaseAttr) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.BuildBindingsFromType (System.Type type) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.BuildBindingsFromAssembly (System.Reflection.Assembly assembly) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.Initialize (System.Reflection.Assembly[] bindingAssemblies) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunner.InitializeTestRunner (System.Reflection.Assembly[] bindingAssemblies) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Infrastructure.TestRunnerFactory.Create (System.Reflection.Assembly testAssembly) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunnerManager.CreateTestRunner (TechTalk.SpecFlow.TestRunnerKey key) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunnerManager.GetTestRunner (TechTalk.SpecFlow.TestRunnerKey key) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunnerManager.GetTestRunner (System.Reflection.Assembly testAssembly, Boolean async) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunnerManager.GetTestRunner () [0x00000] in &lt;filename unknown&gt;:0 
+  at Beaver.Tests.Features.ConsistencyForGoalModelsFeature.FeatureSetup () [0x00000] in /Users/acailliau/Projects/KaosEditor/Beaver.Tests/Features/consistency.feature:5 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (System.Reflection.MonoMethod,object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x000d5] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/corlib/System.Reflection/MonoMethod.cs:226 </StackTrace>
+                    </UnitTestResult>
+                  </Results>
+                  <Tests>
+                    <TestRecord Name="RemoveElementFromAllViews">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:14:41</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in ConsistencyForGoalModelsFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                      <Tests />
+                    </TestRecord>
+                  </Tests>
+                </TestRecord>
+                <TestRecord Name="Feature">
+                  <Results>
+                    <UnitTestResult>
+                      <TestDate>2012-05-30T10:14:41</TestDate>
+                      <Passed>0</Passed>
+                      <Errors>0</Errors>
+                      <Failures>2</Failures>
+                      <Inconclusive>0</Inconclusive>
+                      <NotRunnable>0</NotRunnable>
+                      <Skipped>0</Skipped>
+                      <Ignored>0</Ignored>
+                      <Time />
+                      <Message>SetUp : System.ArgumentException : parsing "^a goal '[A-Za-z0-9_- ]+'$" - [95-32] range in reverse order.
+Parameter name: ^a goal '[A-Za-z0-9_- ]+'$</Message>
+                      <StackTrace>  at System.Text.RegularExpressions.Syntax.Parser.ParseCharacterClass (RegexOptions options) [0x002ba] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/parser.cs:735 
+  at System.Text.RegularExpressions.Syntax.Parser.ParseGroup (System.Text.RegularExpressions.Syntax.Group group, RegexOptions options, System.Text.RegularExpressions.Syntax.Assertion assertion) [0x00183] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/parser.cs:227 
+  at System.Text.RegularExpressions.Syntax.Parser.ParseRegularExpression (System.String pattern, RegexOptions options) [0x00031] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/parser.cs:140 
+  at System.Text.RegularExpressions.Regex.CreateMachineFactory (System.String pattern, RegexOptions options) [0x00006] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/Regex.cs:287 
+  at System.Text.RegularExpressions.Regex.InitNewRegex () [0x00000] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/Regex.cs:268 
+  at System.Text.RegularExpressions.Regex.Init () [0x00027] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/Regex.cs:256 
+  at System.Text.RegularExpressions.Regex..ctor (System.String pattern, RegexOptions options) [0x0002b] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/Regex.cs:217 
+  at TechTalk.SpecFlow.Bindings.StepDefinitionBinding..ctor (TechTalk.SpecFlow.Configuration.RuntimeConfiguration runtimeConfiguration, IErrorProvider errorProvider, BindingType type, System.String regexString, System.Reflection.MethodInfo methodInfo, TechTalk.SpecFlow.Bindings.BindingScope bindingScope) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingFactory.CreateStepBinding (BindingType type, System.String regexString, System.Reflection.MethodInfo methodInfo, TechTalk.SpecFlow.Bindings.BindingScope bindingScope) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.AddStepBinding (System.Reflection.MethodInfo method, TechTalk.SpecFlow.StepDefinitionBaseAttribute stepDefinitionBaseAttr, TechTalk.SpecFlow.Bindings.BindingScope stepScope) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry+&lt;&gt;c__DisplayClass7.&lt;BuildStepBindingFromMethod&gt;b__6 (TechTalk.SpecFlow.Bindings.BindingScope scope) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.ApplyForScope (System.Reflection.MethodInfo method, System.Action`1 action, IEnumerable`1 additionalScopeAttrs) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.BuildStepBindingFromMethod (System.Reflection.MethodInfo method, TechTalk.SpecFlow.StepDefinitionBaseAttribute stepDefinitionBaseAttr) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.BuildBindingsFromType (System.Type type) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.BuildBindingsFromAssembly (System.Reflection.Assembly assembly) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.Initialize (System.Reflection.Assembly[] bindingAssemblies) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunner.InitializeTestRunner (System.Reflection.Assembly[] bindingAssemblies) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Infrastructure.TestRunnerFactory.Create (System.Reflection.Assembly testAssembly) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunnerManager.CreateTestRunner (TechTalk.SpecFlow.TestRunnerKey key) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunnerManager.GetTestRunner (TechTalk.SpecFlow.TestRunnerKey key) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunnerManager.GetTestRunner (System.Reflection.Assembly testAssembly, Boolean async) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunnerManager.GetTestRunner () [0x00000] in &lt;filename unknown&gt;:0 
+  at Beaver.Tests.Features.Feature.FeatureSetup () [0x00000] in &lt;filename unknown&gt;:0 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (System.Reflection.MonoMethod,object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x000d5] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/corlib/System.Reflection/MonoMethod.cs:226 </StackTrace>
+                    </UnitTestResult>
+                  </Results>
+                  <Tests>
+                    <TestRecord Name="MilestoneRefinement">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:14:41</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>2</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>Parent SetUp failed in Feature</Message>
+                        </UnitTestResult>
+                      </Results>
+                      <Tests>
+                        <TestRecord Name="String[])">
+                          <Results>
+                            <UnitTestResult>
+                              <TestDate>2012-05-30T10:14:41</TestDate>
+                              <Passed>0</Passed>
+                              <Errors>0</Errors>
+                              <Failures>1</Failures>
+                              <Inconclusive>0</Inconclusive>
+                              <NotRunnable>0</NotRunnable>
+                              <Skipped>0</Skipped>
+                              <Ignored>0</Ignored>
+                              <Time />
+                              <Message>TestFixtureSetUp failed in Feature</Message>
+                              <ConsoleOutput />
+                              <ConsoleError />
+                            </UnitTestResult>
+                            <UnitTestResult>
+                              <TestDate>2012-05-30T10:14:41</TestDate>
+                              <Passed>0</Passed>
+                              <Errors>0</Errors>
+                              <Failures>1</Failures>
+                              <Inconclusive>0</Inconclusive>
+                              <NotRunnable>0</NotRunnable>
+                              <Skipped>0</Skipped>
+                              <Ignored>0</Ignored>
+                              <Time />
+                              <Message>TestFixtureSetUp failed in Feature</Message>
+                              <ConsoleOutput />
+                              <ConsoleError />
+                            </UnitTestResult>
+                          </Results>
+                          <Tests />
+                        </TestRecord>
+                      </Tests>
+                    </TestRecord>
+                  </Tests>
+                </TestRecord>
+                <TestRecord Name="UsabilityForModelingFeature">
+                  <Results>
+                    <UnitTestResult>
+                      <TestDate>2012-05-30T10:14:41</TestDate>
+                      <Passed>0</Passed>
+                      <Errors>0</Errors>
+                      <Failures>12</Failures>
+                      <Inconclusive>0</Inconclusive>
+                      <NotRunnable>0</NotRunnable>
+                      <Skipped>0</Skipped>
+                      <Ignored>0</Ignored>
+                      <Time />
+                      <Message>SetUp : System.ArgumentException : parsing "^a goal '[A-Za-z0-9_- ]+'$" - [95-32] range in reverse order.
+Parameter name: ^a goal '[A-Za-z0-9_- ]+'$</Message>
+                      <StackTrace>  at System.Text.RegularExpressions.Syntax.Parser.ParseCharacterClass (RegexOptions options) [0x002ba] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/parser.cs:735 
+  at System.Text.RegularExpressions.Syntax.Parser.ParseGroup (System.Text.RegularExpressions.Syntax.Group group, RegexOptions options, System.Text.RegularExpressions.Syntax.Assertion assertion) [0x00183] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/parser.cs:227 
+  at System.Text.RegularExpressions.Syntax.Parser.ParseRegularExpression (System.String pattern, RegexOptions options) [0x00031] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/parser.cs:140 
+  at System.Text.RegularExpressions.Regex.CreateMachineFactory (System.String pattern, RegexOptions options) [0x00006] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/Regex.cs:287 
+  at System.Text.RegularExpressions.Regex.InitNewRegex () [0x00000] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/Regex.cs:268 
+  at System.Text.RegularExpressions.Regex.Init () [0x00027] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/Regex.cs:256 
+  at System.Text.RegularExpressions.Regex..ctor (System.String pattern, RegexOptions options) [0x0002b] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/Regex.cs:217 
+  at TechTalk.SpecFlow.Bindings.StepDefinitionBinding..ctor (TechTalk.SpecFlow.Configuration.RuntimeConfiguration runtimeConfiguration, IErrorProvider errorProvider, BindingType type, System.String regexString, System.Reflection.MethodInfo methodInfo, TechTalk.SpecFlow.Bindings.BindingScope bindingScope) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingFactory.CreateStepBinding (BindingType type, System.String regexString, System.Reflection.MethodInfo methodInfo, TechTalk.SpecFlow.Bindings.BindingScope bindingScope) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.AddStepBinding (System.Reflection.MethodInfo method, TechTalk.SpecFlow.StepDefinitionBaseAttribute stepDefinitionBaseAttr, TechTalk.SpecFlow.Bindings.BindingScope stepScope) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry+&lt;&gt;c__DisplayClass7.&lt;BuildStepBindingFromMethod&gt;b__6 (TechTalk.SpecFlow.Bindings.BindingScope scope) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.ApplyForScope (System.Reflection.MethodInfo method, System.Action`1 action, IEnumerable`1 additionalScopeAttrs) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.BuildStepBindingFromMethod (System.Reflection.MethodInfo method, TechTalk.SpecFlow.StepDefinitionBaseAttribute stepDefinitionBaseAttr) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.BuildBindingsFromType (System.Type type) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.BuildBindingsFromAssembly (System.Reflection.Assembly assembly) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.Initialize (System.Reflection.Assembly[] bindingAssemblies) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunner.InitializeTestRunner (System.Reflection.Assembly[] bindingAssemblies) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Infrastructure.TestRunnerFactory.Create (System.Reflection.Assembly testAssembly) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunnerManager.CreateTestRunner (TechTalk.SpecFlow.TestRunnerKey key) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunnerManager.GetTestRunner (TechTalk.SpecFlow.TestRunnerKey key) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunnerManager.GetTestRunner (System.Reflection.Assembly testAssembly, Boolean async) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunnerManager.GetTestRunner () [0x00000] in &lt;filename unknown&gt;:0 
+  at Beaver.Tests.Features.UsabilityForModelingFeature.FeatureSetup () [0x00000] in &lt;filename unknown&gt;:0 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (System.Reflection.MonoMethod,object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x000d5] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/corlib/System.Reflection/MonoMethod.cs:226 </StackTrace>
+                    </UnitTestResult>
+                  </Results>
+                  <Tests>
+                    <TestRecord Name="ConnectADomainPropertyAndAGoal">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:14:41</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in UsabilityForModelingFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                      <Tests />
+                    </TestRecord>
+                    <TestRecord Name="ConnectADomainPropertyAndAnObstacleRefinement">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:14:41</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in UsabilityForModelingFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                      <Tests />
+                    </TestRecord>
+                    <TestRecord Name="ConnectADomainPropertyAndARefinement">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:14:41</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in UsabilityForModelingFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                      <Tests />
+                    </TestRecord>
+                    <TestRecord Name="ConnectAGoalAndAGoal">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:14:41</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in UsabilityForModelingFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                      <Tests />
+                    </TestRecord>
+                    <TestRecord Name="ConnectAnAgentAndAGoal">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:14:41</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in UsabilityForModelingFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                      <Tests />
+                    </TestRecord>
+                    <TestRecord Name="ConnectAnObstacleAndAGoal">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:14:41</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in UsabilityForModelingFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                      <Tests />
+                    </TestRecord>
+                    <TestRecord Name="ConnectAnObstacleAndAnObstacleRefinement">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:14:41</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in UsabilityForModelingFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                      <Tests />
+                    </TestRecord>
+                    <TestRecord Name="ConnectAnObstacleRefinementAndAnObstacle">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:14:41</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in UsabilityForModelingFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                      <Tests />
+                    </TestRecord>
+                    <TestRecord Name="ConnectAnObstacleRefinementAndAnObstacleRefinement">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:14:41</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in UsabilityForModelingFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                      <Tests />
+                    </TestRecord>
+                    <TestRecord Name="ConnectAObstacleAndAnObstacle">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:14:41</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in UsabilityForModelingFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                      <Tests />
+                    </TestRecord>
+                    <TestRecord Name="ConnectARefinementAndAGoal">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:14:41</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in UsabilityForModelingFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                      <Tests />
+                    </TestRecord>
+                    <TestRecord Name="ConnectARefinementAndARefinement">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:14:41</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in UsabilityForModelingFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                      <Tests />
+                    </TestRecord>
+                  </Tests>
+                </TestRecord>
+                <TestRecord Name="ViewsForGoalModelsFeature">
+                  <Results>
+                    <UnitTestResult>
+                      <TestDate>2012-05-30T10:14:41</TestDate>
+                      <Passed>0</Passed>
+                      <Errors>0</Errors>
+                      <Failures>4</Failures>
+                      <Inconclusive>0</Inconclusive>
+                      <NotRunnable>0</NotRunnable>
+                      <Skipped>0</Skipped>
+                      <Ignored>0</Ignored>
+                      <Time />
+                      <Message>SetUp : System.ArgumentException : parsing "^a goal '[A-Za-z0-9_- ]+'$" - [95-32] range in reverse order.
+Parameter name: ^a goal '[A-Za-z0-9_- ]+'$</Message>
+                      <StackTrace>  at System.Text.RegularExpressions.Syntax.Parser.ParseCharacterClass (RegexOptions options) [0x002ba] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/parser.cs:735 
+  at System.Text.RegularExpressions.Syntax.Parser.ParseGroup (System.Text.RegularExpressions.Syntax.Group group, RegexOptions options, System.Text.RegularExpressions.Syntax.Assertion assertion) [0x00183] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/parser.cs:227 
+  at System.Text.RegularExpressions.Syntax.Parser.ParseRegularExpression (System.String pattern, RegexOptions options) [0x00031] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/parser.cs:140 
+  at System.Text.RegularExpressions.Regex.CreateMachineFactory (System.String pattern, RegexOptions options) [0x00006] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/Regex.cs:287 
+  at System.Text.RegularExpressions.Regex.InitNewRegex () [0x00000] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/Regex.cs:268 
+  at System.Text.RegularExpressions.Regex.Init () [0x00027] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/Regex.cs:256 
+  at System.Text.RegularExpressions.Regex..ctor (System.String pattern, RegexOptions options) [0x0002b] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/System/System.Text.RegularExpressions/Regex.cs:217 
+  at TechTalk.SpecFlow.Bindings.StepDefinitionBinding..ctor (TechTalk.SpecFlow.Configuration.RuntimeConfiguration runtimeConfiguration, IErrorProvider errorProvider, BindingType type, System.String regexString, System.Reflection.MethodInfo methodInfo, TechTalk.SpecFlow.Bindings.BindingScope bindingScope) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingFactory.CreateStepBinding (BindingType type, System.String regexString, System.Reflection.MethodInfo methodInfo, TechTalk.SpecFlow.Bindings.BindingScope bindingScope) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.AddStepBinding (System.Reflection.MethodInfo method, TechTalk.SpecFlow.StepDefinitionBaseAttribute stepDefinitionBaseAttr, TechTalk.SpecFlow.Bindings.BindingScope stepScope) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry+&lt;&gt;c__DisplayClass7.&lt;BuildStepBindingFromMethod&gt;b__6 (TechTalk.SpecFlow.Bindings.BindingScope scope) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.ApplyForScope (System.Reflection.MethodInfo method, System.Action`1 action, IEnumerable`1 additionalScopeAttrs) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.BuildStepBindingFromMethod (System.Reflection.MethodInfo method, TechTalk.SpecFlow.StepDefinitionBaseAttribute stepDefinitionBaseAttr) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.BuildBindingsFromType (System.Type type) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Bindings.BindingRegistry.BuildBindingsFromAssembly (System.Reflection.Assembly assembly) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.Initialize (System.Reflection.Assembly[] bindingAssemblies) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunner.InitializeTestRunner (System.Reflection.Assembly[] bindingAssemblies) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.Infrastructure.TestRunnerFactory.Create (System.Reflection.Assembly testAssembly) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunnerManager.CreateTestRunner (TechTalk.SpecFlow.TestRunnerKey key) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunnerManager.GetTestRunner (TechTalk.SpecFlow.TestRunnerKey key) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunnerManager.GetTestRunner (System.Reflection.Assembly testAssembly, Boolean async) [0x00000] in &lt;filename unknown&gt;:0 
+  at TechTalk.SpecFlow.TestRunnerManager.GetTestRunner () [0x00000] in &lt;filename unknown&gt;:0 
+  at Beaver.Tests.Features.ViewsForGoalModelsFeature.FeatureSetup () [0x00000] in &lt;filename unknown&gt;:0 
+  at (wrapper managed-to-native) System.Reflection.MonoMethod:InternalInvoke (System.Reflection.MonoMethod,object,object[],System.Exception&amp;)
+  at System.Reflection.MonoMethod.Invoke (System.Object obj, BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x000d5] in /private/tmp/monobuild/build/BUILD/mono-2.10.9/mcs/class/corlib/System.Reflection/MonoMethod.cs:226 </StackTrace>
+                    </UnitTestResult>
+                  </Results>
+                  <Tests>
+                    <TestRecord Name="AddAView">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:14:41</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in ViewsForGoalModelsFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                      <Tests />
+                    </TestRecord>
+                    <TestRecord Name="AddElementToAView">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:14:41</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in ViewsForGoalModelsFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                      <Tests />
+                    </TestRecord>
+                    <TestRecord Name="RemoveAView">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:14:41</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in ViewsForGoalModelsFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                      <Tests />
+                    </TestRecord>
+                    <TestRecord Name="RemoveElementFromAView">
+                      <Results>
+                        <UnitTestResult>
+                          <TestDate>2012-05-30T10:14:41</TestDate>
+                          <Passed>0</Passed>
+                          <Errors>0</Errors>
+                          <Failures>1</Failures>
+                          <Inconclusive>0</Inconclusive>
+                          <NotRunnable>0</NotRunnable>
+                          <Skipped>0</Skipped>
+                          <Ignored>0</Ignored>
+                          <Time />
+                          <Message>TestFixtureSetUp failed in ViewsForGoalModelsFeature</Message>
+                          <ConsoleOutput />
+                          <ConsoleError />
+                        </UnitTestResult>
+                      </Results>
+                      <Tests />
+                    </TestRecord>
+                  </Tests>
+                </TestRecord>
+              </Tests>
+            </TestRecord>
+          </Tests>
+        </TestRecord>
+      </Tests>
+    </TestRecord>
+  </Tests>
+</TestRecord>

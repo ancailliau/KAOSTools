@@ -1,0 +1,8 @@
+/Users/acailliau/Projects/KaosEditor/Beaver.Tests/bin/Debug/Beaver.Tests.dll.mdb
+/Users/acailliau/Projects/KaosEditor/Beaver.Tests/bin/Debug/Beaver.Tests.dll
+/Users/acailliau/Projects/KaosEditor/Beaver.Tests/obj/Debug/Beaver.Tests.dll
+/Users/acailliau/Projects/KaosEditor/Beaver.Tests/obj/Debug/Beaver.Tests.dll.mdb
+/Users/acailliau/Projects/Beaver/Beaver.Tests/bin/Debug/Beaver.Tests.dll.mdb
+/Users/acailliau/Projects/Beaver/Beaver.Tests/bin/Debug/Beaver.Tests.dll
+/Users/acailliau/Projects/Beaver/Beaver.Tests/obj/Debug/Beaver.Tests.dll
+/Users/acailliau/Projects/Beaver/Beaver.Tests/obj/Debug/Beaver.Tests.dll.mdb
