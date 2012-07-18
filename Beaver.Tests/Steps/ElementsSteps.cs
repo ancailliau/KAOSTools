@@ -86,58 +86,69 @@ namespace Beaver.Tests
         {
             var refinement = model.Get (id);
 
-            if (refinement is GoalRefinement)
-                ((GoalRefinement) refinement).Children.Contains (elementId);
+            if (refinement is Refinement)
+                ((Refinement) refinement).Children.Add (elementId);
+        }
 
-            else if (refinement is ObstacleRefinement)
-                ((ObstacleRefinement) refinement).Children.Contains (elementId);
+        [Given(@"a agent '([a-zA-Z0-9-_ ]+)'")]
+        public void GivenAAgentAgent(string id)
+        {
+            model.Add (new Agent (id));
         }
 
         [When(@"I add a goal '([a-zA-Z0-9-_ ]+)'")]
         public void WhenIAddAGoal(string id)
         {
+            model.Changed = false;
             model.Add (new Goal (id));
         }
 
         [When(@"I add an obstacle '([a-zA-Z0-9-_ ]+)'")]
         public void WhenIAddAnObstacle(string id)
         {
+            model.Changed = false;
             model.Add (new Obstacle (id));
         }
 
         [When(@"I add a domain property '([a-zA-Z0-9-_ ]+)'")]
         public void WhenIAddADomainProperty(string id)
         {
+            model.Changed = false;
             model.Add (new DomainProperty (id));
         }
 
         [When(@"I add an agent '([a-zA-Z0-9-_ ]+)'")]
         public void WhenIAddAnAgent(string id)
         {
+            model.Changed = false;
             model.Add (new Agent (id));
         }
 
         [When(@"I (?:remove|delete) '([a-zA-Z0-9-_ ]+)'")]
         public void WhenIRemove(string id)
         {
+            model.Changed = false;
             model.Remove(id);
         }
 
         [When(@"I add a new view '([a-zA-Z0-9-_ ]+)'")]
         public void WhenIAddANewView (string id)
         {
+            model.Changed = false;
             model.AddView (new View (id));
         }
 
         [When(@"I remove the view '([a-zA-Z0-9-_ ]+)'")]
         public void WhenIRemoveTheView(string id)
         {
+            model.Changed = false;
             model.RemoveView (id);
         }
 
         [When(@"I add '([a-zA-Z0-9-_ ]+)' to '([a-zA-Z0-9-_ ]+)'")]
         public void WhenIAddElementToView(string id, string viewId) 
         {
+            model.Changed = false;
             var view = model.GetView (viewId);
             view.Add (id);
         }
@@ -145,6 +156,7 @@ namespace Beaver.Tests
         [When(@"I (?:remove|delete) '([a-zA-Z0-9-_ ]+)' from '([a-zA-Z0-9-_ ]+)'")]
         public void WhenIRemoveElementFromView(string id, string viewId)
         {
+            model.Changed = false;
             var view = model.GetView (viewId);
             view.Remove (id);
         }
@@ -152,6 +164,10 @@ namespace Beaver.Tests
         [When(@"I connect '([a-zA-Z0-9-_ ]+)' to '([a-zA-Z0-9-_ ]+)'")]
         public void WhenIConnectElements(string id1, string id2)
         {
+            model.Changed = false;
+            Assert.That (model.Contains (id1), string.Format ("Element '{0}' does not exist in model", id1));
+            Assert.That (model.Contains (id2), string.Format ("Element '{0}' does not exist in model", id1));
+
             model.Connect (id1, id2);
         }
 
@@ -239,13 +255,13 @@ namespace Beaver.Tests
         [Then(@"'([a-zA-Z0-9-_ ]+)' is assigned to '([a-zA-Z0-9-_ ]+)'")]
         public void ThenAgentIsAssignedToGoal (string agentId, string goalId)
         {
-            Assert.NotNull (model.Find <Responsibility> (x => x.Agent.Id == agentId && x.Goal.Id == goalId));
+            Assert.NotNull (model.Find <Responsibility> (x => x.Agent == agentId && x.Goal == goalId));
         }
 
         [Then(@"'([a-zA-Z0-9-_ ]+)' obstructs '([a-zA-Z0-9-_ ]+)'")]
         public void ThenObstacleObstructsGoal (string obstacleId, string goalId)
         {
-            Assert.NotNull (model.Find <Obstruction> (x => x.Obstacle.Id == obstacleId && x.Goal.Id == goalId));
+            Assert.NotNull (model.Find <Obstruction> (x => x.Obstacle == obstacleId && x.Goal == goalId));
         }
 
         [Then(@"refinement '([a-zA-Z0-9-_ ]+)' contains '([a-zA-Z0-9-_ ]+)'")]
@@ -254,6 +270,23 @@ namespace Beaver.Tests
             Assert.NotNull (model.Find <GoalRefinement> (x => x.Id == refinementId && x.Children.Contains (id)));
         }
 
+        [Then(@"nothing change")]
+        public void ThenNothingChange()
+        {
+            Assert.That (model.Changed == false);
+        }
+
+        [Then(@"'([a-zA-Z0-9-_ ]+)' refines '([a-zA-Z0-9-_ ]+)'")]
+        public void ThenRefinementRefinesGoal(string refinementId, string goalId)
+        {
+            Assert.NotNull (model.Find <GoalRefinement> (x => x.Id == refinementId && x.Parent == goalId));
+        }
+
+        [Then(@"'([a-zA-Z0-9-_ ]+)' no longer exists")]
+        public void ThenRefinementNoLongerExists(string refinementId)
+        {
+            Assert.That (model.Find <Refinement> (x => x.Id == refinementId).Count () == 0);
+        }
     }
 }
 

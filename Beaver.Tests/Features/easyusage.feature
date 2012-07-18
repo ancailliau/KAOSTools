@@ -18,10 +18,11 @@ Feature: Usability for modeling
   # goal with domain property
   
   Scenario: Connect a goal and a domain property
-    Given a goal 'goal-1'
-    And a domain property 'domprop-1'
-    When I connect 'goal-1' to 'domprop-1'
-    Then nothing change
+    Given a domain property 'domprop-1'
+    And a goal 'goal-1'
+    When I connect 'domprop-1' to 'goal-1'
+    Then there exists a refinement for 'goal-1'
+    And this refinement contains 'domprop-1'
 
   # goal with obstacle
 
@@ -117,16 +118,16 @@ Feature: Usability for modeling
   Scenario: Connect an obstacle and a domain property
     Given an obstacle 'obstacle-1'
     And a domain property 'domprop-1'
-    When I connect 'obstacle-1' to 'goal-1'
+    When I connect 'obstacle-1' to 'domprop-1'
     Then nothing change
     
   # obstacle with obstacle
   
   Scenario: Connect an obstacle and an obstacle
     Given an obstacle 'obstacle-1'
-    And an obstacle 'obstacle-1'
-    When I connect 'obstacle-1' to 'obstacle-1'
-    Then a refinement for 'obstacle-1' exists
+    And an obstacle 'obstacle-2'
+    When I connect 'obstacle-1' to 'obstacle-2'
+    Then there exists an obstacle refinement for 'obstacle-1'
     And this refinement contains 'obstacle-2'
     
   # obstacle with agent
@@ -200,8 +201,8 @@ Feature: Usability for modeling
     And refinement 'refinement-2' contains 'goal-3'
     When I connect 'refinement-1' to 'refinement-2'
     Then there exists a refinement for 'goal-1'
-    And this refinement contains 'goal-1'
     And this refinement contains 'goal-2'
+    And this refinement contains 'goal-3'
     And 'refinement-1' no longer exists
     And 'refinement-2' no longer exists
 
@@ -231,7 +232,7 @@ Feature: Usability for modeling
       | a domain property       | domprop-1     |
       | an obstacle             | obstacle-2    |
       | an agent                | agent-2       |
-      | an obstacle refinement  | refinement-1  |
+      | an obstacle refinement  | refinement-2  |
   
   # obstacle refinement with obstacle
   
@@ -257,7 +258,7 @@ Feature: Usability for modeling
       | a goal              | goal-1        |
       | a domain property   | domprop-1     |
       | an agent            | agent-2       |
-      | an refinement       | refinement-1  |
+      | a refinement        | refinement-2  |
   
   # obstacle refinement with obstacle refinement
   
@@ -270,7 +271,7 @@ Feature: Usability for modeling
     And refinement 'refinement-1' contains 'obstacle-2'
     And refinement 'refinement-2' contains 'obstacle-3'
     When I connect 'refinement-1' to 'refinement-2'
-    Then there exists a refinement for 'obstacle-1'
+    Then there exists an obstacle refinement for 'obstacle-1'
     And this refinement contains 'obstacle-2'
     And this refinement contains 'obstacle-3'
     

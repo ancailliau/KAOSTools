@@ -29,12 +29,12 @@ namespace Beaver.Domain
 {
 	public class Obstruction : KAOSElement
 	{
-		public Goal Goal {
+		public string Goal {
 			get;
 			set;
 		}
 		
-		public Obstacle Obstacle {
+		public string Obstacle {
 			get;
 			set;
 		}
@@ -42,6 +42,8 @@ namespace Beaver.Domain
 		public Obstruction (string id) : base (id)
 		{}
 		
+        public Obstruction () : base ()
+        {}
 	}
 }
 

@@ -17,6 +17,7 @@ echo "[1/5] Generating nunit tests"
 mono $SPECFLOW generateall $TEST_PROJECT_CSPROJ
 
 echo "[2/5] Building project"
+cp $TEST_PROJECT_FOLDER/Libraries/nunit*.dll $TEST_PROJECT_FOLDER/bin/Debug/
 xbuild $TEST_PROJECT_CSPROJ 2>&1 > /dev/null
 
 echo "[3/5] Running tests"
@@ -27,5 +28,6 @@ mono $SPECFLOW nunitexecutionreport $TEST_PROJECT_CSPROJ /xmlTestResult:$TMP_XML
 
 rm $TMP_TXT
 rm $TMP_XML
+rm $TEST_PROJECT_FOLDER/bin/Debug/nunit*.dll
 
 echo "[5/5] Completed. You can view report here: file://localhost`pwd`/$TMP_HTML"

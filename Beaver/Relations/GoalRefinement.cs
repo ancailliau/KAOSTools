@@ -33,6 +33,9 @@ namespace Beaver.Domain
 	{
 		public GoalRefinement (string id) : base(id)
 		{}
+
+        public GoalRefinement () : base()
+        {}
 	}
 }
 

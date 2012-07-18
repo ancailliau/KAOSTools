@@ -29,18 +29,21 @@ namespace Beaver.Domain
 {
 	public class Responsibility : KAOSElement
 	{
-		public Goal Goal {
+		public string Goal {
 			get;
 			set;
 		}
 		
-		public Agent Agent {
+		public string Agent {
 			get;
 			set;
 		}
 		
         public Responsibility (string id) : base (id)
 		{}
+
+        public Responsibility () : base ()
+        {}
 	}
 }
 

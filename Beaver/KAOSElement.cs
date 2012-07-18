@@ -39,6 +39,10 @@ namespace Beaver.Domain
             this.Id = id;
         }
 
+        public KAOSElement ()
+            : this (Guid.NewGuid ().ToString ())
+        {}
+
         public override bool Equals (object obj)
         {
             if (obj == null)

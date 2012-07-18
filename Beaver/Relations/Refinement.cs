@@ -16,6 +16,12 @@ namespace Beaver.Domain
             private set;
         }
 
+        public Refinement ()
+            : base ()
+        {
+            Children = new List<string> ();
+        }
+
         public Refinement (string id) : base (id)
         {
             Children = new List<string> ();

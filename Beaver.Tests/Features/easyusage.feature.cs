@@ -104,13 +104,15 @@ namespace Beaver.Tests.Features
 #line 6
   this.FeatureBackground();
 #line 21
-    testRunner.Given("a goal 'goal-1'");
+    testRunner.Given("a domain property 'domprop-1'");
 #line 22
-    testRunner.And("a domain property 'domprop-1'");
+    testRunner.And("a goal 'goal-1'");
 #line 23
-    testRunner.When("I connect 'goal-1' to 'domprop-1'");
+    testRunner.When("I connect 'domprop-1' to 'goal-1'");
 #line 24
-    testRunner.Then("nothing change");
+    testRunner.Then("there exists a refinement for 'goal-1'");
+#line 25
+    testRunner.And("this refinement contains 'domprop-1'");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -120,17 +122,17 @@ namespace Beaver.Tests.Features
         public virtual void ConnectAGoalAndAnObstacle()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect a goal and an obstacle", ((string[])(null)));
-#line 28
+#line 29
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 29
-    testRunner.Given("a goal 'goal-1'");
 #line 30
-    testRunner.And("an obstacle 'obstacle-1'");
+    testRunner.Given("a goal 'goal-1'");
 #line 31
-    testRunner.When("I connect 'goal-1' to 'obstacle-1'");
+    testRunner.And("an obstacle 'obstacle-1'");
 #line 32
+    testRunner.When("I connect 'goal-1' to 'obstacle-1'");
+#line 33
     testRunner.Then("'obstacle-1' obstructs 'goal-1'");
 #line hidden
             this.ScenarioCleanup();
@@ -141,17 +143,17 @@ namespace Beaver.Tests.Features
         public virtual void ConnectAGoalAndAnAgent()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect a goal and an agent", ((string[])(null)));
-#line 36
+#line 37
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 37
-    testRunner.Given("a goal 'goal-1'");
 #line 38
-    testRunner.And("an agent 'agent-1'");
+    testRunner.Given("a goal 'goal-1'");
 #line 39
-    testRunner.When("I connect 'goal-1' to 'agent-1'");
+    testRunner.And("an agent 'agent-1'");
 #line 40
+    testRunner.When("I connect 'goal-1' to 'agent-1'");
+#line 41
     testRunner.Then("'agent-1' is assigned to 'goal-1'");
 #line hidden
             this.ScenarioCleanup();
@@ -162,17 +164,17 @@ namespace Beaver.Tests.Features
         public virtual void ConnectAGoalAndARefinement()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect a goal and a refinement", ((string[])(null)));
-#line 44
+#line 45
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 45
-    testRunner.Given("a goal 'goal-1'");
 #line 46
-    testRunner.And("a refinement 'refinement-1'");
+    testRunner.Given("a goal 'goal-1'");
 #line 47
-    testRunner.When("I connect 'goal-1' to 'refinement-1'");
+    testRunner.And("a refinement 'refinement-1'");
 #line 48
+    testRunner.When("I connect 'goal-1' to 'refinement-1'");
+#line 49
     testRunner.Then("refinement 'refinement-1' contains 'goal-2'");
 #line hidden
             this.ScenarioCleanup();
@@ -183,17 +185,17 @@ namespace Beaver.Tests.Features
         public virtual void ConnectAGoalAndAnObstacleRefinement()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect a goal and an obstacle refinement", ((string[])(null)));
-#line 52
+#line 53
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 53
-    testRunner.Given("a goal 'goal-1'");
 #line 54
-    testRunner.And("an obstacle refinement 'refinement-1'");
+    testRunner.Given("a goal 'goal-1'");
 #line 55
-    testRunner.When("I connect 'goal-1' to 'refinement-1'");
+    testRunner.And("an obstacle refinement 'refinement-1'");
 #line 56
+    testRunner.When("I connect 'goal-1' to 'refinement-1'");
+#line 57
     testRunner.Then("nothing change");
 #line hidden
             this.ScenarioCleanup();
@@ -204,19 +206,19 @@ namespace Beaver.Tests.Features
         public virtual void ConnectADomainPropertyAndAGoal()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect a domain property and a goal", ((string[])(null)));
-#line 60
+#line 61
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 61
-    testRunner.Given("a domain property 'domprop-1'");
 #line 62
-    testRunner.And("a goal 'goal-1'");
+    testRunner.Given("a domain property 'domprop-1'");
 #line 63
-    testRunner.When("I connect 'domprop-1' to 'goal-1'");
+    testRunner.And("a goal 'goal-1'");
 #line 64
-    testRunner.Then("there exists a refinement for 'goal-1'");
+    testRunner.When("I connect 'domprop-1' to 'goal-1'");
 #line 65
+    testRunner.Then("there exists a refinement for 'goal-1'");
+#line 66
     testRunner.And("this refinement contains 'domprop-1'");
 #line hidden
             this.ScenarioCleanup();
@@ -227,17 +229,17 @@ namespace Beaver.Tests.Features
         public virtual void ConnectADomainPropertyAndADomainProperty()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect a domain property and a domain property", ((string[])(null)));
-#line 69
+#line 70
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 70
-    testRunner.Given("a domain property 'domprop-1'");
 #line 71
-    testRunner.And("a domain property 'domprop-2'");
+    testRunner.Given("a domain property 'domprop-1'");
 #line 72
-    testRunner.When("I connect 'domprop-1' to 'domprop-2'");
+    testRunner.And("a domain property 'domprop-2'");
 #line 73
+    testRunner.When("I connect 'domprop-1' to 'domprop-2'");
+#line 74
     testRunner.Then("nothing change");
 #line hidden
             this.ScenarioCleanup();
@@ -248,17 +250,17 @@ namespace Beaver.Tests.Features
         public virtual void ConnectADomainPropertyAndAnObstacle()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect a domain property and an obstacle", ((string[])(null)));
-#line 77
+#line 78
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 78
-    testRunner.Given("a domain property 'domprop-1'");
 #line 79
-    testRunner.And("an obstacle 'obstacle-1'");
+    testRunner.Given("a domain property 'domprop-1'");
 #line 80
-    testRunner.When("I connect 'domprop-1' to 'obstacle-1'");
+    testRunner.And("an obstacle 'obstacle-1'");
 #line 81
+    testRunner.When("I connect 'domprop-1' to 'obstacle-1'");
+#line 82
     testRunner.Then("nothing change");
 #line hidden
             this.ScenarioCleanup();
@@ -269,17 +271,17 @@ namespace Beaver.Tests.Features
         public virtual void ConnectADomainPropertyAndAnAgent()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect a domain property and an agent", ((string[])(null)));
-#line 85
+#line 86
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 86
-    testRunner.Given("a domain property 'domprop-1'");
 #line 87
-    testRunner.And("an agent 'agent-1'");
+    testRunner.Given("a domain property 'domprop-1'");
 #line 88
-    testRunner.When("I connect 'domprop-1' to 'agent-1'");
+    testRunner.And("an agent 'agent-1'");
 #line 89
+    testRunner.When("I connect 'domprop-1' to 'agent-1'");
+#line 90
     testRunner.Then("nothing change");
 #line hidden
             this.ScenarioCleanup();
@@ -290,17 +292,17 @@ namespace Beaver.Tests.Features
         public virtual void ConnectADomainPropertyAndARefinement()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect a domain property and a refinement", ((string[])(null)));
-#line 93
+#line 94
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 94
-    testRunner.Given("a domain property 'domprop-1'");
 #line 95
-    testRunner.And("a refinement 'refinement-1'");
+    testRunner.Given("a domain property 'domprop-1'");
 #line 96
-    testRunner.When("I connect 'domprop-1' to 'refinement-1'");
+    testRunner.And("a refinement 'refinement-1'");
 #line 97
+    testRunner.When("I connect 'domprop-1' to 'refinement-1'");
+#line 98
     testRunner.Then("refinement 'refinement-1' contains 'domprop-1'");
 #line hidden
             this.ScenarioCleanup();
@@ -311,17 +313,17 @@ namespace Beaver.Tests.Features
         public virtual void ConnectADomainPropertyAndAnObstacleRefinement()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect a domain property and an obstacle refinement", ((string[])(null)));
-#line 101
+#line 102
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 102
-    testRunner.Given("a domain property 'domprop-1'");
 #line 103
-    testRunner.And("an obstacle refinement 'refinement-1'");
+    testRunner.Given("a domain property 'domprop-1'");
 #line 104
-    testRunner.When("I connect 'domprop-1' to 'refinement-1'");
+    testRunner.And("an obstacle refinement 'refinement-1'");
 #line 105
+    testRunner.When("I connect 'domprop-1' to 'refinement-1'");
+#line 106
     testRunner.Then("refinement 'refinement-1' contains 'domprop-1'");
 #line hidden
             this.ScenarioCleanup();
@@ -332,17 +334,17 @@ namespace Beaver.Tests.Features
         public virtual void ConnectAnObstacleAndAGoal()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect an obstacle and a goal", ((string[])(null)));
-#line 109
+#line 110
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 110
-    testRunner.Given("an obstacle 'obstacle-1'");
 #line 111
-    testRunner.And("a goal 'goal-1'");
+    testRunner.Given("an obstacle 'obstacle-1'");
 #line 112
-    testRunner.When("I connect 'obstacle-1' to 'goal-1'");
+    testRunner.And("a goal 'goal-1'");
 #line 113
+    testRunner.When("I connect 'obstacle-1' to 'goal-1'");
+#line 114
     testRunner.Then("'obstacle-1' obstructs 'goal-1'");
 #line hidden
             this.ScenarioCleanup();
@@ -353,17 +355,17 @@ namespace Beaver.Tests.Features
         public virtual void ConnectAnObstacleAndADomainProperty()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect an obstacle and a domain property", ((string[])(null)));
-#line 117
+#line 118
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 118
-    testRunner.Given("an obstacle 'obstacle-1'");
 #line 119
-    testRunner.And("a domain property 'domprop-1'");
+    testRunner.Given("an obstacle 'obstacle-1'");
 #line 120
-    testRunner.When("I connect 'obstacle-1' to 'goal-1'");
+    testRunner.And("a domain property 'domprop-1'");
 #line 121
+    testRunner.When("I connect 'obstacle-1' to 'domprop-1'");
+#line 122
     testRunner.Then("nothing change");
 #line hidden
             this.ScenarioCleanup();
@@ -374,19 +376,19 @@ namespace Beaver.Tests.Features
         public virtual void ConnectAnObstacleAndAnObstacle()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect an obstacle and an obstacle", ((string[])(null)));
-#line 125
+#line 126
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 126
-    testRunner.Given("an obstacle 'obstacle-1'");
 #line 127
-    testRunner.And("an obstacle 'obstacle-1'");
+    testRunner.Given("an obstacle 'obstacle-1'");
 #line 128
-    testRunner.When("I connect 'obstacle-1' to 'obstacle-1'");
+    testRunner.And("an obstacle 'obstacle-2'");
 #line 129
-    testRunner.Then("a refinement for 'obstacle-1' exists");
+    testRunner.When("I connect 'obstacle-1' to 'obstacle-2'");
 #line 130
+    testRunner.Then("there exists an obstacle refinement for 'obstacle-1'");
+#line 131
     testRunner.And("this refinement contains 'obstacle-2'");
 #line hidden
             this.ScenarioCleanup();
@@ -397,17 +399,17 @@ namespace Beaver.Tests.Features
         public virtual void ConnectAnObstacleAndAAgent()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect an obstacle and a agent", ((string[])(null)));
-#line 134
+#line 135
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 135
-    testRunner.Given("an obstacle 'obstacle-1'");
 #line 136
-    testRunner.And("a agent 'agent-1'");
+    testRunner.Given("an obstacle 'obstacle-1'");
 #line 137
-    testRunner.When("I connect 'obstacle-1' to 'agent-1'");
+    testRunner.And("a agent 'agent-1'");
 #line 138
+    testRunner.When("I connect 'obstacle-1' to 'agent-1'");
+#line 139
     testRunner.Then("nothing change");
 #line hidden
             this.ScenarioCleanup();
@@ -418,17 +420,17 @@ namespace Beaver.Tests.Features
         public virtual void ConnectAnObstacleAndARefinement()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect an obstacle and a refinement", ((string[])(null)));
-#line 142
+#line 143
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 143
-    testRunner.Given("an obstacle 'obstacle-1'");
 #line 144
-    testRunner.And("a refinement 'refinement-1'");
+    testRunner.Given("an obstacle 'obstacle-1'");
 #line 145
-    testRunner.When("I connect 'obstacle-1' to 'refinement-1'");
+    testRunner.And("a refinement 'refinement-1'");
 #line 146
+    testRunner.When("I connect 'obstacle-1' to 'refinement-1'");
+#line 147
     testRunner.Then("nothing change");
 #line hidden
             this.ScenarioCleanup();
@@ -439,17 +441,17 @@ namespace Beaver.Tests.Features
         public virtual void ConnectAnObstacleAndAnObstacleRefinement()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect an obstacle and an obstacle refinement", ((string[])(null)));
-#line 150
+#line 151
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 151
-    testRunner.Given("an obstacle 'obstacle-1'");
 #line 152
-    testRunner.And("an obstacle refinement 'refinement-1'");
+    testRunner.Given("an obstacle 'obstacle-1'");
 #line 153
-    testRunner.When("I connect 'obstacle-1' to 'refinement-1'");
+    testRunner.And("an obstacle refinement 'refinement-1'");
 #line 154
+    testRunner.When("I connect 'obstacle-1' to 'refinement-1'");
+#line 155
     testRunner.Then("refinement 'refinement-1' contains 'obstacle-1'");
 #line hidden
             this.ScenarioCleanup();
@@ -460,17 +462,17 @@ namespace Beaver.Tests.Features
         public virtual void ConnectAnAgentAndAGoal()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect an agent and a goal", ((string[])(null)));
-#line 158
+#line 159
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 159
-    testRunner.Given("an agent 'agent-1'");
 #line 160
-    testRunner.And("a goal 'goal-1'");
+    testRunner.Given("an agent 'agent-1'");
 #line 161
-    testRunner.When("I connect 'agent-1' to 'goal-1'");
+    testRunner.And("a goal 'goal-1'");
 #line 162
+    testRunner.When("I connect 'agent-1' to 'goal-1'");
+#line 163
     testRunner.Then("'agent-1' is assigned to 'goal-1'");
 #line hidden
             this.ScenarioCleanup();
@@ -485,17 +487,17 @@ namespace Beaver.Tests.Features
         public virtual void ConnectAnAgentAndNotAGoal(string type, string name, string[] exampleTags)
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect an agent and not a goal", exampleTags);
-#line 170
+#line 171
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 171
-    testRunner.Given("an agent 'agent-1'");
 #line 172
-    testRunner.And(string.Format("{0} '{1}'", type, name));
+    testRunner.Given("an agent 'agent-1'");
 #line 173
-    testRunner.When(string.Format("I connect 'agent-1' to '{0}'", name));
+    testRunner.And(string.Format("{0} '{1}'", type, name));
 #line 174
+    testRunner.When(string.Format("I connect 'agent-1' to '{0}'", name));
+#line 175
     testRunner.Then("nothing change");
 #line hidden
             this.ScenarioCleanup();
@@ -506,17 +508,17 @@ namespace Beaver.Tests.Features
         public virtual void ConnectARefinementAndAGoal()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect a refinement and a goal", ((string[])(null)));
-#line 185
+#line 186
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 186
-    testRunner.Given("a refinement 'refinement-1'");
 #line 187
-    testRunner.And("a goal 'goal-1'");
+    testRunner.Given("a refinement 'refinement-1'");
 #line 188
-    testRunner.When("I connect 'refinement-1' to 'goal-1'");
+    testRunner.And("a goal 'goal-1'");
 #line 189
+    testRunner.When("I connect 'refinement-1' to 'goal-1'");
+#line 190
     testRunner.Then("'refinement-1' refines 'goal-1'");
 #line hidden
             this.ScenarioCleanup();
@@ -527,35 +529,35 @@ namespace Beaver.Tests.Features
         public virtual void ConnectARefinementAndARefinementOfSameGoal()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect a refinement and a refinement of same goal", ((string[])(null)));
-#line 193
+#line 194
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 194
-    testRunner.Given("a goal 'goal-1'");
 #line 195
-    testRunner.And("a goal 'goal-2'");
+    testRunner.Given("a goal 'goal-1'");
 #line 196
-    testRunner.And("a goal 'goal-3'");
+    testRunner.And("a goal 'goal-2'");
 #line 197
-    testRunner.And("a refinement 'refinement-1' for 'goal-1'");
+    testRunner.And("a goal 'goal-3'");
 #line 198
-    testRunner.And("a refinement 'refinement-2' for 'goal-1'");
+    testRunner.And("a refinement 'refinement-1' for 'goal-1'");
 #line 199
-    testRunner.And("refinement 'refinement-1' contains 'goal-2'");
+    testRunner.And("a refinement 'refinement-2' for 'goal-1'");
 #line 200
-    testRunner.And("refinement 'refinement-2' contains 'goal-3'");
+    testRunner.And("refinement 'refinement-1' contains 'goal-2'");
 #line 201
-    testRunner.When("I connect 'refinement-1' to 'refinement-2'");
+    testRunner.And("refinement 'refinement-2' contains 'goal-3'");
 #line 202
-    testRunner.Then("there exists a refinement for 'goal-1'");
+    testRunner.When("I connect 'refinement-1' to 'refinement-2'");
 #line 203
-    testRunner.And("this refinement contains 'goal-1'");
+    testRunner.Then("there exists a refinement for 'goal-1'");
 #line 204
     testRunner.And("this refinement contains 'goal-2'");
 #line 205
-    testRunner.And("'refinement-1' no longer exists");
+    testRunner.And("this refinement contains 'goal-3'");
 #line 206
+    testRunner.And("'refinement-1' no longer exists");
+#line 207
     testRunner.And("'refinement-2' no longer exists");
 #line hidden
             this.ScenarioCleanup();
@@ -566,21 +568,21 @@ namespace Beaver.Tests.Features
         public virtual void ConnectARefinementAndARefinementOfADifferentGoal()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect a refinement and a refinement of a different goal", ((string[])(null)));
-#line 210
+#line 211
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 211
-    testRunner.Given("a goal 'goal-1'");
 #line 212
-    testRunner.And("a goal 'goal-2'");
+    testRunner.Given("a goal 'goal-1'");
 #line 213
-    testRunner.And("a refinement 'refinement-1' for 'goal-1'");
+    testRunner.And("a goal 'goal-2'");
 #line 214
-    testRunner.And("a refinement 'refinement-2' for 'goal-2'");
+    testRunner.And("a refinement 'refinement-1' for 'goal-1'");
 #line 215
-    testRunner.When("I connect 'refinement-1' to 'refinement-2'");
+    testRunner.And("a refinement 'refinement-2' for 'goal-2'");
 #line 216
+    testRunner.When("I connect 'refinement-1' to 'refinement-2'");
+#line 217
     testRunner.Then("nothing change");
 #line hidden
             this.ScenarioCleanup();
@@ -591,21 +593,21 @@ namespace Beaver.Tests.Features
         [NUnit.Framework.TestCaseAttribute("a domain property", "domprop-1", new string[0])]
         [NUnit.Framework.TestCaseAttribute("an obstacle", "obstacle-2", new string[0])]
         [NUnit.Framework.TestCaseAttribute("an agent", "agent-2", new string[0])]
-        [NUnit.Framework.TestCaseAttribute("an obstacle refinement", "refinement-1", new string[0])]
+        [NUnit.Framework.TestCaseAttribute("an obstacle refinement", "refinement-2", new string[0])]
         public virtual void ConnectARefinementAndNotAGoalNorARefinement(string type, string name, string[] exampleTags)
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect a refinement and not a goal nor a refinement", exampleTags);
-#line 223
+#line 224
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 224
-    testRunner.Given("a refinement 'refinement-1'");
 #line 225
-    testRunner.And(string.Format("{0} '{1}'", type, name));
+    testRunner.Given("a refinement 'refinement-1'");
 #line 226
-    testRunner.When(string.Format("I connect 'refinement-1' to '{0}'", name));
+    testRunner.And(string.Format("{0} '{1}'", type, name));
 #line 227
+    testRunner.When(string.Format("I connect 'refinement-1' to '{0}'", name));
+#line 228
     testRunner.Then("nothing change");
 #line hidden
             this.ScenarioCleanup();
@@ -616,17 +618,17 @@ namespace Beaver.Tests.Features
         public virtual void ConnectAnObstacleRefinementAndAnObstacle()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect an obstacle refinement and an obstacle", ((string[])(null)));
-#line 238
+#line 239
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 239
-    testRunner.Given("an obstacle refinement 'refinement-1'");
 #line 240
-    testRunner.And("an obstacle 'obstacle-1'");
+    testRunner.Given("an obstacle refinement 'refinement-1'");
 #line 241
-    testRunner.When("I connect 'refinement-1' to 'obstacle-1'");
+    testRunner.And("an obstacle 'obstacle-1'");
 #line 242
+    testRunner.When("I connect 'refinement-1' to 'obstacle-1'");
+#line 243
     testRunner.Then("'refinement-1' refines 'obstacle-1'");
 #line hidden
             this.ScenarioCleanup();
@@ -637,21 +639,21 @@ namespace Beaver.Tests.Features
         [NUnit.Framework.TestCaseAttribute("a goal", "goal-1", new string[0])]
         [NUnit.Framework.TestCaseAttribute("a domain property", "domprop-1", new string[0])]
         [NUnit.Framework.TestCaseAttribute("an agent", "agent-2", new string[0])]
-        [NUnit.Framework.TestCaseAttribute("an refinement", "refinement-1", new string[0])]
+        [NUnit.Framework.TestCaseAttribute("a refinement", "refinement-2", new string[0])]
         public virtual void ConnectAnObstacleRefinementAndNotAnObstacleNorAnObstacleRefinement(string type, string name, string[] exampleTags)
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect an obstacle refinement and not an obstacle nor an obstacle refinement", exampleTags);
-#line 249
+#line 250
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 250
-    testRunner.Given("an obstacle refinement 'refinement-1'");
 #line 251
-    testRunner.And(string.Format("{0} '{1}'", type, name));
+    testRunner.Given("an obstacle refinement 'refinement-1'");
 #line 252
-    testRunner.When(string.Format("I connect 'refinement-1' to '{0}'", name));
+    testRunner.And(string.Format("{0} '{1}'", type, name));
 #line 253
+    testRunner.When(string.Format("I connect 'refinement-1' to '{0}'", name));
+#line 254
     testRunner.Then("nothing change");
 #line hidden
             this.ScenarioCleanup();
@@ -662,31 +664,31 @@ namespace Beaver.Tests.Features
         public virtual void ConnectAnObstacleRefinementAndAnObstacleRefinementOfSameObstacle()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect an obstacle refinement and an obstacle refinement of same obstacle", ((string[])(null)));
-#line 264
+#line 265
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 265
-    testRunner.Given("an obstacle 'obstacle-1'");
 #line 266
-    testRunner.And("an obstacle 'obstacle-2'");
+    testRunner.Given("an obstacle 'obstacle-1'");
 #line 267
-    testRunner.And("an obstacle 'obstacle-3'");
+    testRunner.And("an obstacle 'obstacle-2'");
 #line 268
-    testRunner.And("an obstacle refinement 'refinement-1' for 'obstacle-1'");
+    testRunner.And("an obstacle 'obstacle-3'");
 #line 269
-    testRunner.And("an obstacle refinement 'refinement-2' for 'obstacle-1'");
+    testRunner.And("an obstacle refinement 'refinement-1' for 'obstacle-1'");
 #line 270
-    testRunner.And("refinement 'refinement-1' contains 'obstacle-2'");
+    testRunner.And("an obstacle refinement 'refinement-2' for 'obstacle-1'");
 #line 271
-    testRunner.And("refinement 'refinement-2' contains 'obstacle-3'");
+    testRunner.And("refinement 'refinement-1' contains 'obstacle-2'");
 #line 272
-    testRunner.When("I connect 'refinement-1' to 'refinement-2'");
+    testRunner.And("refinement 'refinement-2' contains 'obstacle-3'");
 #line 273
-    testRunner.Then("there exists a refinement for 'obstacle-1'");
+    testRunner.When("I connect 'refinement-1' to 'refinement-2'");
 #line 274
-    testRunner.And("this refinement contains 'obstacle-2'");
+    testRunner.Then("there exists an obstacle refinement for 'obstacle-1'");
 #line 275
+    testRunner.And("this refinement contains 'obstacle-2'");
+#line 276
     testRunner.And("this refinement contains 'obstacle-3'");
 #line hidden
             this.ScenarioCleanup();
@@ -697,21 +699,21 @@ namespace Beaver.Tests.Features
         public virtual void ConnectAnObstacleRefinementAndAnObstacleRefinementOfAnOtherObstacle()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Connect an obstacle refinement and an obstacle refinement of an other obstacle", ((string[])(null)));
-#line 277
+#line 278
   this.ScenarioSetup(scenarioInfo);
 #line 6
   this.FeatureBackground();
-#line 278
-    testRunner.Given("an obstacle 'obstacle-1'");
 #line 279
-    testRunner.And("an obstacle 'obstacle-2'");
+    testRunner.Given("an obstacle 'obstacle-1'");
 #line 280
-    testRunner.And("an obstacle refinement 'refinement-1' for 'obstacle-1'");
+    testRunner.And("an obstacle 'obstacle-2'");
 #line 281
-    testRunner.And("an obstacle refinement 'refinement-2' for 'obstacle-2'");
+    testRunner.And("an obstacle refinement 'refinement-1' for 'obstacle-1'");
 #line 282
-    testRunner.When("I connect 'refinement-1' to 'refinement-2'");
+    testRunner.And("an obstacle refinement 'refinement-2' for 'obstacle-2'");
 #line 283
+    testRunner.When("I connect 'refinement-1' to 'refinement-2'");
+#line 284
     testRunner.Then("nothing change");
 #line hidden
             this.ScenarioCleanup();

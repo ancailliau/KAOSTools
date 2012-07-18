@@ -34,6 +34,9 @@ namespace Beaver.Domain
 	{
 		public ObstacleRefinement (string id) : base (id)
 		{}
+
+        public ObstacleRefinement () : base ()
+        {}
 	}
 }
 
