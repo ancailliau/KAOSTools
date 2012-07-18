@@ -50,6 +50,7 @@
     <Compile Include="Features\elements.feature.cs" />
     <Compile Include="Features\views.feature.cs" />
     <Compile Include="Steps\ElementsSteps.cs" />
+    <Compile Include="Features\formal.feature.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -61,6 +62,7 @@
     <None Include="Features\easyusage.feature" />
     <None Include="Features\elements.feature" />
     <None Include="Features\views.feature" />
+    <None Include="Features\formal.feature" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Beaver\Beaver.csproj">

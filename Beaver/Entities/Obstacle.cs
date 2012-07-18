@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using LtlSharp;
 
 namespace Beaver.Domain
 {
@@ -38,10 +39,19 @@ namespace Beaver.Domain
 			get;
 			set;
 		}
-		
+        
+        public LTLFormula FormalSpec {
+            get;
+            set;
+        }
+     	
 		public Obstacle (string id)
             : base (id)
         {
+        }
+
+        public void Specify (string spec) {
+            FormalSpec = LtlSharp.Parser.Parse (spec);
         }
 	}
 }

@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using LtlSharp;
 
 namespace Beaver.Domain
 {
@@ -41,9 +42,18 @@ namespace Beaver.Domain
 			set;
 		}
 		
+        public LTLFormula FormalSpec {
+            get;
+            set;
+        }
+
 		public DomainProperty (string id)
             : base (id)
         {
+        }
+
+        public void Specify (string spec) {
+            FormalSpec = LtlSharp.Parser.Parse (spec);
         }
 	}
 }

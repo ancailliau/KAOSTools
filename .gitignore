@@ -5,4 +5,4 @@ Beaver.Tests/obj/
 *.userprefs
 Beaver/obj/
 Beaver.Tests/TestResult.html
-Beaver.Tests/test-results/
+test-results/

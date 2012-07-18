@@ -171,6 +171,21 @@ namespace Beaver.Tests
             model.Connect (id1, id2);
         }
 
+        [When(@"I specify '([a-zA-Z0-9-_ ]+)' as '([^']+)'")]
+        public void WhenISpecify (string id1, string formalSpec)
+        {
+            var element = model.Get (id1);
+
+            if (element is Goal)
+                (element as Goal).Specify (formalSpec);
+
+            if (element is DomainProperty)
+                (element as DomainProperty).Specify (formalSpec);
+
+            if (element is Obstacle)
+                (element as Obstacle).Specify (formalSpec);
+        }
+
         [Then(@"the model contains '([a-zA-Z0-9-_ ]+)'")]
         public void ThenTheModelContains(string id)
         {
@@ -286,6 +301,30 @@ namespace Beaver.Tests
         public void ThenRefinementNoLongerExists(string refinementId)
         {
             Assert.That (model.Find <Refinement> (x => x.Id == refinementId).Count () == 0);
+        }
+
+        [Then(@"the goal '([a-zA-Z0-9-_ ]+)' is formally specified")]
+        public void ThenTheGoalIsFormallySpecified(string id)
+        {
+            var goal = model.Get (id) as Goal;
+            Assert.IsNotNull (goal);
+            Assert.IsNotNull (goal.FormalSpec);
+        }
+
+        [Then(@"the domain property '([a-zA-Z0-9-_ ]+)' is formally specified")]
+        public void ThenTheDomainPropertyIsFormallySpecified(string id)
+        {
+            var domainProperty = model.Get (id) as DomainProperty;
+            Assert.IsNotNull (domainProperty);
+            Assert.IsNotNull (domainProperty.FormalSpec);
+        }
+
+        [Then(@"the obstacle '([a-zA-Z0-9-_ ]+)' is formally specified")]
+        public void ThenTheObstacleIsFormallySpecified(string id)
+        {
+            var obstacle = model.Get (id) as Obstacle;
+            Assert.IsNotNull (obstacle);
+            Assert.IsNotNull (obstacle.FormalSpec);
         }
     }
 }
