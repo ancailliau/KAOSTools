@@ -48,7 +48,6 @@
     <Compile Include="Features\consistency.feature.cs" />
     <Compile Include="Features\easyusage.feature.cs" />
     <Compile Include="Features\elements.feature.cs" />
-    <Compile Include="Features\probability.feature.cs" />
     <Compile Include="Features\views.feature.cs" />
     <Compile Include="Steps\ElementsSteps.cs" />
   </ItemGroup>
@@ -61,7 +60,6 @@
     <None Include="Features\consistency.feature" />
     <None Include="Features\easyusage.feature" />
     <None Include="Features\elements.feature" />
-    <None Include="Features\probability.feature" />
     <None Include="Features\views.feature" />
   </ItemGroup>
   <ItemGroup>
