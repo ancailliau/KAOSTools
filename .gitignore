@@ -4,3 +4,4 @@ Beaver.Tests/bin/
 Beaver.Tests/obj/
 *.userprefs
 Beaver/obj/
+Beaver.Tests/TestResult.html
