@@ -49,7 +49,6 @@
     <Compile Include="Features\easyusage.feature.cs" />
     <Compile Include="Features\elements.feature.cs" />
     <Compile Include="Features\views.feature.cs" />
-    <Compile Include="Steps\ElementsSteps.cs" />
     <Compile Include="Features\formal.feature.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -63,11 +62,13 @@
     <None Include="Features\elements.feature" />
     <None Include="Features\views.feature" />
     <None Include="Features\formal.feature" />
+    <None Include="Steps\ElementsSteps.cs" />
+    <None Include="TestLAS.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Beaver\Beaver.csproj">
+    <ProjectReference Include="..\Beaver\KAOSFormalTools.Domain.csproj">
       <Project>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</Project>
-      <Name>Beaver</Name>
+      <Name>KAOSFormalTools.Domain</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

@@ -1,0 +1,75 @@
+MODULE main
+
+  VAR
+    incidentReported : boolean;
+    ambulanceOnScene : boolean;
+    ambulanceAllocated : boolean;
+    ambulanceMobilized : boolean;
+    onRoad : boolean;
+    ambulanceMobilizedByFax : boolean;
+    ambulanceMobilizedByPhone : boolean;
+
+  -- Expected result : False (otherwise, Refinement '82561784-7b21-4fd5-93c8-29f4c476ef4b' is not consistent)
+  LTLSPEC
+    ! ( G ( incidentReported -> F ambulanceAllocated) & G ( ambulanceAllocated -> F ambulanceOnScene))
+
+  -- Expected result : True (otherwise, Refinement '82561784-7b21-4fd5-93c8-29f4c476ef4b' is not complete)
+  LTLSPEC
+    G ( incidentReported -> F ambulanceAllocated) & G ( ambulanceAllocated -> F ambulanceOnScene) -> G ( incidentReported -> F ambulanceOnScene)
+
+  -- Expected result : False (otherwise, Refinement '82561784-7b21-4fd5-93c8-29f4c476ef4b' is not minimal)
+  LTLSPEC
+    G ( ambulanceAllocated -> F ambulanceOnScene) -> G ( incidentReported -> F ambulanceOnScene)
+
+  -- Expected result : False (otherwise, Refinement '82561784-7b21-4fd5-93c8-29f4c476ef4b' is not minimal)
+  LTLSPEC
+    G ( incidentReported -> F ambulanceAllocated) -> G ( incidentReported -> F ambulanceOnScene)
+
+  -- Expected result : False (otherwise, Refinement 'fb703db8-b343-411e-8196-ac0f9d225ce4' is not consistent)
+  LTLSPEC
+    ! ( G ( ambulanceAllocated -> F ambulanceMobilized) & G ( ambulanceMobilized -> F ambulanceOnScene))
+
+  -- Expected result : True (otherwise, Refinement 'fb703db8-b343-411e-8196-ac0f9d225ce4' is not complete)
+  LTLSPEC
+    G ( ambulanceAllocated -> F ambulanceMobilized) & G ( ambulanceMobilized -> F ambulanceOnScene) -> G ( ambulanceAllocated -> F ambulanceOnScene)
+
+  -- Expected result : False (otherwise, Refinement 'fb703db8-b343-411e-8196-ac0f9d225ce4' is not minimal)
+  LTLSPEC
+    G ( ambulanceMobilized -> F ambulanceOnScene) -> G ( ambulanceAllocated -> F ambulanceOnScene)
+
+  -- Expected result : False (otherwise, Refinement 'fb703db8-b343-411e-8196-ac0f9d225ce4' is not minimal)
+  LTLSPEC
+    G ( ambulanceAllocated -> F ambulanceMobilized) -> G ( ambulanceAllocated -> F ambulanceOnScene)
+
+  -- Expected result : False (otherwise, Refinement '011e62b7-55f9-4303-ae21-a6146f0b68fa' is not consistent)
+  LTLSPEC
+    ! ( G ( ambulanceAllocated & onRoad -> F ambulanceMobilized) & G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilized))
+
+  -- Expected result : True (otherwise, Refinement '011e62b7-55f9-4303-ae21-a6146f0b68fa' is not complete)
+  LTLSPEC
+    G ( ambulanceAllocated & onRoad -> F ambulanceMobilized) & G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilized) -> G ( ambulanceAllocated -> F ambulanceMobilized)
+
+  -- Expected result : False (otherwise, Refinement '011e62b7-55f9-4303-ae21-a6146f0b68fa' is not minimal)
+  LTLSPEC
+    G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilized) -> G ( ambulanceAllocated -> F ambulanceMobilized)
+
+  -- Expected result : False (otherwise, Refinement '011e62b7-55f9-4303-ae21-a6146f0b68fa' is not minimal)
+  LTLSPEC
+    G ( ambulanceAllocated & onRoad -> F ambulanceMobilized) -> G ( ambulanceAllocated -> F ambulanceMobilized)
+
+  -- Expected result : False (otherwise, Refinement 'd46cac5d-6b52-4bdf-bd62-865174356527' is not consistent)
+  LTLSPEC
+    ! ( G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilizedByFax) & G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilizedByPhone) & G ( ambulanceMobilizedByFax | ambulanceMobilizedByPhone <-> ambulanceMobilized))
+
+  -- Expected result : True (otherwise, Refinement 'd46cac5d-6b52-4bdf-bd62-865174356527' is not complete)
+  LTLSPEC
+    G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilizedByFax) & G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilizedByPhone) & G ( ambulanceMobilizedByFax | ambulanceMobilizedByPhone <-> ambulanceMobilized) -> G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilized)
+
+  -- Expected result : False (otherwise, Refinement 'd46cac5d-6b52-4bdf-bd62-865174356527' is not minimal)
+  LTLSPEC
+    G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilizedByPhone) & G ( ambulanceMobilizedByFax | ambulanceMobilizedByPhone <-> ambulanceMobilized) -> G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilized)
+
+  -- Expected result : False (otherwise, Refinement 'd46cac5d-6b52-4bdf-bd62-865174356527' is not minimal)
+  LTLSPEC
+    G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilizedByFax) & G ( ambulanceMobilizedByFax | ambulanceMobilizedByPhone <-> ambulanceMobilized) -> G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilized)
+
