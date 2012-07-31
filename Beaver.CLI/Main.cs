@@ -35,9 +35,13 @@ namespace Beaver.CLI
                 return;
             }
     
-            if (string.IsNullOrEmpty (nusmvModel) & string.IsNullOrEmpty (nusmvOutput)
-                | !string.IsNullOrEmpty (nusmvModel) & !string.IsNullOrEmpty (nusmvOutput)) {
-                PrintError ("-i|--input and -o|--output are mutually exclusive");
+            if (string.IsNullOrEmpty (nusmvModel) & string.IsNullOrEmpty (nusmvOutput)) {
+                PrintError ("`-i|--input` or `-o|--output` shall be given");
+                return;
+            }
+
+            if (!string.IsNullOrEmpty (nusmvModel) & !string.IsNullOrEmpty (nusmvOutput)) {
+                PrintError ("`-i|--input` and `-o|--output` are mutually exclusive");
                 return;
             }
 
