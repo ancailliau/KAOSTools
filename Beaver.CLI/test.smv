@@ -1,0 +1,88 @@
+MODULE main
+
+  VAR
+    incidentReported : boolean;
+    ambulanceOnScene : boolean;
+    ambulanceAllocated : boolean;
+    ambulanceMobilized : boolean;
+    onRoad : boolean;
+    ambulanceMobilizedByFax : boolean;
+    ambulanceMobilizedByPhone : boolean;
+    ambulanceInTrafficJam : boolean;
+    ambulanceLost : boolean;
+    ambulanceBrokenDown : boolean;
+    ambulanceInFamiliarArea : boolean;
+    gpsNotWorking : boolean;
+
+  -- Expected result : False (otherwise, Domain properties are inconsistent)
+  LTLSPEC
+    ! ( G ( ambulanceOnScene -> ! ambulanceInTrafficJam) & G ( ambulanceOnScene -> ! ambulanceLost) & G ( ambulanceOnScene -> ! ambulanceBrokenDown) & G ( ambulanceLost <-> ! ambulanceInFamiliarArea & gpsNotWorking) & G ( ambulanceMobilizedByFax | ambulanceMobilizedByPhone -> ambulanceMobilized))
+
+  -- Expected result : True (otherwise, Refinement 'Achieve [AmbulanceAllocated When IncidentReported], Achieve [AmbulanceOnScene When AmbulanceAllocated]' for 'Achieve [AmbulanceOnScene When IncidentReported]' is not complete)
+  LTLSPEC
+    G ( ambulanceOnScene -> ! ambulanceInTrafficJam) & G ( ambulanceOnScene -> ! ambulanceLost) & G ( ambulanceOnScene -> ! ambulanceBrokenDown) & G ( ambulanceLost <-> ! ambulanceInFamiliarArea & gpsNotWorking) & G ( ambulanceMobilizedByFax | ambulanceMobilizedByPhone -> ambulanceMobilized) -> G ( incidentReported -> F ambulanceAllocated) & G ( ambulanceAllocated -> F ambulanceOnScene) -> G ( incidentReported -> F ambulanceOnScene)
+
+  -- Expected result : False (otherwise, Refinement 'Achieve [AmbulanceAllocated When IncidentReported], Achieve [AmbulanceOnScene When AmbulanceAllocated]' for 'Achieve [AmbulanceOnScene When IncidentReported]' is not minimal)
+  LTLSPEC
+    G ( ambulanceOnScene -> ! ambulanceInTrafficJam) & G ( ambulanceOnScene -> ! ambulanceLost) & G ( ambulanceOnScene -> ! ambulanceBrokenDown) & G ( ambulanceLost <-> ! ambulanceInFamiliarArea & gpsNotWorking) & G ( ambulanceMobilizedByFax | ambulanceMobilizedByPhone -> ambulanceMobilized) -> G ( ambulanceAllocated -> F ambulanceOnScene) -> G ( incidentReported -> F ambulanceOnScene)
+
+  -- Expected result : False (otherwise, Refinement 'Achieve [AmbulanceAllocated When IncidentReported], Achieve [AmbulanceOnScene When AmbulanceAllocated]' for 'Achieve [AmbulanceOnScene When IncidentReported]' is not minimal)
+  LTLSPEC
+    G ( ambulanceOnScene -> ! ambulanceInTrafficJam) & G ( ambulanceOnScene -> ! ambulanceLost) & G ( ambulanceOnScene -> ! ambulanceBrokenDown) & G ( ambulanceLost <-> ! ambulanceInFamiliarArea & gpsNotWorking) & G ( ambulanceMobilizedByFax | ambulanceMobilizedByPhone -> ambulanceMobilized) -> G ( incidentReported -> F ambulanceAllocated) -> G ( incidentReported -> F ambulanceOnScene)
+
+  -- Expected result : False (otherwise, Refinement 'Achieve [AmbulanceAllocated When IncidentReported], Achieve [AmbulanceOnScene When AmbulanceAllocated]' for 'Achieve [AmbulanceOnScene When IncidentReported]' is not consistent)
+  LTLSPEC
+    G ( ambulanceOnScene -> ! ambulanceInTrafficJam) & G ( ambulanceOnScene -> ! ambulanceLost) & G ( ambulanceOnScene -> ! ambulanceBrokenDown) & G ( ambulanceLost <-> ! ambulanceInFamiliarArea & gpsNotWorking) & G ( ambulanceMobilizedByFax | ambulanceMobilizedByPhone -> ambulanceMobilized) -> ! ( G ( incidentReported -> F ambulanceAllocated) & G ( ambulanceAllocated -> F ambulanceOnScene))
+
+  -- Expected result : True (otherwise, Refinement 'Achieve [AmbulanceMobilized When AmbulanceAllocated], Achieve [AmbulanceOnScene When AmbulanceMobilized]' for 'Achieve [AmbulanceOnScene When AmbulanceAllocated]' is not complete)
+  LTLSPEC
+    G ( ambulanceOnScene -> ! ambulanceInTrafficJam) & G ( ambulanceOnScene -> ! ambulanceLost) & G ( ambulanceOnScene -> ! ambulanceBrokenDown) & G ( ambulanceLost <-> ! ambulanceInFamiliarArea & gpsNotWorking) & G ( ambulanceMobilizedByFax | ambulanceMobilizedByPhone -> ambulanceMobilized) -> G ( ambulanceAllocated -> F ambulanceMobilized) & G ( ambulanceMobilized -> F ambulanceOnScene) -> G ( ambulanceAllocated -> F ambulanceOnScene)
+
+  -- Expected result : False (otherwise, Refinement 'Achieve [AmbulanceMobilized When AmbulanceAllocated], Achieve [AmbulanceOnScene When AmbulanceMobilized]' for 'Achieve [AmbulanceOnScene When AmbulanceAllocated]' is not minimal)
+  LTLSPEC
+    G ( ambulanceOnScene -> ! ambulanceInTrafficJam) & G ( ambulanceOnScene -> ! ambulanceLost) & G ( ambulanceOnScene -> ! ambulanceBrokenDown) & G ( ambulanceLost <-> ! ambulanceInFamiliarArea & gpsNotWorking) & G ( ambulanceMobilizedByFax | ambulanceMobilizedByPhone -> ambulanceMobilized) -> G ( ambulanceMobilized -> F ambulanceOnScene) -> G ( ambulanceAllocated -> F ambulanceOnScene)
+
+  -- Expected result : False (otherwise, Refinement 'Achieve [AmbulanceMobilized When AmbulanceAllocated], Achieve [AmbulanceOnScene When AmbulanceMobilized]' for 'Achieve [AmbulanceOnScene When AmbulanceAllocated]' is not minimal)
+  LTLSPEC
+    G ( ambulanceOnScene -> ! ambulanceInTrafficJam) & G ( ambulanceOnScene -> ! ambulanceLost) & G ( ambulanceOnScene -> ! ambulanceBrokenDown) & G ( ambulanceLost <-> ! ambulanceInFamiliarArea & gpsNotWorking) & G ( ambulanceMobilizedByFax | ambulanceMobilizedByPhone -> ambulanceMobilized) -> G ( ambulanceAllocated -> F ambulanceMobilized) -> G ( ambulanceAllocated -> F ambulanceOnScene)
+
+  -- Expected result : False (otherwise, Refinement 'Achieve [AmbulanceMobilized When AmbulanceAllocated], Achieve [AmbulanceOnScene When AmbulanceMobilized]' for 'Achieve [AmbulanceOnScene When AmbulanceAllocated]' is not consistent)
+  LTLSPEC
+    G ( ambulanceOnScene -> ! ambulanceInTrafficJam) & G ( ambulanceOnScene -> ! ambulanceLost) & G ( ambulanceOnScene -> ! ambulanceBrokenDown) & G ( ambulanceLost <-> ! ambulanceInFamiliarArea & gpsNotWorking) & G ( ambulanceMobilizedByFax | ambulanceMobilizedByPhone -> ambulanceMobilized) -> ! ( G ( ambulanceAllocated -> F ambulanceMobilized) & G ( ambulanceMobilized -> F ambulanceOnScene))
+
+  -- Expected result : True (otherwise, Refinement 'Achieve [AmbulanceMobilized When AmbulanceAllocatedOnRoad], Achieve [AmbulanceMobilized When AmbulanceAllocatedAtStation]' for 'Achieve [AmbulanceMobilized When AmbulanceAllocated]' is not complete)
+  LTLSPEC
+    G ( ambulanceOnScene -> ! ambulanceInTrafficJam) & G ( ambulanceOnScene -> ! ambulanceLost) & G ( ambulanceOnScene -> ! ambulanceBrokenDown) & G ( ambulanceLost <-> ! ambulanceInFamiliarArea & gpsNotWorking) & G ( ambulanceMobilizedByFax | ambulanceMobilizedByPhone -> ambulanceMobilized) -> G ( ambulanceAllocated & onRoad -> F ambulanceMobilized) & G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilized) -> G ( ambulanceAllocated -> F ambulanceMobilized)
+
+  -- Expected result : False (otherwise, Refinement 'Achieve [AmbulanceMobilized When AmbulanceAllocatedOnRoad], Achieve [AmbulanceMobilized When AmbulanceAllocatedAtStation]' for 'Achieve [AmbulanceMobilized When AmbulanceAllocated]' is not minimal)
+  LTLSPEC
+    G ( ambulanceOnScene -> ! ambulanceInTrafficJam) & G ( ambulanceOnScene -> ! ambulanceLost) & G ( ambulanceOnScene -> ! ambulanceBrokenDown) & G ( ambulanceLost <-> ! ambulanceInFamiliarArea & gpsNotWorking) & G ( ambulanceMobilizedByFax | ambulanceMobilizedByPhone -> ambulanceMobilized) -> G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilized) -> G ( ambulanceAllocated -> F ambulanceMobilized)
+
+  -- Expected result : False (otherwise, Refinement 'Achieve [AmbulanceMobilized When AmbulanceAllocatedOnRoad], Achieve [AmbulanceMobilized When AmbulanceAllocatedAtStation]' for 'Achieve [AmbulanceMobilized When AmbulanceAllocated]' is not minimal)
+  LTLSPEC
+    G ( ambulanceOnScene -> ! ambulanceInTrafficJam) & G ( ambulanceOnScene -> ! ambulanceLost) & G ( ambulanceOnScene -> ! ambulanceBrokenDown) & G ( ambulanceLost <-> ! ambulanceInFamiliarArea & gpsNotWorking) & G ( ambulanceMobilizedByFax | ambulanceMobilizedByPhone -> ambulanceMobilized) -> G ( ambulanceAllocated & onRoad -> F ambulanceMobilized) -> G ( ambulanceAllocated -> F ambulanceMobilized)
+
+  -- Expected result : False (otherwise, Refinement 'Achieve [AmbulanceMobilized When AmbulanceAllocatedOnRoad], Achieve [AmbulanceMobilized When AmbulanceAllocatedAtStation]' for 'Achieve [AmbulanceMobilized When AmbulanceAllocated]' is not consistent)
+  LTLSPEC
+    G ( ambulanceOnScene -> ! ambulanceInTrafficJam) & G ( ambulanceOnScene -> ! ambulanceLost) & G ( ambulanceOnScene -> ! ambulanceBrokenDown) & G ( ambulanceLost <-> ! ambulanceInFamiliarArea & gpsNotWorking) & G ( ambulanceMobilizedByFax | ambulanceMobilizedByPhone -> ambulanceMobilized) -> ! ( G ( ambulanceAllocated & onRoad -> F ambulanceMobilized) & G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilized))
+
+  -- Expected result : True (otherwise, Refinement 'Achieve [AmbulanceMobilizedByFax When AmbulanceAllocatedAtStation], Achieve [AmbulanceMobilizedByPhone When AmbulanceAllocatedAtStation]' for 'Achieve [AmbulanceMobilized When AmbulanceAllocatedAtStation]' is not complete)
+  LTLSPEC
+    G ( ambulanceOnScene -> ! ambulanceInTrafficJam) & G ( ambulanceOnScene -> ! ambulanceLost) & G ( ambulanceOnScene -> ! ambulanceBrokenDown) & G ( ambulanceLost <-> ! ambulanceInFamiliarArea & gpsNotWorking) & G ( ambulanceMobilizedByFax | ambulanceMobilizedByPhone -> ambulanceMobilized) -> G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilizedByFax) & G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilizedByPhone) -> G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilized)
+
+  -- Expected result : False (otherwise, Refinement 'Achieve [AmbulanceMobilizedByFax When AmbulanceAllocatedAtStation], Achieve [AmbulanceMobilizedByPhone When AmbulanceAllocatedAtStation]' for 'Achieve [AmbulanceMobilized When AmbulanceAllocatedAtStation]' is not minimal)
+  LTLSPEC
+    G ( ambulanceOnScene -> ! ambulanceInTrafficJam) & G ( ambulanceOnScene -> ! ambulanceLost) & G ( ambulanceOnScene -> ! ambulanceBrokenDown) & G ( ambulanceLost <-> ! ambulanceInFamiliarArea & gpsNotWorking) & G ( ambulanceMobilizedByFax | ambulanceMobilizedByPhone -> ambulanceMobilized) -> G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilizedByPhone) -> G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilized)
+
+  -- Expected result : False (otherwise, Refinement 'Achieve [AmbulanceMobilizedByFax When AmbulanceAllocatedAtStation], Achieve [AmbulanceMobilizedByPhone When AmbulanceAllocatedAtStation]' for 'Achieve [AmbulanceMobilized When AmbulanceAllocatedAtStation]' is not minimal)
+  LTLSPEC
+    G ( ambulanceOnScene -> ! ambulanceInTrafficJam) & G ( ambulanceOnScene -> ! ambulanceLost) & G ( ambulanceOnScene -> ! ambulanceBrokenDown) & G ( ambulanceLost <-> ! ambulanceInFamiliarArea & gpsNotWorking) & G ( ambulanceMobilizedByFax | ambulanceMobilizedByPhone -> ambulanceMobilized) -> G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilizedByFax) -> G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilized)
+
+  -- Expected result : False (otherwise, Refinement 'Achieve [AmbulanceMobilizedByFax When AmbulanceAllocatedAtStation], Achieve [AmbulanceMobilizedByPhone When AmbulanceAllocatedAtStation]' for 'Achieve [AmbulanceMobilized When AmbulanceAllocatedAtStation]' is not consistent)
+  LTLSPEC
+    G ( ambulanceOnScene -> ! ambulanceInTrafficJam) & G ( ambulanceOnScene -> ! ambulanceLost) & G ( ambulanceOnScene -> ! ambulanceBrokenDown) & G ( ambulanceLost <-> ! ambulanceInFamiliarArea & gpsNotWorking) & G ( ambulanceMobilizedByFax | ambulanceMobilizedByPhone -> ambulanceMobilized) -> ! ( G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilizedByFax) & G ( ambulanceAllocated & ! onRoad -> F ambulanceMobilizedByPhone))
+
+  -- Expected result : True (otherwise, Obstacle 'Mobilized Ambulance Not On Scene in Time' does not obstruct 'Achieve [AmbulanceOnScene When AmbulanceMobilized]')
+  LTLSPEC
+    G ( ambulanceOnScene -> ! ambulanceInTrafficJam) & G ( ambulanceOnScene -> ! ambulanceLost) & G ( ambulanceOnScene -> ! ambulanceBrokenDown) & G ( ambulanceLost <-> ! ambulanceInFamiliarArea & gpsNotWorking) & G ( ambulanceMobilizedByFax | ambulanceMobilizedByPhone -> ambulanceMobilized) -> F ( ambulanceMobilized & G ! ambulanceOnScene) -> ! G ( ambulanceMobilized -> F ambulanceOnScene)
+

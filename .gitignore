@@ -1,8 +1,6 @@
 *.pidb
-Beaver/bin/
-Beaver.Tests/bin/
-Beaver.Tests/obj/
 *.userprefs
-Beaver/obj/
-Beaver.Tests/TestResult.html
+bin/
+obj/
 test-results/
+TestResult.html

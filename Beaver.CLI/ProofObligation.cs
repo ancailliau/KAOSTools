@@ -15,28 +15,28 @@ namespace KAOSFormalTools.RefinementChecker
         public string     FailureMessage   { get; set; }
     }
 
-    public static class ProofObligationHelpers {
+    public class ProofObligationGenerator {
 
-        private static void AddCompletenessProofObligation (this IList<ProofObligation> list,
-                                                            Goal parent,
-                                                            GoalRefinement refinement)
+        private void AddCompletenessProofObligation (Goal parent, GoalRefinement refinement)
         {
             var specifications = from child in refinement.Children select child.FormalSpec;
             var names = from child in refinement.Children select child.Name;
 
+            var domainproperties = new LtlSharp.Conjunction ((from f in model.DomainProperties select f.FormalSpec).ToArray ());
+
             list.Add (new ProofObligation () {
-                Formula        = new LtlSharp.Implication (new LtlSharp.Conjunction (specifications.ToArray ()), parent.FormalSpec),
+                Formula        = new LtlSharp.Implication (domainproperties, new LtlSharp.Implication (new LtlSharp.Conjunction (specifications.ToArray ()), parent.FormalSpec)),
                 ExpectedResult = true,
                 FailureMessage = string.Format ("Refinement '{0}' for '{1}' is not complete", string.Join (", ", names), parent.Name),
                 SuccessMessage = string.Format ("Refinement '{0}' for '{1}' is complete",     string.Join (", ", names), parent.Name)
             });
         }
         
-        private static void AddMinimalityProofObligation (this IList<ProofObligation> list, 
-                                                          Goal parent,
-                                                          GoalRefinement refinement)
+        private void AddMinimalityProofObligation (Goal parent, GoalRefinement refinement)
         {
             var names = from child in refinement.Children select child.Name;
+
+            var domainproperties = new LtlSharp.Conjunction ((from f in model.DomainProperties select f.FormalSpec).ToArray ());
 
             foreach (var child in refinement.Children) {
                 var conjunction = new LtlSharp.Conjunction ();
@@ -45,7 +45,7 @@ namespace KAOSFormalTools.RefinementChecker
                 }
 
                 list.Add (new ProofObligation () {
-                    Formula        = new LtlSharp.Implication (conjunction, parent.FormalSpec),
+                    Formula        = new LtlSharp.Implication (domainproperties, new LtlSharp.Implication (conjunction, parent.FormalSpec)),
                     ExpectedResult = false,
                     FailureMessage = string.Format ("Refinement '{0}' for '{1}' is not minimal",                   string.Join (", ", names), parent.Name),
                     SuccessMessage = string.Format ("Refinement '{0}' for '{1}' is minimal regarding goal '{2}'",  string.Join (", ", names), parent.Name, child.Name)
@@ -53,40 +53,79 @@ namespace KAOSFormalTools.RefinementChecker
             }
         }
         
-        private static void AddConsistencyProofObligation (this IList<ProofObligation> list, 
-                                                           Goal parent,
-                                                           GoalRefinement refinement)
+        private void AddConsistencyProofObligation (Goal parent, GoalRefinement refinement)
         {
             var specifications = from child in refinement.Children select child.FormalSpec;
             var names = from child in refinement.Children select child.Name;
 
+            var domainproperties = new LtlSharp.Conjunction ((from f in model.DomainProperties select f.FormalSpec).ToArray ());
+
             list.Add (new ProofObligation () {
-                Formula        = new LtlSharp.Negation (new LtlSharp.Conjunction (specifications.ToArray ())),
+                Formula        = new LtlSharp.Implication (domainproperties, new LtlSharp.Negation (new LtlSharp.Conjunction (specifications.ToArray ()))),
                 ExpectedResult = false,
                 FailureMessage = string.Format ("Refinement '{0}' for '{1}' is not consistent", string.Join (", ", names), parent.Name),         
                 SuccessMessage = string.Format ("Refinement '{0}' for '{1}' is consistent",     string.Join (", ", names), parent.Name)         
             });
         }
 
-        private static void AddProofObligationsForGoal (this IList<ProofObligation> list, Goal goal)
+        private void AddProofObligationsForGoal (Goal goal)
         {
             foreach (var refinement in goal.Refinements) {
-                list.AddCompletenessProofObligation (goal, refinement);
-                list.AddMinimalityProofObligation   (goal, refinement);
-                list.AddConsistencyProofObligation  (goal, refinement);
+                AddCompletenessProofObligation (goal, refinement);
+                AddMinimalityProofObligation   (goal, refinement);
+                AddConsistencyProofObligation  (goal, refinement);
 
                 foreach (var child in refinement.Children)
-                    list.AddProofObligationsForGoal (child);
+                    AddProofObligationsForGoal (child);
             }
         }
 
-        public static IList<ProofObligation> GetProofObligations (this GoalModel model)
+        void AddProofObligationsForObstructedGoal (Goal goal)
         {
-            var list = new List<ProofObligation> ();
-            foreach (var root in model.RootGoals)
-                list.AddProofObligationsForGoal (root);
+            foreach (var obstacle in goal.Obstruction) {
+                if (obstacle.FormalSpec != null)
+                    list.Add (new ProofObligation () {
+                        Formula        = new LtlSharp.Implication(domainproperties, new LtlSharp.Implication (obstacle.FormalSpec, new LtlSharp.Negation(goal.FormalSpec))),
+                        ExpectedResult = true,
+                        FailureMessage = string.Format ("Obstacle '{0}' does not obstruct '{1}'", obstacle.Name, goal.Name),         
+                        SuccessMessage = string.Format ("Obstacle '{0}' obstructs '{1}'",         obstacle.Name, goal.Name)         
+                    });
+                else
+                    Console.WriteLine ("Missing formal specification for obstacle '{0}'", obstacle.Name);
+            }
+        }
 
-            return list;
+        private GoalModel model;
+        private List<ProofObligation> list;
+        private LTLFormula domainproperties;
+
+        public List<ProofObligation> Obligations {
+            get { return list; }
+        }
+
+        public ProofObligationGenerator (GoalModel model)
+        {
+            this.model = model;
+            this.list = new List<ProofObligation> ();
+
+            var conj = new List<LTLFormula> ();
+            foreach (var domprop in model.DomainProperties) {
+                conj.Add (domprop.FormalSpec);
+            }
+            domainproperties = new Conjunction(conj.ToArray ());
+
+            list.Add (new ProofObligation () {
+                Formula        = new LtlSharp.Negation(domainproperties),
+                ExpectedResult = false,
+                FailureMessage = string.Format ("Domain properties are inconsistent"),         
+                SuccessMessage = string.Format ("Domain properties are consistent")
+            });
+
+            foreach (var root in model.RootGoals)
+                AddProofObligationsForGoal (root);
+
+            foreach (var obstructedGoal in model.ObstructedGoals)
+                AddProofObligationsForObstructedGoal (obstructedGoal);
         }
 
     }

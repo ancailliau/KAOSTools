@@ -1,0 +1,105 @@
+begin goal
+  id          achieve_ambulance_on_scene_when_incident_reported
+  name        "Achieve [AmbulanceOnScene When IncidentReported]"
+  formalspec  "G (incidentReported -> F ambulanceOnScene)"
+  
+  refinedby   achieve_ambulance_allocated_when_incident_reported, 
+              achieve_ambulance_on_scene_when_ambulance_allocated
+end
+
+begin goal
+  id          achieve_ambulance_allocated_when_incident_reported
+  name        "Achieve [AmbulanceAllocated When IncidentReported]"
+  formalspec  "G (incidentReported -> F ambulanceAllocated)"
+end
+
+begin goal
+  id          achieve_ambulance_on_scene_when_ambulance_allocated
+  name        "Achieve [AmbulanceOnScene When AmbulanceAllocated]"
+  formalspec  "G (ambulanceAllocated -> F ambulanceOnScene)"
+  
+  refinedby   achieve_ambulance_mobilized_when_ambulance_allocated, 
+              achieve_ambulance_on_scene_when_ambulance_mobilized
+end
+
+begin goal
+  id          achieve_ambulance_mobilized_when_ambulance_allocated
+  name        "Achieve [AmbulanceMobilized When AmbulanceAllocated]"
+  formalspec  "G (ambulanceAllocated -> F ambulanceMobilized)"
+end
+
+begin goal
+  id          achieve_ambulance_on_scene_when_ambulance_mobilized
+  name        "Achieve [AmbulanceOnScene When AmbulanceMobilized]"
+  formalspec  "G (ambulanceMobilized -> F ambulanceOnScene)"
+  
+  refinedby   achieve_ambulance_mobilized_when_ambulance_allocated_on_road, 
+              achieve_ambulance_mobilized_when_ambulance_allocated_at_station
+end
+
+begin goal
+  id          achieve_ambulance_mobilized_when_ambulance_allocated_on_road
+  name        "Achieve [AmbulanceMobilized When AmbulanceAllocatedOnRoad]"
+  formalspec  "G (ambulanceAllocated & onRoad -> F ambulanceMobilized)"
+end
+
+begin goal
+  id          achieve_ambulance_mobilized_when_ambulance_allocated_at_station
+  name        "Achieve [AmbulanceMobilized When AmbulanceAllocatedAtStation]"
+  formalspec  "G (ambulanceAllocated & !onRoad -> F ambulanceMobilized)"
+  
+  refinedby   achieve_ambulance_mobilized_by_fax, 
+              achieve_ambulance_mobilized_by_phone
+end
+
+begin goal
+  id          achieve_ambulance_mobilized_by_fax
+  name        "Achieve [AmbulanceMobilizedByFax When AmbulanceAllocatedAtStation]"
+  formalspec  "G (ambulanceAllocated & !onRoad -> F ambulanceMobilizedByFax)"
+end
+
+begin goal
+  id          achieve_ambulance_mobilized_by_phone
+  name        "Achieve [AmbulanceMobilizedByPhone When AmbulanceAllocatedAtStation]"
+  formalspec  "G (ambulanceAllocated & !onRoad -> F ambulanceMobilizedByPhone)"
+end
+
+begin obstacle
+  id          mobilized_ambulance_not_on_scene_in_time
+  name        "Mobilized Ambulance Not On Scene in Time"
+  refinedby   ambulance_stuck_in_traffic_jam
+  refinedby   ambulance_lost
+  refinedby   ambulance_broken_down
+end
+
+begin obstacle
+  id          ambulance_stuck_in_traffic_jam
+  name        "Ambulance Stuck In Traffic Jam"
+end
+
+begin obstacle
+  id          ambulance_lost
+  name        "Ambulance Lost"
+  refinedby   ambulance_not_in_familiar_area, gps_not_working
+end
+
+begin obstacle
+  id          ambulance_broken_down
+  name        "Ambulance Broken Down"
+end
+
+begin obstacle
+  id          ambulance_not_in_familiar_area
+  name        "Ambulance Not In Familiar Area"
+end
+
+begin obstacle
+  id          gps_not_working
+  name        "GPS Not Working"
+end
+
+begin domainproperty
+  id          by_fax_or_by_phone_mobilization
+  name        "Ambulance Mobilized By Fax or Phone"
+  formalspec  "G ((ambulanceMobilizedByFax | ambulanceMobilizedByPhone) -> ambulanceMobilized)"
+end

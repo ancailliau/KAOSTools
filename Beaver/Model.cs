@@ -6,6 +6,7 @@ namespace KAOSFormalTools.Domain
 {
     public class Goal
     {
+        public string                 Identifier      { get; set; }
         public string                 Name            { get; set; }
         public string                 Definition      { get; set; }
         public LTLFormula             FormalSpec      { get; set; }
@@ -23,15 +24,21 @@ namespace KAOSFormalTools.Domain
 
     public class Obstacle
     {
+        public string                           Identifier   { get; set; }
         public string                           Name         { get; set; }
         public string                           Definition   { get; set; }
         public LTLFormula                       FormalSpec   { get; set; }
 
-        public IEnumerable<ObstacleRefinement>  Refinements  { get; set; }
+        public IList<ObstacleRefinement>        Refinements  { get; set; }
+
+        public Obstacle () {
+            Refinements = new List<ObstacleRefinement> ();
+        }
     }
 
     public class DomainProperty
     {   
+        public string      Identifier  { get; set; }
         public string      Name        { get; set; }
         public string      Definition  { get; set; }
         public LTLFormula  FormalSpec  { get; set; }

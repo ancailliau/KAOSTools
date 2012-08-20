@@ -9,6 +9,8 @@ namespace KAOSFormalTools.RefinementChecker
     {
         public static void WriteNuSMVModel (this GoalModel model, string filename)
         {
+            var generator = new ProofObligationGenerator (model);
+
             var streamWriter = new StreamWriter (filename);
 
             streamWriter.WriteLine ("MODULE main");
@@ -19,7 +21,7 @@ namespace KAOSFormalTools.RefinementChecker
             }
 
             streamWriter.WriteLine ();
-            foreach (var proofObligation in model.GetProofObligations ()) {
+            foreach (var proofObligation in generator.Obligations) {
                 streamWriter.WriteLine ("  -- Expected result : {0} (otherwise, {1})", 
                                         proofObligation.ExpectedResult, 
                                         proofObligation.FailureMessage);
@@ -33,9 +35,11 @@ namespace KAOSFormalTools.RefinementChecker
 
         public static void InterpretNuSMVOutput (this GoalModel model, string filename)
         {
+            var generator = new ProofObligationGenerator (model);
+
             string[] lines = File.ReadAllLines(filename);
 
-            var      proofObligations     = model.GetProofObligations ();
+            var      proofObligations     = generator.Obligations;
             int      proofObligationIndex = 0; 
             
             foreach (var line in lines) {

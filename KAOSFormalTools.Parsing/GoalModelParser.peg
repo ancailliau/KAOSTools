@@ -1,0 +1,33 @@
+start = Start
+value = KAOSFormalTools.Parsing.Element
+debug = 
+
+
+Start              := S Elements S;
+Elements           := ('begin' S ( Goal / DomProp / Obstacle ) 'end' S)*  `value = BuildElements (results);`
+                                                                         
+Goal               := 'goal'           S (GoalAttribute S)*               `value = BuildGoal(results);`
+DomProp            := 'domainproperty' S (DomPropAttribute S)*            `value = BuildDomainProperty(results);`
+Obstacle           := 'obstacle'       S (ObstacleAttribute S)*           `value = BuildObstacle(results);`
+                                                                         
+GoalAttribute      := ( Id / Name / FormalSpec / RefinedBy            
+                        / ObstructedBy)                                   `value = results[0].Value;`
+DomPropAttribute   := ( Id / Name / FormalSpec )                          `value = results[0].Value;`
+ObstacleAttribute  := ( Id / Name / FormalSpec / RefinedBy )              `value = results[0].Value;`
+                                                                         
+Id                 := 'id'         S Identifier                           `value = BuildId(results);`
+Name               := 'name'       S '"' String '"'                       `value = BuildName(results);`
+FormalSpec         := 'formalspec' S '"' String '"'                       `value = BuildFormalSpec(results);`
+                                                                         
+RefinedBy          := 'refinedby'    S Identifier (S ',' S Identifier)*   `value = BuildRefinedBy(results);`
+ObstructedBy       := 'obstructedby' S Identifier (S ',' S Identifier)*   `value = BuildObstructedBy(results);`
+                                                                         
+# Expressions                                                         
+                                                                         
+Identifier         := [a-zA-Z$_-] [a-zA-Z0-9$_-]*                        `value = null` `expected = "identifier"`
+String             := [^"]+                                              `value = null` `expected = "string"`
+
+# Scaffolding
+
+S                  := Space*                                                 `text = null`
+Space              := [ \t\r\n]                                          `;` `expected = "whitespace"`

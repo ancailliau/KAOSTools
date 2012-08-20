@@ -19,29 +19,20 @@ namespace Beaver.CLI
             string nusmvOutput     = "";
     
             var p = new OptionSet () {
-                { "o|output=", "Generate a NuSMV model in provided file",
+                { "w|write=", "Write a NuSMV model in specified file",
                     v => nusmvOutput = v },
-                { "i|input=", "Read a NuSMV output and produce a report",
+                { "r|read=", "Read a NuSMV output and display a report",
                     v => nusmvModel = v },
                 { "h|help",  "show this message and exit", 
-                    v => show_help = v != null },
+                    v => show_help = true },
             };
 
+            List<string> r;
             try {
-                p.Parse (args);
+                r = p.Parse (args);
                 
             } catch (OptionException e) {
                 PrintError (e.Message);
-                return;
-            }
-    
-            if (string.IsNullOrEmpty (nusmvModel) & string.IsNullOrEmpty (nusmvOutput)) {
-                PrintError ("`-i|--input` or `-o|--output` shall be given");
-                return;
-            }
-
-            if (!string.IsNullOrEmpty (nusmvModel) & !string.IsNullOrEmpty (nusmvOutput)) {
-                PrintError ("`-i|--input` and `-o|--output` are mutually exclusive");
                 return;
             }
 
@@ -49,8 +40,38 @@ namespace Beaver.CLI
                 ShowHelp (p);
                 return;
             }
+    
+            if (show_help) {
+                ShowHelp (p);
+                return;
+            }
 
-            var model =  BuildModel ();
+            if (string.IsNullOrEmpty (nusmvModel) & string.IsNullOrEmpty (nusmvOutput)) {
+                PrintError ("`-w|--write` or `-r|--read` shall be given");
+                return;
+            }
+
+            if (!string.IsNullOrEmpty (nusmvModel) & !string.IsNullOrEmpty (nusmvOutput)) {
+                PrintError ("`-w|--write` or `-r|--read` are mutually exclusive");
+                return;
+            }
+
+            if (r.Count == 0) {
+                PrintError ("Please provide a file");
+                return;
+            }
+                        
+            if (r.Count > 1) {
+                PrintError ("Please provide only one file");
+                return;
+            }
+
+            if (!File.Exists (r[0])) {
+                PrintError ("File `" + r[0] + "` does not exists");
+                return;
+            }
+
+            var model =  BuildModel (r[0]);
 
             if (!string.IsNullOrEmpty (nusmvModel)) {
                 model.InterpretNuSMVOutput (nusmvModel);
@@ -60,33 +81,10 @@ namespace Beaver.CLI
             }
         }
 
-        static GoalModel BuildModel ()
+        static GoalModel BuildModel (string filename)
         {
-            var model = new GoalModel ();
-
-            var achieve_on_scene_when_reported   = new Goal () { Name = "Achieve [AmbulanceOnScene When IncidentReported]",                      FormalSpec = Parser.Parse ("G (incidentReported -> F ambulanceOnScene)")                      };
-            var achieve_allocated_when_reported  = new Goal () { Name = "Achieve [AmbulanceAllocated When IncidentReported]",                    FormalSpec = Parser.Parse ("G (incidentReported -> F ambulanceAllocated)")                    };
-            var achieve_on_scene_when_allocated  = new Goal () { Name = "Achieve [AmbulanceOnScene When AmbulanceAllocated]",                    FormalSpec = Parser.Parse ("G (ambulanceAllocated -> F ambulanceOnScene)")                    };
-            var achieve_on_scene_when_mobilized  = new Goal () { Name = "Achieve [AmbulanceOnScene When AmbulanceMobilized]",                    FormalSpec = Parser.Parse ("G (ambulanceMobilized -> F ambulanceOnScene)")                    };
-            var achieve_mobilized_when_allocated = new Goal () { Name = "Achieve [AmbulanceMobilized When AmbulanceAllocated]",                  FormalSpec = Parser.Parse ("G (ambulanceAllocated -> F ambulanceMobilized)")                  };
-            var achieve_mobilized_when_onroad    = new Goal () { Name = "Achieve [AmbulanceMobilized When AmbulanceAllocatedOnRoad]",            FormalSpec = Parser.Parse ("G (ambulanceAllocated & onRoad -> F ambulanceMobilized)")         };
-            var achieve_mobilized_when_atstation = new Goal () { Name = "Achieve [AmbulanceMobilized When AmbulanceAllocatedAtStation]",         FormalSpec = Parser.Parse ("G (ambulanceAllocated & !onRoad -> F ambulanceMobilized)")        };
-            var achieve_mobilized_by_fax         = new Goal () { Name = "Achieve [AmbulanceMobilizedByFax When AmbulanceAllocatedAtStation]",    FormalSpec = Parser.Parse ("G (ambulanceAllocated & !onRoad -> F ambulanceMobilizedByFax)")   };
-            var achieve_mobilized_by_phone       = new Goal () { Name = "Achieve [AmbulanceMobilizedByPhone When AmbulanceAllocatedAtStation]",  FormalSpec = Parser.Parse ("G (ambulanceAllocated & !onRoad -> F ambulanceMobilizedByPhone)") };
-
-            achieve_on_scene_when_reported   .Connect (achieve_allocated_when_reported,  achieve_on_scene_when_allocated);
-            achieve_on_scene_when_allocated  .Connect (achieve_mobilized_when_allocated, achieve_on_scene_when_mobilized);
-            achieve_mobilized_when_allocated .Connect (achieve_mobilized_when_atstation, achieve_mobilized_when_onroad);
-            achieve_mobilized_when_onroad    .Connect (achieve_mobilized_by_fax, achieve_mobilized_by_phone);
-
-            model.RootGoals.Add (achieve_on_scene_when_reported);
-
-            model.DomainProperties.Add (new DomainProperty () {
-                Name = "Ambulance Mobilized By Fax or Phone", 
-                FormalSpec = Parser.Parse ("G ((ambulanceMobilizedByFax | ambulanceMobilizedByPhone) <-> ambulanceMobilized)")
-            });
-
-            return model;
+            var parser = new KAOSFormalTools.Parsing.Parser ();
+            return parser.Parse (File.ReadAllText (filename));
         }
 
         static void ShowHelp (OptionSet p)
