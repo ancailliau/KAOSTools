@@ -8,7 +8,7 @@
     <ProjectGuid>{81A27423-89EF-44D7-AB41-988C75E084D9}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>KAOSFormalTools.RefinementChecker</RootNamespace>
-    <AssemblyName>Beaver.CLI</AssemblyName>
+    <AssemblyName>KAOSFormalTools.RefinementChecker</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,8 +33,8 @@
     <Reference Include="NDesk.Options">
       <HintPath>..\Libraries\NDesk.Options.dll</HintPath>
     </Reference>
-    <Reference Include="CheckMyModels">
-      <HintPath>..\Libraries\CheckMyModels.dll</HintPath>
+    <Reference Include="LtlSharp">
+      <HintPath>..\Libraries\LtlSharp.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
   </ItemGroup>
@@ -47,7 +47,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\Beaver\KAOSFormalTools.Domain.csproj">
+    <ProjectReference Include="..\KAOSFormalTools.Domain\KAOSFormalTools.Domain.csproj">
       <Project>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</Project>
       <Name>KAOSFormalTools.Domain</Name>
     </ProjectReference>

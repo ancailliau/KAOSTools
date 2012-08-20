@@ -34,8 +34,8 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Core" />
-    <Reference Include="CheckMyModels">
-      <HintPath>..\Libraries\CheckMyModels.dll</HintPath>
+    <Reference Include="LtlSharp">
+      <HintPath>..\Libraries\LtlSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -50,7 +50,7 @@
       <Project>{52C948A2-30AD-40A7-89A3-9D66B2FCDD9F}</Project>
       <Name>KAOSFormalTools.Parsing</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Beaver\KAOSFormalTools.Domain.csproj">
+    <ProjectReference Include="..\KAOSFormalTools.Domain\KAOSFormalTools.Domain.csproj">
       <Project>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</Project>
       <Name>KAOSFormalTools.Domain</Name>
     </ProjectReference>

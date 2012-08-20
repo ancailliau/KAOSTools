@@ -8,7 +8,7 @@ using KAOSFormalTools.Domain;
 using LtlSharp;
 using KAOSFormalTools.RefinementChecker;
 
-namespace Beaver.CLI
+namespace KAOSFormalTools.RefinementChecker
 {
     class MainClass
     {

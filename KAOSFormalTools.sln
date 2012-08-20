@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.RefinementChecker", "Beaver.CLI\KAOSFormalTools.RefinementChecker.csproj", "{81A27423-89EF-44D7-AB41-988C75E084D9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.RefinementChecker", "KAOSFormalTools.RefinementChecker\KAOSFormalTools.RefinementChecker.csproj", "{81A27423-89EF-44D7-AB41-988C75E084D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.Domain", "Beaver\KAOSFormalTools.Domain.csproj", "{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.Domain", "KAOSFormalTools.Domain\KAOSFormalTools.Domain.csproj", "{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.Parsing", "KAOSFormalTools.Parsing\KAOSFormalTools.Parsing.csproj", "{52C948A2-30AD-40A7-89A3-9D66B2FCDD9F}"
 EndProject
@@ -54,7 +54,7 @@ Global
 		{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Beaver.CLI\KAOSFormalTools.RefinementChecker.csproj
+		StartupItem = KAOSFormalTools.RefinementChecker\KAOSFormalTools.RefinementChecker.csproj
 		Policies = $0
 		$0.TextStylePolicy = $1
 		$1.FileWidth = 120
