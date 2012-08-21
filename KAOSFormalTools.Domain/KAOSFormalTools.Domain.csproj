@@ -31,18 +31,17 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="CheckMyModels">
-      <HintPath>..\Libraries\CheckMyModels.dll</HintPath>
-    </Reference>
     <Reference Include="Antlr3.Runtime">
       <HintPath>..\..\LtlSharp\Libraries\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="LtlSharp">
+      <HintPath>..\Libraries\LtlSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="GoalModel.cs" />
     <Compile Include="Model.cs" />
-    <Compile Include="Helpers.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
