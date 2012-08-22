@@ -10,14 +10,23 @@ using System.IO;
 namespace KAOSFormalTools.Parsing.Tests
 {
     [TestFixture()]
-    public class TestParsingLAS
+    public class TestParsingExamples
     {
         private static Parser parser = new Parser ();
         
         [Test()]
-        public void TestFromFile ()
+        public void TestLAS ()
         {
-            string input = File.ReadAllText ("../../las.kaos");
+            string input = File.ReadAllText ("../../Examples/las.kaos");
+            var model = parser.Parse (input);
+
+            Assert.IsNotNull (model);
+        }
+
+        [Test()]
+        public void TestCarPooling ()
+        {
+            string input = File.ReadAllText ("../../Examples/carpooling.kaos");
             var model = parser.Parse (input);
 
             Assert.IsNotNull (model);

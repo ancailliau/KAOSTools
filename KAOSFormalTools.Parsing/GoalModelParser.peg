@@ -19,15 +19,17 @@ Id                 := 'id'         S Identifier                           `value
 Name               := 'name'       S '"' String '"'                       `value = BuildName(results);`
 FormalSpec         := 'formalspec' S '"' String '"'                       `value = BuildFormalSpec(results);`
                                                                          
-RefinedBy          := 'refinedby'    S Identifier (S ',' S Identifier)*   `value = BuildRefinedBy(results);`
-ObstructedBy       := 'obstructedby' S Identifier (S ',' S Identifier)*   `value = BuildObstructedBy(results);`
+RefinedBy          := 'refinedby'    S IdOrName (S ',' S IdOrName)*       `value = BuildRefinedBy(results);`
+ObstructedBy       := 'obstructedby' S IdOrName (S ',' S IdOrName)*       `value = BuildObstructedBy(results);`
                                                                          
-# Expressions                                                         
-                                                                         
+# Expressions                                
+                         
+IdOrName           := ( '"' String '"' / Identifier )                    `value = BuildIdOrName(results);` `expected = "id or name"`
 Identifier         := [a-zA-Z$_-] [a-zA-Z0-9$_-]*                        `value = null` `expected = "identifier"`
 String             := [^"]+                                              `value = null` `expected = "string"`
 
 # Scaffolding
 
-S                  := Space*                                                 `text = null`
-Space              := [ \t\r\n]                                          `;` `expected = "whitespace"`
+S                  := (Space* Comment+ Space*)+ / Space*                                   `text = null`
+Space              := [ \t\r\n]                                           `;` `expected = "whitespace"`
+Comment            := '#' [^\r\n]+                                         `text = null`

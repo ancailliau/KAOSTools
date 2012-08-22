@@ -42,38 +42,38 @@ namespace KAOSFormalTools.Parsing
 
     public class ObstructedByList : Attribute
     {
-        public List<Identifier> Values    { get; set; }
+        public List<IdentifierOrName> Values    { get; set; }
 
         public ObstructedByList ()
         {
-            Values = new List<Identifier> ();
+            Values = new List<IdentifierOrName> ();
         }
     }
 
     public class RefinedByList : Attribute
     {
-        public List<Identifier> Values    { get; set; }
+        public List<IdentifierOrName> Values    { get; set; }
 
         public RefinedByList ()
         {
-            Values = new List<Identifier> ();
+            Values = new List<IdentifierOrName> ();
         }
     }
 
-    public class Identifier : Attribute
-    {
+    public class IdentifierOrName : Attribute {
         public string Value               { get; set; }
+    }
 
+    public class Identifier : IdentifierOrName
+    {
         public Identifier (string value)
         {
             Value = value;
         }
     }
 
-    public class Name : Attribute
+    public class Name : IdentifierOrName
     {
-        public string Value               { get; set; }
-
         public Name (string value)
         {
             Value = value;
@@ -87,6 +87,10 @@ namespace KAOSFormalTools.Parsing
         public FormalSpec (string value)
         {
             Value = LtlSharp.Parser.Parse (value);
+
+            if (Value == null) {
+                throw new ParsingException (string.Format ("Could not parse '{0}'", value));
+            }
         }
     }
 }

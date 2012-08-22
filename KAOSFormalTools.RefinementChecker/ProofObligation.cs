@@ -17,15 +17,21 @@ namespace KAOSFormalTools.RefinementChecker
 
     public class ProofObligationGenerator {
 
+        private LTLFormula PrefixWithDomainProperties (LTLFormula formula)
+        {
+            if (domainproperties != null)
+                return new LtlSharp.Implication (domainproperties, formula);
+            else 
+                return formula;
+        }
+
         private void AddCompletenessProofObligation (Goal parent, GoalRefinement refinement)
         {
             var specifications = from child in refinement.Children select child.FormalSpec;
             var names = from child in refinement.Children select child.Name;
 
-            var domainproperties = new LtlSharp.Conjunction ((from f in model.DomainProperties select f.FormalSpec).ToArray ());
-
             list.Add (new ProofObligation () {
-                Formula        = new LtlSharp.Implication (domainproperties, new LtlSharp.Implication (new LtlSharp.Conjunction (specifications.ToArray ()), parent.FormalSpec)),
+                Formula        = PrefixWithDomainProperties (new LtlSharp.Implication (new LtlSharp.Conjunction (specifications.ToArray ()), parent.FormalSpec)),
                 ExpectedResult = true,
                 FailureMessage = string.Format ("Refinement '{0}' for '{1}' is not complete", string.Join (", ", names), parent.Name),
                 SuccessMessage = string.Format ("Refinement '{0}' for '{1}' is complete",     string.Join (", ", names), parent.Name)
@@ -36,8 +42,6 @@ namespace KAOSFormalTools.RefinementChecker
         {
             var names = from child in refinement.Children select child.Name;
 
-            var domainproperties = new LtlSharp.Conjunction ((from f in model.DomainProperties select f.FormalSpec).ToArray ());
-
             foreach (var child in refinement.Children) {
                 var conjunction = new LtlSharp.Conjunction ();
                 foreach (var otherChild in refinement.Children.Where(c => c != child)) {
@@ -45,7 +49,7 @@ namespace KAOSFormalTools.RefinementChecker
                 }
 
                 list.Add (new ProofObligation () {
-                    Formula        = new LtlSharp.Implication (domainproperties, new LtlSharp.Implication (conjunction, parent.FormalSpec)),
+                    Formula        = PrefixWithDomainProperties (new LtlSharp.Implication (conjunction, parent.FormalSpec)),
                     ExpectedResult = false,
                     FailureMessage = string.Format ("Refinement '{0}' for '{1}' is not minimal",                   string.Join (", ", names), parent.Name),
                     SuccessMessage = string.Format ("Refinement '{0}' for '{1}' is minimal regarding goal '{2}'",  string.Join (", ", names), parent.Name, child.Name)
@@ -58,10 +62,8 @@ namespace KAOSFormalTools.RefinementChecker
             var specifications = from child in refinement.Children select child.FormalSpec;
             var names = from child in refinement.Children select child.Name;
 
-            var domainproperties = new LtlSharp.Conjunction ((from f in model.DomainProperties select f.FormalSpec).ToArray ());
-
             list.Add (new ProofObligation () {
-                Formula        = new LtlSharp.Implication (domainproperties, new LtlSharp.Negation (new LtlSharp.Conjunction (specifications.ToArray ()))),
+                Formula        = PrefixWithDomainProperties (new LtlSharp.Negation (new LtlSharp.Conjunction (specifications.ToArray ()))),
                 ExpectedResult = false,
                 FailureMessage = string.Format ("Refinement '{0}' for '{1}' is not consistent", string.Join (", ", names), parent.Name),         
                 SuccessMessage = string.Format ("Refinement '{0}' for '{1}' is consistent",     string.Join (", ", names), parent.Name)         
@@ -85,7 +87,7 @@ namespace KAOSFormalTools.RefinementChecker
             foreach (var obstacle in goal.Obstruction) {
                 if (obstacle.FormalSpec != null)
                     list.Add (new ProofObligation () {
-                        Formula        = new LtlSharp.Implication(domainproperties, new LtlSharp.Implication (obstacle.FormalSpec, new LtlSharp.Negation(goal.FormalSpec))),
+                        Formula        = PrefixWithDomainProperties (new LtlSharp.Implication (obstacle.FormalSpec, new LtlSharp.Negation(goal.FormalSpec))),
                         ExpectedResult = true,
                         FailureMessage = string.Format ("Obstacle '{0}' does not obstruct '{1}'", obstacle.Name, goal.Name),         
                         SuccessMessage = string.Format ("Obstacle '{0}' obstructs '{1}'",         obstacle.Name, goal.Name)         
@@ -108,18 +110,21 @@ namespace KAOSFormalTools.RefinementChecker
             this.model = model;
             this.list = new List<ProofObligation> ();
 
-            var conj = new List<LTLFormula> ();
-            foreach (var domprop in model.DomainProperties) {
-                conj.Add (domprop.FormalSpec);
-            }
-            domainproperties = new Conjunction(conj.ToArray ());
+            if (model.DomainProperties.Count > 0) {
+                var conj = new List<LTLFormula> ();
+                foreach (var domprop in model.DomainProperties) {
+                    conj.Add (domprop.FormalSpec);
+                }
+                domainproperties = new Conjunction(conj.ToArray ());
 
-            list.Add (new ProofObligation () {
-                Formula        = new LtlSharp.Negation(domainproperties),
-                ExpectedResult = false,
-                FailureMessage = string.Format ("Domain properties are inconsistent"),         
-                SuccessMessage = string.Format ("Domain properties are consistent")
-            });
+                list.Add (new ProofObligation () {
+                    Formula        = new LtlSharp.Negation(domainproperties),
+                    ExpectedResult = false,
+                    FailureMessage = string.Format ("Domain properties are inconsistent"),         
+                    SuccessMessage = string.Format ("Domain properties are consistent")
+                });
+
+            }
 
             foreach (var root in model.RootGoals)
                 AddProofObligationsForGoal (root);

@@ -52,7 +52,7 @@ internal sealed partial class GoalModelParser
     {
         var list = new RefinedByList ();
         for (int i = 1; i < results.Count; i = i + 2) {
-            list.Values.Add (new KAOSFormalTools.Parsing.Identifier (results[i].Text));
+            list.Values.Add (results[i].Value as IdentifierOrName);
         }
 
         return list;
@@ -62,7 +62,7 @@ internal sealed partial class GoalModelParser
     {
         var list = new ObstructedByList ();
         for (int i = 1; i < results.Count; i = i + 2) {
-            list.Values.Add (new KAOSFormalTools.Parsing.Identifier (results[i].Text));
+            list.Values.Add (results[i].Value as IdentifierOrName);
         }
 
         return list;
@@ -80,7 +80,18 @@ internal sealed partial class GoalModelParser
 
     private KAOSFormalTools.Parsing.Element BuildFormalSpec (List<Result> results)
     {
-        return new FormalSpec (results[2].Text);
+        var formalSpec = new FormalSpec (results [2].Text);
+        return formalSpec;
+    }
+    
+    private KAOSFormalTools.Parsing.Element BuildIdOrName (List<Result> results)
+    {
+        if (results.Count == 3) {
+            return new Name (results[1].Text);
+        } else if (results.Count == 1) {
+            return new Identifier (results[0].Text);
+        }
+        return null;
     }
 }
 
@@ -122,11 +133,14 @@ namespace KAOSFormalTools.Parsing
                         }
                     }
 
-                    if (string.IsNullOrEmpty (g.Identifier))
-                        throw new ParsingException ("Missing identifier for goal");
+                    if (string.IsNullOrEmpty (g.Identifier) & string.IsNullOrEmpty(g.Name))
+                        throw new ParsingException ("Missing identifier or name for goal");
 
-                    if (temporaryGoals.ContainsKey(g.Identifier))
+                    if (g.Identifier != null && temporaryGoals.ContainsKey(g.Identifier))
                         throw new ParsingException (string.Format ("Identifier '{0}' is not unique", g.Identifier));
+
+                    if (g.Identifier == null)
+                        g.Identifier = Guid.NewGuid ().ToString ();
 
                     temporaryGoals.Add (g.Identifier, g);
 
@@ -144,11 +158,14 @@ namespace KAOSFormalTools.Parsing
                         }
                     }
 
-                    if (string.IsNullOrEmpty (domprop.Identifier))
-                        throw new ParsingException ("Missing identifier for domain property");
+                    if (string.IsNullOrEmpty (domprop.Identifier) & string.IsNullOrEmpty (domprop.Name))
+                        throw new ParsingException ("Missing identifier or name for domain property");
 
-                    if (temporaryGoals.ContainsKey(domprop.Identifier))
+                    if (domprop.Identifier != null && temporaryGoals.ContainsKey(domprop.Identifier))
                         throw new ParsingException (string.Format ("Identifier '{0}' is not unique", domprop.Identifier));
+
+                    if (domprop.Identifier == null)
+                        domprop.Identifier = Guid.NewGuid ().ToString ();
 
                     model.DomainProperties.Add (domprop);
                 
@@ -223,6 +240,7 @@ namespace KAOSFormalTools.Parsing
                     var parsedGoal = element as Goal;
 
                     string identifier = "";
+                    string name = "";
                     var refinements = new List<GoalRefinement> ();
                     var obstruction   = new List<KAOSFormalTools.Domain.Obstacle> ();
 
@@ -230,14 +248,28 @@ namespace KAOSFormalTools.Parsing
                         if (attribute is Identifier) {
                             identifier = (attribute as Identifier).Value;
 
+                        } else if (attribute is Name) {
+                            name = (attribute as Name).Value;
+
                         } else if (attribute is RefinedByList) {
                             var children = attribute as RefinedByList;
                             var refinement = new GoalRefinement ();
 
                             foreach (var child in children.Values) {
-                                if (!goalMapping.ContainsKey (child.Value))
-                                    throw new ParsingException (string.Format ("Identifier '{0}' does not exists", child.Value));
-                                refinement.Children.Add (goalMapping[child.Value]);
+                                KAOSFormalTools.Domain.Goal candidate = null;
+                                if (child is Name) {
+                                    candidate = (from c in goalMapping.Values where c.Name == (child as Name).Value
+                                        select c).SingleOrDefault ();
+
+                                } else if (child is Identifier) {
+                                    candidate = (from c in goalMapping.Values where c.Identifier == (child as Identifier).Value
+                                        select c).SingleOrDefault ();
+                                }
+
+                                if (candidate == null)
+                                    throw new ParsingException (string.Format ("Identifier or name '{0}' does not refer to existing entity", child.Value));
+
+                                refinement.Children.Add (candidate);
                             }
 
                             if (refinement.Children.Count > 0)
@@ -254,7 +286,21 @@ namespace KAOSFormalTools.Parsing
                         }
                     }
 
-                    var goal = goalMapping[identifier];
+                    KAOSFormalTools.Domain.Goal goal = null;
+                    if (string.IsNullOrEmpty (identifier)) {
+                        var goalsNamed = goalMapping.Values.Where (x => x.Name == name);
+                        if (goalsNamed.Count() > 1) {
+                            throw new ParsingException (string.Format ("Name '{0}' is ambiguous", name));
+                        } else {
+                            goal = goalsNamed.First ();
+                        }
+                    } else if (goalMapping.ContainsKey (identifier)) {
+                        goal = goalMapping[identifier];
+                    }
+
+                    if (goal == null)
+                        throw new ParsingException (string.Format ("Goal with identifier '{0}' and name '{1}' could not be found", identifier, name));
+
                     goal.Refinements = refinements;
                     goal.Obstruction = obstruction;
                 }
