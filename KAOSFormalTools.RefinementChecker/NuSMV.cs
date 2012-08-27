@@ -7,6 +7,12 @@ namespace KAOSFormalTools.RefinementChecker
 {
     public static class NuSMVExtensions
     {
+        public static string ToCanonicString (this LtlSharp.LTLFormula formula)
+        {
+            var v = new LtlSharp.Utils.CanonicToString (formula);
+            return v.String;
+        }
+
         public static void WriteNuSMVModel (this GoalModel model, string filename)
         {
             var generator = new ProofObligationGenerator (model);
@@ -26,7 +32,7 @@ namespace KAOSFormalTools.RefinementChecker
                                         proofObligation.ExpectedResult, 
                                         proofObligation.FailureMessage);
                 streamWriter.WriteLine ("  LTLSPEC");
-                streamWriter.WriteLine ("    {0}", proofObligation.Formula.ToString ());
+                streamWriter.WriteLine ("    {0}", proofObligation.Formula.ToCanonicString ());
                 streamWriter.WriteLine ();
             }
 

@@ -12,13 +12,13 @@ namespace KAOSFormalTools.Domain
         public LTLFormula             FormalSpec      { get; set; }
 
         public IList<GoalRefinement>  Refinements     { get; set; }
-        public IList<Agent>           AssignedAgents  { get; set; }
         public IList<Obstacle>        Obstruction     { get; set; }
+        public IList<Agent>           AssignedAgents   { get; set; }
 
         public Goal () {
             Refinements    = new List<GoalRefinement> ();
-            AssignedAgents = new List<Agent> ();
             Obstruction    = new List<Obstacle> ();
+            AssignedAgents = new List<Agent> ();
         }
     }
 
@@ -46,6 +46,7 @@ namespace KAOSFormalTools.Domain
 
     public class Agent
     {
+        public string  Identifier   { get; set; }
         public string  Name         { get; set; }
         public string  Description  { get; set; }
     }

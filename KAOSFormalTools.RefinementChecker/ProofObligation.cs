@@ -41,6 +41,8 @@ namespace KAOSFormalTools.RefinementChecker
         private void AddMinimalityProofObligation (Goal parent, GoalRefinement refinement)
         {
             var names = from child in refinement.Children select child.Name;
+            if (refinement.Children.Count == 1)
+                return;
 
             foreach (var child in refinement.Children) {
                 var conjunction = new LtlSharp.Conjunction ();
@@ -123,7 +125,6 @@ namespace KAOSFormalTools.RefinementChecker
                     FailureMessage = string.Format ("Domain properties are inconsistent"),         
                     SuccessMessage = string.Format ("Domain properties are consistent")
                 });
-
             }
 
             foreach (var root in model.RootGoals)

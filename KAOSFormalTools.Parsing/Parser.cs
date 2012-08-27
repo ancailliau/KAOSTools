@@ -47,6 +47,18 @@ internal sealed partial class GoalModelParser
 
         return obstacle;
     }
+    
+    private KAOSFormalTools.Parsing.Element BuildAgent (List<Result> results)
+    {
+        var agent = new KAOSFormalTools.Parsing.Agent ();
+
+        for (int i = 1; i < results.Count; i++) {
+            agent.Attributes.Add (results[i].Value as KAOSFormalTools.Parsing.Attribute);
+        }
+
+        return agent;
+    }
+
 
     private KAOSFormalTools.Parsing.Element BuildRefinedBy (List<Result> results)
     {
@@ -68,6 +80,16 @@ internal sealed partial class GoalModelParser
         return list;
     }
 
+    private KAOSFormalTools.Parsing.Element BuildAssignedTo (List<Result> results)
+    {
+        var list = new AssignedToList ();
+        for (int i = 1; i < results.Count; i = i + 2) {
+            list.Values.Add (results[i].Value as IdentifierOrName);
+        }
+
+        return list;
+    }
+
     private KAOSFormalTools.Parsing.Element BuildId (List<Result> results)
     {
         return new KAOSFormalTools.Parsing.Identifier(results[1].Text);
@@ -81,6 +103,9 @@ internal sealed partial class GoalModelParser
     private KAOSFormalTools.Parsing.Element BuildFormalSpec (List<Result> results)
     {
         var formalSpec = new FormalSpec (results [2].Text);
+        if (formalSpec.Value == null)
+            throw new ParsingException (string.Format ("Unable to parse '{0}'", results[2].Text));
+
         return formalSpec;
     }
     
@@ -190,6 +215,29 @@ namespace KAOSFormalTools.Parsing
                         throw new ParsingException (string.Format ("Identifier '{0}' is not unique", obstacle.Identifier));
 
                     model.Obstacles.Add (obstacle);
+
+                } else if (element is Agent) {
+                    var agent = new KAOSFormalTools.Domain.Agent ();
+                    var parsedAgent = element as Agent;
+
+                    foreach (var attr in parsedAgent.Attributes) {
+                        if (attr is Identifier) {
+                            agent.Identifier = (attr as Identifier).Value;
+                        } else if (attr is Name) {
+                            agent.Name = (attr as Name).Value;
+                        }
+                    }
+
+                    if (string.IsNullOrEmpty (agent.Identifier) & string.IsNullOrEmpty(agent.Name))
+                        throw new ParsingException ("Missing identifier or name for agent");
+
+                    if (agent.Identifier != null && (from a in model.Agents where a.Identifier == agent.Identifier select a).Count () > 1)
+                        throw new ParsingException (string.Format ("Identifier '{0}' is not unique", agent.Identifier));
+
+                    if (agent.Identifier == null)
+                        agent.Identifier = Guid.NewGuid ().ToString ();
+
+                    model.Agents.Add (agent);
                 }
             }
 
@@ -239,10 +287,11 @@ namespace KAOSFormalTools.Parsing
                 } else if (element is Goal) {
                     var parsedGoal = element as Goal;
 
-                    string identifier = "";
-                    string name = "";
-                    var refinements = new List<GoalRefinement> ();
-                    var obstruction   = new List<KAOSFormalTools.Domain.Obstacle> ();
+                    string identifier    = "";
+                    string name          = "";
+                    var    refinements   = new List<GoalRefinement> ();
+                    var    obstruction   = new List<KAOSFormalTools.Domain.Obstacle> ();
+                    var    assignedAgents = new List<KAOSFormalTools.Domain.Agent> ();
 
                     foreach (var attribute in parsedGoal.Attributes) {
                         if (attribute is Identifier) {
@@ -283,6 +332,31 @@ namespace KAOSFormalTools.Parsing
                                     throw new ParsingException (string.Format ("Identifier '{0}' does not exists", child.Value));
                                 obstruction.Add (obstacleMapping[child.Value]);
                             }
+                        
+                        } else if (attribute is AssignedToList) {
+                            foreach (var assignedto in (attribute as AssignedToList).Values) {
+
+                                if (assignedto is Identifier) {
+                                    var agents = (from a in model.Agents where a.Identifier == assignedto.Value select a);
+
+                                    if (agents.Count() == 0)
+                                        throw new ParsingException (string.Format ("Agent '{0}' does not exists", assignedto.Value));
+
+                                    assignedAgents.Add (agents.First ());
+
+                                } else if (assignedto is Name) {
+                                    var agents = (from a in model.Agents where a.Name == assignedto.Value select a);
+                                    
+                                    if (agents.Count() == 0)
+                                        throw new ParsingException (string.Format ("Agent '{0}' does not exists", assignedto.Value));
+                                    
+                                    if (agents.Count() > 1)
+                                        throw new ParsingException (string.Format ("Agent '{0}' is ambigous", assignedto.Value));
+
+                                    assignedAgents.Add (agents.First ());
+                                }
+                                    
+                            }
                         }
                     }
 
@@ -303,6 +377,7 @@ namespace KAOSFormalTools.Parsing
 
                     goal.Refinements = refinements;
                     goal.Obstruction = obstruction;
+                    goal.AssignedAgents = assignedAgents;
                 }
             }
         }

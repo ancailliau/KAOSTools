@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{283D3679-A09D-4FDC-AB94-2B55A0C4493A}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>KAOSFormalTools.Parsing.Tests</RootNamespace>
-    <AssemblyName>KAOSFormalTools.Parsing.Tests</AssemblyName>
+    <ProjectGuid>{6ABA53F3-9825-461F-9945-04735EFCEF14}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>KAOSFormalTools.ModelChecker</RootNamespace>
+    <AssemblyName>KAOSFormalTools.ModelChecker</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -18,7 +18,7 @@
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <Externalconsole>true</Externalconsole>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -26,24 +26,17 @@
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <Externalconsole>true</Externalconsole>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="nunit.framework">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System.Core" />
-    <Reference Include="LtlSharp">
-      <HintPath>..\Libraries\LtlSharp.dll</HintPath>
+    <Reference Include="NDesk.Options">
+      <HintPath>..\Libraries\NDesk.Options.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TestParsingGoal.cs" />
-    <Compile Include="TestParsingDomainProperty.cs" />
-    <Compile Include="TestParsingObstacles.cs" />
-    <Compile Include="TestParsingExamples.cs" />
-    <Compile Include="TestAgent.cs" />
+    <Compile Include="Main.cs" />
+    <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

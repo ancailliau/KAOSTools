@@ -4,16 +4,19 @@ debug =
 
 
 Start              := S Elements S;
-Elements           := ('begin' S ( Goal / DomProp / Obstacle ) 'end' S)*  `value = BuildElements (results);`
+Elements           := ('begin' S ( Goal / DomProp / Obstacle 
+                                   / Agent) 'end' S)*                     `value = BuildElements (results);`
                                                                          
 Goal               := 'goal'           S (GoalAttribute S)*               `value = BuildGoal(results);`
 DomProp            := 'domainproperty' S (DomPropAttribute S)*            `value = BuildDomainProperty(results);`
 Obstacle           := 'obstacle'       S (ObstacleAttribute S)*           `value = BuildObstacle(results);`
+Agent              := 'agent'          S (AgentAttribute S)*              `value = BuildAgent(results);`
                                                                          
 GoalAttribute      := ( Id / Name / FormalSpec / RefinedBy            
-                        / ObstructedBy)                                   `value = results[0].Value;`
+                        / ObstructedBy / AssignedTo )                     `value = results[0].Value;`
 DomPropAttribute   := ( Id / Name / FormalSpec )                          `value = results[0].Value;`
 ObstacleAttribute  := ( Id / Name / FormalSpec / RefinedBy )              `value = results[0].Value;`
+AgentAttribute     := ( Id / Name )                                       `value = results[0].Value;`
                                                                          
 Id                 := 'id'         S Identifier                           `value = BuildId(results);`
 Name               := 'name'       S '"' String '"'                       `value = BuildName(results);`
@@ -21,6 +24,7 @@ FormalSpec         := 'formalspec' S '"' String '"'                       `value
                                                                          
 RefinedBy          := 'refinedby'    S IdOrName (S ',' S IdOrName)*       `value = BuildRefinedBy(results);`
 ObstructedBy       := 'obstructedby' S IdOrName (S ',' S IdOrName)*       `value = BuildObstructedBy(results);`
+AssignedTo         := 'assignedto'   S IdOrName (S ',' S IdOrName)*       `value = BuildAssignedTo(results);`
                                                                          
 # Expressions                                
                          

@@ -31,6 +31,12 @@ namespace KAOSFormalTools.Parsing
         public Obstacle () { Attributes = new List<Attribute>(); }
     }
 
+    public class Agent : Element
+    {
+        public List<Attribute> Attributes { get; set; }
+        public Agent () { Attributes = new List<Attribute>(); }
+    }
+
     public interface Attribute : Element {}
 
     public class Attributes : Element {
@@ -59,6 +65,17 @@ namespace KAOSFormalTools.Parsing
             Values = new List<IdentifierOrName> ();
         }
     }
+
+    public class AssignedToList : Attribute
+    {
+        public List<IdentifierOrName> Values    { get; set; }
+
+        public AssignedToList ()
+        {
+            Values = new List<IdentifierOrName> ();
+        }
+    }
+
 
     public class IdentifierOrName : Attribute {
         public string Value               { get; set; }

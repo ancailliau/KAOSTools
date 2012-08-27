@@ -11,6 +11,7 @@ namespace KAOSFormalTools.Domain
         public IList<Goal>           Goals             { get; set; }
         public IList<DomainProperty> DomainProperties  { get; private set; }
         public IList<Obstacle>       Obstacles         { get; set; }
+        public IList<Agent>          Agents            { get; set; }
 
         public IList<Goal>           RootGoals { 
             get {
@@ -34,6 +35,7 @@ namespace KAOSFormalTools.Domain
             Goals             = new List<Goal> ();
             DomainProperties  = new List<DomainProperty> ();
             Obstacles         = new List<Obstacle> ();
+            Agents            = new List<Agent> ();
         }
     }
 }

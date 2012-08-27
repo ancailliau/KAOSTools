@@ -35,8 +35,9 @@ namespace KAOSFormalTools.RefinementChecker
         {
             var alphabet = new List<string> ();
 
-            foreach (var goal in model.RootGoals)
+            foreach (var goal in model.RootGoals) {
                 alphabet.AddElementsFor (goal);
+            }
 
             foreach (var domprop in model.DomainProperties)
                 alphabet.AddElementsFor (domprop);
