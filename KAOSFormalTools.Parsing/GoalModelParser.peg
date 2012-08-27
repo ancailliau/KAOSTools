@@ -7,10 +7,10 @@ Start              := S Elements S;
 Elements           := ('begin' S ( Goal / DomProp / Obstacle 
                                    / Agent) 'end' S)*                     `value = BuildElements (results);`
                                                                          
-Goal               := 'goal'           S (GoalAttribute S)*               `value = BuildGoal(results);`
-DomProp            := 'domainproperty' S (DomPropAttribute S)*            `value = BuildDomainProperty(results);`
-Obstacle           := 'obstacle'       S (ObstacleAttribute S)*           `value = BuildObstacle(results);`
-Agent              := 'agent'          S (AgentAttribute S)*              `value = BuildAgent(results);`
+Goal               := 'goal'                   S (GoalAttribute S)*       `value = BuildGoal(results);`
+DomProp            := 'domainproperty'         S (DomPropAttribute S)*    `value = BuildDomainProperty(results);`
+Obstacle           := 'obstacle'               S (ObstacleAttribute S)*   `value = BuildObstacle(results);`
+Agent              := ('software' S)? 'agent'  S (AgentAttribute S)*      `value = BuildAgent(results);`
                                                                          
 GoalAttribute      := ( Id / Name / FormalSpec / RefinedBy            
                         / ObstructedBy / AssignedTo )                     `value = results[0].Value;`

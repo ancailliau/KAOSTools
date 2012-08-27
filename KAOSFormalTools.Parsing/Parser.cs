@@ -52,7 +52,13 @@ internal sealed partial class GoalModelParser
     {
         var agent = new KAOSFormalTools.Parsing.Agent ();
 
-        for (int i = 1; i < results.Count; i++) {
+        int start = 1;
+        if (results[0].Text == "software") {
+            start = 2;
+            agent.Software = true;
+        }
+
+        for (int i = start; i < results.Count; i++) {
             agent.Attributes.Add (results[i].Value as KAOSFormalTools.Parsing.Attribute);
         }
 
@@ -219,6 +225,7 @@ namespace KAOSFormalTools.Parsing
                 } else if (element is Agent) {
                     var agent = new KAOSFormalTools.Domain.Agent ();
                     var parsedAgent = element as Agent;
+                    agent.Software = parsedAgent.Software;
 
                     foreach (var attr in parsedAgent.Attributes) {
                         if (attr is Identifier) {

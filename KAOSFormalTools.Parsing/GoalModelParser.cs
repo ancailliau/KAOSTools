@@ -196,13 +196,17 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Agent := 'agent' S (AgentAttribute S)*
+	// Agent := ('software' S)? 'agent' S (AgentAttribute S)*
 	private State DoParseAgentRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
 		
 		_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 1,
+				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
+					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, "software");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");});});},
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "agent");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,

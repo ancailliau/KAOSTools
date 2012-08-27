@@ -34,6 +34,7 @@ namespace KAOSFormalTools.Parsing
     public class Agent : Element
     {
         public List<Attribute> Attributes { get; set; }
+        public bool            Software   { get; set; }
         public Agent () { Attributes = new List<Attribute>(); }
     }
 
