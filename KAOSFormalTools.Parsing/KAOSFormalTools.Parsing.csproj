@@ -41,6 +41,7 @@
     <Compile Include="Elements.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="ParsingException.cs" />
+    <Compile Include="GoalModelParserExtension.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

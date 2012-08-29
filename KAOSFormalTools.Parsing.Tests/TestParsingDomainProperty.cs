@@ -15,10 +15,9 @@ namespace KAOSFormalTools.Parsing.Tests
         public void TestMissingIdentifier ()
         {
             var input = @"begin domainproperty end";
-
-            Assert.Throws (typeof(KAOSFormalTools.Parsing.ParsingException), () => {
-                parser.Parse (input);
-            });
+            
+            var gm = parser.Parse (input);
+            Assert.AreEqual (1, gm.DomainProperties.Count);
         }
 
         [Test()]

@@ -1,6 +1,7 @@
 using LtlSharp;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace KAOSFormalTools.Domain
 {
@@ -15,7 +16,9 @@ namespace KAOSFormalTools.Domain
         public IList<Obstacle>        Obstruction     { get; set; }
         public IList<Agent>           AssignedAgents   { get; set; }
 
-        public Goal () {
+        public Goal ()
+        {
+            Identifier     = Guid.NewGuid ().ToString ();
             Refinements    = new List<GoalRefinement> ();
             Obstruction    = new List<Obstacle> ();
             AssignedAgents = new List<Agent> ();
@@ -31,7 +34,9 @@ namespace KAOSFormalTools.Domain
 
         public IList<ObstacleRefinement>        Refinements  { get; set; }
 
-        public Obstacle () {
+        public Obstacle ()
+        {
+            Identifier  = Guid.NewGuid ().ToString ();
             Refinements = new List<ObstacleRefinement> ();
         }
     }
@@ -42,6 +47,11 @@ namespace KAOSFormalTools.Domain
         public string      Name        { get; set; }
         public string      Definition  { get; set; }
         public LTLFormula  FormalSpec  { get; set; }
+
+        public DomainProperty ()
+        {
+            Identifier  = Guid.NewGuid ().ToString ();
+        }
     }
 
     public class Agent
@@ -49,7 +59,13 @@ namespace KAOSFormalTools.Domain
         public string  Identifier   { get; set; }
         public string  Name         { get; set; }
         public string  Description  { get; set; }
-        public bool    Software  { get; set; }
+        public bool    Software     { get; set; }
+
+        public Agent ()
+        {
+            Identifier  = Guid.NewGuid ().ToString ();
+            Software    = false;
+        }
     }
 
     public class GoalRefinement

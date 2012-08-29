@@ -189,27 +189,33 @@ begin goal
     id         test
 end
 ";
-            Assert.Throws (typeof(KAOSFormalTools.Parsing.ParsingException), () => {
-                parser.Parse (input);
-            });
-        }
+            var gm = parser.Parse (input);
+            Assert.AreEqual (1, gm.Goals.Count);
+            Assert.AreEqual (1, gm.Obstacles.Count);
 
+            var root = gm.RootGoals.First ();
+            Assert.AreEqual (1, root.Obstruction.Count);
+            Assert.AreEqual ("test2", root.Obstruction[0].Identifier);
+        }
+        
         [Test()]
-        public void TestObstructionByGoal ()
+        public void TestUnknownNameReference ()
         {
             var input = @"
 begin goal
-    obstructedby  test2
+    obstructedby  ""test2""
     name          ""My goal""
     
     id         test
 end
-
-begin goal id test2 end
 ";
-            Assert.Throws (typeof(KAOSFormalTools.Parsing.ParsingException), () => {
-                parser.Parse (input);
-            });
+            var gm = parser.Parse (input);
+            Assert.AreEqual (1, gm.Goals.Count);
+            Assert.AreEqual (1, gm.Obstacles.Count);
+
+            var root = gm.RootGoals.First ();
+            Assert.AreEqual (1, root.Obstruction.Count);
+            Assert.AreEqual ("test2", root.Obstruction[0].Name);
         }
     }
 

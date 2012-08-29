@@ -154,9 +154,31 @@ begin goal
     id         test
 end
 ";
-            Assert.Throws (typeof(KAOSFormalTools.Parsing.ParsingException), () => {
-                parser.Parse (input);
-            });
+            var gm = parser.Parse (input);
+            Assert.AreEqual (2, gm.Goals.Count);
+            
+            var root = gm.RootGoals.First ();
+            Assert.AreEqual (1, root.Refinements.Count);
+            Assert.AreEqual ("test2", root.Refinements[0].Children[0].Identifier);
+        }
+        
+        [Test()]
+        public void TestUnknownNameReference ()
+        {
+            var input = @"
+begin goal
+    refinedby  ""test2""
+    name       ""My goal name""
+    
+    id         test
+end
+";
+            var gm = parser.Parse (input);
+            Assert.AreEqual (2, gm.Goals.Count);
+            
+            var root = gm.RootGoals.First ();
+            Assert.AreEqual (1, root.Refinements.Count);
+            Assert.AreEqual ("test2", root.Refinements[0].Children[0].Name);
         }
 
         
