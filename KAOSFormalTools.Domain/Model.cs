@@ -49,6 +49,7 @@ namespace KAOSFormalTools.Domain
         public string  Identifier   { get; set; }
         public string  Name         { get; set; }
         public string  Description  { get; set; }
+        public bool    Software  { get; set; }
     }
 
     public class GoalRefinement
