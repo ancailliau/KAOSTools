@@ -10,6 +10,20 @@ namespace KAOSFormalTools.Parsing.Tests
         private static Parser parser = new Parser ();
 
         [Test()]
+        public void TestSoftwareAgent ()
+        {
+            var input = @"
+begin software agent
+    id test
+end
+";
+            var gm = parser.Parse (input);
+            Assert.AreEqual (1, gm.Agents.Count);
+            Assert.AreEqual ("test", gm.Agents.First().Identifier);
+            Assert.IsTrue (gm.Agents.First().Software);
+        }
+
+        [Test()]
         public void TestIdentifier ()
         {
             var input = @"

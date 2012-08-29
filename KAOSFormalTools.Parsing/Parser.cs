@@ -214,11 +214,14 @@ namespace KAOSFormalTools.Parsing
                         }
                     }
 
-                    if (string.IsNullOrEmpty (obstacle.Identifier))
-                        throw new ParsingException ("Missing identifier for obstacle");
+                    if (string.IsNullOrEmpty (obstacle.Identifier) & string.IsNullOrEmpty (obstacle.Name))
+                        throw new ParsingException ("Missing identifier or name for obstacle");
 
-                    if (temporaryGoals.ContainsKey(obstacle.Identifier))
+                    if (obstacle.Identifier != null && temporaryGoals.ContainsKey(obstacle.Identifier))
                         throw new ParsingException (string.Format ("Identifier '{0}' is not unique", obstacle.Identifier));
+
+                    if (obstacle.Identifier == null)
+                        obstacle.Identifier = Guid.NewGuid ().ToString ();
 
                     model.Obstacles.Add (obstacle);
 
@@ -267,19 +270,38 @@ namespace KAOSFormalTools.Parsing
                     var parsedObstacle = element as Obstacle;
 
                     string identifier = "";
+                    string name = "";
                     var refinements = new List<ObstacleRefinement> ();
                     foreach (var attribute in parsedObstacle.Attributes) {
                         if (attribute is Identifier) {
                             identifier = (attribute as Identifier).Value;
+
+                        } else if (attribute is Name) {
+                            name = (attribute as Name).Value;
 
                         } else if (attribute is RefinedByList) {
                             var children = attribute as RefinedByList;
                             var refinement = new ObstacleRefinement ();
 
                             foreach (var child in children.Values) {
-                                if (!obstacleMapping.ContainsKey (child.Value))
-                                    throw new ParsingException (string.Format ("Identifier '{0}' does not exists", child.Value));
-                                refinement.Children.Add (obstacleMapping[child.Value]);
+                                KAOSFormalTools.Domain.Obstacle candidate = null;
+                                if (child is Name) {
+                                    var candidates = (from c in obstacleMapping.Values where c.Name == (child as Name).Value
+                                                      select c);
+                                    if (candidates.Count() > 1)
+                                        throw new ParsingException (string.Format ("Obstacle '{0}' is ambiguous", (child as Name).Value));
+
+                                    candidate = candidates.SingleOrDefault ();
+
+                                } else if (child is Identifier) {
+                                    candidate = (from c in obstacleMapping.Values where c.Identifier == (child as Identifier).Value
+                                        select c).SingleOrDefault ();
+                                }
+
+                                if (candidate == null)
+                                    throw new ParsingException (string.Format ("Identifier or name '{0}' does not refer to existing entity", child.Value));
+
+                                refinement.Children.Add (candidate);
                             }
 
                             if (refinement.Children.Count > 0)
@@ -288,7 +310,22 @@ namespace KAOSFormalTools.Parsing
                         }
                     }
 
-                    var obstacle = obstacleMapping[identifier];
+                    
+                    KAOSFormalTools.Domain.Obstacle obstacle = null;
+                    if (string.IsNullOrEmpty (identifier)) {
+                        var obstaclesNamed = obstacleMapping.Values.Where (x => x.Name == name);
+                        if (obstaclesNamed.Count() > 1) {
+                            throw new ParsingException (string.Format ("Name '{0}' is ambiguous", name));
+                        } else {
+                            obstacle = obstaclesNamed.First ();
+                        }
+                    } else if (goalMapping.ContainsKey (identifier)) {
+                        obstacle = obstacleMapping[identifier];
+                    }
+
+                    if (obstacle == null)
+                        throw new ParsingException (string.Format ("Goal with identifier '{0}' and name '{1}' could not be found", identifier, name));
+
                     obstacle.Refinements = refinements;
 
                 } else if (element is Goal) {
@@ -335,9 +372,20 @@ namespace KAOSFormalTools.Parsing
                             var children = attribute as ObstructedByList;
 
                             foreach (var child in children.Values) {
-                                if (!obstacleMapping.ContainsKey (child.Value))
-                                    throw new ParsingException (string.Format ("Identifier '{0}' does not exists", child.Value));
-                                obstruction.Add (obstacleMapping[child.Value]);
+                                KAOSFormalTools.Domain.Obstacle candidate = null;
+                                if (child is Name) {
+                                    candidate = (from c in obstacleMapping.Values where c.Name == (child as Name).Value
+                                        select c).SingleOrDefault ();
+
+                                } else if (child is Identifier) {
+                                    candidate = (from c in obstacleMapping.Values where c.Identifier == (child as Identifier).Value
+                                        select c).SingleOrDefault ();
+                                }
+
+                                if (candidate == null)
+                                    throw new ParsingException (string.Format ("Identifier or name '{0}' does not refer to existing entity", child.Value));
+
+                                obstruction.Add (candidate);
                             }
                         
                         } else if (attribute is AssignedToList) {

@@ -597,7 +597,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Comment := '#' [^\r\n]+
+	// Comment := '#' [^\r\n]*
 	private State DoParseCommentRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -605,7 +605,7 @@ internal sealed partial class GoalModelParser
 		
 		_state = DoSequence(_state, results,
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "#");},
-			delegate (State s, List<Result> r) {return DoRepetition(s, r, 1, 2147483647,
+			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,
 				delegate (State s2, List<Result> r2) {return DoParseRange(s2, r2, true, "\r\n", string.Empty, null, "[^\r\n]");});});
 		
 		if (_state.Parsed)

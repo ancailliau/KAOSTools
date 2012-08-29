@@ -36,4 +36,4 @@ String             := [^"]+                                              `value 
 
 S                  := (Space* Comment+ Space*)+ / Space*                                   `text = null`
 Space              := [ \t\r\n]                                           `;` `expected = "whitespace"`
-Comment            := '#' [^\r\n]+                                         `text = null`
+Comment            := '#' [^\r\n]*                                         `text = null`
