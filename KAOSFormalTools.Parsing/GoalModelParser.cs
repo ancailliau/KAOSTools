@@ -52,9 +52,13 @@ internal sealed partial class GoalModelParser
 		m_nonterminals.Add("Id", new ParseMethod[]{this.DoParseIdRule});
 		m_nonterminals.Add("Name", new ParseMethod[]{this.DoParseNameRule});
 		m_nonterminals.Add("FormalSpec", new ParseMethod[]{this.DoParseFormalSpecRule});
-		m_nonterminals.Add("RefinedBy", new ParseMethod[]{this.DoParseRefinedByRule});
+		m_nonterminals.Add("RefinedByObstacle", new ParseMethod[]{this.DoParseRefinedByObstacleRule});
+		m_nonterminals.Add("RefinedByGoal", new ParseMethod[]{this.DoParseRefinedByGoalRule});
 		m_nonterminals.Add("ObstructedBy", new ParseMethod[]{this.DoParseObstructedByRule});
 		m_nonterminals.Add("AssignedTo", new ParseMethod[]{this.DoParseAssignedToRule});
+		m_nonterminals.Add("IdOrNameOrObstacle", new ParseMethod[]{this.DoParseIdOrNameOrObstacleRule});
+		m_nonterminals.Add("IdOrNameOrGoal", new ParseMethod[]{this.DoParseIdOrNameOrGoalRule});
+		m_nonterminals.Add("IdOrNameOrAgent", new ParseMethod[]{this.DoParseIdOrNameOrAgentRule});
 		m_nonterminals.Add("IdOrName", new ParseMethod[]{this.DoParseIdOrNameRule});
 		m_nonterminals.Add("Identifier", new ParseMethod[]{this.DoParseIdentifierRule});
 		m_nonterminals.Add("String", new ParseMethod[]{this.DoParseStringRule});
@@ -96,7 +100,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Elements := ('begin' S (Goal / DomProp / Obstacle / Agent) 'end' S)*
+	// Elements := ((Goal / DomProp / Obstacle / Agent) S)*
 	private State DoParseElementsRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -104,14 +108,11 @@ internal sealed partial class GoalModelParser
 		
 		_state = DoRepetition(_state, results, 0, 2147483647,
 			delegate (State s, List<Result> r) {return DoSequence(s, r,
-				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "begin");},
-				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
 				delegate (State s2, List<Result> r2) {return DoChoice(s2, r2,
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Goal");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "DomProp");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Obstacle");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Agent");});},
-				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "end");},
 				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");});});
 		
 		if (_state.Parsed)
@@ -124,19 +125,22 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Goal := 'goal' S (GoalAttribute S)*
+	// Goal := 'begin' S 'goal' S (GoalAttribute S)* 'end'
 	private State DoParseGoalRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
 		
 		_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "begin");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "goal");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,
 				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "GoalAttribute");},
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");});});});
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");});});},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "end");});
 		
 		if (_state.Parsed)
 		{
@@ -148,19 +152,22 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// DomProp := 'domainproperty' S (DomPropAttribute S)*
+	// DomProp := 'begin' S 'domainproperty' S (DomPropAttribute S)* 'end'
 	private State DoParseDomPropRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
 		
 		_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "begin");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "domainproperty");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,
 				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "DomPropAttribute");},
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");});});});
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");});});},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "end");});
 		
 		if (_state.Parsed)
 		{
@@ -172,19 +179,22 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Obstacle := 'obstacle' S (ObstacleAttribute S)*
+	// Obstacle := 'begin' S 'obstacle' S (ObstacleAttribute S)* 'end'
 	private State DoParseObstacleRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
 		
 		_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "begin");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "obstacle");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,
 				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "ObstacleAttribute");},
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");});});});
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");});});},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "end");});
 		
 		if (_state.Parsed)
 		{
@@ -196,13 +206,15 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Agent := ('software' S)? 'agent' S (AgentAttribute S)*
+	// Agent := 'begin' S ('software' S)? 'agent' S (AgentAttribute S)* 'end'
 	private State DoParseAgentRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
 		
 		_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "begin");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 1,
 				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
 					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, "software");},
@@ -212,7 +224,8 @@ internal sealed partial class GoalModelParser
 			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,
 				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "AgentAttribute");},
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");});});});
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");});});},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "end");});
 		
 		if (_state.Parsed)
 		{
@@ -224,7 +237,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// GoalAttribute := Id / Name / FormalSpec / RefinedBy / ObstructedBy / AssignedTo
+	// GoalAttribute := Id / Name / FormalSpec / RefinedByGoal / ObstructedBy / AssignedTo
 	private State DoParseGoalAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -234,7 +247,7 @@ internal sealed partial class GoalModelParser
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Id");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Name");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpec");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "RefinedBy");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "RefinedByGoal");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "ObstructedBy");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "AssignedTo");});
 		
@@ -269,7 +282,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// ObstacleAttribute := Id / Name / FormalSpec / RefinedBy
+	// ObstacleAttribute := Id / Name / FormalSpec / RefinedByObstacle
 	private State DoParseObstacleAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -279,7 +292,7 @@ internal sealed partial class GoalModelParser
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Id");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Name");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpec");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "RefinedBy");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "RefinedByObstacle");});
 		
 		if (_state.Parsed)
 		{
@@ -378,8 +391,8 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// RefinedBy := 'refinedby' S IdOrName (S ',' S IdOrName)*
-	private State DoParseRefinedByRule(State _state, List<Result> _outResults)
+	// RefinedByObstacle := 'refinedby' S IdOrNameOrObstacle (S ',' S IdOrNameOrObstacle)*
+	private State DoParseRefinedByObstacleRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
@@ -387,13 +400,13 @@ internal sealed partial class GoalModelParser
 		_state = DoSequence(_state, results,
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "refinedby");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "IdOrName");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "IdOrNameOrObstacle");},
 			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,
 				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
 					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, ",");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "IdOrName");});});});
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "IdOrNameOrObstacle");});});});
 		
 		if (_state.Parsed)
 		{
@@ -405,7 +418,34 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// ObstructedBy := 'obstructedby' S IdOrName (S ',' S IdOrName)*
+	// RefinedByGoal := 'refinedby' S IdOrNameOrGoal (S ',' S IdOrNameOrGoal)*
+	private State DoParseRefinedByGoalRule(State _state, List<Result> _outResults)
+	{
+		State _start = _state;
+		List<Result> results = new List<Result>();
+		
+		_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "refinedby");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "IdOrNameOrGoal");},
+			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,
+				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
+					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, ",");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "IdOrNameOrGoal");});});});
+		
+		if (_state.Parsed)
+		{
+			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			value = BuildRefinedBy(results);
+			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+		}
+		
+		return _state;
+	}
+	
+	// ObstructedBy := 'obstructedby' S IdOrNameOrObstacle (S ',' S IdOrNameOrObstacle)*
 	private State DoParseObstructedByRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -414,13 +454,13 @@ internal sealed partial class GoalModelParser
 		_state = DoSequence(_state, results,
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "obstructedby");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "IdOrName");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "IdOrNameOrObstacle");},
 			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,
 				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
 					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, ",");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "IdOrName");});});});
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "IdOrNameOrObstacle");});});});
 		
 		if (_state.Parsed)
 		{
@@ -432,7 +472,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// AssignedTo := 'assignedto' S IdOrName (S ',' S IdOrName)*
+	// AssignedTo := 'assignedto' S IdOrNameOrAgent (S ',' S IdOrNameOrAgent)*
 	private State DoParseAssignedToRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -441,19 +481,100 @@ internal sealed partial class GoalModelParser
 		_state = DoSequence(_state, results,
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "assignedto");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "IdOrName");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "IdOrNameOrAgent");},
 			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,
 				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
 					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, ",");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "IdOrName");});});});
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "IdOrNameOrAgent");});});});
 		
 		if (_state.Parsed)
 		{
 			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
 			value = BuildAssignedTo(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+		}
+		
+		return _state;
+	}
+	
+	// IdOrNameOrObstacle := Obstacle / IdOrName
+	private State DoParseIdOrNameOrObstacleRule(State _state, List<Result> _outResults)
+	{
+		State _start = _state;
+		List<Result> results = new List<Result>();
+		
+		_state = DoChoice(_state, results,
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Obstacle");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "IdOrName");});
+		
+		if (_state.Parsed)
+		{
+			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			value = results[0].Value;
+			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+		}
+		else
+		{
+			string expected = null;
+			expected = "id or name";
+			if (expected != null)
+				_state = new State(_start.Index, false, ErrorSet.Combine(_start.Errors, new ErrorSet(_state.Errors.Index, expected)));
+		}
+		
+		return _state;
+	}
+	
+	// IdOrNameOrGoal := Goal / IdOrName
+	private State DoParseIdOrNameOrGoalRule(State _state, List<Result> _outResults)
+	{
+		State _start = _state;
+		List<Result> results = new List<Result>();
+		
+		_state = DoChoice(_state, results,
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Goal");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "IdOrName");});
+		
+		if (_state.Parsed)
+		{
+			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			value = results[0].Value;
+			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+		}
+		else
+		{
+			string expected = null;
+			expected = "id or name";
+			if (expected != null)
+				_state = new State(_start.Index, false, ErrorSet.Combine(_start.Errors, new ErrorSet(_state.Errors.Index, expected)));
+		}
+		
+		return _state;
+	}
+	
+	// IdOrNameOrAgent := Agent / IdOrName
+	private State DoParseIdOrNameOrAgentRule(State _state, List<Result> _outResults)
+	{
+		State _start = _state;
+		List<Result> results = new List<Result>();
+		
+		_state = DoChoice(_state, results,
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Agent");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "IdOrName");});
+		
+		if (_state.Parsed)
+		{
+			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			value = results[0].Value;
+			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+		}
+		else
+		{
+			string expected = null;
+			expected = "id or name";
+			if (expected != null)
+				_state = new State(_start.Index, false, ErrorSet.Combine(_start.Errors, new ErrorSet(_state.Errors.Index, expected)));
 		}
 		
 		return _state;

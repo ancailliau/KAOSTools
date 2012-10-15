@@ -56,13 +56,15 @@ namespace KAOSFormalTools.Parsing
         
         #region Build helpers for first pass
         
-        private void BuildGoal (Goal parsedGoal)
+        private KAOSFormalTools.Domain.Goal BuildGoal (Goal parsedGoal)
         {
             var goal = new KAOSFormalTools.Domain.Goal ();
+            Identifier identifierAttribute = null;
 
             foreach (var attribute in parsedGoal.Attributes) {
                 if (attribute is Identifier) {
                     goal.Identifier = (attribute as Identifier).Value;
+                    identifierAttribute = (attribute as Identifier);
 
                 } else if (attribute is Name) {
                     goal.Name = (attribute as Name).Value;
@@ -74,17 +76,26 @@ namespace KAOSFormalTools.Parsing
 
             if (model.GoalExists (goal.Identifier))
                 throw new ParsingException (string.Format ("Identifier '{0}' is not unique", goal.Identifier));
+            
+            // Ensure that parsed goal has the same identifer than the new one
+            // This is required for second pass, otherwise, entity could not be found
+            if (identifierAttribute == null)
+                parsedGoal.Attributes.Add (new Identifier (goal.Identifier));
 
             model.Goals.Add (goal);
+
+            return goal;
         }
 
-        private void BuildDomainProperty (DomainProperty parsedDomProp)
+        private KAOSFormalTools.Domain.DomainProperty BuildDomainProperty (DomainProperty parsedDomProp)
         {
             var domprop = new KAOSFormalTools.Domain.DomainProperty();
+            Identifier identifierAttribute = null;
 
             foreach (var attr in parsedDomProp.Attributes) {
                 if (attr is Identifier) {
                     domprop.Identifier = (attr as Identifier).Value;
+                    identifierAttribute = (attr as Identifier);
 
                 } else if (attr is Name) {
                     domprop.Name = (attr as Name).Value;
@@ -96,17 +107,26 @@ namespace KAOSFormalTools.Parsing
 
             if (model.DomainPropertyExists (domprop.Identifier))
                 throw new ParsingException (string.Format ("Identifier '{0}' is not unique", domprop.Identifier));
+            
+            // Ensure that parsed domprop has the same identifer than the new one
+            // This is required for second pass, otherwise, entity could not be found
+            if (identifierAttribute == null)
+                parsedDomProp.Attributes.Add (new Identifier (domprop.Identifier));
 
             model.DomainProperties.Add (domprop);
+
+            return domprop;
         }
 
-        private void BuildObstacle (Obstacle parsedObstacle)
+        private KAOSFormalTools.Domain.Obstacle BuildObstacle (Obstacle parsedObstacle)
         {
             var obstacle = new KAOSFormalTools.Domain.Obstacle();
+            Identifier identifierAttribute = null;
 
             foreach (var attr in parsedObstacle.Attributes) {
                 if (attr is Identifier) {
                     obstacle.Identifier = (attr as Identifier).Value;
+                    identifierAttribute = (attr as Identifier);
 
                 } else if (attr is Name) {
                     obstacle.Name = (attr as Name).Value;
@@ -116,20 +136,38 @@ namespace KAOSFormalTools.Parsing
                 }
             }
 
-            if (model.ObstacleExists (obstacle.Identifier))
-                throw new ParsingException (string.Format ("Identifier '{0}' is not unique", obstacle.Identifier));
+            if (model.ObstacleExists (obstacle.Identifier)) {
+                var o2 = model.GetObstacleByIdentifier (obstacle.Identifier);
+                o2.Merge (obstacle);
+                return o2;
+            }
+
+            if (identifierAttribute == null && model.GetObstaclesByName (obstacle.Name).Count() == 1) {
+                var o2 = model.GetObstaclesByName (obstacle.Name).Single ();
+                o2.Merge (obstacle);
+                return o2;
+            }
+
+            // Ensure that parsed obstacle has the same identifer than the new one
+            // This is required for second pass, otherwise, entity could not be found
+            if (identifierAttribute == null)
+                parsedObstacle.Attributes.Add (new Identifier (obstacle.Identifier));
 
             model.Obstacles.Add (obstacle);
+
+            return obstacle;
         }
 
-        private void BuildAgent (Agent parsedAgent)
+        private KAOSFormalTools.Domain.Agent BuildAgent (Agent parsedAgent)
         {
             var agent = new KAOSFormalTools.Domain.Agent ();
             agent.Software = parsedAgent.Software;
+            Identifier identifierAttribute = null;
 
             foreach (var attr in parsedAgent.Attributes) {
                 if (attr is Identifier) {
                     agent.Identifier = (attr as Identifier).Value;
+                    identifierAttribute = (attr as Identifier);
 
                 } else if (attr is Name) {
                     agent.Name = (attr as Name).Value;
@@ -138,8 +176,15 @@ namespace KAOSFormalTools.Parsing
 
             if (model.AgentExists (agent.Identifier))
                 throw new ParsingException (string.Format ("Identifier '{0}' is not unique", agent.Identifier));
+            
+            // Ensure that parsed agent has the same identifer than the new one
+            // This is required for second pass, otherwise, entity could not be found
+            if (identifierAttribute == null)
+                parsedAgent.Attributes.Add (new Identifier (agent.Identifier));
 
             model.Agents.Add (agent);
+
+            return agent;
         }
 
         #endregion
@@ -165,16 +210,23 @@ namespace KAOSFormalTools.Parsing
                     var refinement = new ObstacleRefinement ();
 
                     foreach (var child in children.Values) {
-                        var candidate = GetOrCreateObstacle (child, true);
-                        if (candidate != null)
-                            refinement.Children.Add (candidate);
+                        if (child is IdentifierOrName) {
+                            var candidate = GetOrCreateObstacle (child as IdentifierOrName, true);
+                            if (candidate != null)
+                                refinement.Children.Add (candidate);
+                        } else if (child is Obstacle) {
+                            var o = BuildObstacle (child as Obstacle);
+                            refinement.Children.Add (o);
+                            
+                            BuildObstacleRelations (child as Obstacle);
+                        }
                     }
 
                     if (refinement.Children.Count > 0)
                         refinements.Add (refinement);
                 }
             }
-            
+
             KAOSFormalTools.Domain.Obstacle obstacle = null;
             if (string.IsNullOrEmpty (identifier)) {
                 var obstacles = model.GetObstaclesByName (name);
@@ -192,7 +244,8 @@ namespace KAOSFormalTools.Parsing
                     throw new ParsingException (string.Format ("Obstacle '{0}' not found", identifier));
             }
 
-            obstacle.Refinements = refinements;
+            foreach (var r in refinements)
+                obstacle.Refinements.Add (r);
         }
 
         private void BuildGoalRelations (Goal parsedGoal)
@@ -215,9 +268,16 @@ namespace KAOSFormalTools.Parsing
                     var refinement = new GoalRefinement ();
 
                     foreach (var child in children.Values) {
-                        var candidate = GetOrCreateGoal (child, true);
-                        if (candidate != null)
-                            refinement.Children.Add (candidate);
+                        if (child is IdentifierOrName) {
+                            var candidate = GetOrCreateGoal (child as IdentifierOrName, true);
+                            if (candidate != null)
+                                refinement.Children.Add (candidate);
+                        } else if (child is Goal) {
+                            var g = BuildGoal (child as Goal);
+                            refinement.Children.Add (g);
+                            
+                            BuildGoalRelations (child as Goal);
+                        }
                     }
 
                     if (refinement.Children.Count > 0)
@@ -227,16 +287,28 @@ namespace KAOSFormalTools.Parsing
                     var children = attribute as ObstructedByList;
 
                     foreach (var child in children.Values) {
-                        var candidate = GetOrCreateObstacle (child, true);
-                        if (candidate != null)
-                            obstruction.Add (candidate);
+                        if (child is IdentifierOrName) {
+                            var candidate = GetOrCreateObstacle (child as IdentifierOrName, true);
+                            if (candidate != null)
+                                obstruction.Add (candidate);
+                        } else if (child is Obstacle) {
+                            var o = BuildObstacle (child as Obstacle);
+                            obstruction.Add (o);
+                            
+                            BuildObstacleRelations (child as Obstacle);
+                        }
                     }
                 
                 } else if (attribute is AssignedToList) {
                     foreach (var assignedto in (attribute as AssignedToList).Values) {
-                        var candidate = GetOrCreateAgent (assignedto, true);
-                        if (candidate != null)
-                            assignedAgents.Add (candidate);
+                        if (assignedto is IdentifierOrName) {
+                            var candidate = GetOrCreateAgent (assignedto as IdentifierOrName, true);
+                            if (candidate != null)
+                                assignedAgents.Add (candidate);
+                        } else if (assignedto is Agent) {
+                            var a = BuildAgent (assignedto as Agent);
+                            assignedAgents.Add (a);
+                        }
                     }
                 }
             }
@@ -258,9 +330,14 @@ namespace KAOSFormalTools.Parsing
                     throw new ParsingException (string.Format ("Goal '{0}' not found", identifier));
             }
 
-            goal.Refinements    = refinements;
-            goal.Obstruction    = obstruction;
-            goal.AssignedAgents = assignedAgents;
+            foreach (var r in refinements)
+                goal.Refinements.Add (r);
+
+            foreach (var r in obstruction)
+                goal.Obstruction.Add (r);
+            
+            foreach (var r in assignedAgents)
+                goal.AssignedAgents.Add (r);
         }
     
         #endregion
@@ -286,7 +363,7 @@ namespace KAOSFormalTools.Parsing
                     }
 
                 } else if (candidates.Count() > 1) {
-                    throw new ParsingException (string.Format ("Obstacle '{0}' is ambiguous", (attribute as Name).Value));
+                    candidate = candidates.First ();
 
                 } else /* candidates.Count() == 0 */ {
                     candidate = candidates.Single ();
@@ -329,7 +406,7 @@ namespace KAOSFormalTools.Parsing
                     }
 
                 } else if (candidates.Count() > 1) {
-                    throw new ParsingException (string.Format ("Goal '{0}' is ambiguous", (attribute as Name).Value));
+                   candidate = candidates.First ();
 
                 } else /* candidates.Count() == 0 */ {
                     candidate = candidates.Single ();

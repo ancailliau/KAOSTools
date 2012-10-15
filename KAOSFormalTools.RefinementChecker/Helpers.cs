@@ -12,15 +12,16 @@ namespace KAOSFormalTools.RefinementChecker
         private static void AddElementsFor (this IList<string> alphabet, Goal goal)
         {
             alphabet.AddElementsFor (goal.FormalSpec);
-
-            foreach (var refinement in goal.Refinements) 
-                foreach (var child in refinement.Children)
-                    alphabet.AddElementsFor (child);
         }
 
         private static void AddElementsFor (this IList<string> alphabet, DomainProperty domprop)
         {
             alphabet.AddElementsFor (domprop.FormalSpec);
+        }
+                
+        private static void AddElementsFor (this IList<string> alphabet, Obstacle obstacle)
+        {
+            alphabet.AddElementsFor (obstacle.FormalSpec);
         }
 
         private static void AddElementsFor (this IList<string> alphabet, LTLFormula formula)
@@ -35,12 +36,14 @@ namespace KAOSFormalTools.RefinementChecker
         {
             var alphabet = new List<string> ();
 
-            foreach (var goal in model.RootGoals) {
+            foreach (var goal in model.Goals)
                 alphabet.AddElementsFor (goal);
-            }
 
             foreach (var domprop in model.DomainProperties)
                 alphabet.AddElementsFor (domprop);
+
+            foreach (var obstacle in model.Obstacles)
+                alphabet.AddElementsFor (obstacle);
 
             return alphabet;
         }

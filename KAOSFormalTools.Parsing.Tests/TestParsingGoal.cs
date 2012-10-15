@@ -10,17 +10,7 @@ namespace KAOSFormalTools.Parsing.Tests
     public class TestParsingGoal
     {
         private static Parser parser = new Parser ();
-        
-        [Test()]
-        public void TestMissingIdentifier ()
-        {
-            var input = @"begin goal end";
-
-            Assert.Throws (typeof(KAOSFormalTools.Parsing.ParsingException), () => {
-                parser.Parse (input);
-            });
-        }
-
+       
         [Test()]
         public void TestComment ()
         {
@@ -141,6 +131,56 @@ begin goal id test3 end
             var refinement = root.Refinements.First ();
             var child = refinement.Children.First ();
             Assert.AreEqual ("test2", child.Identifier);
+        }
+
+        [Test()]
+        public void TestRefinementInline ()
+        {
+            var input = @"
+begin goal
+    refinedby  begin goal id test2 end , begin goal id test3 end
+    name       ""My goal name""
+    
+    id         test
+end
+";
+            var gm = parser.Parse (input);
+            Assert.AreEqual (1, gm.RootGoals.Count);
+
+            var root = gm.RootGoals.First ();
+            Assert.AreEqual ("test", root.Identifier);
+            Assert.AreEqual (1, root.Refinements.Count);
+
+            var refinement = root.Refinements.First ();
+            var child = refinement.Children.First ();
+            Assert.AreEqual ("test2", child.Identifier);
+        }
+
+        [Test()]
+        public void TestRefinementInlineRecursive ()
+        {
+            var input = @"
+begin goal
+    refinedby begin goal 
+                id test2
+                refinedby begin goal 
+                  id test3
+                end
+              end
+end
+";
+            var gm = parser.Parse (input);
+            Assert.AreEqual (1, gm.RootGoals.Count);
+
+            var root = gm.RootGoals.First ();
+            Assert.AreEqual (1, root.Refinements.Count);
+
+            var refinement = root.Refinements.First ();
+            var child = refinement.Children.First ();
+            Assert.AreEqual ("test2", child.Identifier);
+
+            Assert.AreEqual (1, child.Refinements.Count);
+            Assert.AreEqual ("test3", child.Refinements[0].Children[0].Identifier);
         }
 
         [Test()]

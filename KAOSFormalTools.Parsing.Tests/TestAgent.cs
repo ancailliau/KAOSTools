@@ -71,6 +71,25 @@ end
         }
 
         [Test()]
+        public void TestAssignedToInline ()
+        {
+            var input = @"
+begin goal
+    name ""My goal""
+    assignedto begin agent
+                 name ""test""
+               end
+end
+";
+            var gm = parser.Parse (input);
+            Assert.AreEqual (1, gm.Agents.Count);
+            Assert.AreEqual (1, gm.RootGoals.Count);
+            
+            Assert.AreEqual (1, gm.RootGoals.First ().AssignedAgents.Count);
+            Assert.AreEqual ("test", gm.RootGoals.First ().AssignedAgents.First ().Name);
+        }
+
+        [Test()]
         public void TestAssignedToMultipleAgents ()
         {
             var input = @"

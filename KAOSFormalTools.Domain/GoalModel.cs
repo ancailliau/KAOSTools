@@ -65,7 +65,7 @@ namespace KAOSFormalTools.Domain
 
         public bool ObstacleExists (string identifier)
         {
-            return Goals.Where (x => x.Identifier == identifier).Count () > 0;
+            return Obstacles.Where (x => x.Identifier == identifier).Count () > 0;
         }
 
         public DomainProperty GetDomainPropertyByIdentifier (string identifier)

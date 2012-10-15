@@ -17,12 +17,18 @@ namespace KAOSFormalTools.RefinementChecker
             bool show_help = false;
             string nusmvModel      = "";
             string nusmvOutput     = "";
-    
+            string obstacles       = null;
+            bool   verbose         = false;
+
             var p = new OptionSet () {
                 { "w|write=", "Write a NuSMV model in specified file",
                     v => nusmvOutput = v },
                 { "r|read=", "Read a NuSMV output and display a report",
                     v => nusmvModel = v },
+                { "o|obstacles=", "List of obstacles",
+                    v => obstacles = v },
+                { "v|verbose", "Verbose mode",
+                    v => verbose = true },
                 { "h|help",  "show this message and exit", 
                     v => show_help = true },
             };
@@ -71,13 +77,32 @@ namespace KAOSFormalTools.RefinementChecker
                 return;
             }
 
-            var model =  BuildModel (r[0]);
+            try {
+                var model =  BuildModel (r[0]);
+                ProofObligationGenerator generator;
 
-            if (!string.IsNullOrEmpty (nusmvModel)) {
-                model.InterpretNuSMVOutput (nusmvModel);
+                if (obstacles != null) {
+                    var g = new List<Goal> ();
+                    var obstructedGoalNames = obstacles.Split (',');
+                    foreach (var untrimmedName in obstructedGoalNames) {
+                        var name = untrimmedName.Trim ();
+                        var goals = model.Goals.Where (x => x.Name == name);
+                        g.AddRange (goals);
+                    }
 
-            } else {
-                model.WriteNuSMVModel (nusmvOutput);
+                    generator = new ProofObligationGenerator (model, null, g);
+                } else {
+                    generator = new ProofObligationGenerator (model);
+                }
+
+                if (!string.IsNullOrEmpty (nusmvModel)) {
+                    model.InterpretNuSMVOutput (nusmvModel, generator, verbose);
+
+                } else {
+                    model.WriteNuSMVModel (nusmvOutput, generator);
+                }
+            } catch (Exception e) {
+                PrintError (e.Message);
             }
         }
 
@@ -89,7 +114,7 @@ namespace KAOSFormalTools.RefinementChecker
 
         static void ShowHelp (OptionSet p)
         {
-            Console.WriteLine ("Usage: ltlsharp [OPTIONS]+ formula");
+            Console.WriteLine ("Usage: " + System.AppDomain.CurrentDomain.FriendlyName + " model");
             Console.WriteLine ();
             Console.WriteLine ("Options:");
             p.WriteOptionDescriptions (Console.Out);
@@ -98,9 +123,9 @@ namespace KAOSFormalTools.RefinementChecker
         static void PrintError (string error)
         {  
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.Error.Write ("ltlsharp: ");
+            Console.Error.Write ("{0}: ", System.AppDomain.CurrentDomain.FriendlyName);
             Console.Error.WriteLine (error);
-            Console.Error.WriteLine ("Try `ltlsharp --help' for more information.");
+            Console.Error.WriteLine ("Try `{0} --help' for more information.", System.AppDomain.CurrentDomain.FriendlyName);
             Console.ResetColor ();
         }
     }

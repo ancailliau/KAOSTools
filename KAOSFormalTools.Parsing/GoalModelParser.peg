@@ -4,30 +4,34 @@ debug =
 
 
 Start              := S Elements S;
-Elements           := ('begin' S ( Goal / DomProp / Obstacle 
-                                   / Agent) 'end' S)*                     `value = BuildElements (results);`
+Elements           := ( ( Goal / DomProp / Obstacle / Agent ) S )*                     `value = BuildElements (results);`
                                                                          
-Goal               := 'goal'                   S (GoalAttribute S)*       `value = BuildGoal(results);`
-DomProp            := 'domainproperty'         S (DomPropAttribute S)*    `value = BuildDomainProperty(results);`
-Obstacle           := 'obstacle'               S (ObstacleAttribute S)*   `value = BuildObstacle(results);`
-Agent              := ('software' S)? 'agent'  S (AgentAttribute S)*      `value = BuildAgent(results);`
+Goal               := 'begin' S 'goal'                   S (GoalAttribute S)*      'end'   `value = BuildGoal(results);`
+DomProp            := 'begin' S 'domainproperty'         S (DomPropAttribute S)*   'end'   `value = BuildDomainProperty(results);`
+Obstacle           := 'begin' S 'obstacle'               S (ObstacleAttribute S)*  'end'   `value = BuildObstacle(results);`
+Agent              := 'begin' S ('software' S)? 'agent'  S (AgentAttribute S)*     'end'   `value = BuildAgent(results);`
                                                                          
-GoalAttribute      := ( Id / Name / FormalSpec / RefinedBy            
+GoalAttribute      := ( Id / Name / FormalSpec / RefinedByGoal            
                         / ObstructedBy / AssignedTo )                     `value = results[0].Value;`
 DomPropAttribute   := ( Id / Name / FormalSpec )                          `value = results[0].Value;`
-ObstacleAttribute  := ( Id / Name / FormalSpec / RefinedBy )              `value = results[0].Value;`
+ObstacleAttribute  := ( Id / Name / FormalSpec / RefinedByObstacle )              `value = results[0].Value;`
 AgentAttribute     := ( Id / Name )                                       `value = results[0].Value;`
                                                                          
 Id                 := 'id'         S Identifier                           `value = BuildId(results);`
 Name               := 'name'       S '"' String '"'                       `value = BuildName(results);`
 FormalSpec         := 'formalspec' S '"' String '"'                       `value = BuildFormalSpec(results);`
                                                                          
-RefinedBy          := 'refinedby'    S IdOrName (S ',' S IdOrName)*       `value = BuildRefinedBy(results);`
-ObstructedBy       := 'obstructedby' S IdOrName (S ',' S IdOrName)*       `value = BuildObstructedBy(results);`
-AssignedTo         := 'assignedto'   S IdOrName (S ',' S IdOrName)*       `value = BuildAssignedTo(results);`
+RefinedByObstacle  := 'refinedby'    S IdOrNameOrObstacle (S ',' S IdOrNameOrObstacle)*       `value = BuildRefinedBy(results);`
+RefinedByGoal      := 'refinedby'    S IdOrNameOrGoal (S ',' S IdOrNameOrGoal)*       `value = BuildRefinedBy(results);`
+ObstructedBy       := 'obstructedby' S IdOrNameOrObstacle (S ',' S IdOrNameOrObstacle)*       `value = BuildObstructedBy(results);`
+AssignedTo         := 'assignedto'   S IdOrNameOrAgent (S ',' S IdOrNameOrAgent)*       `value = BuildAssignedTo(results);`
                                                                          
 # Expressions                                
-                         
+
+IdOrNameOrObstacle := ( Obstacle / IdOrName )                            `value = results[0].Value;` `expected = "id or name"`
+IdOrNameOrGoal     := ( Goal / IdOrName )                                `value = results[0].Value;` `expected = "id or name"`
+IdOrNameOrAgent    := ( Agent / IdOrName )                               `value = results[0].Value;` `expected = "id or name"`
+
 IdOrName           := ( '"' String '"' / Identifier )                    `value = BuildIdOrName(results);` `expected = "id or name"`
 Identifier         := [a-zA-Z$_-] [a-zA-Z0-9$_-]*                        `value = null` `expected = "identifier"`
 String             := [^"]+                                              `value = null` `expected = "string"`

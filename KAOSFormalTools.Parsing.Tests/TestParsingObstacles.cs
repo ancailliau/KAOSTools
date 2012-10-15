@@ -10,16 +10,6 @@ namespace KAOSFormalTools.Parsing.Tests
     public class TestParsingObstacle
     {
         private static Parser parser = new Parser ();
-        
-        [Test()]
-        public void TestMissingIdentifier ()
-        {
-            var input = @"begin obstacle end";
-
-            Assert.Throws (typeof(KAOSFormalTools.Parsing.ParsingException), () => {
-                parser.Parse (input);
-            });
-        }
 
         [Test()]
         public void TestIdentifier ()
@@ -126,6 +116,32 @@ end
         }
 
         [Test()]
+        public void TestRefinementRecursive ()
+        {
+            var input = @"
+begin obstacle
+    refinedby  
+        begin obstacle 
+            id test2 
+            refinedby
+                begin obstacle 
+                    id test3
+                end
+        end
+end
+";
+            var gm = parser.Parse (input);
+            Assert.AreEqual (3, gm.Obstacles.Count);
+
+            var root = gm.Obstacles.First ();
+            Assert.AreEqual (1, root.Refinements.Count);
+
+            var refinement = root.Refinements.First ();
+            Assert.AreEqual ("test2", refinement.Children[0].Identifier);
+            Assert.AreEqual ("test3", refinement.Children[0].Refinements[0].Children[0].Identifier);
+        }
+
+        [Test()]
         public void TestMultipleRefinement ()
         {
             var input = @"
@@ -164,6 +180,7 @@ begin goal
     
     id         test
 end
+
 
 begin obstacle id test2 end
 begin obstacle id test3 end
@@ -217,6 +234,90 @@ end
             Assert.AreEqual (1, root.Obstruction.Count);
             Assert.AreEqual ("test2", root.Obstruction[0].Name);
         }
+
+        [Test()]
+        public void TestInlineDefinition ()
+        {
+            var input = @"
+begin goal
+    obstructedby  begin obstacle name ""test2"" end
+    name          ""My goal""
+    
+    id         test
+end
+";
+            var gm = parser.Parse (input);
+            Assert.AreEqual (1, gm.Goals.Count);
+            Assert.AreEqual (1, gm.Obstacles.Count);
+
+            var root = gm.RootGoals.First ();
+            Assert.AreEqual (1, root.Obstruction.Count);
+            Assert.AreEqual ("test2", root.Obstruction[0].Name);
+        }
+
+        [Test()]
+        public void TestInlineDefinitionWithIdentifier ()
+        {
+            var input = @"
+begin goal
+    obstructedby  begin obstacle id test2 end
+    name          ""My goal""
+    
+    id         test
+end
+";
+            var gm = parser.Parse (input);
+            Assert.AreEqual (1, gm.Goals.Count);
+            Assert.AreEqual (1, gm.Obstacles.Count);
+
+            var root = gm.RootGoals.First ();
+            Assert.AreEqual (1, root.Obstruction.Count);
+            Assert.AreEqual ("test2", root.Obstruction[0].Identifier);
+        }
+
+        
+        [Test()]
+        public void TestInlineDefinitionAnonymous ()
+        {
+            var input = @"
+begin goal
+    obstructedby  begin obstacle end
+    name          ""My goal""
+    
+    id         test
+end
+";
+            var gm = parser.Parse (input);
+            Assert.AreEqual (1, gm.Goals.Count);
+            Assert.AreEqual (1, gm.Obstacles.Count);
+
+            var root = gm.RootGoals.First ();
+            Assert.AreEqual (1, root.Obstruction.Count);
+        }
+
+        [Test()]
+        public void TestMerge ()
+        {
+            var input = @"
+begin obstacle
+    id test
+    refinedby ""Test Child 1""
+end
+
+begin obstacle
+    id test
+    name ""Test""
+    refinedby ""Test Child 2""
+end
+";
+            var gm = parser.Parse (input);
+            Assert.AreEqual (3, gm.Obstacles.Count);
+
+            Assert.AreEqual ("test", gm.Obstacles[0].Identifier);
+            Assert.AreEqual ("Test", gm.Obstacles[0].Name);
+            Assert.AreEqual (2,      gm.Obstacles[0].Refinements.Count);
+        }
+
     }
 
 }

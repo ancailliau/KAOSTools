@@ -13,10 +13,8 @@ namespace KAOSFormalTools.RefinementChecker
             return v.String;
         }
 
-        public static void WriteNuSMVModel (this GoalModel model, string filename)
+        public static void WriteNuSMVModel (this GoalModel model, string filename, ProofObligationGenerator generator)
         {
-            var generator = new ProofObligationGenerator (model);
-
             var streamWriter = new StreamWriter (filename);
 
             streamWriter.WriteLine ("MODULE main");
@@ -39,9 +37,8 @@ namespace KAOSFormalTools.RefinementChecker
             streamWriter.Close ();
         }
 
-        public static void InterpretNuSMVOutput (this GoalModel model, string filename)
+        public static void InterpretNuSMVOutput (this GoalModel model, string filename, ProofObligationGenerator generator, bool verbose)
         {
-            var generator = new ProofObligationGenerator (model);
 
             string[] lines = File.ReadAllLines(filename);
 
@@ -58,18 +55,30 @@ namespace KAOSFormalTools.RefinementChecker
                         var proofObligation = proofObligations [proofObligationIndex];
 
                         if (result == proofObligation.ExpectedResult) {
-                            Console.BackgroundColor = ConsoleColor.Green;
-                            Console.Write (" OK ");
+                            if (verbose) {
+                                Console.BackgroundColor = ConsoleColor.Green;
+                                Console.Write ("  OK  ");
+                                Console.ResetColor ();
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.Write (" " + proofObligation.SuccessMessage);
+                                Console.ResetColor ();
+                                Console.WriteLine ();
+                            }
+
+                        } else if (!proofObligation.Critical) {
+                            Console.BackgroundColor = ConsoleColor.Blue;
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.Write (" WARN ");
                             Console.ResetColor ();
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            Console.Write (" " + proofObligation.SuccessMessage);
+                            Console.ForegroundColor = ConsoleColor.Blue;
+                            Console.Write (" " + proofObligation.FailureMessage);
                             Console.ResetColor ();
                             Console.WriteLine ();
 
                         } else {
                             Console.BackgroundColor = ConsoleColor.Red;
                             Console.ForegroundColor = ConsoleColor.White;
-                            Console.Write (" KO ");
+                            Console.Write ("  KO  ");
                             Console.ResetColor ();
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.Write (" " + proofObligation.FailureMessage);

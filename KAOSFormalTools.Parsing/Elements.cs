@@ -49,34 +49,33 @@ namespace KAOSFormalTools.Parsing
 
     public class ObstructedByList : Attribute
     {
-        public List<IdentifierOrName> Values    { get; set; }
+        public List<Element> Values    { get; set; }
 
         public ObstructedByList ()
         {
-            Values = new List<IdentifierOrName> ();
+            Values = new List<Element> ();
         }
     }
 
     public class RefinedByList : Attribute
     {
-        public List<IdentifierOrName> Values    { get; set; }
+        public List<Element> Values    { get; set; }
 
         public RefinedByList ()
         {
-            Values = new List<IdentifierOrName> ();
+            Values = new List<Element> ();
         }
     }
 
     public class AssignedToList : Attribute
     {
-        public List<IdentifierOrName> Values    { get; set; }
+        public List<Element> Values    { get; set; }
 
         public AssignedToList ()
         {
-            Values = new List<IdentifierOrName> ();
+            Values = new List<Element> ();
         }
     }
-
 
     public class IdentifierOrName : Attribute {
         public string Value               { get; set; }

@@ -53,7 +53,7 @@ internal sealed partial class GoalModelParser
         var agent = new KAOSFormalTools.Parsing.Agent ();
 
         int start = 1;
-        if (results[0].Text == "software") {
+        if (results[1].Text == "software") {
             start = 2;
             agent.Software = true;
         }
@@ -70,7 +70,7 @@ internal sealed partial class GoalModelParser
     {
         var list = new RefinedByList ();
         for (int i = 1; i < results.Count; i = i + 2) {
-            list.Values.Add (results[i].Value as IdentifierOrName);
+            list.Values.Add (results[i].Value);
         }
 
         return list;
@@ -80,7 +80,8 @@ internal sealed partial class GoalModelParser
     {
         var list = new ObstructedByList ();
         for (int i = 1; i < results.Count; i = i + 2) {
-            list.Values.Add (results[i].Value as IdentifierOrName);
+            var val = results[i].Value;
+            list.Values.Add (val);
         }
 
         return list;
@@ -90,7 +91,7 @@ internal sealed partial class GoalModelParser
     {
         var list = new AssignedToList ();
         for (int i = 1; i < results.Count; i = i + 2) {
-            list.Values.Add (results[i].Value as IdentifierOrName);
+            list.Values.Add (results[i].Value);
         }
 
         return list;

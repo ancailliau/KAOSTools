@@ -14,10 +14,16 @@ namespace KAOSFormalTools.ModelChecker
         {
             bool show_help = false;
             bool show_formal = false;
+            int levensteinThreshold = 0;
 
             var p = new OptionSet () {
                 { "f|formal",  "Check formal attributes", 
                     v => show_formal = true },
+                { "l|levenstein=",  "Set threshold for duplicate detection", 
+                    v => { 
+                        int.TryParse (v, out levensteinThreshold);
+                    }
+                },
                 { "h|help",  "show this message and exit", 
                     v => show_help = true },
             };
@@ -53,6 +59,7 @@ namespace KAOSFormalTools.ModelChecker
 
             var model =  BuildModel (r[0]);
             DisplayUnassignedLeafGoals (model);
+            DisplayGoalWithSimilarNames (model, levensteinThreshold);
 
             if (show_formal)
                 DisplayMissingFormalSpec (model);
@@ -62,17 +69,17 @@ namespace KAOSFormalTools.ModelChecker
         {
             var goals = from g in model.Goals where g.FormalSpec == null select g;
             foreach (var goal in goals) {
-                Console.WriteLine ("[WARN] Goal '{0}' is missing formal specification", goal);
+                Console.WriteLine ("[WARN] Goal '{0}' is missing formal specification", goal.Name);
             }
 
             var domprops = from d in model.DomainProperties where d.FormalSpec == null select d;
             foreach (var domprop in domprops) {
-                Console.WriteLine ("[WARN] Domain property '{0}' is missing formal specification", domprop);
+                Console.WriteLine ("[WARN] Domain property '{0}' is missing formal specification", domprop.Name);
             }
 
             var obstacles = from o in model.Obstacles where o.FormalSpec == null select o;
             foreach (var obstacle in obstacles) {
-                Console.WriteLine ("[WARN] Obstacle '{0}' is missing formal specification", obstacle);
+                Console.WriteLine ("[WARN] Obstacle '{0}' is missing formal specification", obstacle.Name);
             }
         }
 
@@ -89,6 +96,47 @@ namespace KAOSFormalTools.ModelChecker
                 }
             } else {
                 Console.WriteLine ("[ OK ] All leaf goals are assigned");
+            }
+        }
+        
+        private static void DisplayGoalWithSimilarNames (GoalModel model, int levensteinThreshold) 
+        {
+            var duplicateGoals = from g1 in model.Goals 
+                where (from g2 in model.Goals where g2 != g1 && g2.Name == g1.Name select g2).Count() > 0 
+                select g1;
+
+            if (duplicateGoals.Count() > 0) {
+                Console.WriteLine ("[ KO ] Potential duplicated goals exists");
+
+                foreach (var item in duplicateGoals) {
+                    Console.WriteLine ("       - {0}", item.Name);
+                }
+            } else {
+                Console.WriteLine ("[ OK ] No potential duplicated goals found");
+            }
+
+            var duplicateObstacle = from o1 in model.Obstacles 
+                where (from o2 in model.Obstacles where o2 != o1 && o2.Name.LevenshteinDistance (o1.Name) < levensteinThreshold select o2).Count() > 0 
+                select o1;
+
+            var displayedDuplicates = new List<Obstacle> ();
+
+            if (duplicateObstacle.Count() > 0) {
+                Console.WriteLine ("[ KO ] Potential duplicated obstacles exists");
+
+                foreach (var item in duplicateObstacle) {
+                    if (!displayedDuplicates.Contains (item))
+                    {
+                        Console.WriteLine ("       - '{0}'", item.Name);
+                        var duplicates = from o2 in model.Obstacles where o2 != item && o2.Name.LevenshteinDistance (item.Name) < levensteinThreshold select o2;
+                        foreach (var item1 in duplicates) {
+                            Console.WriteLine ("         with '{0}'", item1.Name);
+                            displayedDuplicates.Add (item1);
+                        }
+                    }
+                }
+            } else {
+                Console.WriteLine ("[ OK ] No potential duplicated obstacles found");
             }
         }
 
