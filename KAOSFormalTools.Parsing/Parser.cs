@@ -71,6 +71,9 @@ namespace KAOSFormalTools.Parsing
 
                 } else if (attribute is FormalSpec) {
                     goal.FormalSpec = (attribute as FormalSpec).Value;
+                
+                } else if (attribute is Definition) {
+                    goal.Definition = (attribute as Definition).Value;
                 }
             }
 

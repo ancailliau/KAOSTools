@@ -11,15 +11,16 @@ DomProp            := 'begin' S 'domainproperty'         S (DomPropAttribute S)*
 Obstacle           := 'begin' S 'obstacle'               S (ObstacleAttribute S)*  'end'   `value = BuildObstacle(results);`
 Agent              := 'begin' S ('software' S)? 'agent'  S (AgentAttribute S)*     'end'   `value = BuildAgent(results);`
                                                                          
-GoalAttribute      := ( Id / Name / FormalSpec / RefinedByGoal            
+GoalAttribute      := ( Id / Name / Definition / FormalSpec / RefinedByGoal            
                         / ObstructedBy / AssignedTo )                     `value = results[0].Value;`
-DomPropAttribute   := ( Id / Name / FormalSpec )                          `value = results[0].Value;`
-ObstacleAttribute  := ( Id / Name / FormalSpec / RefinedByObstacle )              `value = results[0].Value;`
+DomPropAttribute   := ( Id / Name / Definition / FormalSpec )                          `value = results[0].Value;`
+ObstacleAttribute  := ( Id / Name / Definition / FormalSpec / RefinedByObstacle )              `value = results[0].Value;`
 AgentAttribute     := ( Id / Name )                                       `value = results[0].Value;`
                                                                          
 Id                 := 'id'         S Identifier                           `value = BuildId(results);`
 Name               := 'name'       S '"' String '"'                       `value = BuildName(results);`
 FormalSpec         := 'formalspec' S '"' String '"'                       `value = BuildFormalSpec(results);`
+Definition         := 'definition' S '"' String '"'                       `value = BuildDefinition(results);`
                                                                          
 RefinedByObstacle  := 'refinedby'    S IdOrNameOrObstacle (S ',' S IdOrNameOrObstacle)*       `value = BuildRefinedBy(results);`
 RefinedByGoal      := 'refinedby'    S IdOrNameOrGoal (S ',' S IdOrNameOrGoal)*       `value = BuildRefinedBy(results);`

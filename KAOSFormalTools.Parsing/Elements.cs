@@ -97,6 +97,15 @@ namespace KAOSFormalTools.Parsing
         }
     }
 
+    public class Definition : Attribute
+    {
+        public string Value { get ; set ; }
+        public Definition (string value)
+        {
+            Value = value;
+        }
+    }
+
     public class FormalSpec : Attribute
     {
         public LTLFormula Value               { get; set; }
