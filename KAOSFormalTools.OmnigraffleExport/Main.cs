@@ -418,6 +418,11 @@ namespace KAOSFormalTools.OmnigraffleExport
             foreach (var agent in g.AssignedAgents)
                 DisplayAgent (agent, id);
 
+            foreach (var obstacle in g.Obstruction) {
+                int o = DisplayObstacle (obstacle);
+                DisplayArrow (o, id);
+            }
+
             return id;
         }
 
@@ -549,7 +554,7 @@ namespace KAOSFormalTools.OmnigraffleExport
             DisplayArrow (circle_id, parent);
             DisplayLine (id, circle_id);
         }
-
+        
         static void DisplayRefinement (GoalRefinement r, int parent)
         {
             var id = random.Next();
@@ -597,10 +602,65 @@ namespace KAOSFormalTools.OmnigraffleExport
         </dict>";
             Console.WriteLine (str);
             DisplayArrow (id, parent);
-
+            
             foreach (var goal in r.Children) {
                 var g = DisplayGoal (goal);
-
+                
+                DisplayLine (g, id);
+            }
+        }
+        
+        static void DisplayRefinement (ObstacleRefinement r, int parent)
+        {
+            var id = random.Next();
+            var str = @"
+        <dict>
+            <key>Bounds</key>
+            <string>{{276.16535494999999, 357.16535494999999}, {5.6692901000000004, 5.6692901000000004}}</string>
+            <key>Class</key>
+            <string>ShapedGraphic</string>
+            <key>FontInfo</key>
+            <dict>
+                <key>Color</key>
+                <dict>
+                    <key>b</key>
+                    <string>0.835294</string>
+                    <key>g</key>
+                    <string>0.556863</string>
+                    <key>r</key>
+                    <string>0.333333</string>
+                </dict>
+                <key>Font</key>
+                <string>TimesNewRomanPSMT</string>
+                <key>Size</key>
+                <real>8</real>
+            </dict>
+            <key>ID</key>
+            <integer>" + id + @"</integer>
+            <key>Shape</key>
+            <string>Circle</string>
+            <key>Style</key>
+            <dict>
+                <key>shadow</key>
+                <dict>
+                    <key>Draws</key>
+                    <string>NO</string>
+                </dict>
+            </dict>
+            <key>Text</key>
+            <dict>
+                <key>Pad</key>
+                <integer>10</integer>
+            </dict>
+            <key>VFlip</key>
+            <string>YES</string>
+        </dict>";
+            Console.WriteLine (str);
+            DisplayArrow (id, parent);
+            
+            foreach (var obstacle in r.Children) {
+                var g = DisplayObstacle (obstacle);
+                
                 DisplayLine (g, id);
             }
         }
@@ -702,6 +762,110 @@ namespace KAOSFormalTools.OmnigraffleExport
         </dict>";
             Console.WriteLine (str);
         }
+
+        static int DisplayObstacle (Obstacle o)
+        {
+            var id = random.Next();
+                        
+            string str = @"
+<dict>
+            <key>Bounds</key>
+            <string>{{133, 128}, {62.501465000000003, 20.500243999999999}}</string>
+            <key>Class</key>
+            <string>ShapedGraphic</string>
+            <key>FitText</key>
+            <string>Vertical</string>
+            <key>Flow</key>
+            <string>Resize</string>
+            <key>FontInfo</key>
+            <dict>
+                <key>Color</key>
+                <dict>
+                    <key>w</key>
+                    <string>0</string>
+                </dict>
+                <key>Font</key>
+                <string>ArialMT</string>
+                <key>NSKern</key>
+                <real>0.0</real>
+                <key>Size</key>
+                <real>8</real>
+            </dict>
+            <key>HFlip</key>
+            <string>YES</string>
+            <key>ID</key>
+            <integer>" + id + @"</integer>
+            <key>Shape</key>
+            <string>Bezier</string>
+            <key>ShapeData</key>
+            <dict>
+                <key>UnitPoints</key>
+                <array>
+                    <string>{-0.45797824999999998, -0.49999714000000001}</string>
+                    <string>{-0.45797824999999998, -0.5}</string>
+                    <string>{0.49995278999999998, -0.5}</string>
+                    <string>{0.5, -0.5}</string>
+                    <string>{0.49999976000000002, -0.5}</string>
+                    <string>{0.45321059000000002, 0.5}</string>
+                    <string>{0.45322131999999998, 0.5}</string>
+                    <string>{0.45325375000000001, 0.49998282999999999}</string>
+                    <string>{-0.50000071999999995, 0.5}</string>
+                    <string>{-0.5, 0.5}</string>
+                    <string>{-0.50000095, 0.5}</string>
+                    <string>{-0.45797824999999998, -0.5}</string>
+                </array>
+            </dict>
+            <key>Style</key>
+            <dict>
+                <key>fill</key>
+                <dict>
+                    <key>Color</key>
+                    <dict>
+                        <key>b</key>
+                        <string>0.611992</string>
+                        <key>g</key>
+                        <string>0.590278</string>
+                        <key>r</key>
+                        <string>1</string>
+                    </dict>
+                </dict>
+                <key>shadow</key>
+                <dict>
+                    <key>Draws</key>
+                    <string>NO</string>
+                </dict>";
+
+            if (o.Refinements.Count() == 0) {
+                str += @"
+                <key>stroke</key>
+                <dict>
+                    <key>Width</key>
+                    <real>2</real>
+                </dict>";
+            }
+
+            str += @"</dict>
+            <key>Text</key>
+            <dict>
+                <key>Text</key>
+                <string>{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf470
+{\fonttbl\f0\fswiss\fcharset0 ArialMT;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
+
+\f0\fs16 \cf0 \expnd0\expndtw0\kerning0
+" + o.Name + @"}</string>
+            </dict>
+        </dict>";
+            
+            Console.WriteLine (str);
+            
+            foreach (var refinement in o.Refinements)
+                DisplayRefinement (refinement, id);
+                        
+            return id;
+        }
+
 
         static GoalModel BuildModel (string filename)
         {
