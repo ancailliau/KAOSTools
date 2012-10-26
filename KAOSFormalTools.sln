@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.Omnigraffle
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.TextExporter", "KAOSFormalTools.TextExporter\KAOSFormalTools.TextExporter.csproj", "{20921B4C-B76A-4236-89B1-F5FFD025000B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.LatexExporter", "KAOSFormalTools.LatexExporter\KAOSFormalTools.LatexExporter.csproj", "{C1574D44-EB4F-4C2B-9F83-4DDC25AEC275}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +92,16 @@ Global
 		{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}.Release|x86.ActiveCfg = Release|Any CPU
 		{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}.Release|x86.Build.0 = Release|Any CPU
+		{C1574D44-EB4F-4C2B-9F83-4DDC25AEC275}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1574D44-EB4F-4C2B-9F83-4DDC25AEC275}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1574D44-EB4F-4C2B-9F83-4DDC25AEC275}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C1574D44-EB4F-4C2B-9F83-4DDC25AEC275}.Debug|x86.Build.0 = Debug|Any CPU
+		{C1574D44-EB4F-4C2B-9F83-4DDC25AEC275}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1574D44-EB4F-4C2B-9F83-4DDC25AEC275}.Default|Any CPU.Build.0 = Debug|Any CPU
+		{C1574D44-EB4F-4C2B-9F83-4DDC25AEC275}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1574D44-EB4F-4C2B-9F83-4DDC25AEC275}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1574D44-EB4F-4C2B-9F83-4DDC25AEC275}.Release|x86.ActiveCfg = Release|Any CPU
+		{C1574D44-EB4F-4C2B-9F83-4DDC25AEC275}.Release|x86.Build.0 = Release|Any CPU
 		{DFAE4D76-E744-4F28-BFE6-7525C52AC6C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DFAE4D76-E744-4F28-BFE6-7525C52AC6C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFAE4D76-E744-4F28-BFE6-7525C52AC6C2}.Debug|x86.ActiveCfg = Debug|Any CPU
