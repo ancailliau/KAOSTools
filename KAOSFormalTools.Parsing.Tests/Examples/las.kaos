@@ -1,6 +1,7 @@
 begin goal
   id          achieve_ambulance_on_scene_when_incident_reported
   name        "Achieve [AmbulanceOnScene When IncidentReported]"
+  definition  "Sooner-or-later, ambulance shall be on scene when incident is reported."
   formalspec  "G (incidentReported -> F ambulanceOnScene)"
   
   refinedby   achieve_ambulance_allocated_when_incident_reported, 
@@ -10,12 +11,14 @@ end
 begin goal
   id          achieve_ambulance_allocated_when_incident_reported
   name        "Achieve [AmbulanceAllocated When IncidentReported]"
+  definition  "Sooner-or-later, ambulance shall be allocated when incident is reported."
   formalspec  "G (incidentReported -> F ambulanceAllocated)"
 end
 
 begin goal
   id          achieve_ambulance_on_scene_when_ambulance_allocated
   name        "Achieve [AmbulanceOnScene When AmbulanceAllocated]"
+  definition  "Sooner-or-later, ambulance shall be on scene when allocated."
   formalspec  "G (ambulanceAllocated -> F ambulanceOnScene)"
   
   refinedby   achieve_ambulance_mobilized_when_ambulance_allocated, 
@@ -25,6 +28,7 @@ end
 begin goal
   id          achieve_ambulance_mobilized_when_ambulance_allocated
   name        "Achieve [AmbulanceMobilized When AmbulanceAllocated]"
+  definition  "Sooner-or-later, ambulance shall be mobilized when allocated."
   formalspec  "G (ambulanceAllocated -> F ambulanceMobilized)"
   
   refinedby   achieve_ambulance_mobilized_when_ambulance_allocated_on_road, 
@@ -34,19 +38,23 @@ end
 begin goal
   id           achieve_ambulance_on_scene_when_ambulance_mobilized
   name         "Achieve [AmbulanceOnScene When AmbulanceMobilized]"
+  definition   "Sooner-or-later, ambulance shall be on scene when mobilized."
   formalspec   "G (ambulanceMobilized -> F ambulanceOnScene)"
+  
   obstructedby mobilized_ambulance_not_on_scene_in_time
 end
 
 begin goal
   id          achieve_ambulance_mobilized_when_ambulance_allocated_on_road
   name        "Achieve [AmbulanceMobilized When AmbulanceAllocatedOnRoad]"
+  definition  "Sooner-or-later, ambulance shall be mobilized when allocated and on road."
   formalspec  "G (ambulanceAllocated & onRoad -> F ambulanceMobilized)"
 end
 
 begin goal
   id          achieve_ambulance_mobilized_when_ambulance_allocated_at_station
   name        "Achieve [AmbulanceMobilized When AmbulanceAllocatedAtStation]"
+  definition  "Sooner-or-later, ambulance shall be mobilized when allocated and at station."
   formalspec  "G (ambulanceAllocated & !onRoad -> F ambulanceMobilized)"
   
   refinedby   achieve_ambulance_mobilized_by_fax, 
@@ -56,12 +64,14 @@ end
 begin goal
   id          achieve_ambulance_mobilized_by_fax
   name        "Achieve [AmbulanceMobilizedByFax When AmbulanceAllocatedAtStation]"
+  definition  "Sooner-or-later, ambulance shall be mobilized by fax when allocated and at station."
   formalspec  "G (ambulanceAllocated & !onRoad -> F ambulanceMobilizedByFax)"
 end
 
 begin goal
   id          achieve_ambulance_mobilized_by_phone
   name        "Achieve [AmbulanceMobilizedByPhone When AmbulanceAllocatedAtStation]"
+  definition  "Sooner-or-later, ambulance shall be mobilized by phone when allocated and at station."
   formalspec  "G (ambulanceAllocated & !onRoad -> F ambulanceMobilizedByPhone)"
 end
 
