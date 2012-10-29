@@ -9,12 +9,12 @@ namespace KAOSFormalTools.ModelDrawing
     public class DotExporter
     {
         private readonly GoalModel model;
-        private readonly StreamWriter writer;
+        private readonly TextWriter writer;
 
-        public DotExporter (GoalModel model, string filename)
+        public DotExporter (GoalModel model, TextWriter writer)
         {
             this.model = model;
-            this.writer = new StreamWriter (filename);
+            this.writer = writer;
 
             writer.WriteLine ("digraph model {\n");
             writer.WriteLine ("graph[margin=0.2, nodesep=0.1, ranksep=0.3];");

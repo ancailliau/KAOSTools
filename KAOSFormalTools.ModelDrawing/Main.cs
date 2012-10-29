@@ -56,7 +56,7 @@ namespace KAOSFormalTools.ModelDrawing
             }
 
             var model = BuildModel (r[0]);
-            var exporter = new DotExporter (model, modelFilename);
+            var exporter = new DotExporter (model, !string.IsNullOrEmpty (modelFilename) ? new StreamWriter (modelFilename) : Console.Out);
 
             if (exportModel) {
                 exporter.ExportModel ();
