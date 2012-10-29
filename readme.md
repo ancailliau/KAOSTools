@@ -1,31 +1,18 @@
-# Beaver
+# KAOSFormalTools
 
-Beaver is a modeling editor for KAOS models. 
+KAOSFormalTools is a set of executable targeted at modeling and analyzing KAOS models.
 
-The editor has been designed to be modular and easy to extend for research purposes. Sometimes, level of indirection makes the software hard to read and understand. But this is necessary for low coupling between components.
+You can find more documentation here : https://github.com/ancailliau/KAOSFormalTools/wiki
 
 If you have any question regarding this software, do not hesitate to contact the author.
-
-## Feature
-
-- Support goals and refinements
-  - Name and definition attributes on goals
-- Support obstacle, obstruction and resolution
-  - Name and definition attributes on obstacles
-- Support agents and responsibility
-  - Name attributes on agents
-- Provides support for assessing likelihoods on obstacle entities, obstruction and resolution relations.
-- Implements propagation and Monte-Carlo simulation of likelihood.
-- Support exceptions.
 
 ## Requirements
 
 - Mono (> 2.10)
-- Gtk#
 
 ## Licence
 
-MIT Licence
+    MIT Licence
 
     Copyright (c) 2011 Université Catholique de Louvain and Antoine Cailliau
 
