@@ -48,6 +48,21 @@ end
             Assert.AreEqual (1, gm.Agents.Count);
             Assert.AreEqual ("test", gm.Agents.First().Name);
         }
+        
+        [Test()]
+        public void TestDescription ()
+        {
+            var input = @"
+begin agent
+    name ""test""
+    description ""My description""
+end
+";
+            var gm = parser.Parse (input);
+            Assert.AreEqual (1, gm.Agents.Count);
+            Assert.AreEqual ("My description", gm.Agents.First().Description);
+        }
+
 
         [Test()]
         public void TestAssignedTo ()

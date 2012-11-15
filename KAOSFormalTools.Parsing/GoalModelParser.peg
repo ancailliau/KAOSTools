@@ -15,12 +15,13 @@ GoalAttribute      := ( Id / Name / Definition / FormalSpec / RefinedByGoal
                         / ObstructedBy / AssignedTo )                     `value = results[0].Value;`
 DomPropAttribute   := ( Id / Name / Definition / FormalSpec )                          `value = results[0].Value;`
 ObstacleAttribute  := ( Id / Name / Definition / FormalSpec / RefinedByObstacle / ResolvedBy )              `value = results[0].Value;`
-AgentAttribute     := ( Id / Name )                                       `value = results[0].Value;`
+AgentAttribute     := ( Id / Name / Description )                                       `value = results[0].Value;`
                                                                          
 Id                 := 'id'         S Identifier                           `value = BuildId(results);`
 Name               := 'name'       S '"' String '"'                       `value = BuildName(results);`
 FormalSpec         := 'formalspec' S '"' String '"'                       `value = BuildFormalSpec(results);`
 Definition         := 'definition' S '"' String '"'                       `value = BuildDefinition(results);`
+Description        := 'description' S '"' String '"'                       `value = BuildDescription(results);`
                                                                          
 RefinedByObstacle  := 'refinedby'    S IdOrNameOrObstacle (S ',' S IdOrNameOrObstacle)*       `value = BuildRefinedBy(results);`
 RefinedByGoal      := 'refinedby'    S IdOrNameOrGoal (S ',' S IdOrNameOrGoal)*       `value = BuildRefinedBy(results);`

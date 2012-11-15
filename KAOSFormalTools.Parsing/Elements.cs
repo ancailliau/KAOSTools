@@ -115,6 +115,15 @@ namespace KAOSFormalTools.Parsing
             Value = value;
         }
     }
+    
+    public class Description : Attribute
+    {
+        public string Value { get ; set ; }
+        public Description (string value)
+        {
+            Value = value;
+        }
+    }
 
     public class FormalSpec : Attribute
     {

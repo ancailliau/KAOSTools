@@ -13,6 +13,7 @@ begin goal
   name        "Achieve [AmbulanceAllocated When IncidentReported]"
   definition  "Sooner-or-later, ambulance shall be allocated when incident is reported."
   formalspec  "G (incidentReported -> F ambulanceAllocated)"
+  assignedto  "ADS"
 end
 
 begin goal
@@ -40,6 +41,7 @@ begin goal
   name         "Achieve [AmbulanceOnScene When AmbulanceMobilized]"
   definition   "Sooner-or-later, ambulance shall be on scene when mobilized."
   formalspec   "G (ambulanceMobilized -> F ambulanceOnScene)"
+  assignedto   "Ambulance Staff"
   
   obstructedby mobilized_ambulance_not_on_scene_in_time
 end
@@ -49,6 +51,7 @@ begin goal
   name        "Achieve [AmbulanceMobilized When AmbulanceAllocatedOnRoad]"
   definition  "Sooner-or-later, ambulance shall be mobilized when allocated and on road."
   formalspec  "G (ambulanceAllocated & onRoad -> F ambulanceMobilized)"
+  assignedto   "Despatcher"
 end
 
 begin goal
@@ -66,6 +69,7 @@ begin goal
   name        "Achieve [AmbulanceMobilizedByFax When AmbulanceAllocatedAtStation]"
   definition  "Sooner-or-later, ambulance shall be mobilized by fax when allocated and at station."
   formalspec  "G (ambulanceAllocated & !onRoad -> F ambulanceMobilizedByFax)"
+  assignedto   "ADS"
 end
 
 begin goal
@@ -73,6 +77,7 @@ begin goal
   name        "Achieve [AmbulanceMobilizedByPhone When AmbulanceAllocatedAtStation]"
   definition  "Sooner-or-later, ambulance shall be mobilized by phone when allocated and at station."
   formalspec  "G (ambulanceAllocated & !onRoad -> F ambulanceMobilizedByPhone)"
+  assignedto   "Despatcher"
 end
 
 begin obstacle
@@ -144,4 +149,13 @@ begin domainproperty
   id          by_fax_or_by_phone_mobilization
   name        "Ambulance Mobilized By Fax or Phone"
   formalspec  "G ((ambulanceMobilizedByFax | ambulanceMobilizedByPhone) -> ambulanceMobilized)"
+end
+
+begin agent 
+  name        "Despatcher"
+end
+
+begin software agent
+  name        "ADS"
+  description "Automated despatching system"
 end

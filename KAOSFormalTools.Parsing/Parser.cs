@@ -174,6 +174,8 @@ namespace KAOSFormalTools.Parsing
 
                 } else if (attr is Name) {
                     agent.Name = (attr as Name).Value;
+                } else if (attr is Description) {
+                    agent.Description = (attr as Description).Value;
                 }
             }
 
