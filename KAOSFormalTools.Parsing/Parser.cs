@@ -136,6 +136,9 @@ namespace KAOSFormalTools.Parsing
 
                 } else if (attr is FormalSpec) {
                     obstacle.FormalSpec = (attr as FormalSpec).Value;
+
+                } else if (attr is Definition) {
+                    obstacle.Definition = (attr as Definition).Value;
                 }
             }
 
