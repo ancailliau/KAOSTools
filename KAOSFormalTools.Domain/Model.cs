@@ -12,9 +12,12 @@ namespace KAOSFormalTools.Domain
         public string                 Definition      { get; set; }
         public LTLFormula             FormalSpec      { get; set; }
 
+        public float                  CPS             { get; set; }
+        public float                  RDS             { get; set; }
+
         public IList<GoalRefinement>  Refinements     { get; set; }
         public IList<Obstacle>        Obstruction     { get; set; }
-        public IList<Agent>           AssignedAgents   { get; set; }
+        public IList<Agent>           AssignedAgents  { get; set; }
 
         public Goal ()
         {
@@ -31,6 +34,9 @@ namespace KAOSFormalTools.Domain
         public string                           Name         { get; set; }
         public string                           Definition   { get; set; }
         public LTLFormula                       FormalSpec   { get; set; }
+
+        public float                            EPS          { get; set; }
+        public float                            CPS          { get; set; }
 
         public IList<ObstacleRefinement>        Refinements  { get; set; }
         public IList<Goal>                      Resolutions  { get; set; }
@@ -49,6 +55,7 @@ namespace KAOSFormalTools.Domain
         public string      Name        { get; set; }
         public string      Definition  { get; set; }
         public LTLFormula  FormalSpec  { get; set; }
+        public float       EPS         { get; set; }
 
         public DomainProperty ()
         {
@@ -72,8 +79,8 @@ namespace KAOSFormalTools.Domain
 
     public class GoalRefinement
     {
-        public IList<Goal> Children { get; set; }
-        public IList<DomainProperty> DomainProperties { get; set; }
+        public IList<Goal>           Children          { get; set; }
+        public IList<DomainProperty> DomainProperties  { get; set; }
 
         public GoalRefinement ()
         {
@@ -95,8 +102,8 @@ namespace KAOSFormalTools.Domain
 
     public class ObstacleRefinement
     {
-        public IList<Obstacle> Children { get; set; }
-        public IList<DomainProperty> DomainProperties { get; set; }
+        public IList<Obstacle>       Children          { get; set; }
+        public IList<DomainProperty> DomainProperties  { get; set; }
 
         public ObstacleRefinement ()
         {
@@ -116,4 +123,3 @@ namespace KAOSFormalTools.Domain
         }
     }
 }
-
