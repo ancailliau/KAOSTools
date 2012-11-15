@@ -54,6 +54,8 @@ internal sealed partial class GoalModelParser
 		m_nonterminals.Add("FormalSpec", new ParseMethod[]{this.DoParseFormalSpecRule});
 		m_nonterminals.Add("Definition", new ParseMethod[]{this.DoParseDefinitionRule});
 		m_nonterminals.Add("Description", new ParseMethod[]{this.DoParseDescriptionRule});
+		m_nonterminals.Add("RDS", new ParseMethod[]{this.DoParseRDSRule});
+		m_nonterminals.Add("Probability", new ParseMethod[]{this.DoParseProbabilityRule});
 		m_nonterminals.Add("RefinedByObstacle", new ParseMethod[]{this.DoParseRefinedByObstacleRule});
 		m_nonterminals.Add("RefinedByGoal", new ParseMethod[]{this.DoParseRefinedByGoalRule});
 		m_nonterminals.Add("ObstructedBy", new ParseMethod[]{this.DoParseObstructedByRule});
@@ -65,6 +67,7 @@ internal sealed partial class GoalModelParser
 		m_nonterminals.Add("IdOrName", new ParseMethod[]{this.DoParseIdOrNameRule});
 		m_nonterminals.Add("Identifier", new ParseMethod[]{this.DoParseIdentifierRule});
 		m_nonterminals.Add("String", new ParseMethod[]{this.DoParseStringRule});
+		m_nonterminals.Add("Float", new ParseMethod[]{this.DoParseFloatRule});
 		m_nonterminals.Add("S", new ParseMethod[]{this.DoParseSRule});
 		m_nonterminals.Add("Space", new ParseMethod[]{this.DoParseSpaceRule});
 		m_nonterminals.Add("Comment", new ParseMethod[]{this.DoParseCommentRule});
@@ -240,7 +243,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// GoalAttribute := Id / Name / Definition / FormalSpec / RefinedByGoal / ObstructedBy / AssignedTo
+	// GoalAttribute := Id / Name / Definition / FormalSpec / RefinedByGoal / ObstructedBy / AssignedTo / RDS
 	private State DoParseGoalAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -253,7 +256,8 @@ internal sealed partial class GoalModelParser
 			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpec");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "RefinedByGoal");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "ObstructedBy");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "AssignedTo");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "AssignedTo");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "RDS");});
 		
 		if (_state.Parsed)
 		{
@@ -265,7 +269,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// DomPropAttribute := Id / Name / Definition / FormalSpec
+	// DomPropAttribute := Id / Name / Definition / FormalSpec / Probability
 	private State DoParseDomPropAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -275,7 +279,8 @@ internal sealed partial class GoalModelParser
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Id");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Name");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Definition");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpec");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpec");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Probability");});
 		
 		if (_state.Parsed)
 		{
@@ -287,7 +292,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// ObstacleAttribute := Id / Name / Definition / FormalSpec / RefinedByObstacle / ResolvedBy
+	// ObstacleAttribute := Id / Name / Definition / FormalSpec / RefinedByObstacle / ResolvedBy / Probability
 	private State DoParseObstacleAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -299,7 +304,8 @@ internal sealed partial class GoalModelParser
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Definition");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpec");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "RefinedByObstacle");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "ResolvedBy");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "ResolvedBy");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Probability");});
 		
 		if (_state.Parsed)
 		{
@@ -439,6 +445,48 @@ internal sealed partial class GoalModelParser
 		{
 			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
 			value = BuildDescription(results);
+			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+		}
+		
+		return _state;
+	}
+	
+	// RDS := 'rds' S Float
+	private State DoParseRDSRule(State _state, List<Result> _outResults)
+	{
+		State _start = _state;
+		List<Result> results = new List<Result>();
+		
+		_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "rds");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Float");});
+		
+		if (_state.Parsed)
+		{
+			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			value = BuildRDS(results);
+			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+		}
+		
+		return _state;
+	}
+	
+	// Probability := 'probability' S Float
+	private State DoParseProbabilityRule(State _state, List<Result> _outResults)
+	{
+		State _start = _state;
+		List<Result> results = new List<Result>();
+		
+		_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "probability");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Float");});
+		
+		if (_state.Parsed)
+		{
+			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			value = BuildProbability(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
 		
@@ -738,6 +786,38 @@ internal sealed partial class GoalModelParser
 		{
 			string expected = null;
 			expected = "string";
+			if (expected != null)
+				_state = new State(_start.Index, false, ErrorSet.Combine(_start.Errors, new ErrorSet(_state.Errors.Index, expected)));
+		}
+		
+		return _state;
+	}
+	
+	// Float := [0-9]+ ('.' [0-9]+)?
+	private State DoParseFloatRule(State _state, List<Result> _outResults)
+	{
+		State _start = _state;
+		List<Result> results = new List<Result>();
+		
+		_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoRepetition(s, r, 1, 2147483647,
+				delegate (State s2, List<Result> r2) {return DoParseRange(s2, r2, false, string.Empty, "09", null, "[0-9]");});},
+			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 1,
+				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
+					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, ".");},
+					delegate (State s3, List<Result> r3) {return DoRepetition(s3, r3, 1, 2147483647,
+						delegate (State s4, List<Result> r4) {return DoParseRange(s4, r4, false, string.Empty, "09", null, "[0-9]");});});});});
+		
+		if (_state.Parsed)
+		{
+			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			value = null;
+			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+		}
+		else
+		{
+			string expected = null;
+			expected = "float";
 			if (expected != null)
 				_state = new State(_start.Index, false, ErrorSet.Combine(_start.Errors, new ErrorSet(_state.Errors.Index, expected)));
 		}

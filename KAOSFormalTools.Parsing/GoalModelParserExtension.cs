@@ -137,6 +137,16 @@ internal sealed partial class GoalModelParser
         return new KAOSFormalTools.Parsing.Description (results [2].Text);
     }
     
+    private KAOSFormalTools.Parsing.Element BuildRDS (List<Result> results)
+    {
+        return new KAOSFormalTools.Parsing.RDS (float.Parse (results [1].Text));
+    }
+    
+    private KAOSFormalTools.Parsing.Element BuildProbability (List<Result> results)
+    {
+        return new KAOSFormalTools.Parsing.Probability (float.Parse (results [1].Text));
+    }
+
     private KAOSFormalTools.Parsing.Element BuildIdOrName (List<Result> results)
     {
         if (results.Count == 3) {

@@ -124,6 +124,24 @@ namespace KAOSFormalTools.Parsing
             Value = value;
         }
     }
+    
+    public class Probability : Attribute
+    {
+        public float Value { get ; set ; }
+        public Probability (float value)
+        {
+            Value = value;
+        }
+    }
+    
+    public class RDS : Attribute
+    {
+        public float Value { get ; set ; }
+        public RDS (float value)
+        {
+            Value = value;
+        }
+    }
 
     public class FormalSpec : Attribute
     {

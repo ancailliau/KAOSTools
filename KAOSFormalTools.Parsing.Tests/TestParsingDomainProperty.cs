@@ -62,6 +62,20 @@ end
             var root = gm.DomainProperties.First ();
             Assert.IsInstanceOf (typeof(Globally), root.FormalSpec);
         }
+        
+        [Test()]
+        public void TestProbability ()
+        {
+            var input = @"
+begin domainproperty
+    id test
+    probability 0.30
+end
+";
+            var gm = parser.Parse (input);
+            Assert.AreEqual (0.3f, gm.DomainProperties.First().EPS);
+        }
+
     }
 
 }

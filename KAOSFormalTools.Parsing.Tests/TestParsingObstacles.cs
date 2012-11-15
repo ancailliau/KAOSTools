@@ -363,6 +363,20 @@ end
             var resolvingGoal = obstacle.Resolutions.First ();
             Assert.AreEqual ("resolution1", resolvingGoal.Identifier);
         }
+
+        [Test()]
+        public void TestProbability ()
+        {
+            var input = @"
+begin obstacle
+    id           test
+    probability  0.42
+end
+";
+            var gm = parser.Parse (input);
+            Assert.AreEqual (1, gm.Obstacles.Count);
+            Assert.AreEqual (0.42f, gm.Obstacles.First().EPS);
+        }
     }
 
 }

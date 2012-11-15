@@ -286,6 +286,24 @@ begin goal name ""test3"" end
             Assert.AreEqual ("test2", refinement.Children[0].Name);
             Assert.AreEqual ("test3", refinement.Children[1].Name);
         }
+
+        
+        [Test()]
+        public void TestRequiredDegreeOfSatisfaction ()
+        {
+            var input = @"
+begin goal
+    name       ""My goal""
+    rds        0.95
+end
+";
+            var gm = parser.Parse (input);
+            Assert.AreEqual (1, gm.RootGoals.Count);
+            
+            var root = gm.RootGoals.First ();
+            Assert.AreEqual (0.95f, root.RDS);
+        }
+
     }
 
 }

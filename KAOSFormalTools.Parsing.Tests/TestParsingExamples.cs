@@ -23,6 +23,7 @@ namespace KAOSFormalTools.Parsing.Tests
             Assert.IsNotNull (model);
         }
 
+        /*
         [Test()]
         public void TestCarPooling ()
         {
@@ -31,6 +32,7 @@ namespace KAOSFormalTools.Parsing.Tests
 
             Assert.IsNotNull (model);
         }
+        */
     }
 
 }

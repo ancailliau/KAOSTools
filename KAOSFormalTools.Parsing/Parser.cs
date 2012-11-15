@@ -74,6 +74,9 @@ namespace KAOSFormalTools.Parsing
                 
                 } else if (attribute is Definition) {
                     goal.Definition = (attribute as Definition).Value;
+
+                } else if (attribute is RDS) {
+                    goal.RDS = (attribute as RDS).Value;
                 }
             }
 
@@ -108,6 +111,9 @@ namespace KAOSFormalTools.Parsing
 
                 } else if (attr is Definition) {
                     domprop.Definition = (attr as Definition).Value;
+
+                } else if (attr is Probability) {
+                    domprop.EPS = (attr as Probability).Value;
                 }
             }
 
@@ -142,6 +148,9 @@ namespace KAOSFormalTools.Parsing
 
                 } else if (attr is Definition) {
                     obstacle.Definition = (attr as Definition).Value;
+
+                } else if (attr is Probability) {
+                    obstacle.EPS = (attr as Probability).Value;
                 }
             }
 
