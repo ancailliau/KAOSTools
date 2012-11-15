@@ -33,11 +33,13 @@ namespace KAOSFormalTools.Domain
         public LTLFormula                       FormalSpec   { get; set; }
 
         public IList<ObstacleRefinement>        Refinements  { get; set; }
+        public IList<Goal>                      Resolutions  { get; set; }
 
         public Obstacle ()
         {
             Identifier  = Guid.NewGuid ().ToString ();
             Refinements = new List<ObstacleRefinement> ();
+            Resolutions = new List<Goal> ();
         }
     }
 

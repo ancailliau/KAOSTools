@@ -318,6 +318,51 @@ end
             Assert.AreEqual (2,      gm.Obstacles[0].Refinements.Count);
         }
 
+        [Test()]
+        public void TestResolutions ()
+        {
+            var input = @"
+begin obstacle
+    id test
+    resolvedby resolution1
+end
+
+begin goal 
+    id resolution1
+end
+";
+            var gm = parser.Parse (input);
+            Assert.AreEqual (1, gm.Obstacles.Count);
+
+            var obstacle = gm.Obstacles.First ();
+
+            Assert.AreEqual (1, obstacle.Resolutions.Count);
+            var resolvingGoal = obstacle.Resolutions.First ();
+            Assert.AreEqual ("resolution1", resolvingGoal.Identifier);
+        }
+
+        
+        [Test()]
+        public void TestInlineResolutions ()
+        {
+            var input = @"
+begin obstacle
+    id test
+    resolvedby begin goal 
+                   id resolution1
+               end
+end
+
+";
+            var gm = parser.Parse (input);
+            Assert.AreEqual (1, gm.Obstacles.Count);
+            
+            var obstacle = gm.Obstacles.First ();
+            
+            Assert.AreEqual (1, obstacle.Resolutions.Count);
+            var resolvingGoal = obstacle.Resolutions.First ();
+            Assert.AreEqual ("resolution1", resolvingGoal.Identifier);
+        }
     }
 
 }

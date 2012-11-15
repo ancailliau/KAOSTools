@@ -14,7 +14,7 @@ Agent              := 'begin' S ('software' S)? 'agent'  S (AgentAttribute S)*  
 GoalAttribute      := ( Id / Name / Definition / FormalSpec / RefinedByGoal            
                         / ObstructedBy / AssignedTo )                     `value = results[0].Value;`
 DomPropAttribute   := ( Id / Name / Definition / FormalSpec )                          `value = results[0].Value;`
-ObstacleAttribute  := ( Id / Name / Definition / FormalSpec / RefinedByObstacle )              `value = results[0].Value;`
+ObstacleAttribute  := ( Id / Name / Definition / FormalSpec / RefinedByObstacle / ResolvedBy )              `value = results[0].Value;`
 AgentAttribute     := ( Id / Name )                                       `value = results[0].Value;`
                                                                          
 Id                 := 'id'         S Identifier                           `value = BuildId(results);`
@@ -26,7 +26,8 @@ RefinedByObstacle  := 'refinedby'    S IdOrNameOrObstacle (S ',' S IdOrNameOrObs
 RefinedByGoal      := 'refinedby'    S IdOrNameOrGoal (S ',' S IdOrNameOrGoal)*       `value = BuildRefinedBy(results);`
 ObstructedBy       := 'obstructedby' S IdOrNameOrObstacle (S ',' S IdOrNameOrObstacle)*       `value = BuildObstructedBy(results);`
 AssignedTo         := 'assignedto'   S IdOrNameOrAgent (S ',' S IdOrNameOrAgent)*       `value = BuildAssignedTo(results);`
-                                                                         
+ResolvedBy         := 'resolvedby'   S IdOrNameOrGoal (S ',' S IdOrNameOrGoal)*       `value = BuildResolvedBy(results);`
+                                                                                                                                           
 # Expressions                                
 
 IdOrNameOrObstacle := ( Obstacle / IdOrName )                            `value = results[0].Value;` `expected = "id or name"`

@@ -57,6 +57,7 @@ internal sealed partial class GoalModelParser
 		m_nonterminals.Add("RefinedByGoal", new ParseMethod[]{this.DoParseRefinedByGoalRule});
 		m_nonterminals.Add("ObstructedBy", new ParseMethod[]{this.DoParseObstructedByRule});
 		m_nonterminals.Add("AssignedTo", new ParseMethod[]{this.DoParseAssignedToRule});
+		m_nonterminals.Add("ResolvedBy", new ParseMethod[]{this.DoParseResolvedByRule});
 		m_nonterminals.Add("IdOrNameOrObstacle", new ParseMethod[]{this.DoParseIdOrNameOrObstacleRule});
 		m_nonterminals.Add("IdOrNameOrGoal", new ParseMethod[]{this.DoParseIdOrNameOrGoalRule});
 		m_nonterminals.Add("IdOrNameOrAgent", new ParseMethod[]{this.DoParseIdOrNameOrAgentRule});
@@ -285,7 +286,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// ObstacleAttribute := Id / Name / Definition / FormalSpec / RefinedByObstacle
+	// ObstacleAttribute := Id / Name / Definition / FormalSpec / RefinedByObstacle / ResolvedBy
 	private State DoParseObstacleAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -296,7 +297,8 @@ internal sealed partial class GoalModelParser
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Name");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Definition");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpec");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "RefinedByObstacle");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "RefinedByObstacle");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "ResolvedBy");});
 		
 		if (_state.Parsed)
 		{
@@ -520,6 +522,33 @@ internal sealed partial class GoalModelParser
 		{
 			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
 			value = BuildAssignedTo(results);
+			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+		}
+		
+		return _state;
+	}
+	
+	// ResolvedBy := 'resolvedby' S IdOrNameOrGoal (S ',' S IdOrNameOrGoal)*
+	private State DoParseResolvedByRule(State _state, List<Result> _outResults)
+	{
+		State _start = _state;
+		List<Result> results = new List<Result>();
+		
+		_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "resolvedby");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "IdOrNameOrGoal");},
+			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,
+				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
+					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, ",");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "IdOrNameOrGoal");});});});
+		
+		if (_state.Parsed)
+		{
+			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			value = BuildResolvedBy(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
 		

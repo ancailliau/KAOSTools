@@ -76,6 +76,17 @@ internal sealed partial class GoalModelParser
         return list;
     }
 
+    
+    private KAOSFormalTools.Parsing.Element BuildResolvedBy (List<Result> results)
+    {
+        var list = new ResolvedByList ();
+        for (int i = 1; i < results.Count; i = i + 2) {
+            list.Values.Add (results[i].Value);
+        }
+        
+        return list;
+    }
+
     private KAOSFormalTools.Parsing.Element BuildObstructedBy (List<Result> results)
     {
         var list = new ObstructedByList ();

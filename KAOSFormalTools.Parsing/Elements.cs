@@ -67,6 +67,16 @@ namespace KAOSFormalTools.Parsing
         }
     }
 
+    public class ResolvedByList : Attribute
+    {
+        public List<Element> Values    { get; set; }
+        
+        public ResolvedByList ()
+        {
+            Values = new List<Element> ();
+        }
+    }
+
     public class AssignedToList : Attribute
     {
         public List<Element> Values    { get; set; }

@@ -200,6 +200,7 @@ namespace KAOSFormalTools.Parsing
             string name       = "";
 
             var refinements   = new List<ObstacleRefinement> ();
+            var resolutions   = new List<KAOSFormalTools.Domain.Goal> ();
 
             foreach (var attribute in parsedObstacle.Attributes) {
                 if (attribute is Identifier) {
@@ -217,6 +218,7 @@ namespace KAOSFormalTools.Parsing
                             var candidate = GetOrCreateObstacle (child as IdentifierOrName, true);
                             if (candidate != null)
                                 refinement.Children.Add (candidate);
+
                         } else if (child is Obstacle) {
                             var o = BuildObstacle (child as Obstacle);
                             refinement.Children.Add (o);
@@ -227,6 +229,23 @@ namespace KAOSFormalTools.Parsing
 
                     if (refinement.Children.Count > 0)
                         refinements.Add (refinement);
+
+                } else if (attribute is ResolvedByList) {
+                    var children = attribute as ResolvedByList;
+
+                    foreach (var child in children.Values) {
+                        if (child is IdentifierOrName) {
+                            var candidate = GetOrCreateGoal (child as IdentifierOrName, true);
+                            if (candidate != null)
+                                resolutions.Add (candidate);
+
+                        } else if (child is Goal) {
+                            var g = BuildGoal (child as Goal);
+                            resolutions.Add (g);
+                            
+                            BuildGoalRelations (child as Goal);
+                        }
+                    }
                 }
             }
 
@@ -249,6 +268,9 @@ namespace KAOSFormalTools.Parsing
 
             foreach (var r in refinements)
                 obstacle.Refinements.Add (r);
+
+            foreach (var g in resolutions)
+                obstacle.Resolutions.Add (g);
         }
 
         private void BuildGoalRelations (Goal parsedGoal)
