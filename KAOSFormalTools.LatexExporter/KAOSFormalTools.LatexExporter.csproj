@@ -33,6 +33,9 @@
     <Reference Include="NDesk.Options">
       <HintPath>..\Libraries\NDesk.Options.dll</HintPath>
     </Reference>
+    <Reference Include="LtlSharp">
+      <HintPath>..\Libraries\LtlSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />

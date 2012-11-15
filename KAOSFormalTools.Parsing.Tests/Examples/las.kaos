@@ -1,8 +1,12 @@
+#
+# Goals
+#
+
 begin goal
   id          achieve_ambulance_on_scene_when_incident_reported
   name        "Achieve [AmbulanceOnScene When IncidentReported]"
   definition  "Sooner-or-later, ambulance shall be on scene when incident is reported."
-  formalspec  "G (incidentReported -> F ambulanceOnScene)"
+  formalspec  "incidentReported => F ambulanceOnScene"
   
   refinedby   achieve_ambulance_allocated_when_incident_reported, 
               achieve_ambulance_on_scene_when_ambulance_allocated
@@ -12,7 +16,7 @@ begin goal
   id          achieve_ambulance_allocated_when_incident_reported
   name        "Achieve [AmbulanceAllocated When IncidentReported]"
   definition  "Sooner-or-later, ambulance shall be allocated when incident is reported."
-  formalspec  "G (incidentReported -> F ambulanceAllocated)"
+  formalspec  "incidentReported => F ambulanceAllocated"
   assignedto  "ADS"
 end
 
@@ -20,7 +24,7 @@ begin goal
   id          achieve_ambulance_on_scene_when_ambulance_allocated
   name        "Achieve [AmbulanceOnScene When AmbulanceAllocated]"
   definition  "Sooner-or-later, ambulance shall be on scene when allocated."
-  formalspec  "G (ambulanceAllocated -> F ambulanceOnScene)"
+  formalspec  "ambulanceAllocated => F ambulanceOnScene"
   
   refinedby   achieve_ambulance_mobilized_when_ambulance_allocated, 
               achieve_ambulance_on_scene_when_ambulance_mobilized
@@ -30,7 +34,7 @@ begin goal
   id          achieve_ambulance_mobilized_when_ambulance_allocated
   name        "Achieve [AmbulanceMobilized When AmbulanceAllocated]"
   definition  "Sooner-or-later, ambulance shall be mobilized when allocated."
-  formalspec  "G (ambulanceAllocated -> F ambulanceMobilized)"
+  formalspec  "ambulanceAllocated => F ambulanceMobilized"
   
   refinedby   achieve_ambulance_mobilized_when_ambulance_allocated_on_road, 
               achieve_ambulance_mobilized_when_ambulance_allocated_at_station
@@ -40,122 +44,152 @@ begin goal
   id           achieve_ambulance_on_scene_when_ambulance_mobilized
   name         "Achieve [AmbulanceOnScene When AmbulanceMobilized]"
   definition   "Sooner-or-later, ambulance shall be on scene when mobilized."
-  formalspec   "G (ambulanceMobilized -> F ambulanceOnScene)"
+  formalspec   "ambulanceMobilized => F ambulanceOnScene"
   assignedto   "Ambulance Staff"
   
   obstructedby mobilized_ambulance_not_on_scene_in_time
 end
 
 begin goal
-  id          achieve_ambulance_mobilized_when_ambulance_allocated_on_road
-  name        "Achieve [AmbulanceMobilized When AmbulanceAllocatedOnRoad]"
-  definition  "Sooner-or-later, ambulance shall be mobilized when allocated and on road."
-  formalspec  "G (ambulanceAllocated & onRoad -> F ambulanceMobilized)"
+  id           achieve_ambulance_mobilized_when_ambulance_allocated_on_road
+  name         "Achieve [AmbulanceMobilized When AmbulanceAllocatedOnRoad]"
+  definition   "Sooner-or-later, ambulance shall be mobilized when allocated and on road."
+  formalspec   "ambulanceAllocated & onRoad => F ambulanceMobilized"
   assignedto   "Despatcher"
 end
 
 begin goal
-  id          achieve_ambulance_mobilized_when_ambulance_allocated_at_station
-  name        "Achieve [AmbulanceMobilized When AmbulanceAllocatedAtStation]"
-  definition  "Sooner-or-later, ambulance shall be mobilized when allocated and at station."
-  formalspec  "G (ambulanceAllocated & !onRoad -> F ambulanceMobilized)"
+  id           achieve_ambulance_mobilized_when_ambulance_allocated_at_station
+  name         "Achieve [AmbulanceMobilized When AmbulanceAllocatedAtStation]"
+  definition   "Sooner-or-later, ambulance shall be mobilized when allocated and at station."
+  formalspec   "ambulanceAllocated & !onRoad => F ambulanceMobilized"
   
-  refinedby   achieve_ambulance_mobilized_by_fax, 
-              achieve_ambulance_mobilized_by_phone
+  refinedby    achieve_ambulance_mobilized_by_fax, 
+               achieve_ambulance_mobilized_by_phone
 end
 
 begin goal
-  id          achieve_ambulance_mobilized_by_fax
-  name        "Achieve [AmbulanceMobilizedByFax When AmbulanceAllocatedAtStation]"
-  definition  "Sooner-or-later, ambulance shall be mobilized by fax when allocated and at station."
-  formalspec  "G (ambulanceAllocated & !onRoad -> F ambulanceMobilizedByFax)"
+  id           achieve_ambulance_mobilized_by_fax
+  name         "Achieve [AmbulanceMobilizedByFax When AmbulanceAllocatedAtStation]"
+  definition   "Sooner-or-later, ambulance shall be mobilized by fax when allocated and at station."
+  formalspec   "ambulanceAllocated & !onRoad => F ambulanceMobilizedByFax"
   assignedto   "ADS"
 end
 
 begin goal
-  id          achieve_ambulance_mobilized_by_phone
-  name        "Achieve [AmbulanceMobilizedByPhone When AmbulanceAllocatedAtStation]"
-  definition  "Sooner-or-later, ambulance shall be mobilized by phone when allocated and at station."
-  formalspec  "G (ambulanceAllocated & !onRoad -> F ambulanceMobilizedByPhone)"
+  id           achieve_ambulance_mobilized_by_phone
+  name         "Achieve [AmbulanceMobilizedByPhone When AmbulanceAllocatedAtStation]"
+  definition   "Sooner-or-later, ambulance shall be mobilized by phone when allocated and at station."
+  formalspec   "ambulanceAllocated & !onRoad => F ambulanceMobilizedByPhone"
   assignedto   "Despatcher"
 end
 
+#
+# Obstacles
+#
+
 begin obstacle
-  id          mobilized_ambulance_not_on_scene_in_time
-  name        "Mobilized Ambulance Not On Scene in Time"
-  formalspec  "F (ambulanceMobilized & G (!ambulanceOnScene))"
+  id           mobilized_ambulance_not_on_scene_in_time
+  name         "Mobilized Ambulance Not On Scene in Time"
+  definition   "Ambulance is mobilized and cannot reach the incident scene within time constraints"
+  formalspec   "F (ambulanceMobilized & G (!ambulanceOnScene))"
   
-  refinedby   ambulance_stuck_in_traffic_jam
-  refinedby   ambulance_lost
-  refinedby   ambulance_broken_down
+  refinedby    ambulance_stuck_in_traffic_jam
+  refinedby    ambulance_lost
+  refinedby    ambulance_broken_down
 end
 
 begin obstacle
-  id          ambulance_stuck_in_traffic_jam
-  name        "Ambulance Stuck In Traffic Jam"
-  formalspec  "F (ambulanceMobilized & G (ambulanceInTrafficJam))"
+  id           ambulance_stuck_in_traffic_jam
+  name         "Ambulance Stuck In Traffic Jam"
+  definition   "Ambulance is mobilized and is stuck in traffic jams"
+  formalspec   "F (ambulanceMobilized & G (ambulanceInTrafficJam))"
 end
 
 begin obstacle
-  id          ambulance_lost
-  name        "Ambulance Lost"
-  formalspec  "F (ambulanceMobilized & G (ambulanceLost))"
-  refinedby   ambulance_not_in_familiar_area, gps_not_working
+  id           ambulance_lost
+  name         "Ambulance Lost"
+  definition   "Ambulance is mobilized and is lost and cannot find his way to incident scene"
+  formalspec   "F (ambulanceMobilized & G (ambulanceLost))"
+  refinedby    ambulance_not_in_familiar_area, gps_not_working
 end
 
 begin obstacle
-  id          ambulance_broken_down
-  name        "Ambulance Broken Down"
-  formalspec  "F (ambulanceMobilized & G (ambulanceBrokenDown))"
+  id           ambulance_broken_down
+  name         "Ambulance Broken Down"
+  definition   "Ambulance is mobilized and is broken down"
+  formalspec   "F (ambulanceMobilized & G (ambulanceBrokenDown))"
 end
 
 begin obstacle
-  id          ambulance_not_in_familiar_area
-  name        "Ambulance Not In Familiar Area"
-  formalspec  "F (ambulanceMobilized & G (!ambulanceInFamiliarArea))"
+  id           ambulance_not_in_familiar_area
+  name         "Ambulance Not In Familiar Area"
+  definition   "Ambulance is mobilized and is in a unfamiliar area"
+  formalspec   "F (ambulanceMobilized & G (!ambulanceInFamiliarArea))"
 end
 
 begin obstacle
-  id          gps_not_working
-  name        "GPS Not Working"
-  formalspec  "F (ambulanceMobilized & G (gpsNotWorking))"
+  id           gps_not_working
+  name         "GPS Not Working"
+  definition   "Ambulance is mobilized and the GPS is not working"
+  formalspec   "F (ambulanceMobilized & G (gpsNotWorking))"
+end
+
+#
+# Domain properties
+#
+
+begin domainproperty
+  id           ambulance_on_scene_not_in_traffic_jam
+  name         "Ambulance On Scene Not In Traffic Jam"
+  definition   "Ambulance cannot reach incident scene if stuck in traffic jams."
+  formalspec   "G (ambulanceOnScene -> !ambulanceInTrafficJam)"
 end
 
 begin domainproperty
-  id          ambulance_on_scene_not_in_traffic_jam
-  name        "Ambulance On Scene Not In Traffic Jam"
-  formalspec  "G (ambulanceOnScene -> !ambulanceInTrafficJam)"
+  id           ambulance_on_scene_not_lost
+  name         "Ambulance On Scene Not Lost"
+  definition   "Ambulance cannot reach incident scene if lost."
+  formalspec   "G (ambulanceOnScene -> !ambulanceLost)"
 end
 
 begin domainproperty
-  id          ambulance_on_scene_not_lost
-  name        "Ambulance On Scene Not Lost"
-  formalspec  "G (ambulanceOnScene -> !ambulanceLost)"
+  id           ambulance_on_scene_not_broken_down
+  name         "Ambulance On Scene Broken Down"
+  definition   "Ambulance cannot reach incident scene if broken down."
+  formalspec   "G (ambulanceOnScene -> !ambulanceBrokenDown)"
 end
 
 begin domainproperty
-  id          ambulance_on_scene_not_broken_down
-  name        "Ambulance On Scene Broken Down"
-  formalspec  "G (ambulanceOnScene -> !ambulanceBrokenDown)"
+  id           ambulance_lost_iff_gps_not_working_and_not_in_familiar_area
+  name         "Ambulance Lost Iff GPS Not Working And Not In Familiar Area"
+  definition   "Ambulance cannot reach incident scene if in unfamiliar area and if the GPS is not working."
+  formalspec   "G (ambulanceLost <-> (!ambulanceInFamiliarArea & gpsNotWorking))"
 end
 
 begin domainproperty
-  id          ambulance_lost_iff_gps_not_working_and_not_in_familiar_area
-  name        "Ambulance Lost Iff GPS Not Working And Not In Familiar Area"
-  formalspec  "G (ambulanceLost <-> (!ambulanceInFamiliarArea & gpsNotWorking))"
+  id           by_fax_or_by_phone_mobilization
+  name         "Ambulance Mobilized By Fax or Phone"
+  definition   "An ambulance mobilized by fax or by phone is considered as mobilized."
+  formalspec   "G ((ambulanceMobilizedByFax | ambulanceMobilizedByPhone) -> ambulanceMobilized)"
 end
 
-begin domainproperty
-  id          by_fax_or_by_phone_mobilization
-  name        "Ambulance Mobilized By Fax or Phone"
-  formalspec  "G ((ambulanceMobilizedByFax | ambulanceMobilizedByPhone) -> ambulanceMobilized)"
+#
+# Agents
+#
+
+begin agent 
+  name         "Despatcher"
+  description  "Despatcher is the person at the call center dealing 
+                with urgent calls and ambulance mobilization."
 end
 
 begin agent 
-  name        "Despatcher"
+  name         "Ambulance Staff"
+  description  "Ambulance Staff contains the ambulance driver and the paramedic(s)."
 end
 
 begin software agent
-  name        "ADS"
-  description "Automated despatching system"
+  name         "ADS"
+  description  "Automated despatching system"
 end
