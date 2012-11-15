@@ -105,6 +105,9 @@ namespace KAOSFormalTools.Parsing
 
                 } else if (attr is FormalSpec) {
                     domprop.FormalSpec = (attr as FormalSpec).Value;
+
+                } else if (attr is Definition) {
+                    domprop.Definition = (attr as Definition).Value;
                 }
             }
 
