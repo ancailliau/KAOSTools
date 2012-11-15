@@ -73,10 +73,12 @@ namespace KAOSFormalTools.Domain
     public class GoalRefinement
     {
         public IList<Goal> Children { get; set; }
+        public IList<DomainProperty> DomainProperties { get; set; }
 
         public GoalRefinement ()
         {
             Children = new List<Goal> ();
+            DomainProperties = new List<DomainProperty> ();
         }
 
         public GoalRefinement (Goal goal) : this ()
@@ -94,10 +96,12 @@ namespace KAOSFormalTools.Domain
     public class ObstacleRefinement
     {
         public IList<Obstacle> Children { get; set; }
+        public IList<DomainProperty> DomainProperties { get; set; }
 
         public ObstacleRefinement ()
         {
             Children = new List<Obstacle> ();
+            DomainProperties = new List<DomainProperty> ();
         }
 
         public ObstacleRefinement (Obstacle obstacle) : this ()

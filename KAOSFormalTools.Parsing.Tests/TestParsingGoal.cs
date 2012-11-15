@@ -184,6 +184,32 @@ end
         }
 
         [Test()]
+        public void TestRefinementWithDomainProperty ()
+        {
+            var input = @"
+begin goal
+    refinedby  test2 , test3
+    id         test
+end
+
+begin goal id test2 end
+begin domainproperty id test3 end
+";
+            var gm = parser.Parse (input);
+            Assert.AreEqual (1, gm.RootGoals.Count);
+            
+            var root = gm.RootGoals.First ();
+            Assert.AreEqual ("test", root.Identifier);
+            Assert.AreEqual (1, root.Refinements.Count);
+            
+            var refinement = root.Refinements.First ();
+            var child = refinement.Children.First ();
+            Assert.AreEqual ("test2", child.Identifier);
+            var domprop = refinement.DomainProperties.First ();
+            Assert.AreEqual ("test3", domprop.Identifier);
+        }
+
+        [Test()]
         public void TestUnknownIdentifierReference ()
         {
             var input = @"

@@ -29,6 +29,12 @@ namespace KAOSFormalTools.Domain
                 return from g in Goals where g.Obstruction.Count > 0 select g;
             }
         }
+
+        public IEnumerable<Obstacle>       ResolvedObstacles {
+            get {
+                return from o in Obstacles where o.Resolutions.Count > 0 select o;
+            }
+        }
         
         public GoalModel ()
         {

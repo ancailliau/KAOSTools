@@ -56,6 +56,13 @@ namespace KAOSFormalTools.ModelDrawing
                               string.IsNullOrEmpty (g.Identifier) ? g.Name : g.Identifier, 
                               string.IsNullOrEmpty (o.Identifier) ? o.Name : o.Identifier);
         }
+        
+        public void ExportResolution (Obstacle o, Goal g)
+        {
+            writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=onormaltee];", 
+                              string.IsNullOrEmpty (o.Identifier) ? o.Name : o.Identifier, 
+                              string.IsNullOrEmpty (g.Identifier) ? g.Name : g.Identifier);
+        }
 
         public void ExportRefinement (Goal parent, GoalRefinement refinement) {
             var tempGUID = Guid.NewGuid().ToString();
@@ -177,6 +184,15 @@ namespace KAOSFormalTools.ModelDrawing
             foreach (var g in model.ObstructedGoals) {
                 foreach (var o in g.Obstruction) {
                     ExportRefinementRecursively (o);
+                }
+            }
+
+            writer.WriteLine ();
+            writer.WriteLine ("## RESOLUTIONS");
+            
+            foreach (var o in model.ResolvedObstacles) {
+                foreach (var g in o.Resolutions) {
+                    ExportResolution (o, g);
                 }
             }
 

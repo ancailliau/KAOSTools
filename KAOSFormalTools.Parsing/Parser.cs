@@ -302,9 +302,16 @@ namespace KAOSFormalTools.Parsing
 
                     foreach (var child in children.Values) {
                         if (child is IdentifierOrName) {
-                            var candidate = GetOrCreateGoal (child as IdentifierOrName, true);
-                            if (candidate != null)
-                                refinement.Children.Add (candidate);
+                            var domprop = GetDomainProperty (child as IdentifierOrName);
+                            if (domprop != null) {
+                                refinement.DomainProperties.Add (domprop);
+                                
+                            } else {
+                                var candidate = GetOrCreateGoal (child as IdentifierOrName, true);
+                                if (candidate != null)
+                                    refinement.Children.Add (candidate);
+                            }
+
                         } else if (child is Goal) {
                             var g = BuildGoal (child as Goal);
                             refinement.Children.Add (g);
@@ -419,7 +426,29 @@ namespace KAOSFormalTools.Parsing
 
             return candidate;
         }
-        
+
+        private KAOSFormalTools.Domain.DomainProperty GetDomainProperty (IdentifierOrName attribute)
+        {
+            
+            if (attribute is Name) {
+                var name = (attribute as Name).Value;
+                var domprop_candidate = model.GetDomainPropertiesByName (name);
+
+                if (domprop_candidate.Count() > 1) {
+                    return domprop_candidate.First ();
+                } else if (domprop_candidate.Count() == 1) {
+                    return domprop_candidate.Single ();
+                }
+                return null;
+
+            } else if (attribute is Identifier) {
+                var identifier = (attribute as Identifier).Value;
+                return model.GetDomainPropertyByIdentifier (identifier);
+            }
+
+            return null;
+        }
+
         private KAOSFormalTools.Domain.Goal GetOrCreateGoal (IdentifierOrName attribute, bool create = true)
         {
             KAOSFormalTools.Domain.Goal candidate = null;
@@ -429,14 +458,14 @@ namespace KAOSFormalTools.Parsing
                 var candidates = model.GetGoalsByName (name);
 
                 if (candidates.Count() == 0) {
-                    if (create) {
-                        candidate = new KAOSFormalTools.Domain.Goal() { 
-                            Name = (attribute as Name).Value
-                        };
-                        model.Goals.Add (candidate);
-                    } else {
-                        throw new ParsingException (string.Format ("Goal '{0}' could not be found", (attribute as Name).Value));
-                    }
+                        if (create) {
+                            candidate = new KAOSFormalTools.Domain.Goal() { 
+                                Name = (attribute as Name).Value
+                            };
+                            model.Goals.Add (candidate);
+                        } else {
+                            throw new ParsingException (string.Format ("Goal '{0}' could not be found", (attribute as Name).Value));
+                        }
 
                 } else if (candidates.Count() > 1) {
                    candidate = candidates.First ();
