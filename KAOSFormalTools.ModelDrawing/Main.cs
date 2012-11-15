@@ -17,6 +17,7 @@ namespace KAOSFormalTools.ModelDrawing
             string refinements       = "";
             string obstructions      = "";
             string responsibility    = "";
+            string resolutions       = "";
 
             bool   exportModel       = false;
             bool   show_help         = false;
@@ -32,6 +33,8 @@ namespace KAOSFormalTools.ModelDrawing
                     v => obstructions = v },
                 { "responsibilities=", "Responsibilities to output, give name or identifier for goal.",
                     v => responsibility = v },
+                { "resolutions=", "Resolutions to output, give name or identifier for obstacle.",
+                    v => resolutions = v },
                 { "h|help",  "show this message and exit", 
                     v => show_help = true },
             };
@@ -85,6 +88,27 @@ namespace KAOSFormalTools.ModelDrawing
                                     exporter.ExportResponsibility (agent, child);
                                 }
                             }
+                        }
+                    }
+                }
+            } 
+
+            if (!string.IsNullOrEmpty (resolutions)) {
+                var resolvedObstacles = resolutions.Split (',');
+                foreach (var obstacleName in resolvedObstacles) {
+                    var name = obstacleName.Trim ();
+                    var obstacles = model.Obstacles.Where (g => g.Name == name);
+                    
+                    if (obstacles.Count () == 0) {
+                        PrintError (string.Format ("Could not find obstacle '{0}'", obstacleName));
+                        return;
+                    }
+                    
+                    foreach (var obstacle in obstacles) {
+                        exporter.ExportObstacle (obstacle);
+                        foreach (var goal in obstacle.Resolutions) {
+                            exporter.ExportGoal (goal);
+                            exporter.ExportResolution (obstacle, goal);
                         }
                     }
                 }
