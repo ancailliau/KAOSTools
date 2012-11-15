@@ -52,20 +52,60 @@ namespace KAOSFormalTools.ModelChecker
                 return;
             }
 
-            if (!File.Exists (r[0])) {
-                PrintError ("File `" + r[0] + "` does not exists");
+            if (!File.Exists (r [0])) {
+                PrintError ("File `" + r [0] + "` does not exists");
                 return;
             }
 
-            var model =  BuildModel (r[0]);
-            DisplayUnassignedLeafGoals (model);
-            DisplayGoalWithSimilarNames (model, levensteinThreshold);
+            var model = BuildModel (r [0]);
+            CheckUnassignedLeafGoals (model);
+            CheckGoalWithSimilarNames (model, levensteinThreshold);
+            CheckMissingDefinition (model);
 
             if (show_formal)
                 DisplayMissingFormalSpec (model);
         }
 
-        private static void DisplayMissingFormalSpec (GoalModel model) 
+        private static void CheckMissingDefinition (GoalModel model)
+        {
+            var goals = model.Goals.Where (g => string.IsNullOrWhiteSpace (g.Definition));
+            if (goals.Count () == 0) {
+                Console.WriteLine ("[ OK ] All goals have definition");
+
+            } else {
+                foreach (var goal in goals) 
+                    Console.WriteLine ("[ KO ] Goal '{0}' is missing definition", goal.Name);
+            }
+
+            var obstacles = model.Obstacles.Where (o => string.IsNullOrWhiteSpace (o.Definition));
+            if (obstacles.Count () == 0) {
+                Console.WriteLine ("[ OK ] All obstacles have definition");
+                
+            } else {
+                foreach (var obstacle in obstacles) 
+                    Console.WriteLine ("[ KO ] Obstacle '{0}' is missing definition", obstacle.Name);
+            }
+
+            var domprops = model.DomainProperties.Where (d => string.IsNullOrWhiteSpace (d.Definition));
+            if (domprops.Count () == 0) {
+                Console.WriteLine ("[ OK ] All domain properties have definition");
+                    
+            } else {
+                foreach (var domprop in domprops) 
+                    Console.WriteLine ("[ KO ] Domain property '{0}' is missing definition", domprop.Name);
+            }
+
+            var agents = model.Agents.Where (a => string.IsNullOrWhiteSpace (a.Description));
+            if (agents.Count () == 0) {
+                Console.WriteLine ("[ OK ] All agents have description");
+                        
+            } else {
+                foreach (var agent in agents) 
+                    Console.WriteLine ("[ KO ] Agent '{0}' is missing description", agent.Description);
+            }
+        }
+
+        private static void DisplayMissingFormalSpec (GoalModel model)
         {
             var goals = from g in model.Goals where g.FormalSpec == null select g;
             foreach (var goal in goals) {
@@ -83,12 +123,12 @@ namespace KAOSFormalTools.ModelChecker
             }
         }
 
-        private static void DisplayUnassignedLeafGoals (GoalModel model) 
+        private static void CheckUnassignedLeafGoals (GoalModel model)
         {
             var unassignedLeafGoals = from g in model.Goals 
                 where g.AssignedAgents.Count == 0 & g.Refinements.Count == 0 select g;
 
-            if (unassignedLeafGoals.Count() > 0) {
+            if (unassignedLeafGoals.Count () > 0) {
                 Console.WriteLine ("[ KO ] Unassigned leaf goals");
                 
                 foreach (var item in unassignedLeafGoals) {
@@ -99,13 +139,13 @@ namespace KAOSFormalTools.ModelChecker
             }
         }
         
-        private static void DisplayGoalWithSimilarNames (GoalModel model, int levensteinThreshold) 
+        private static void CheckGoalWithSimilarNames (GoalModel model, int levensteinThreshold)
         {
             var duplicateGoals = from g1 in model.Goals 
-                where (from g2 in model.Goals where g2 != g1 && g2.Name == g1.Name select g2).Count() > 0 
+                where (from g2 in model.Goals where g2 != g1 && g2.Name == g1.Name select g2).Count () > 0 
                 select g1;
 
-            if (duplicateGoals.Count() > 0) {
+            if (duplicateGoals.Count () > 0) {
                 Console.WriteLine ("[ KO ] Potential duplicated goals exists");
 
                 foreach (var item in duplicateGoals) {
@@ -116,17 +156,16 @@ namespace KAOSFormalTools.ModelChecker
             }
 
             var duplicateObstacle = from o1 in model.Obstacles 
-                where (from o2 in model.Obstacles where o2 != o1 && o2.Name.LevenshteinDistance (o1.Name) < levensteinThreshold select o2).Count() > 0 
+                where (from o2 in model.Obstacles where o2 != o1 && o2.Name.LevenshteinDistance (o1.Name) < levensteinThreshold select o2).Count () > 0 
                 select o1;
 
             var displayedDuplicates = new List<Obstacle> ();
 
-            if (duplicateObstacle.Count() > 0) {
+            if (duplicateObstacle.Count () > 0) {
                 Console.WriteLine ("[ KO ] Potential duplicated obstacles exists");
 
                 foreach (var item in duplicateObstacle) {
-                    if (!displayedDuplicates.Contains (item))
-                    {
+                    if (!displayedDuplicates.Contains (item)) {
                         Console.WriteLine ("       - '{0}'", item.Name);
                         var duplicates = from o2 in model.Obstacles where o2 != item && o2.Name.LevenshteinDistance (item.Name) < levensteinThreshold select o2;
                         foreach (var item1 in duplicates) {

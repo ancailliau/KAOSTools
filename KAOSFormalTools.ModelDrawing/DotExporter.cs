@@ -32,6 +32,16 @@ namespace KAOSFormalTools.ModelDrawing
             }
             writer.WriteLine (@"""{0}"" [shape=polygon,skew=.1,label=""{1}"",style=filled,fillcolor=""{2}"",penwidth={3},fontname=""Arial"",fontsize=10,margin=""-.2,0""];", string.IsNullOrEmpty (g.Identifier) ? g.Name : g.Identifier, name, assignedToSoftwareAgents ? "#fff9c1" : "#d8ebfd", g.AssignedAgents.Count > 0 ? 2 : 1);
         }
+        
+        public void ExportDomainProperty (DomainProperty domprop)
+        {
+            var name = new StringBuilder (domprop.Name);
+            if (name.Length > 30) {
+                var midspace = domprop.Name.IndexOf (' ', (domprop.Name.Length / 2) - 1);
+                name.Replace (" ", @"\n", midspace, 1);
+            }
+            writer.WriteLine (@"""{0}"" [shape=trapezium,label=""{1}"",style=filled,fillcolor=""{2}"",fontname=""Arial"",fontsize=10,margin=""-.2,0""];", string.IsNullOrEmpty (domprop.Identifier) ? domprop.Name : domprop.Identifier, name, "#e8fdcb");
+        }
 
         public void ExportObstacle (Obstacle o)
         {
@@ -75,6 +85,12 @@ namespace KAOSFormalTools.ModelDrawing
                 writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=none];", 
                                   tempGUID, 
                                   string.IsNullOrEmpty (child.Identifier) ? child.Name : child.Identifier);
+            }
+
+            foreach (var domprop in refinement.DomainProperties) {
+                writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=none];", 
+                                  tempGUID, 
+                                  string.IsNullOrEmpty (domprop.Identifier) ? domprop.Name : domprop.Identifier);
             }
         }
 
@@ -145,7 +161,16 @@ namespace KAOSFormalTools.ModelDrawing
             foreach (var o in model.Obstacles) {
                 ExportObstacle (o);
             }
+
             
+            writer.WriteLine ();
+            writer.WriteLine ("## DOMAIN PROPERTIES");
+            writer.WriteLine ();
+            
+            foreach (var d in model.DomainProperties) {
+                ExportDomainProperty (d);
+            }
+
             
             writer.WriteLine ();
             writer.WriteLine ("## RESPONSIBILITY");
