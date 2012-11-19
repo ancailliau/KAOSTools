@@ -101,7 +101,7 @@ namespace KAOSFormalTools.ModelChecker
                         
             } else {
                 foreach (var agent in agents) 
-                    Console.WriteLine ("[ KO ] Agent '{0}' is missing description", agent.Description);
+                    Console.WriteLine ("[ KO ] Agent '{0}' is missing description", agent.Name);
             }
         }
 
