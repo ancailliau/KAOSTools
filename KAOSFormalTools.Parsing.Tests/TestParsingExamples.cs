@@ -22,6 +22,26 @@ namespace KAOSFormalTools.Parsing.Tests
 
             Assert.IsNotNull (model);
         }
+        
+        [Test()]
+        public void TestIssue7 ()
+        {
+            string input = File.ReadAllText ("../../Examples/issue7.kaos");
+            var model = parser.Parse (input);
+            
+            Assert.IsNotNull (model);
+
+            Assert.AreEqual (2, model.Goals.Count);
+            Assert.AreEqual (1, model.DomainProperties.Count);
+
+            Assert.AreEqual (2, model.RootGoals.First ().Refinements.Count);
+            
+            var domain_refinement = model.RootGoals.First ().Refinements[0];
+            Assert.AreEqual ("driver_now_route", domain_refinement.DomainProperties.First ().Identifier);
+
+            var goal_refinement = model.RootGoals.First ().Refinements[1];
+            Assert.AreEqual ("achieve_destination_reached_if_gps_support", goal_refinement.Children.First ().Identifier);
+        }
 
         /*
         [Test()]

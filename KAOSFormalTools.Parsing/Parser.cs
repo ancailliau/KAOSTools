@@ -232,9 +232,15 @@ namespace KAOSFormalTools.Parsing
 
                     foreach (var child in children.Values) {
                         if (child is IdentifierOrName) {
-                            var candidate = GetOrCreateObstacle (child as IdentifierOrName, true);
-                            if (candidate != null)
-                                refinement.Children.Add (candidate);
+                            var domprop = GetDomainProperty (child as IdentifierOrName);
+                            if (domprop != null) {
+                                refinement.DomainProperties.Add (domprop);
+                                
+                            } else {
+                                var candidate = GetOrCreateObstacle (child as IdentifierOrName, true);
+                                if (candidate != null)
+                                    refinement.Children.Add (candidate);
+                            }
 
                         } else if (child is Obstacle) {
                             var o = BuildObstacle (child as Obstacle);
@@ -329,7 +335,7 @@ namespace KAOSFormalTools.Parsing
                         }
                     }
 
-                    if (refinement.Children.Count > 0)
+                    if (refinement.Children.Count > 0 | refinement.DomainProperties.Count > 0)
                         refinements.Add (refinement);
 
                 } else if (attribute is ObstructedByList) {
