@@ -65,7 +65,8 @@ begin goal
   formalspec   "ambulanceAllocated & !onRoad => F ambulanceMobilized"
   
   refinedby    achieve_ambulance_mobilized_by_fax, 
-               achieve_ambulance_mobilized_by_phone
+               achieve_ambulance_mobilized_by_phone,
+               by_fax_or_by_phone_mobilization
 end
 
 begin goal
@@ -94,9 +95,9 @@ begin obstacle
   definition   "Ambulance is mobilized and cannot reach the incident scene within time constraints"
   formalspec   "F (ambulanceMobilized & G (!ambulanceOnScene))"
   
-  refinedby    ambulance_stuck_in_traffic_jam
-  refinedby    ambulance_lost
-  refinedby    ambulance_broken_down
+  refinedby    ambulance_stuck_in_traffic_jam, ambulance_on_scene_not_in_traffic_jam
+  refinedby    ambulance_lost, ambulance_on_scene_not_lost
+  refinedby    ambulance_broken_down, ambulance_on_scene_not_broken_down
 end
 
 begin obstacle
@@ -111,7 +112,7 @@ begin obstacle
   name         "Ambulance Lost"
   definition   "Ambulance is mobilized and is lost and cannot find his way to incident scene"
   formalspec   "F (ambulanceMobilized & G (ambulanceLost))"
-  refinedby    ambulance_not_in_familiar_area, gps_not_working
+  refinedby    ambulance_not_in_familiar_area, gps_not_working, ambulance_lost_iff_gps_not_working_and_not_in_familiar_area
 end
 
 begin obstacle
