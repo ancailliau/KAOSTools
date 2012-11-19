@@ -426,6 +426,94 @@ namespace KAOSFormalTools.OmnigraffleExport
             return id;
         }
 
+        static int DisplayDomainProperty (DomainProperty domprop)
+        {
+            var id = random.Next();
+            
+            string str = @"
+        <dict>
+            <key>Bounds</key>
+            <string>{{60, 40.488321690000021}, {121.99121000000014, 28}}</string>
+            <key>Class</key>
+            <string>ShapedGraphic</string>
+            <key>FitText</key>
+            <string>Vertical</string>
+            <key>Flow</key>
+            <string>Resize</string>
+            <key>FontInfo</key>
+            <dict>
+                <key>Color</key>
+                <dict>
+                    <key>w</key>
+                    <string>0</string>
+                </dict>
+                <key>Font</key>
+                <string>ArialMT</string>
+                <key>NSKern</key>
+                <real>0.0</real>
+                <key>Size</key>
+                <real>8</real>
+            </dict>
+            <key>ID</key>
+            <integer>" + id + @"</integer>
+            <key>Shape</key>
+            <string>Bezier</string>
+            <key>ShapeData</key>
+            <dict>
+                <key>UnitPoints</key>
+                <array>
+                    <string>{-0.44769001000000003, -0.49997997}</string>
+                    <string>{-0.44769001000000003, -0.50000095}</string>
+                    <string>{0.45351887000000002, -0.50000095}</string>
+                    <string>{0.45357417999999999, -0.50000095}</string>
+                    <string>{0.45357417999999999, -0.50000095}</string>
+                    <string>{0.49999142000000002, 0.49999905}</string>
+                    <string>{0.5, 0.49999905}</string>
+                    <string>{0.50003909999999996, 0.49999332000000002}</string>
+                    <string>{-0.5, 0.49999905}</string>
+                    <string>{-0.5, 0.49999905}</string>
+                    <string>{-0.5, 0.49999905}</string>
+                    <string>{-0.44769001000000003, -0.50000095}</string>
+                </array>
+            </dict>
+            <key>Style</key>
+            <dict>
+                <key>fill</key>
+                <dict>
+                    <key>Color</key>
+                    <dict>
+                        <key>b</key>
+                        <string>0.72515</string>
+                        <key>g</key>
+                        <string>1</string>
+                        <key>r</key>
+                        <string>0.895214</string>
+                    </dict>
+                </dict>
+                <key>shadow</key>
+                <dict>
+                    <key>Draws</key>
+                    <string>NO</string>
+                </dict>
+            </dict>
+            <key>Text</key>
+            <dict>
+                <key>Text</key>
+                <string>{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf470
+{\fonttbl\f0\fswiss\fcharset0 ArialMT;}
+{\colortbl;\red255\green255\blue255;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
+
+\f0\fs16 \cf0 \expnd0\expndtw0\kerning0
+" + domprop.Name + @"}</string>
+            </dict>
+        </dict>";
+            
+            Console.WriteLine (str);
+            
+            return id;
+        }
+
         static void DisplayAgent (Agent a, int parent)
         {
             var id = random.Next();
@@ -608,6 +696,11 @@ namespace KAOSFormalTools.OmnigraffleExport
                 
                 DisplayLine (g, id);
             }
+
+            foreach (var domprop in r.DomainProperties) {
+                var d = DisplayDomainProperty (domprop);
+                DisplayLine (d, id);
+            }
         }
         
         static void DisplayRefinement (ObstacleRefinement r, int parent)
@@ -662,6 +755,11 @@ namespace KAOSFormalTools.OmnigraffleExport
                 var g = DisplayObstacle (obstacle);
                 
                 DisplayLine (g, id);
+            }
+            
+            foreach (var domprop in r.DomainProperties) {
+                var d = DisplayDomainProperty (domprop);
+                DisplayLine (d, id);
             }
         }
 
