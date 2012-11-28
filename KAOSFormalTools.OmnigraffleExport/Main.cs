@@ -27,8 +27,11 @@ namespace KAOSFormalTools.OmnigraffleExport
         public static void Main (string[] args)
         {
             bool show_help = false;
+            bool responsibilities = false;
             
             var p = new OptionSet () {
+                { "r|responsibilities",  "export responsibility diagrams", 
+                    v => responsibilities = true },
                 { "h|help",  "show this message and exit", 
                     v => show_help = true },
             };
@@ -66,8 +69,19 @@ namespace KAOSFormalTools.OmnigraffleExport
             
             var model =  BuildModel (r[0]);
             PrintHeader ();
-            foreach (var g in model.RootGoals)
-                DisplayGoal (g);
+
+            if (!responsibilities) {
+                foreach (var g in model.RootGoals)
+                    DisplayGoalRecursive (g);
+            } else {
+                foreach (var agent in model.Agents) {
+                    var agent_id = DisplayAgent (agent);
+                    foreach (var goal in model.Goals.Where (g => g.AssignedAgents.Contains(agent))) {
+                        var goal_id = DisplayGoal (goal);
+                        DisplayResponsibility (agent_id, goal_id);
+                    }
+                }
+            }
 
             PrintFooter();
         }
@@ -412,11 +426,17 @@ namespace KAOSFormalTools.OmnigraffleExport
             
             Console.WriteLine (str);
 
+            return id;
+        }
+
+        static int DisplayGoalRecursive (Goal g) {
+            var id = DisplayGoal (g);
+
             foreach (var refinement in g.Refinements)
                 DisplayRefinement (refinement, id);
 
-            foreach (var agent in g.AssignedAgents)
-                DisplayAgent (agent, id);
+            foreach (var agent in g.AssignedAgents)           
+                DisplayResponsibility (DisplayAgent (agent), id);
 
             foreach (var obstacle in g.Obstruction) {
                 int o = DisplayObstacle (obstacle);
@@ -514,7 +534,7 @@ namespace KAOSFormalTools.OmnigraffleExport
             return id;
         }
 
-        static void DisplayAgent (Agent a, int parent)
+        static int DisplayAgent (Agent a)
         {
             var id = random.Next();
             var str = @"
@@ -594,8 +614,13 @@ namespace KAOSFormalTools.OmnigraffleExport
 ";
             Console.WriteLine (str);
 
+            return id;
+        }
+
+        static void DisplayResponsibility (int id, int parent)
+        {
             var circle_id = random.Next();
-            str = @"
+            var str = @"
         <dict>
             <key>Bounds</key>
             <string>{{276.16535494999999, 357.16535494999999}, {5.6692901000000004, 5.6692901000000004}}</string>
@@ -1011,7 +1036,7 @@ namespace KAOSFormalTools.OmnigraffleExport
                 DisplayRefinement (refinement, id);
 
             foreach (var goal in o.Resolutions) {
-                int g = DisplayGoal (goal);
+            int g = DisplayGoalRecursive (goal);
                 DisplayNegatedArrow (g, id);
             }
 
