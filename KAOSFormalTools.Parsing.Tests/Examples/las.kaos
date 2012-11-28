@@ -137,6 +137,21 @@ begin obstacle
 end
 
 #
+# Resolutions
+#
+
+begin obstacle
+  id          ambulance_not_in_familiar_area
+  resolvedby  avoid_ambulance_not_in_familiar_area
+end
+
+begin goal
+  id          avoid_ambulance_not_in_familiar_area
+  name        "Avoid [Ambulance Not In Familiar Area]"
+  formalspec  "ambulanceMobilized => ambulanceInFamiliarArea"
+end
+
+#
 # Domain properties
 #
 

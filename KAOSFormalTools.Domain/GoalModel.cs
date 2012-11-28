@@ -20,6 +20,9 @@ namespace KAOSFormalTools.Domain
                     foreach (var refinement in goal.Refinements) 
                         foreach (var child in refinement.Children)
                             goals.Remove (child);
+                foreach (var obstacle in Obstacles)
+                    foreach (var resolution in obstacle.Resolutions)
+                        goals.Remove (resolution);
                 return goals;
             }
         }

@@ -420,7 +420,7 @@ namespace KAOSFormalTools.OmnigraffleExport
 
             foreach (var obstacle in g.Obstruction) {
                 int o = DisplayObstacle (obstacle);
-                DisplayArrow (o, id);
+                DisplayNegatedArrow (o, id);
             }
 
             return id;
@@ -811,6 +811,55 @@ namespace KAOSFormalTools.OmnigraffleExport
         </dict>";
             Console.WriteLine (str);
         }
+        
+        static void DisplayNegatedArrow (int @from, int to)
+        {
+            var id = random.Next();
+            var str = @"
+        <dict>
+            <key>Class</key>
+            <string>LineGraphic</string>
+            <key>FontInfo</key>
+            <dict>
+            <key>Font</key>
+            <string>ArialMT</string>
+            <key>Size</key>
+            <real>6</real>
+            </dict>
+            <key>Head</key>
+            <dict>
+            <key>ID</key>
+            <integer>" + to + @"</integer>
+            </dict>
+            <key>ID</key>
+            <integer>" + id + @"</integer>
+            <key>Points</key>
+            <array>
+            <string>{277.47208419167532, 357.03513732100595}</string>
+            <string>{227.36256086024207, 259.79950772800538}</string>
+            </array>
+            <key>Style</key>
+            <dict>
+            <key>stroke</key>
+            <dict>
+            <key>HeadArrow</key>
+            <string>0</string>
+            <key>HeadScale</key>
+            <real>0.5</real>
+            <key>Legacy</key>
+            <true/>
+            <key>TailArrow</key>
+            <string>SharpBackCross</string>
+            </dict>
+            </dict>
+            <key>Tail</key>
+            <dict>
+            <key>ID</key>
+            <integer>" + from + @"</integer>
+            </dict>
+        </dict>";
+            Console.WriteLine (str);
+        }
 
         static void DisplayLine (int @from, int to)
         {
@@ -960,7 +1009,12 @@ namespace KAOSFormalTools.OmnigraffleExport
             
             foreach (var refinement in o.Refinements)
                 DisplayRefinement (refinement, id);
-                        
+
+            foreach (var goal in o.Resolutions) {
+                int g = DisplayGoal (goal);
+                DisplayNegatedArrow (g, id);
+            }
+
             return id;
         }
 
