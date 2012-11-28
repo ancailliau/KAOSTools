@@ -71,11 +71,15 @@ namespace KAOSFormalTools.ModelDrawing
                 var fds = refinements.Split (',');
                 foreach (var gname in fds) {
                     var name = gname.Trim ();
-                    var goals = model.Goals.Where (g => g.Name == name);
+                    var goals = model.Goals.Where (g => g.Identifier == name);
 
                     if (goals.Count () == 0) {
-                        PrintError (string.Format ("Could not find goal '{0}'", refinements));
-                        return;
+                        goals = model.Goals.Where (g => g.Name == name);
+
+                        if (goals.Count () == 0) {
+                            PrintError (string.Format ("Could not find goal '{0}'", refinements));
+                            return;
+                        }
                     }
 
                     foreach (var g in goals) {
