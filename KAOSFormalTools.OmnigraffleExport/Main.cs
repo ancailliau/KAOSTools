@@ -717,7 +717,7 @@ namespace KAOSFormalTools.OmnigraffleExport
             DisplayArrow (id, parent);
             
             foreach (var goal in r.Children) {
-                var g = DisplayGoal (goal);
+                var g = DisplayGoalRecursive (goal);
                 
                 DisplayLine (g, id);
             }
