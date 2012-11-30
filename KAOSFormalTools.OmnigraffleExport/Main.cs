@@ -5,1066 +5,349 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using NDesk.Options;
 using KAOSFormalTools.Domain;
-
-/*
- * WARNING : This code is highly experimental and... ugly, really ugly.
- * 
- * In addition OmniGraffle FileFormat is not documented which makes the whole
- * a lot more complex to engineer.
- * 
- * The purpose of the tool is generate all elements from the model. It will not
- * layout it, or try to make boxes the right size, etc. Use OmniGraffle for that
- * purpose!
- * 
- */
+using KAOSFormalTools.Executable;
 
 namespace KAOSFormalTools.OmnigraffleExport
 {
-    class MainClass
+    class MainClass : KAOSFormalToolsCLI
     {
-        static Random random;
+        static Dictionary<Omnigraffle.Sheet, Dictionary<string, Omnigraffle.ShapedGraphic>> mapping;
+
+        private static int _i = 1;
+        private static int NextId {
+            get {
+                return _i++;
+            }
+        }
 
         public static void Main (string[] args)
         {
-            bool show_help = false;
-            bool responsibilities = false;
+            string filename = "";
+            options.Add ("o|output=", "Export in specified filename", v => filename = v);
+
+            Init (args);
+
+            mapping = new Dictionary<Omnigraffle.Sheet, Dictionary<string, Omnigraffle.ShapedGraphic>> ();
+
+            var document   = new Omnigraffle.Document ();
+
+            ExportIdealGoalModel (model, document);
+            ExportObstacles (model, document);
+            ExportResponsibilities (model, document);
+
+            if (string.IsNullOrEmpty (filename)) 
+                OmniGraffleGenerator.Export (document, Console.Out);
+            else 
+                OmniGraffleGenerator.Export (document, filename);
+        }
+
+        #region Export diagrams
+
+        static void ExportResponsibilities (GoalModel model, KAOSFormalTools.OmnigraffleExport.Omnigraffle.Document document)
+        {
+            foreach (var agent in model.Agents) {
+                var agentCanvas = new Omnigraffle.Sheet (1, string.Format ("Responsibilities for {0}", agent.Name));
+                agentCanvas.LayoutInfo.LayoutEngine = KAOSFormalTools.OmnigraffleExport.Omnigraffle.LayoutEngine.Twopi;
+                agentCanvas.LayoutInfo.TwopiOverlap = true;
+                agentCanvas.LayoutInfo.TwopiRankSep = 100;
+                mapping.Add (agentCanvas, new Dictionary<string, KAOSFormalTools.OmnigraffleExport.Omnigraffle.ShapedGraphic> ());
+                var agentGraphic = AddAgent (agentCanvas, agent);
+                foreach (var goal in model.Goals.Where (g => g.AssignedAgents.Contains (agent))) {
+                    var goalGraphic = AddGoal (agentCanvas, goal);
+                    AddResponsibility (agentCanvas, agentGraphic, goalGraphic);
+                }
+                document.Canvas.Add (agentCanvas);
+            }
+        }
+
+        static void ExportObstacles (GoalModel model, KAOSFormalTools.OmnigraffleExport.Omnigraffle.Document document)
+        {
+            foreach (var obstructedGoal in model.ObstructedGoals) {
+                var obstacleCanvas = new Omnigraffle.Sheet (1, string.Format ("Obstacles to {0}", obstructedGoal.Name));
+                obstacleCanvas.LayoutInfo.HierarchicalOrientation = Omnigraffle.HierarchicalOrientation.BottomTop;
+                mapping.Add (obstacleCanvas, new Dictionary<string, KAOSFormalTools.OmnigraffleExport.Omnigraffle.ShapedGraphic> ());
+
+                var goalGraphic = AddGoal (obstacleCanvas, obstructedGoal);
+                foreach (var obstacle in obstructedGoal.Obstruction) {
+                    RecursiveExportObstacle (obstacleCanvas, obstacle);
+                    AddSharpBackCrossArrow (obstacleCanvas, mapping [obstacleCanvas] [obstacle.Identifier], goalGraphic);
+                }
+                document.Canvas.Add (obstacleCanvas);
+            }
+        }
+
+        static void ExportIdealGoalModel (GoalModel model, KAOSFormalTools.OmnigraffleExport.Omnigraffle.Document document)
+        {
+            var goalCanvas = new Omnigraffle.Sheet (1, "Ideal Goal Model");
+            goalCanvas.LayoutInfo.HierarchicalOrientation = Omnigraffle.HierarchicalOrientation.BottomTop;
+            mapping.Add (goalCanvas, new Dictionary<string, KAOSFormalTools.OmnigraffleExport.Omnigraffle.ShapedGraphic> ());
+            foreach (var goal in model.RootGoals) {
+                RecursiveExportGoal (goalCanvas, goal);
+            }
+            document.Canvas.Add (goalCanvas);
+        }
+
+        #endregion
+
+        #region Recursive export
+
+        static void RecursiveExportGoal (Omnigraffle.Sheet canvas, Goal goal)
+        {
+            if (!mapping[canvas].ContainsKey (goal.Identifier))
+                AddGoal (canvas, goal);
             
-            var p = new OptionSet () {
-                { "r|responsibilities",  "export responsibility diagrams", 
-                    v => responsibilities = true },
-                { "h|help",  "show this message and exit", 
-                    v => show_help = true },
-            };
+            var parentGraphic = mapping[canvas][goal.Identifier];
             
-            List<string> r;
-            try {
-                r = p.Parse (args);
+            foreach (var refinement in goal.Refinements) {
+                var circle = AddCircle (canvas);
+
+                AddFilledArrow (canvas, circle, parentGraphic);
                 
-            } catch (OptionException e) {
-                PrintError (e.Message);
-                return;
-            }
-            
-            if (show_help) {
-                ShowHelp (p);
-                return;
-            }
-            
-            if (r.Count == 0) {
-                PrintError ("Please provide a file");
-                return;
-            }
-            
-            if (r.Count > 1) {
-                PrintError ("Please provide only one file");
-                return;
-            }
-            
-            if (!File.Exists (r[0])) {
-                PrintError ("File `" + r[0] + "` does not exists");
-                return;
-            }
+                foreach (var child in refinement.Children) {
+                    RecursiveExportGoal (canvas, child);
+                    var childGraphic = mapping[canvas][child.Identifier];
+                    AddLine (canvas, childGraphic, circle);
+                }
 
-            random = new Random();
-            
-            var model =  BuildModel (r[0]);
-            PrintHeader ();
-
-            if (!responsibilities) {
-                foreach (var g in model.RootGoals)
-                    DisplayGoalRecursive (g);
-            } else {
-                foreach (var agent in model.Agents) {
-                    var agent_id = DisplayAgent (agent);
-                    foreach (var goal in model.Goals.Where (g => g.AssignedAgents.Contains(agent))) {
-                        var goal_id = DisplayGoal (goal);
-                        DisplayResponsibility (agent_id, goal_id);
-                    }
+                foreach (var domprop in refinement.DomainProperties) {
+                    var childGraphic = AddDomainProperty (canvas, domprop);
+                    AddLine (canvas, childGraphic, circle);
                 }
             }
-
-            PrintFooter();
-        }
-
-        static void PrintHeader ()
-        {
-            Console.WriteLine (@"
-<?xml version=""1.0"" encoding=""UTF-8""?>
-<!DOCTYPE plist PUBLIC ""-//Apple//DTD PLIST 1.0//EN"" ""http://www.apple.com/DTDs/PropertyList-1.0.dtd"">
-    <plist version=""1.0"">
-        <dict>
-        <key>ActiveLayerIndex</key>
-        <integer>0</integer>
-        <key>ApplicationVersion</key>
-        <array>
-        <string>com.omnigroup.OmniGrafflePro</string>
-        <string>139.16.0.171715</string>
-        </array>
-        <key>AutoAdjust</key>
-        <true/>
-        <key>BackgroundGraphic</key>
-        <dict>
-        <key>Bounds</key>
-        <string>{{0, 0}, {559, 783}}</string>
-        <key>Class</key>
-        <string>SolidGraphic</string>
-        <key>ID</key>
-        <integer>2</integer>
-        <key>Style</key>
-        <dict>
-        <key>shadow</key>
-        <dict>
-        <key>Draws</key>
-        <string>NO</string>
-        </dict>
-        <key>stroke</key>
-        <dict>
-        <key>Draws</key>
-        <string>NO</string>
-        </dict>
-        </dict>
-        </dict>
-        <key>BaseZoom</key>
-        <integer>0</integer>
-        <key>CanvasOrigin</key>
-        <string>{0, 0}</string>
-        <key>ColumnAlign</key>
-        <integer>1</integer>
-        <key>ColumnSpacing</key>
-        <real>36</real>
-        <key>CreationDate</key>
-        <string>2012-10-10 08:00:43 +0000</string>
-        <key>Creator</key>
-        <string></string>
-        <key>DisplayScale</key>
-        <string>1 0/72 in = 1.0000 in</string>
-        <key>GraphDocumentVersion</key>
-        <integer>8</integer>
-        <key>GraphicsList</key>
-        <array>");
-        }
-
-        static void PrintFooter () 
-        {
-            Console.WriteLine (@"
-    </array>
-    <key>GridInfo</key>
-    <dict/>
-    <key>GuidesLocked</key>
-    <string>NO</string>
-    <key>GuidesVisible</key>
-    <string>YES</string>
-    <key>HPages</key>
-    <integer>1</integer>
-    <key>ImageCounter</key>
-    <integer>1</integer>
-    <key>KeepToScale</key>
-    <false/>
-    <key>Layers</key>
-    <array>
-        <dict>
-            <key>Lock</key>
-            <string>NO</string>
-            <key>Name</key>
-            <string>Layer 1</string>
-            <key>Print</key>
-            <string>YES</string>
-            <key>View</key>
-            <string>YES</string>
-        </dict>
-    </array>
-    <key>LayoutInfo</key>
-    <dict>
-        <key>Animate</key>
-        <string>NO</string>
-        <key>AutoLayout</key>
-        <integer>2</integer>
-        <key>HierarchicalOrientation</key>
-        <integer>3</integer>
-        <key>circoMinDist</key>
-        <real>18</real>
-        <key>circoSeparation</key>
-        <real>0.0</real>
-        <key>dotRankSep</key>
-        <real>0.20000000298023224</real>
-        <key>layoutEngine</key>
-        <string>dot</string>
-        <key>neatoSeparation</key>
-        <real>0.0</real>
-        <key>twopiSeparation</key>
-        <real>0.0</real>
-    </dict>
-    <key>LinksVisible</key>
-    <string>NO</string>
-    <key>MagnetsVisible</key>
-    <string>NO</string>
-    <key>MasterSheets</key>
-    <array/>
-    <key>ModificationDate</key>
-    <string>2012-10-10 09:08:33 +0000</string>
-    <key>Modifier</key>
-    <string></string>
-    <key>NotesVisible</key>
-    <string>NO</string>
-    <key>Orientation</key>
-    <integer>2</integer>
-    <key>OriginVisible</key>
-    <string>NO</string>
-    <key>PageBreaks</key>
-    <string>YES</string>
-    <key>PrintInfo</key>
-    <dict>
-        <key>NSBottomMargin</key>
-        <array>
-            <string>float</string>
-            <string>41</string>
-        </array>
-        <key>NSHorizonalPagination</key>
-        <array>
-            <string>coded</string>
-            <string>BAtzdHJlYW10eXBlZIHoA4QBQISEhAhOU051bWJlcgCEhAdOU1ZhbHVlAISECE5TT2JqZWN0AIWEASqEhAFxlwCG</string>
-        </array>
-        <key>NSLeftMargin</key>
-        <array>
-            <string>float</string>
-            <string>18</string>
-        </array>
-        <key>NSPaperSize</key>
-        <array>
-            <string>size</string>
-            <string>{595, 842}</string>
-        </array>
-        <key>NSPrintReverseOrientation</key>
-        <array>
-            <string>int</string>
-            <string>0</string>
-        </array>
-        <key>NSRightMargin</key>
-        <array>
-            <string>float</string>
-            <string>18</string>
-        </array>
-        <key>NSTopMargin</key>
-        <array>
-            <string>float</string>
-            <string>18</string>
-        </array>
-    </dict>
-    <key>PrintOnePage</key>
-    <false/>
-    <key>ReadOnly</key>
-    <string>NO</string>
-    <key>RowAlign</key>
-    <integer>1</integer>
-    <key>RowSpacing</key>
-    <real>36</real>
-    <key>SheetTitle</key>
-    <string>Canvas 1</string>
-    <key>SmartAlignmentGuidesActive</key>
-    <string>YES</string>
-    <key>SmartDistanceGuidesActive</key>
-    <string>YES</string>
-    <key>UniqueID</key>
-    <integer>1</integer>
-    <key>UseEntirePage</key>
-    <false/>
-    <key>VPages</key>
-    <integer>1</integer>
-    <key>WindowInfo</key>
-    <dict>
-        <key>CurrentSheet</key>
-        <integer>0</integer>
-        <key>ExpandedCanvases</key>
-        <array>
-            <dict>
-                <key>name</key>
-                <string>Canvas 1</string>
-            </dict>
-        </array>
-        <key>Frame</key>
-        <string>{{373, 4}, {693, 874}}</string>
-        <key>ListView</key>
-        <true/>
-        <key>OutlineWidth</key>
-        <integer>142</integer>
-        <key>RightSidebar</key>
-        <false/>
-        <key>ShowRuler</key>
-        <true/>
-        <key>Sidebar</key>
-        <true/>
-        <key>SidebarWidth</key>
-        <integer>120</integer>
-        <key>VisibleRegion</key>
-        <string>{{0, 0}, {558, 720}}</string>
-        <key>Zoom</key>
-        <real>1</real>
-        <key>ZoomValues</key>
-        <array>
-            <array>
-                <string>Canvas 1</string>
-                <real>1</real>
-                <real>1</real>
-            </array>
-        </array>
-    </dict>
-</dict>
-</plist>
-");
-        }
-
-        static int DisplayGoal (Goal g)
-        {
-            var id = random.Next();
-
-            bool assignedToSoftwareAgents = (from a in g.AssignedAgents select a.Software == true).Count () > 0;
-
-            string str = @"
-        <dict>
-            <key>Bounds</key>
-            <string>{{126.4205322265625, 122.99999809265137}, {88.501709000000005, 20.5}}</string>
-            <key>Class</key>
-            <string>ShapedGraphic</string>
-            <key>FitText</key>
-            <string>Vertical</string>
-            <key>Flow</key>
-            <string>Resize</string>
-            <key>FontInfo</key>
-            <dict>
-                <key>Color</key>
-                <dict>
-                    <key>w</key>
-                    <string>0</string>
-                </dict>
-                <key>Font</key>
-                <string>ArialMT</string>
-                <key>NSKern</key>
-                <real>0.0</real>
-                <key>Size</key>
-                <real>8</real>
-            </dict>
-            <key>ID</key>
-            <integer>" + id + @"</integer>
-            <key>Shape</key>
-            <string>Bezier</string>
-            <key>ShapeData</key>
-            <dict>
-                <key>UnitPoints</key>
-                <array>
-                    <string>{-0.46320438000000003, -0.49998664999999998}</string>
-                    <string>{-0.46320438000000003, -0.5}</string>
-                    <string>{0.49996470999999998, -0.5}</string>
-                    <string>{0.5, -0.5}</string>
-                    <string>{0.50002289, -0.5}</string>
-                    <string>{0.45904254999999999, 0.5}</string>
-                    <string>{0.45904254999999999, 0.5}</string>
-                    <string>{0.45905972, 0.49998664999999998}</string>
-                    <string>{-0.5, 0.5}</string>
-                    <string>{-0.5, 0.5}</string>
-                    <string>{-0.5, 0.5}</string>
-                    <string>{-0.46320438000000003, -0.5}</string>
-                </array>
-            </dict>
-            <key>Style</key>
-            <dict>
-                <key>fill</key>
-                <dict>
-                    <key>Color</key>";
-
-            if (!assignedToSoftwareAgents) {
-                str += @"
-                    <dict>
-                        <key>b</key>
-                        <string>1</string>
-                        <key>g</key>
-                        <string>0.896814</string>
-                        <key>r</key>
-                        <string>0.810871</string>
-                    </dict>";
-            } else {
-                str += @"
-                    <dict>
-                        <key>b</key>
-                        <string>0.672223</string>
-                        <key>g</key>
-                        <string>0.979841</string>
-                        <key>r</key>
-                        <string>1</string>
-                    </dict>";
+            
+            foreach (var agent in goal.AssignedAgents) {
+                var agentGraphic = AddAgent (canvas, agent);
+                AddResponsibility (canvas, agentGraphic, parentGraphic);
             }
-            str += @"
-                </dict>
-                <key>shadow</key>
-                <dict>
-                    <key>Draws</key>
-                    <string>NO</string>
-                </dict>";
-
-            if (g.AssignedAgents.Count > 0) {
-                str += @"
-                <key>stroke</key>
-                <dict>
-                <key>Width</key>
-                <real>2</real>
-                </dict>";
-            }
-
-            str += @"
-            </dict>
-            <key>Text</key>
-            <dict>
-                <key>Text</key>
-                <string>{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf470
-{\fonttbl\f0\fswiss\fcharset0 ArialMT;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
-
-\f0\fs16 \cf0 \expnd0\expndtw0\kerning0
-" + g.Name + @"}</string>
-            </dict>
-        </dict>";
-            
-            Console.WriteLine (str);
-
-            return id;
-        }
-
-        static int DisplayGoalRecursive (Goal g) {
-            var id = DisplayGoal (g);
-
-            foreach (var refinement in g.Refinements)
-                DisplayRefinement (refinement, id);
-
-            foreach (var agent in g.AssignedAgents)           
-                DisplayResponsibility (DisplayAgent (agent), id);
-
-            foreach (var obstacle in g.Obstruction) {
-                int o = DisplayObstacle (obstacle);
-                DisplayNegatedArrow (o, id);
-            }
-
-            return id;
-        }
-
-        static int DisplayDomainProperty (DomainProperty domprop)
-        {
-            var id = random.Next();
-            
-            string str = @"
-        <dict>
-            <key>Bounds</key>
-            <string>{{60, 40.488321690000021}, {121.99121000000014, 28}}</string>
-            <key>Class</key>
-            <string>ShapedGraphic</string>
-            <key>FitText</key>
-            <string>Vertical</string>
-            <key>Flow</key>
-            <string>Resize</string>
-            <key>FontInfo</key>
-            <dict>
-                <key>Color</key>
-                <dict>
-                    <key>w</key>
-                    <string>0</string>
-                </dict>
-                <key>Font</key>
-                <string>ArialMT</string>
-                <key>NSKern</key>
-                <real>0.0</real>
-                <key>Size</key>
-                <real>8</real>
-            </dict>
-            <key>ID</key>
-            <integer>" + id + @"</integer>
-            <key>Shape</key>
-            <string>Bezier</string>
-            <key>ShapeData</key>
-            <dict>
-                <key>UnitPoints</key>
-                <array>
-                    <string>{-0.44769001000000003, -0.49997997}</string>
-                    <string>{-0.44769001000000003, -0.50000095}</string>
-                    <string>{0.45351887000000002, -0.50000095}</string>
-                    <string>{0.45357417999999999, -0.50000095}</string>
-                    <string>{0.45357417999999999, -0.50000095}</string>
-                    <string>{0.49999142000000002, 0.49999905}</string>
-                    <string>{0.5, 0.49999905}</string>
-                    <string>{0.50003909999999996, 0.49999332000000002}</string>
-                    <string>{-0.5, 0.49999905}</string>
-                    <string>{-0.5, 0.49999905}</string>
-                    <string>{-0.5, 0.49999905}</string>
-                    <string>{-0.44769001000000003, -0.50000095}</string>
-                </array>
-            </dict>
-            <key>Style</key>
-            <dict>
-                <key>fill</key>
-                <dict>
-                    <key>Color</key>
-                    <dict>
-                        <key>b</key>
-                        <string>0.72515</string>
-                        <key>g</key>
-                        <string>1</string>
-                        <key>r</key>
-                        <string>0.895214</string>
-                    </dict>
-                </dict>
-                <key>shadow</key>
-                <dict>
-                    <key>Draws</key>
-                    <string>NO</string>
-                </dict>
-            </dict>
-            <key>Text</key>
-            <dict>
-                <key>Text</key>
-                <string>{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf470
-{\fonttbl\f0\fswiss\fcharset0 ArialMT;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
-
-\f0\fs16 \cf0 \expnd0\expndtw0\kerning0
-" + domprop.Name + @"}</string>
-            </dict>
-        </dict>";
-            
-            Console.WriteLine (str);
-            
-            return id;
-        }
-
-        static int DisplayAgent (Agent a)
-        {
-            var id = random.Next();
-            var str = @"
-        <dict>
-            <key>Bounds</key>
-            <string>{{114, 87.885440000000017}, {33.499878000000002, 11.5}}</string>
-            <key>Class</key>
-            <string>ShapedGraphic</string>
-            <key>FitText</key>
-            <string>Vertical</string>
-            <key>Flow</key>
-            <string>Resize</string>
-            <key>ID</key>
-            <integer>" + id + @"</integer>
-            <key>Shape</key>
-            <string>Bezier</string>
-            <key>ShapeData</key>
-            <dict>
-                <key>UnitPoints</key>
-                <array>
-                    <string>{-0.36199283999999998, -0.49997330000000001}</string>
-                    <string>{-0.36199283999999998, -0.5}</string>
-                    <string>{0.35809898000000001, -0.5}</string>
-                    <string>{0.35825062000000002, -0.5}</string>
-                    <string>{0.35825062000000002, -0.5}</string>
-                    <string>{0.50000571999999999, 0}</string>
-                    <string>{0.5, 0}</string>
-                    <string>{0.50000571999999999, 0}</string>
-                    <string>{0.35800075999999997, 0.5}</string>
-                    <string>{0.35803223000000001, 0.5}</string>
-                    <string>{0.35812187000000001, 0.49997330000000001}</string>
-                    <string>{-0.35821056000000001, 0.5}</string>
-                    <string>{-0.35821056000000001, 0.5}</string>
-                    <string>{-0.35821056000000001, 0.5}</string>
-                    <string>{-0.5, 0}</string>
-                    <string>{-0.5, 0}</string>
-                    <string>{-0.5, 0}</string>
-                    <string>{-0.36199283999999998, -0.5}</string>
-                </array>
-            </dict>
-            <key>Style</key>
-            <dict>
-                <key>fill</key>
-                <dict>
-                    <key>Color</key>
-                    <dict>
-                        <key>b</key>
-                        <string>1</string>
-                        <key>g</key>
-                        <string>0.670259</string>
-                        <key>r</key>
-                        <string>0.824276</string>
-                    </dict>
-                </dict>
-                <key>shadow</key>
-                <dict>
-                    <key>Draws</key>
-                    <string>NO</string>
-                </dict>
-            </dict>
-            <key>Text</key>
-            <dict>
-                <key>Pad</key>
-                <integer>10</integer>
-                <key>Text</key>
-                <string>{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf470
-{\fonttbl\f0\fswiss\fcharset0 ArialMT;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
-
-\f0\fs16 \cf0 " + a.Name + @"}</string>
-            </dict>
-            <key>Wrap</key>
-            <string>NO</string>
-        </dict>
-
-";
-            Console.WriteLine (str);
-
-            return id;
-        }
-
-        static void DisplayResponsibility (int id, int parent)
-        {
-            var circle_id = random.Next();
-            var str = @"
-        <dict>
-            <key>Bounds</key>
-            <string>{{276.16535494999999, 357.16535494999999}, {5.6692901000000004, 5.6692901000000004}}</string>
-            <key>Class</key>
-            <string>ShapedGraphic</string>
-            <key>FontInfo</key>
-            <dict>
-                <key>Color</key>
-                <dict>
-                    <key>b</key>
-                    <string>0.835294</string>
-                    <key>g</key>
-                    <string>0.556863</string>
-                    <key>r</key>
-                    <string>0.333333</string>
-                </dict>
-                <key>Font</key>
-                <string>TimesNewRomanPSMT</string>
-                <key>Size</key>
-                <real>8</real>
-            </dict>
-            <key>ID</key>
-            <integer>" + circle_id + @"</integer>
-            <key>Shape</key>
-            <string>Circle</string>
-            <key>Style</key>
-            <dict>
-                <key>shadow</key>
-                <dict>
-                    <key>Draws</key>
-                    <string>NO</string>
-                </dict>
-            </dict>
-            <key>Text</key>
-            <dict>
-                <key>Pad</key>
-                <integer>10</integer>
-            </dict>
-            <key>VFlip</key>
-            <string>YES</string>
-        </dict>";
-            Console.WriteLine (str);
-
-            DisplayArrow (circle_id, parent);
-            DisplayLine (id, circle_id);
         }
         
-        static void DisplayRefinement (GoalRefinement r, int parent)
+        static void RecursiveExportObstacle (Omnigraffle.Sheet canvas, Obstacle obstacle)
         {
-            var id = random.Next();
-            var str = @"
-        <dict>
-            <key>Bounds</key>
-            <string>{{276.16535494999999, 357.16535494999999}, {5.6692901000000004, 5.6692901000000004}}</string>
-            <key>Class</key>
-            <string>ShapedGraphic</string>
-            <key>FontInfo</key>
-            <dict>
-                <key>Color</key>
-                <dict>
-                    <key>b</key>
-                    <string>0.835294</string>
-                    <key>g</key>
-                    <string>0.556863</string>
-                    <key>r</key>
-                    <string>0.333333</string>
-                </dict>
-                <key>Font</key>
-                <string>TimesNewRomanPSMT</string>
-                <key>Size</key>
-                <real>8</real>
-            </dict>
-            <key>ID</key>
-            <integer>" + id + @"</integer>
-            <key>Shape</key>
-            <string>Circle</string>
-            <key>Style</key>
-            <dict>
-                <key>shadow</key>
-                <dict>
-                    <key>Draws</key>
-                    <string>NO</string>
-                </dict>
-            </dict>
-            <key>Text</key>
-            <dict>
-                <key>Pad</key>
-                <integer>10</integer>
-            </dict>
-            <key>VFlip</key>
-            <string>YES</string>
-        </dict>";
-            Console.WriteLine (str);
-            DisplayArrow (id, parent);
+            if (!mapping[canvas].ContainsKey (obstacle.Identifier))
+                AddObstacle (canvas, obstacle);
             
-            foreach (var goal in r.Children) {
-                var g = DisplayGoalRecursive (goal);
+            var parentGraphic = mapping[canvas][obstacle.Identifier];
+            
+            foreach (var refinement in obstacle.Refinements) {
+                var circle = AddCircle (canvas);
                 
-                DisplayLine (g, id);
-            }
-
-            foreach (var domprop in r.DomainProperties) {
-                var d = DisplayDomainProperty (domprop);
-                DisplayLine (d, id);
-            }
-        }
-        
-        static void DisplayRefinement (ObstacleRefinement r, int parent)
-        {
-            var id = random.Next();
-            var str = @"
-        <dict>
-            <key>Bounds</key>
-            <string>{{276.16535494999999, 357.16535494999999}, {5.6692901000000004, 5.6692901000000004}}</string>
-            <key>Class</key>
-            <string>ShapedGraphic</string>
-            <key>FontInfo</key>
-            <dict>
-                <key>Color</key>
-                <dict>
-                    <key>b</key>
-                    <string>0.835294</string>
-                    <key>g</key>
-                    <string>0.556863</string>
-                    <key>r</key>
-                    <string>0.333333</string>
-                </dict>
-                <key>Font</key>
-                <string>TimesNewRomanPSMT</string>
-                <key>Size</key>
-                <real>8</real>
-            </dict>
-            <key>ID</key>
-            <integer>" + id + @"</integer>
-            <key>Shape</key>
-            <string>Circle</string>
-            <key>Style</key>
-            <dict>
-                <key>shadow</key>
-                <dict>
-                    <key>Draws</key>
-                    <string>NO</string>
-                </dict>
-            </dict>
-            <key>Text</key>
-            <dict>
-                <key>Pad</key>
-                <integer>10</integer>
-            </dict>
-            <key>VFlip</key>
-            <string>YES</string>
-        </dict>";
-            Console.WriteLine (str);
-            DisplayArrow (id, parent);
-            
-            foreach (var obstacle in r.Children) {
-                var g = DisplayObstacle (obstacle);
+                AddFilledArrow (canvas, circle, parentGraphic);
                 
-                DisplayLine (g, id);
-            }
-            
-            foreach (var domprop in r.DomainProperties) {
-                var d = DisplayDomainProperty (domprop);
-                DisplayLine (d, id);
+                foreach (var child in refinement.Children) {
+                    RecursiveExportObstacle (canvas, child);
+                    var childGraphic = mapping[canvas][child.Identifier];
+                    
+                    AddLine (canvas, childGraphic, circle);
+                }
             }
         }
 
-        static void DisplayArrow (int @from, int to)
+        #endregion
+
+        static Omnigraffle.ShapedGraphic AddResponsibility (Omnigraffle.Sheet canvas, Omnigraffle.ShapedGraphic agentGraphic, Omnigraffle.ShapedGraphic goalGraphic)
         {
-            var id = random.Next();
-            var str = @"
-        <dict>
-            <key>Class</key>
-            <string>LineGraphic</string>
-            <key>FontInfo</key>
-            <dict>
-            <key>Font</key>
-            <string>ArialMT</string>
-            <key>Size</key>
-            <real>6</real>
-            </dict>
-            <key>Head</key>
-            <dict>
-            <key>ID</key>
-            <integer>" + to + @"</integer>
-            </dict>
-            <key>ID</key>
-            <integer>" + id + @"</integer>
-            <key>Points</key>
-            <array>
-            <string>{277.47208419167532, 357.03513732100595}</string>
-            <string>{227.36256086024207, 259.79950772800538}</string>
-            </array>
-            <key>Style</key>
-            <dict>
-            <key>stroke</key>
-            <dict>
-            <key>HeadArrow</key>
-            <string>FilledArrow</string>
-            <key>HeadScale</key>
-            <real>0.5</real>
-            <key>Legacy</key>
-            <true/>
-            <key>TailArrow</key>
-            <string>0</string>
-            </dict>
-            </dict>
-            <key>Tail</key>
-            <dict>
-            <key>ID</key>
-            <integer>" + from + @"</integer>
-            </dict>
-        </dict>";
-            Console.WriteLine (str);
+            var circle = AddCircle (canvas);
+
+            AddFilledArrow (canvas, circle, goalGraphic);
+            AddLine (canvas, agentGraphic, circle);
+
+            return circle;
+        }
+
+        static Omnigraffle.ShapedGraphic AddCircle (Omnigraffle.Sheet canvas)
+        {
+            var circle = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Circle, 50, 50, 10, 10);
+            circle.Style.Shadow.Draws = false;
+            
+            circle.FitText = KAOSFormalTools.OmnigraffleExport.Omnigraffle.FitText.Clip;
+            circle.Flow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Flow.Clip;
+            
+            canvas.GraphicsList.Add (circle);
+            
+            return circle;
+        }
+
+        static Omnigraffle.LineGraphic AddLine (Omnigraffle.Sheet canvas, Omnigraffle.ShapedGraphic @from, Omnigraffle.ShapedGraphic to)
+        {
+            var line = new Omnigraffle.LineGraphic (NextId);
+            line.Head = new Omnigraffle.LineEndInfo (to.ID);
+            line.Tail = new Omnigraffle.LineEndInfo (@from.ID);
+            
+            line.Points.Add (to.Bounds.TopLeft);
+            line.Points.Add (@from.Bounds.BottomRight);
+            
+            line.Style.Shadow.Draws = false;
+
+            canvas.GraphicsList.Add (line);
+
+            return line;
+        }
+
+        static Omnigraffle.LineGraphic AddFilledArrow (Omnigraffle.Sheet canvas, Omnigraffle.ShapedGraphic @from, Omnigraffle.ShapedGraphic to)
+        {
+            var line = AddLine (canvas, @from, to);
+            line.Style.Stroke.HeadArrow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Arrow.FilledArrow;
+            return line;
         }
         
-        static void DisplayNegatedArrow (int @from, int to)
+        static Omnigraffle.LineGraphic AddSharpBackCrossArrow (Omnigraffle.Sheet canvas, Omnigraffle.ShapedGraphic @from, Omnigraffle.ShapedGraphic to)
         {
-            var id = random.Next();
-            var str = @"
-        <dict>
-            <key>Class</key>
-            <string>LineGraphic</string>
-            <key>FontInfo</key>
-            <dict>
-            <key>Font</key>
-            <string>ArialMT</string>
-            <key>Size</key>
-            <real>6</real>
-            </dict>
-            <key>Head</key>
-            <dict>
-            <key>ID</key>
-            <integer>" + to + @"</integer>
-            </dict>
-            <key>ID</key>
-            <integer>" + id + @"</integer>
-            <key>Points</key>
-            <array>
-            <string>{277.47208419167532, 357.03513732100595}</string>
-            <string>{227.36256086024207, 259.79950772800538}</string>
-            </array>
-            <key>Style</key>
-            <dict>
-            <key>stroke</key>
-            <dict>
-            <key>HeadArrow</key>
-            <string>0</string>
-            <key>HeadScale</key>
-            <real>0.5</real>
-            <key>Legacy</key>
-            <true/>
-            <key>TailArrow</key>
-            <string>SharpBackCross</string>
-            </dict>
-            </dict>
-            <key>Tail</key>
-            <dict>
-            <key>ID</key>
-            <integer>" + from + @"</integer>
-            </dict>
-        </dict>";
-            Console.WriteLine (str);
+            var line = AddLine (canvas, @from, to);
+            line.Style.Stroke.TailArrow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Arrow.SharpBackCross;
+            return line;
         }
 
-        static void DisplayLine (int @from, int to)
+        static Omnigraffle.ShapedGraphic AddObstacle (Omnigraffle.Sheet canvas, Obstacle obstacle)
         {
-            var id = random.Next();
-            var str = @"
-        <dict>
-            <key>Class</key>
-            <string>LineGraphic</string>
-            <key>FontInfo</key>
-            <dict>
-            <key>Font</key>
-            <string>ArialMT</string>
-            <key>Size</key>
-            <real>6</real>
-            </dict>
-            <key>Head</key>
-            <dict>
-            <key>ID</key>
-            <integer>" + to + @"</integer>
-            </dict>
-            <key>ID</key>
-            <integer>" + id + @"</integer>
-            <key>Points</key>
-            <array>
-            <string>{277.47208419167532, 357.03513732100595}</string>
-            <string>{227.36256086024207, 259.79950772800538}</string>
-            </array>
-            <key>Style</key>
-            <dict>
-            <key>stroke</key>
-            <dict>
-            <key>HeadArrow</key>
-            <string>0</string>
-            <key>HeadScale</key>
-            <real>0.5</real>
-            <key>Legacy</key>
-            <true/>
-            <key>TailArrow</key>
-            <string>0</string>
-            </dict>
-            </dict>
-            <key>Tail</key>
-            <dict>
-            <key>ID</key>
-            <integer>" + from + @"</integer>
-            </dict>
-        </dict>";
-            Console.WriteLine (str);
+            var graphic = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Bezier, 50, 50, 150, 70);
+           
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.5, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.5, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.5, -0.5));
+
+            graphic.Text = new Omnigraffle.TextInfo (obstacle.Name) {
+                Alignement = KAOSFormalTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
+                SideMargin = 10, TopBottomMargin = 3
+            };
+            graphic.Style.Shadow.Draws = false;
+            graphic.FitText = KAOSFormalTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
+            graphic.Flow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
+
+            graphic.Style.Fill.Color = new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Color (1, 0.590278, 0.611992);
+
+            if (obstacle.Refinements.Count == 0)
+                graphic.Style.Stroke.Width = 2;
+
+            canvas.GraphicsList.Add (graphic);
+            mapping[canvas].Add (obstacle.Identifier, graphic);
+
+            return graphic;
         }
 
-        static int DisplayObstacle (Obstacle o)
+        static Omnigraffle.ShapedGraphic AddDomainProperty (Omnigraffle.Sheet canvas, DomainProperty domprop)
         {
-            var id = random.Next();
-                        
-            string str = @"
-<dict>
-            <key>Bounds</key>
-            <string>{{133, 128}, {62.501465000000003, 20.500243999999999}}</string>
-            <key>Class</key>
-            <string>ShapedGraphic</string>
-            <key>FitText</key>
-            <string>Vertical</string>
-            <key>Flow</key>
-            <string>Resize</string>
-            <key>FontInfo</key>
-            <dict>
-                <key>Color</key>
-                <dict>
-                    <key>w</key>
-                    <string>0</string>
-                </dict>
-                <key>Font</key>
-                <string>ArialMT</string>
-                <key>NSKern</key>
-                <real>0.0</real>
-                <key>Size</key>
-                <real>8</real>
-            </dict>
-            <key>HFlip</key>
-            <string>YES</string>
-            <key>ID</key>
-            <integer>" + id + @"</integer>
-            <key>Shape</key>
-            <string>Bezier</string>
-            <key>ShapeData</key>
-            <dict>
-                <key>UnitPoints</key>
-                <array>
-                    <string>{-0.45797824999999998, -0.49999714000000001}</string>
-                    <string>{-0.45797824999999998, -0.5}</string>
-                    <string>{0.49995278999999998, -0.5}</string>
-                    <string>{0.5, -0.5}</string>
-                    <string>{0.49999976000000002, -0.5}</string>
-                    <string>{0.45321059000000002, 0.5}</string>
-                    <string>{0.45322131999999998, 0.5}</string>
-                    <string>{0.45325375000000001, 0.49998282999999999}</string>
-                    <string>{-0.50000071999999995, 0.5}</string>
-                    <string>{-0.5, 0.5}</string>
-                    <string>{-0.50000095, 0.5}</string>
-                    <string>{-0.45797824999999998, -0.5}</string>
-                </array>
-            </dict>
-            <key>Style</key>
-            <dict>
-                <key>fill</key>
-                <dict>
-                    <key>Color</key>
-                    <dict>
-                        <key>b</key>
-                        <string>0.611992</string>
-                        <key>g</key>
-                        <string>0.590278</string>
-                        <key>r</key>
-                        <string>1</string>
-                    </dict>
-                </dict>
-                <key>shadow</key>
-                <dict>
-                    <key>Draws</key>
-                    <string>NO</string>
-                </dict>";
-
-            if (o.Refinements.Count() == 0) {
-                str += @"
-                <key>stroke</key>
-                <dict>
-                    <key>Width</key>
-                    <real>2</real>
-                </dict>";
-            }
-
-            str += @"</dict>
-            <key>Text</key>
-            <dict>
-                <key>Text</key>
-                <string>{\rtf1\ansi\ansicpg1252\cocoartf1138\cocoasubrtf470
-{\fonttbl\f0\fswiss\fcharset0 ArialMT;}
-{\colortbl;\red255\green255\blue255;}
-\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc
-
-\f0\fs16 \cf0 \expnd0\expndtw0\kerning0
-" + o.Name + @"}</string>
-            </dict>
-        </dict>";
+            var graphic = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Bezier, 50, 50, 150, 70);
             
-            Console.WriteLine (str);
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, -0.5));
             
-            foreach (var refinement in o.Refinements)
-                DisplayRefinement (refinement, id);
-
-            foreach (var goal in o.Resolutions) {
-            int g = DisplayGoalRecursive (goal);
-                DisplayNegatedArrow (g, id);
-            }
-
-            return id;
+            graphic.Text = new Omnigraffle.TextInfo (domprop.Name) {
+                Alignement = KAOSFormalTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
+                SideMargin = 10, TopBottomMargin = 3
+            };
+            graphic.Style.Shadow.Draws = false;
+            graphic.FitText = KAOSFormalTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
+            graphic.Flow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
+            
+            graphic.Style.Fill.Color = new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Color (0.895214, 1, 0.72515);
+            
+            canvas.GraphicsList.Add (graphic);
+            mapping[canvas].Add (domprop.Identifier, graphic);
+            
+            return graphic;
         }
 
-
-        static GoalModel BuildModel (string filename)
+        static Omnigraffle.ShapedGraphic AddAgent (Omnigraffle.Sheet canvas,Agent agent)
         {
-            var parser = new KAOSFormalTools.Parsing.Parser ();
-            return parser.Parse (File.ReadAllText (filename));
+            var longestWord = agent.Name.Split (' ').Max (x => x.Length);
+
+            var graphic = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Bezier, 50, 50, longestWord * 6 + 30, 30);
+
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.5, 0));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.5, 0));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.5, 0));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.5, 0));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.5, 0));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.5, 0));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, -0.5));
+
+
+            graphic.Text = new Omnigraffle.TextInfo (agent.Name) {
+                Alignement = KAOSFormalTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center
+            };
+            graphic.Style.Shadow.Draws = false;
+            
+            graphic.FitText = KAOSFormalTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
+            graphic.Flow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
+
+            if (agent.Software) 
+                graphic.Style.Fill.Color = new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Color (0.99607843137, 0.80392156862, 0.58039215686);
+            else
+                graphic.Style.Fill.Color = new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Color (0.824276, 0.670259, 1);
+            
+            canvas.GraphicsList.Add (graphic);
+
+            return graphic;
         }
-        
-        static void ShowHelp (OptionSet p)
+
+        static Omnigraffle.ShapedGraphic AddGoal (Omnigraffle.Sheet canvas, Goal goal)
         {
-            Console.WriteLine ("Usage: KAOSFormalTools.OmnigraffleExport model");
-            Console.WriteLine ();
-            Console.WriteLine ("Options:");
-            p.WriteOptionDescriptions (Console.Out);
-        }
-        
-        static void PrintError (string error)
-        {  
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Error.Write ("KAOSFormalTools.OmnigraffleExport: ");
-            Console.Error.WriteLine (error);
-            Console.Error.WriteLine ("Try `KAOSFormalTools.OmnigraffleExport --help' for more information.");
-            Console.ResetColor ();
+            var graphic = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Bezier, 50, 50, 200, 70);
+
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.5, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.5, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.5, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, -0.5));
+
+            graphic.Text = new Omnigraffle.TextInfo (goal.Name) {
+                Alignement = KAOSFormalTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
+                SideMargin = 10, TopBottomMargin = 3
+            };
+            graphic.Style.Shadow.Draws = false;
+            graphic.FitText = KAOSFormalTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
+            graphic.Flow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
+
+            bool assignedToSoftwareAgents = (from a in goal.AssignedAgents select a.Software == true).Count () > 0;
+            if (assignedToSoftwareAgents) 
+                graphic.Style.Fill.Color = new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Color (1, 0.979841, 0.672223);
+            else 
+                graphic.Style.Fill.Color = new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Color (0.810871, 0.896814, 1);
+
+            if (goal.AssignedAgents.Count > 0)
+                graphic.Style.Stroke.Width = 2;
+            
+            canvas.GraphicsList.Add (graphic);
+            mapping[canvas].Add (goal.Identifier, graphic);
+
+            return graphic;
         }
     }
 }
