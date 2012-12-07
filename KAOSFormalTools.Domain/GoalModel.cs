@@ -61,6 +61,22 @@ namespace KAOSFormalTools.Domain
         {
             return Goals.Where (x => x.Identifier == identifier).Count () > 0;
         }
+        
+        public void ReplaceGoal (Goal g1, Goal g2)
+        {
+            Goals.Remove (g1);
+            Goals.Add (g2);
+
+            foreach (var refinement in Goals.SelectMany (g => g.Refinements).Where (r => r.Children.Contains (g1))) {
+                refinement.Children.Remove (g1);
+                refinement.Children.Add (g2);
+            }
+
+            foreach (var obstacle in Obstacles.Where (o => o.Resolutions.Contains (g1))) {
+                obstacle.Resolutions.Remove (g1);
+                obstacle.Resolutions.Add (g2);
+            }
+        }
 
         public Obstacle GetObstacleByIdentifier (string identifier)
         {

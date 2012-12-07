@@ -16,7 +16,8 @@ namespace KAOSFormalTools.Parsing
     public class Goal : Element
     {
         public List<Attribute> Attributes { get; set; }
-        public Goal () { Attributes = new List<Attribute>(); }
+        public bool Override { get; set; }
+        public Goal () { Attributes = new List<Attribute>(); Override = false; }
     }
 
     public class DomainProperty : Element

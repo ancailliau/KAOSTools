@@ -37,6 +37,29 @@ end
             Assert.AreEqual (1, gm.RootGoals.Count);
             Assert.AreEqual ("test", gm.RootGoals.First().Identifier);
         }
+        
+        [Test()]
+        public void TestOverride ()
+        {
+            var input = @"
+begin goal
+    id test
+    name ""test""
+    refinedby child
+end
+
+override goal
+    id test
+    name ""test2""
+end
+";
+            var gm = parser.Parse (input);
+            Assert.AreEqual (2, gm.RootGoals.Count);
+            Assert.AreEqual ("test2", gm.RootGoals.First().Name);
+            Assert.AreEqual (0, gm.RootGoals.First().Refinements.Count);
+
+            Assert.AreEqual ("child", gm.RootGoals[1].Identifier);
+        }
 
         [Test()]
         public void TestGoalMultipleIdentifier ()

@@ -92,14 +92,24 @@ namespace KAOSFormalTools.Parsing
 
             if (model.GoalExists (goal.Identifier)) {
                 var g2 = model.GetGoalByIdentifier (goal.Identifier);
-                g2.Merge (goal);
-                return g2;
+                if (!parsedGoal.Override) {
+                    g2.Merge (goal);
+                    return g2;
+                } else {
+                    model.ReplaceGoal (g2, goal);
+                    return goal;
+                }
             }
             
             if (identifierAttribute == null && model.GetGoalsByName (goal.Name).Count() == 1) {
                 var g2 = model.GetGoalsByName (goal.Name).Single ();
-                g2.Merge (goal);
-                return g2;
+                if (!parsedGoal.Override) {
+                    g2.Merge (goal);
+                    return g2;
+                } else {
+                    model.ReplaceGoal (g2, goal);
+                    return goal;
+                }
             }
 
             // Ensure that parsed goal has the same identifer than the new one
@@ -404,14 +414,20 @@ namespace KAOSFormalTools.Parsing
                     throw new ParsingException (string.Format ("Goal '{0}' not found", identifier));
             }
 
-            foreach (var r in refinements)
-                goal.Refinements.Add (r);
+            if (!parsedGoal.Override) {
+                foreach (var r in refinements)
+                    goal.Refinements.Add (r);
 
-            foreach (var r in obstruction)
-                goal.Obstruction.Add (r);
-            
-            foreach (var r in assignedAgents)
-                goal.AssignedAgents.Add (r);
+                foreach (var r in obstruction)
+                    goal.Obstruction.Add (r);
+                
+                foreach (var r in assignedAgents)
+                    goal.AssignedAgents.Add (r);
+            } else {
+                goal.Refinements = refinements;
+                goal.Obstruction = obstruction;
+                goal.AssignedAgents = assignedAgents;
+            }
         }
     
         #endregion

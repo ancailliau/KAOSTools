@@ -156,14 +156,16 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Goal := 'begin' S 'goal' S (GoalAttribute S)* 'end'
+	// Goal := ('begin' / 'override') S 'goal' S (GoalAttribute S)* 'end'
 	private State DoParseGoalRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
 		
 		_state = DoSequence(_state, results,
-			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "begin");},
+			delegate (State s, List<Result> r) {return DoChoice(s, r,
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "begin");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "override");});},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "goal");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},

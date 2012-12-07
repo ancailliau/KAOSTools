@@ -31,6 +31,8 @@ internal sealed partial class GoalModelParser
     private KAOSFormalTools.Parsing.Element BuildGoal (List<Result> results)
     {
         var goal = new KAOSFormalTools.Parsing.Goal ();
+        if (results[0].Text == "override")
+            goal.Override = true;
 
         for (int i = 1; i < results.Count; i++) {
             goal.Attributes.Add (results[i].Value as KAOSFormalTools.Parsing.Attribute);
