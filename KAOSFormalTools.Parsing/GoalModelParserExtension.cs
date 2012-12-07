@@ -7,6 +7,8 @@ using System.IO;
 
 internal sealed partial class GoalModelParser
 {   
+    private List<string> files_imported = new List<string> ();
+
     private KAOSFormalTools.Parsing.Element BuildElements (List<Result> results)
     {
         var attrs = new Elements();
@@ -175,8 +177,12 @@ internal sealed partial class GoalModelParser
     private KAOSFormalTools.Parsing.Element Import (string file)
     {
         var filename = Path.Combine (Path.GetDirectoryName (m_file), file);
+        if (files_imported.Contains (Path.GetFullPath (filename)))
+            return new Elements ();
 
         if (File.Exists (filename)) {
+            files_imported.Add (Path.GetFullPath (filename));
+
             string input = File.ReadAllText (filename);
             var parser = new GoalModelParser();
             var m2 = parser.Parse (input, filename);
