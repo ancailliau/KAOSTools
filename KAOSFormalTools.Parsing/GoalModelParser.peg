@@ -4,7 +4,9 @@ debug =
 
 
 Start              := S Elements S;
-Elements           := ( ( Goal / DomProp / Obstacle / Agent ) S )*                     `value = BuildElements (results);`
+Elements           := ( ( Goal / DomProp / Obstacle / Agent / Import ) S )*                     `value = BuildElements (results);`
+
+Import             := 'import' S '"' String '"' `value = Import(results[2].Text);`
                                                                          
 Goal               := 'begin' S 'goal'                   S (GoalAttribute S)*      'end'   `value = BuildGoal(results);`
 DomProp            := 'begin' S 'domainproperty'         S (DomPropAttribute S)*   'end'   `value = BuildDomainProperty(results);`

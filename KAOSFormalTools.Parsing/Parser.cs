@@ -13,15 +13,25 @@ namespace KAOSFormalTools.Parsing
 
         public Parser (){}
 
-        public GoalModel Parse (string input)
+        public GoalModel Parse (string input, string filename, GoalModel model)
         {
-            var elements = _parser.Parse (input) as Elements;
+            var elements = _parser.Parse (input, filename) as Elements;
 
-            model = new GoalModel ();
+            this.model = model;
             FirstPass  (elements);
             SecondPass (elements);
-
+            
             return model;
+        }
+
+        public GoalModel Parse (string input, string filename)
+        {
+            return Parse (input, filename, new GoalModel());
+        }
+
+        public GoalModel Parse (string input)
+        {
+            return Parse (input, null);
         }
 
         private void FirstPass (Elements elements)
@@ -80,9 +90,18 @@ namespace KAOSFormalTools.Parsing
                 }
             }
 
-            if (model.GoalExists (goal.Identifier))
-                throw new ParsingException (string.Format ("Identifier '{0}' is not unique", goal.Identifier));
+            if (model.GoalExists (goal.Identifier)) {
+                var g2 = model.GetGoalByIdentifier (goal.Identifier);
+                g2.Merge (goal);
+                return g2;
+            }
             
+            if (identifierAttribute == null && model.GetGoalsByName (goal.Name).Count() == 1) {
+                var g2 = model.GetGoalsByName (goal.Name).Single ();
+                g2.Merge (goal);
+                return g2;
+            }
+
             // Ensure that parsed goal has the same identifer than the new one
             // This is required for second pass, otherwise, entity could not be found
             if (identifierAttribute == null)

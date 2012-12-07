@@ -210,6 +210,29 @@ begin domainproperty id test3 end
         }
 
         [Test()]
+        public void TestMerge ()
+        {
+            var input = @"
+begin goal
+    id test
+    refinedby ""Test Child 1""
+end
+
+begin goal
+    id test
+    name ""Test""
+    refinedby ""Test Child 2""
+end
+";
+            var gm = parser.Parse (input);
+            Assert.AreEqual (3, gm.Goals.Count);
+            
+            Assert.AreEqual ("test", gm.Goals[0].Identifier);
+            Assert.AreEqual ("Test", gm.Goals[0].Name);
+            Assert.AreEqual (2,      gm.Goals[0].Refinements.Count);
+        }
+
+        [Test()]
         public void TestUnknownIdentifierReference ()
         {
             var input = @"

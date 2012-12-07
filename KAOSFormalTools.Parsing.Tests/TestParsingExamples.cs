@@ -18,11 +18,22 @@ namespace KAOSFormalTools.Parsing.Tests
         public void TestLAS ()
         {
             string input = File.ReadAllText ("../../Examples/las.kaos");
-            var model = parser.Parse (input);
+            var model = parser.Parse (input, "../../Examples/las.kaos");
 
             Assert.IsNotNull (model);
         }
-        
+
+        [Test()]
+        public void TestInclude ()
+        {
+            string input = File.ReadAllText ("../../Examples/include.kaos");
+            var model = parser.Parse (input, "../../Examples/include.kaos");
+            
+            Assert.IsNotNull (model);
+            Assert.IsNotEmpty (model.Goals.First ().Name);
+            Assert.IsNotEmpty (model.Goals.First ().Definition);
+        }
+
         [Test()]
         public void TestIssue7 ()
         {

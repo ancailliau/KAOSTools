@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using KAOSFormalTools.Parsing;
 using KAOSFormalTools.Domain;
+using System.IO;
 
 internal sealed partial class GoalModelParser
 {   
@@ -10,7 +11,19 @@ internal sealed partial class GoalModelParser
     {
         var attrs = new Elements();
         foreach (var result in results) {
-            attrs.Values.Add (result.Value);
+            BuildElement (attrs, result.Value);
+        }
+        return attrs;
+    }
+
+    private KAOSFormalTools.Parsing.Element BuildElement (Elements attrs, Element value)
+    {
+        if (value is Elements) {
+            foreach (var result2 in ((Elements) value).Values) {
+                BuildElement (attrs, result2);
+            }
+        } else {
+            attrs.Values.Add (value);
         }
         return attrs;
     }
@@ -155,5 +168,20 @@ internal sealed partial class GoalModelParser
             return new Identifier (results[0].Text);
         }
         return null;
+    }
+    
+    private KAOSFormalTools.Parsing.Element Import (string file)
+    {
+        var filename = Path.Combine (Path.GetDirectoryName (m_file), file);
+
+        if (File.Exists (filename)) {
+            string input = File.ReadAllText (filename);
+            var parser = new GoalModelParser();
+            var m2 = parser.Parse (input, filename);
+            return m2;
+
+        } else {
+            throw new FileNotFoundException ("Included file not found", filename);
+        }
     }
 }
