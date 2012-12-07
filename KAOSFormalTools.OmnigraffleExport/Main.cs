@@ -166,6 +166,11 @@ namespace KAOSFormalTools.OmnigraffleExport
                     
                     AddLine (canvas, childGraphic, circle);
                 }
+
+                foreach (var domprop in refinement.DomainProperties) {
+                    var childGraphic = AddDomainProperty (canvas, domprop);
+                    AddLine (canvas, childGraphic, circle);
+                }
             }
 
             if (export_resolution) {
