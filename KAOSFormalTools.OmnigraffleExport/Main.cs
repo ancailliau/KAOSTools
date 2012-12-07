@@ -33,6 +33,7 @@ namespace KAOSFormalTools.OmnigraffleExport
 
             ExportIdealGoalModel (model, document);
             ExportObstacles (model, document);
+            ExportResolutionsGoalModel (model, document);
             ExportResponsibilities (model, document);
 
             if (string.IsNullOrEmpty (filename)) 
@@ -69,9 +70,10 @@ namespace KAOSFormalTools.OmnigraffleExport
 
                 var goalGraphic = AddGoal (obstacleCanvas, obstructedGoal);
                 foreach (var obstacle in obstructedGoal.Obstruction) {
-                    RecursiveExportObstacle (obstacleCanvas, obstacle);
+                    RecursiveExportObstacle (obstacleCanvas, obstacle, true);
                     AddSharpBackCrossArrow (obstacleCanvas, mapping [obstacleCanvas] [obstacle.Identifier], goalGraphic);
                 }
+
                 document.Canvas.Add (obstacleCanvas);
             }
         }
@@ -84,7 +86,32 @@ namespace KAOSFormalTools.OmnigraffleExport
             foreach (var goal in model.RootGoals) {
                 RecursiveExportGoal (goalCanvas, goal);
             }
+
+            foreach (var goal in model.ObstructedGoals) {
+                foreach (var obstacle in goal.Obstruction) {
+                    AddObstacle (goalCanvas, obstacle);
+                    AddSharpBackCrossArrow (goalCanvas, mapping [goalCanvas] [obstacle.Identifier], mapping [goalCanvas] [goal.Identifier]);
+                }
+            }
+
             document.Canvas.Add (goalCanvas);
+        }
+        
+        static void ExportResolutionsGoalModel (GoalModel model, KAOSFormalTools.OmnigraffleExport.Omnigraffle.Document document)
+        {
+            foreach (var obstacle in model.Obstacles.Where (o => o.Resolutions.Count > 0)) {
+                foreach (var resolution in obstacle.Resolutions) {
+                    var canvas = new Omnigraffle.Sheet (1, "Resolution for '" + obstacle.Name + "'");
+                    canvas.LayoutInfo.HierarchicalOrientation = Omnigraffle.HierarchicalOrientation.BottomTop;
+                    mapping.Add (canvas, new Dictionary<string, KAOSFormalTools.OmnigraffleExport.Omnigraffle.ShapedGraphic> ());
+
+                    var obstacleGraphic = AddObstacle (canvas, obstacle);
+                    RecursiveExportGoal (canvas, resolution);
+                    AddSharpBackCrossArrow (canvas, mapping [canvas] [resolution.Identifier], obstacleGraphic);
+
+                    document.Canvas.Add (canvas);
+                }
+            }
         }
 
         #endregion
@@ -93,12 +120,12 @@ namespace KAOSFormalTools.OmnigraffleExport
 
         static void RecursiveExportGoal (Omnigraffle.Sheet canvas, Goal goal)
         {
-            if (!mapping[canvas].ContainsKey (goal.Identifier))
-                AddGoal (canvas, goal);
+            if (mapping[canvas].ContainsKey (goal.Identifier))
+                return;
+           
+            var parentGraphic = AddGoal (canvas, goal);
             
-            var parentGraphic = mapping[canvas][goal.Identifier];
-            
-            foreach (var refinement in goal.Refinements) {
+            foreach (var refinement in goal.Refinements.Reverse ()) {
                 var circle = AddCircle (canvas);
 
                 AddFilledArrow (canvas, circle, parentGraphic);
@@ -121,7 +148,7 @@ namespace KAOSFormalTools.OmnigraffleExport
             }
         }
         
-        static void RecursiveExportObstacle (Omnigraffle.Sheet canvas, Obstacle obstacle)
+        static void RecursiveExportObstacle (Omnigraffle.Sheet canvas, Obstacle obstacle, bool export_resolution = false)
         {
             if (!mapping[canvas].ContainsKey (obstacle.Identifier))
                 AddObstacle (canvas, obstacle);
@@ -134,10 +161,20 @@ namespace KAOSFormalTools.OmnigraffleExport
                 AddFilledArrow (canvas, circle, parentGraphic);
                 
                 foreach (var child in refinement.Children) {
-                    RecursiveExportObstacle (canvas, child);
+                    RecursiveExportObstacle (canvas, child, export_resolution);
                     var childGraphic = mapping[canvas][child.Identifier];
                     
                     AddLine (canvas, childGraphic, circle);
+                }
+            }
+
+            if (export_resolution) {
+                foreach (var goal in obstacle.Resolutions) {
+                    if (!mapping[canvas].ContainsKey (goal.Identifier))
+                        AddGoal (canvas, goal);
+
+                    var goalGraphic = mapping [canvas] [goal.Identifier];
+                    AddSharpBackCrossArrow (canvas, goalGraphic, parentGraphic);
                 }
             }
         }
@@ -261,8 +298,7 @@ namespace KAOSFormalTools.OmnigraffleExport
             graphic.Style.Fill.Color = new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Color (0.895214, 1, 0.72515);
             
             canvas.GraphicsList.Add (graphic);
-            mapping[canvas].Add (domprop.Identifier, graphic);
-            
+
             return graphic;
         }
 

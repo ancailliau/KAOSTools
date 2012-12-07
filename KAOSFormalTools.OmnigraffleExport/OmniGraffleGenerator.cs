@@ -506,6 +506,9 @@ namespace KAOSFormalTools.OmnigraffleExport
 
         private static string GetRtfUnicodeEscapedString(string s)
         {
+            if (s == null)
+                return null;
+
             var sb = new StringBuilder();
             foreach (var c in s)
             {
