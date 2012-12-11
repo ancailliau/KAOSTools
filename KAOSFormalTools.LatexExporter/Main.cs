@@ -225,7 +225,7 @@ namespace KAOSFormalTools.LatexExporter
 
         static void Display (Agent a)
         {
-            Console.WriteLine ("\\sub{0}{{{1}" + (a.Software ? " (software)" : "") + "}}", section, a.Name);
+            Console.WriteLine ("\\sub{0}{{{1}" + (a.Type == AgentType.Software ? " (software)" : "") + "}}", section, a.Name);
 
             if (!string.IsNullOrEmpty (a.Description)) {
                 Console.WriteLine ("\\paragraph{Description :}");

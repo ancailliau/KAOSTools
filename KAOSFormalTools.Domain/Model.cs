@@ -65,17 +65,19 @@ namespace KAOSFormalTools.Domain
 
     public class Agent
     {
-        public string  Identifier   { get; set; }
-        public string  Name         { get; set; }
-        public string  Description  { get; set; }
-        public bool    Software     { get; set; }
+        public string    Identifier   { get; set; }
+        public string    Name         { get; set; }
+        public string    Description  { get; set; }
+        public AgentType Type         { get; set; }
 
         public Agent ()
         {
             Identifier  = Guid.NewGuid ().ToString ();
-            Software    = false;
+            Type        = AgentType.None;
         }
     }
+
+    public enum AgentType { None, Software, Environment }
 
     public class GoalRefinement
     {

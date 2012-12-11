@@ -11,7 +11,7 @@ Import             := 'import' S '"' String '"' `value = Import(results[2].Text)
 Goal               := ( 'begin' / 'override' ) S 'goal'                   S (GoalAttribute S)*      'end'   `value = BuildGoal(results);`
 DomProp            := 'begin' S 'domainproperty'         S (DomPropAttribute S)*   'end'   `value = BuildDomainProperty(results);`
 Obstacle           := 'begin' S 'obstacle'               S (ObstacleAttribute S)*  'end'   `value = BuildObstacle(results);`
-Agent              := 'begin' S ('software' S)? 'agent'  S (AgentAttribute S)*     'end'   `value = BuildAgent(results);`
+Agent              := 'begin' S ('software' / 'environment' S)? 'agent'  S (AgentAttribute S)*     'end'   `value = BuildAgent(results);`
                                                                          
 GoalAttribute      := ( Id / Name / Definition / FormalSpec / RefinedByGoal            
                         / ObstructedBy / AssignedTo / RDS )                     `value = results[0].Value;`

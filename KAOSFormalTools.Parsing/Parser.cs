@@ -208,8 +208,12 @@ namespace KAOSFormalTools.Parsing
         private KAOSFormalTools.Domain.Agent BuildAgent (Agent parsedAgent)
         {
             var agent = new KAOSFormalTools.Domain.Agent ();
-            agent.Software = parsedAgent.Software;
+
             Identifier identifierAttribute = null;
+            if (parsedAgent.Type == AgentType.Environment)
+                agent.Type = KAOSFormalTools.Domain.AgentType.Environment;
+            else if (parsedAgent.Type == AgentType.Software)
+                agent.Type = KAOSFormalTools.Domain.AgentType.Software;
 
             foreach (var attr in parsedAgent.Attributes) {
                 if (attr is Identifier) {

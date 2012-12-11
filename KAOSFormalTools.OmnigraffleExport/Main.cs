@@ -399,7 +399,7 @@ namespace KAOSFormalTools.OmnigraffleExport
             graphic.Style.Shadow.Draws = false;
             graphic.FitText = KAOSFormalTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
             graphic.Flow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
-            if (agent.Software)
+            if (agent.Type == AgentType.Software)
                 graphic.Style.Fill.Color = new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Color (0.99607843137, 0.80392156862, 0.58039215686);
             else
                 graphic.Style.Fill.Color = new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Color (0.824276, 0.670259, 1);
@@ -439,7 +439,7 @@ namespace KAOSFormalTools.OmnigraffleExport
             graphic.Flow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
             bool assignedToSoftwareAgents = (
                 from a in goal.AssignedAgents
-                select a.Software == true).Count () > 0;
+                select a.Type == AgentType.Software).Count () > 0;
             if (assignedToSoftwareAgents)
                 graphic.Style.Fill.Color = new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Color (1, 0.979841, 0.672223);
             else

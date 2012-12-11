@@ -70,9 +70,12 @@ internal sealed partial class GoalModelParser
         var agent = new KAOSFormalTools.Parsing.Agent ();
 
         int start = 1;
-        if (results[1].Text == "software") {
+        if (results[1].Text != "agent") {
             start = 2;
-            agent.Software = true;
+            if (results[1].Text == "software")
+                agent.Type = KAOSFormalTools.Parsing.AgentType.Software;
+            else if (results[1].Text == "environment") 
+                agent.Type = KAOSFormalTools.Parsing.AgentType.Environment;
         }
 
         for (int i = start; i < results.Count; i++) {

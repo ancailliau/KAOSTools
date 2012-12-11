@@ -20,7 +20,7 @@ end
             var gm = parser.Parse (input);
             Assert.AreEqual (1, gm.Agents.Count);
             Assert.AreEqual ("test", gm.Agents.First().Identifier);
-            Assert.IsTrue (gm.Agents.First().Software);
+            Assert.IsTrue (gm.Agents.First().Type == KAOSFormalTools.Domain.AgentType.Software);
         }
 
         [Test()]
