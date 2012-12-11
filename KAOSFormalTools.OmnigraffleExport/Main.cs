@@ -181,13 +181,13 @@ namespace KAOSFormalTools.OmnigraffleExport
 
                 AddFilledArrow (canvas.GraphicsList, circle, parentGraphic);
                 
-                foreach (var child in refinement.Children) {
+                foreach (var child in refinement.Children.Reverse ()) {
                     RecursiveExportGoal (canvas, child);
                     var childGraphic = mapping[canvas][child.Identifier];
                     AddLine (canvas.GraphicsList, childGraphic, circle);
                 }
 
-                foreach (var domprop in refinement.DomainProperties) {
+                foreach (var domprop in refinement.DomainProperties.Reverse ()) {
                     var childGraphic = AddDomainProperty (canvas, domprop);
                     AddLine (canvas.GraphicsList, childGraphic, circle);
                 }
