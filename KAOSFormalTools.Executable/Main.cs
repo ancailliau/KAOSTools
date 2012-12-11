@@ -9,6 +9,7 @@ namespace KAOSFormalTools.Executable
     public abstract class KAOSFormalToolsCLI
     {
         protected static OptionSet options = new OptionSet ();
+        protected static string input;
         protected static string filename;
         protected static GoalModel model;
 
@@ -30,30 +31,35 @@ namespace KAOSFormalTools.Executable
                 ShowHelp (options);
                 return;
             }
-            
+
+
+
             if (reminderArgs.Count == 0) {
-                PrintError ("Please provide a file");
-                return;
-            }
-            
-            if (reminderArgs.Count > 1) {
-                PrintError ("Please provide only one file");
-                return;
-            }
-            
-            if (!File.Exists (reminderArgs[0])) {
-                PrintError ("File `" + reminderArgs[0] + "` does not exists");
-                return;
+                filename = ".";
+                input = Console.In.ReadToEnd ();
+
+            } else {
+                if (reminderArgs.Count > 1) {
+                    PrintError ("Please provide only one file");
+                    return;
+                }
+
+                if (!File.Exists (reminderArgs[0])) {
+                    PrintError ("File `" + reminderArgs[0] + "` does not exists");
+                    return;
+                } else {
+                    filename = reminderArgs[0];
+                    input = File.ReadAllText (filename);
+                }
             }
 
-            filename = reminderArgs[0];
             model = BuildModel ();
         }
         
         protected static GoalModel BuildModel ()
         {
             var parser = new KAOSFormalTools.Parsing.Parser ();
-            return parser.Parse (File.ReadAllText (filename), filename);
+            return parser.Parse (input, filename);
         }
         
         protected static void ShowHelp (OptionSet p)
