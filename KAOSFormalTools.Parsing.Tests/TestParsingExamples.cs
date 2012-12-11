@@ -47,11 +47,17 @@ namespace KAOSFormalTools.Parsing.Tests
 
             Assert.AreEqual (2, model.RootGoals.First ().Refinements.Count);
             
-            var domain_refinement = model.RootGoals.First ().Refinements[0];
-            Assert.AreEqual ("driver_now_route", domain_refinement.DomainProperties.First ().Identifier);
+            model.RootGoals
+                .SelectMany (x => x.Refinements)
+                .SelectMany (r => r.DomainProperties)
+                .Select (d => d.Identifier)
+                .ShallContain ("driver_now_route");
 
-            var goal_refinement = model.RootGoals.First ().Refinements[1];
-            Assert.AreEqual ("achieve_destination_reached_if_gps_support", goal_refinement.Children.First ().Identifier);
+            model.RootGoals
+                .SelectMany (x => x.Refinements)
+                .SelectMany (r => r.DomainProperties)
+                .Select (d => d.Identifier)
+                .ShallContain ("achieve_destination_reached_if_gps_support");
         }
 
         /*

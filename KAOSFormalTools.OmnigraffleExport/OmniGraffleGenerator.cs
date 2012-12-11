@@ -278,6 +278,8 @@ namespace KAOSFormalTools.OmnigraffleExport
                 return ExportShapedGraphic ((Omnigraffle.ShapedGraphic) graphic);
             else if (graphic is Omnigraffle.LineGraphic) 
                 return ExportLineGraphic ((Omnigraffle.LineGraphic) graphic);
+            else if (graphic is Omnigraffle.Group) 
+                return ExportGroup ((Omnigraffle.Group) graphic);
             else
                 throw new NotImplementedException ();
         }
@@ -285,6 +287,22 @@ namespace KAOSFormalTools.OmnigraffleExport
         private static IPListElement ExportBounds (Omnigraffle.Bounds bounds)
         {
             return new PListString (string.Format ("{{{{{0}, {1}}}, {{{2}, {3}}}}}", bounds.TopLeft.X, bounds.TopLeft.Y, bounds.BottomRight.X, bounds.BottomRight.Y));
+        }
+
+        private static  IPListElement ExportGroup (Omnigraffle.Group @group) {
+            var dict = new PListDict ();
+            
+            dict.Add ("Class", new PListString (@group.Class));
+            dict.Add ("ID", new PListInteger (@group.ID));
+
+            var graphics_array = new PListArray ();
+            foreach (var graphic in @group.Graphics) {
+                graphics_array.Add (ExportGraphic (graphic));
+            }
+
+            dict.Add ("Graphics", graphics_array);
+
+            return dict;
         }
 
         private static  IPListElement ExportShapedGraphic (Omnigraffle.ShapedGraphic graphic) {
@@ -419,6 +437,9 @@ namespace KAOSFormalTools.OmnigraffleExport
 
             if (tailArrow == KAOSFormalTools.OmnigraffleExport.Omnigraffle.Arrow.SharpBackCross)
                 return new PListString ("SharpBackCross");
+            
+            if (tailArrow == KAOSFormalTools.OmnigraffleExport.Omnigraffle.Arrow.Arrow)
+                return new PListString ("Arrow");
 
             throw new NotImplementedException ();
         }
@@ -432,6 +453,8 @@ namespace KAOSFormalTools.OmnigraffleExport
             dict.Add ("Legacy", new PListBool (stroke.Legacy));
 
             dict.Add ("Width", new PListReal (stroke.Width));
+
+            dict.Add ("CornerRadius", new PListReal (stroke.CornerRadius));
 
             return dict;
         }

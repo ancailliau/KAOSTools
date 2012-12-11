@@ -3,6 +3,7 @@ using System.Linq;
 using NUnit.Framework;
 using KAOSFormalTools.Parsing;
 using LtlSharp;
+using System.Collections.Generic;
 
 namespace KAOSFormalTools.Parsing.Tests
 {
@@ -191,8 +192,9 @@ begin obstacle id test3 end
 
             var root = gm.RootGoals.First ();
             Assert.AreEqual (2, root.Obstruction.Count);
-            Assert.AreEqual ("test2", root.Obstruction[0].Identifier);
-            Assert.AreEqual ("test3", root.Obstruction[1].Identifier);
+
+            root.Obstruction.Select (x => x.Identifier).ShallContain ("test2");
+            root.Obstruction.Select (x => x.Identifier).ShallContain ("test3");
         }
 
         [Test()]
@@ -212,7 +214,7 @@ end
 
             var root = gm.RootGoals.First ();
             Assert.AreEqual (1, root.Obstruction.Count);
-            Assert.AreEqual ("test2", root.Obstruction[0].Identifier);
+            root.Obstruction.Select (x => x.Identifier).ShallContain ("test2");
         }
         
         [Test()]
@@ -232,7 +234,7 @@ end
 
             var root = gm.RootGoals.First ();
             Assert.AreEqual (1, root.Obstruction.Count);
-            Assert.AreEqual ("test2", root.Obstruction[0].Name);
+            root.Obstruction.Select (x => x.Name).ShallContain ("test2");
         }
 
         [Test()]
@@ -252,7 +254,6 @@ end
 
             var root = gm.RootGoals.First ();
             Assert.AreEqual (1, root.Obstruction.Count);
-            Assert.AreEqual ("test2", root.Obstruction[0].Name);
         }
 
         [Test()]
@@ -272,7 +273,7 @@ end
 
             var root = gm.RootGoals.First ();
             Assert.AreEqual (1, root.Obstruction.Count);
-            Assert.AreEqual ("test2", root.Obstruction[0].Identifier);
+            root.Obstruction.Select (x => x.Identifier).ShallContain ("test2");
         }
 
         
@@ -379,5 +380,13 @@ end
         }
     }
 
+    public static class AssertHelpers {
+        public static void ShallContain<T> (this IEnumerable<T> enumerable, T expected)
+        {
+            if (!enumerable.Any (x => x.Equals (expected))) {
+                Assert.Fail ("Enumerable does not contains {0}", expected);
+            }
+        }
+    }
 }
 

@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.LatexExport
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.Executable", "KAOSFormalTools.Executable\KAOSFormalTools.Executable.csproj", "{C96BDFB0-950D-4DF0-9BFB-27EA7C8CABD3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.Domain.Tests", "KAOSFormalTools.Domain.Tests\KAOSFormalTools.Domain.Tests.csproj", "{785D5DDF-8D86-485E-84C6-E429FC6CADE1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +70,16 @@ Global
 		{6ABA53F3-9825-461F-9945-04735EFCEF14}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6ABA53F3-9825-461F-9945-04735EFCEF14}.Release|x86.ActiveCfg = Release|Any CPU
 		{6ABA53F3-9825-461F-9945-04735EFCEF14}.Release|x86.Build.0 = Release|Any CPU
+		{785D5DDF-8D86-485E-84C6-E429FC6CADE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{785D5DDF-8D86-485E-84C6-E429FC6CADE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{785D5DDF-8D86-485E-84C6-E429FC6CADE1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{785D5DDF-8D86-485E-84C6-E429FC6CADE1}.Debug|x86.Build.0 = Debug|Any CPU
+		{785D5DDF-8D86-485E-84C6-E429FC6CADE1}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{785D5DDF-8D86-485E-84C6-E429FC6CADE1}.Default|Any CPU.Build.0 = Debug|Any CPU
+		{785D5DDF-8D86-485E-84C6-E429FC6CADE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{785D5DDF-8D86-485E-84C6-E429FC6CADE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{785D5DDF-8D86-485E-84C6-E429FC6CADE1}.Release|x86.ActiveCfg = Release|Any CPU
+		{785D5DDF-8D86-485E-84C6-E429FC6CADE1}.Release|x86.Build.0 = Release|Any CPU
 		{81A27423-89EF-44D7-AB41-988C75E084D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{81A27423-89EF-44D7-AB41-988C75E084D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81A27423-89EF-44D7-AB41-988C75E084D9}.Debug|x86.ActiveCfg = Debug|Any CPU

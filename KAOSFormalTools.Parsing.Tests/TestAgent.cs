@@ -123,8 +123,17 @@ end
 ";
             var gm = parser.Parse (input);
             Assert.AreEqual (2, gm.RootGoals.First ().AssignedAgents.Count);
-            Assert.AreEqual ("test", gm.RootGoals.First ().AssignedAgents[0].Name);
-            Assert.AreEqual ("test2", gm.RootGoals.First ().AssignedAgents[1].Name);
+
+            gm.RootGoals
+                .SelectMany (x => x.AssignedAgents)
+                .Select (a => a.Name)
+                .ShallContain ("test");
+            
+            gm.RootGoals
+                .SelectMany (x => x.AssignedAgents)
+                .Select (a => a.Name)
+                .ShallContain ("test2");
+
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using NDesk.Options;
 using KAOSFormalTools.Domain;
 using KAOSFormalTools.Executable;
+using KAOSFormalTools.OmnigraffleExport.Omnigraffle;
 
 namespace KAOSFormalTools.OmnigraffleExport
 {
@@ -23,7 +24,9 @@ namespace KAOSFormalTools.OmnigraffleExport
         public static void Main (string[] args)
         {
             string filename = "";
+            bool experimental = false;
             options.Add ("o|output=", "Export in specified filename", v => filename = v);
+            options.Add ("experimental", "Export experimental diagrams", v => experimental = true);
 
             Init (args);
 
@@ -36,6 +39,9 @@ namespace KAOSFormalTools.OmnigraffleExport
             ExportResolutionsGoalModel (model, document);
             ExportResponsibilities (model, document);
 
+            if (experimental)
+                ExportExperimentalDiagrams (model, document);
+
             if (string.IsNullOrEmpty (filename)) 
                 OmniGraffleGenerator.Export (document, Console.Out);
             else 
@@ -43,6 +49,50 @@ namespace KAOSFormalTools.OmnigraffleExport
         }
 
         #region Export diagrams
+
+        static void ExportExperimentalDiagrams (GoalModel model, KAOSFormalTools.OmnigraffleExport.Omnigraffle.Document document)
+        {
+            var t = model.GetResponsibilities ();
+            var canvas = new Omnigraffle.Sheet (1, string.Format ("Alternative responsibilities"));
+            ExportAlternativeResponsibilities (canvas, t, null);
+            document.Canvas.Add (canvas);
+        }
+
+        private static void ExportAlternativeResponsibilities (Omnigraffle.Sheet canvas, ResponsibilityNode r, Graphic parent) 
+        {
+            var @group = new Omnigraffle.Group (NextId);
+
+            var background = new Omnigraffle.ShapedGraphic (NextId, Shape.Rectangle, 0, 0, 300, 300);
+            background.Flow = Flow.Clip;
+            background.FitText = Omnigraffle.FitText.Clip;
+
+            background.Style.Shadow.Draws = false;
+            background.Style.Stroke.CornerRadius = 5;
+
+            foreach (var kv in r.Responsibility) {
+                var ag = RenderAgent (kv.Key);
+                @group.Graphics.Add (ag);
+
+                foreach (var goal in kv.Value) {
+                    var goalGraphic = RenderGoal (goal);
+                    @group.Graphics.Add (goalGraphic);
+                    AddResponsibility (@group.Graphics, ag, goalGraphic);
+                }
+
+            }
+            
+            @group.Graphics.Add (background);
+
+            canvas.GraphicsList.Add (@group);
+
+            if (parent != null) {
+                AddArrow (canvas.GraphicsList, background, parent);
+            }
+            
+            foreach (var child in r.children) {
+                ExportAlternativeResponsibilities (canvas, child, background);
+            }
+        }
 
         static void ExportResponsibilities (GoalModel model, KAOSFormalTools.OmnigraffleExport.Omnigraffle.Document document)
         {
@@ -52,10 +102,11 @@ namespace KAOSFormalTools.OmnigraffleExport
                 agentCanvas.LayoutInfo.TwopiOverlap = true;
                 agentCanvas.LayoutInfo.TwopiRankSep = 100;
                 mapping.Add (agentCanvas, new Dictionary<string, KAOSFormalTools.OmnigraffleExport.Omnigraffle.ShapedGraphic> ());
+
                 var agentGraphic = AddAgent (agentCanvas, agent);
                 foreach (var goal in model.Goals.Where (g => g.AssignedAgents.Contains (agent))) {
                     var goalGraphic = AddGoal (agentCanvas, goal);
-                    AddResponsibility (agentCanvas, agentGraphic, goalGraphic);
+                    AddResponsibility (agentCanvas.GraphicsList, agentGraphic, goalGraphic);
                 }
                 document.Canvas.Add (agentCanvas);
             }
@@ -71,7 +122,7 @@ namespace KAOSFormalTools.OmnigraffleExport
                 var goalGraphic = AddGoal (obstacleCanvas, obstructedGoal);
                 foreach (var obstacle in obstructedGoal.Obstruction) {
                     RecursiveExportObstacle (obstacleCanvas, obstacle, true);
-                    AddSharpBackCrossArrow (obstacleCanvas, mapping [obstacleCanvas] [obstacle.Identifier], goalGraphic);
+                    AddSharpBackCrossArrow (obstacleCanvas.GraphicsList, mapping [obstacleCanvas] [obstacle.Identifier], goalGraphic);
                 }
 
                 document.Canvas.Add (obstacleCanvas);
@@ -90,7 +141,7 @@ namespace KAOSFormalTools.OmnigraffleExport
             foreach (var goal in model.ObstructedGoals) {
                 foreach (var obstacle in goal.Obstruction) {
                     AddObstacle (goalCanvas, obstacle);
-                    AddSharpBackCrossArrow (goalCanvas, mapping [goalCanvas] [obstacle.Identifier], mapping [goalCanvas] [goal.Identifier]);
+                    AddSharpBackCrossArrow (goalCanvas.GraphicsList, mapping [goalCanvas] [obstacle.Identifier], mapping [goalCanvas] [goal.Identifier]);
                 }
             }
 
@@ -107,7 +158,7 @@ namespace KAOSFormalTools.OmnigraffleExport
 
                     var obstacleGraphic = AddObstacle (canvas, obstacle);
                     RecursiveExportGoal (canvas, resolution);
-                    AddSharpBackCrossArrow (canvas, mapping [canvas] [resolution.Identifier], obstacleGraphic);
+                    AddSharpBackCrossArrow (canvas.GraphicsList, mapping [canvas] [resolution.Identifier], obstacleGraphic);
 
                     document.Canvas.Add (canvas);
                 }
@@ -126,25 +177,25 @@ namespace KAOSFormalTools.OmnigraffleExport
             var parentGraphic = AddGoal (canvas, goal);
             
             foreach (var refinement in goal.Refinements.Reverse ()) {
-                var circle = AddCircle (canvas);
+                var circle = AddCircle (canvas.GraphicsList);
 
-                AddFilledArrow (canvas, circle, parentGraphic);
+                AddFilledArrow (canvas.GraphicsList, circle, parentGraphic);
                 
                 foreach (var child in refinement.Children) {
                     RecursiveExportGoal (canvas, child);
                     var childGraphic = mapping[canvas][child.Identifier];
-                    AddLine (canvas, childGraphic, circle);
+                    AddLine (canvas.GraphicsList, childGraphic, circle);
                 }
 
                 foreach (var domprop in refinement.DomainProperties) {
                     var childGraphic = AddDomainProperty (canvas, domprop);
-                    AddLine (canvas, childGraphic, circle);
+                    AddLine (canvas.GraphicsList, childGraphic, circle);
                 }
             }
             
             foreach (var agent in goal.AssignedAgents) {
                 var agentGraphic = AddAgent (canvas, agent);
-                AddResponsibility (canvas, agentGraphic, parentGraphic);
+                AddResponsibility (canvas.GraphicsList, agentGraphic, parentGraphic);
             }
         }
         
@@ -156,20 +207,20 @@ namespace KAOSFormalTools.OmnigraffleExport
             var parentGraphic = mapping[canvas][obstacle.Identifier];
             
             foreach (var refinement in obstacle.Refinements) {
-                var circle = AddCircle (canvas);
+                var circle = AddCircle (canvas.GraphicsList);
                 
-                AddFilledArrow (canvas, circle, parentGraphic);
+                AddFilledArrow (canvas.GraphicsList, circle, parentGraphic);
                 
                 foreach (var child in refinement.Children) {
                     RecursiveExportObstacle (canvas, child, export_resolution);
                     var childGraphic = mapping[canvas][child.Identifier];
                     
-                    AddLine (canvas, childGraphic, circle);
+                    AddLine (canvas.GraphicsList, childGraphic, circle);
                 }
 
                 foreach (var domprop in refinement.DomainProperties) {
                     var childGraphic = AddDomainProperty (canvas, domprop);
-                    AddLine (canvas, childGraphic, circle);
+                    AddLine (canvas.GraphicsList, childGraphic, circle);
                 }
             }
 
@@ -179,14 +230,14 @@ namespace KAOSFormalTools.OmnigraffleExport
                         AddGoal (canvas, goal);
 
                     var goalGraphic = mapping [canvas] [goal.Identifier];
-                    AddSharpBackCrossArrow (canvas, goalGraphic, parentGraphic);
+                    AddSharpBackCrossArrow (canvas.GraphicsList, goalGraphic, parentGraphic);
                 }
             }
         }
 
         #endregion
 
-        static Omnigraffle.ShapedGraphic AddResponsibility (Omnigraffle.Sheet canvas, Omnigraffle.ShapedGraphic agentGraphic, Omnigraffle.ShapedGraphic goalGraphic)
+        static Omnigraffle.ShapedGraphic AddResponsibility (List<Graphic> canvas, Omnigraffle.ShapedGraphic agentGraphic, Omnigraffle.ShapedGraphic goalGraphic)
         {
             var circle = AddCircle (canvas);
 
@@ -196,7 +247,7 @@ namespace KAOSFormalTools.OmnigraffleExport
             return circle;
         }
 
-        static Omnigraffle.ShapedGraphic AddCircle (Omnigraffle.Sheet canvas)
+        static Omnigraffle.ShapedGraphic AddCircle (List<Graphic> canvas)
         {
             var circle = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Circle, 50, 50, 10, 10);
             circle.Style.Shadow.Draws = false;
@@ -204,35 +255,48 @@ namespace KAOSFormalTools.OmnigraffleExport
             circle.FitText = KAOSFormalTools.OmnigraffleExport.Omnigraffle.FitText.Clip;
             circle.Flow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Flow.Clip;
             
-            canvas.GraphicsList.Add (circle);
+            canvas.Add (circle);
             
             return circle;
         }
 
-        static Omnigraffle.LineGraphic AddLine (Omnigraffle.Sheet canvas, Omnigraffle.ShapedGraphic @from, Omnigraffle.ShapedGraphic to)
+        static Omnigraffle.LineGraphic AddLine (List<Graphic> canvas, Omnigraffle.Graphic @from, Omnigraffle.Graphic to)
         {
             var line = new Omnigraffle.LineGraphic (NextId);
             line.Head = new Omnigraffle.LineEndInfo (to.ID);
             line.Tail = new Omnigraffle.LineEndInfo (@from.ID);
-            
-            line.Points.Add (to.Bounds.TopLeft);
-            line.Points.Add (@from.Bounds.BottomRight);
-            
+
+            if (to is ShapedGraphic) {
+                line.Points.Add ((to as ShapedGraphic).Bounds.TopLeft);
+            }
+
+            if (@from is ShapedGraphic) {
+                line.Points.Add ((@from as ShapedGraphic).Bounds.BottomRight);
+            }
+
             line.Style.Shadow.Draws = false;
 
-            canvas.GraphicsList.Add (line);
+            canvas.Add (line);
 
             return line;
         }
 
-        static Omnigraffle.LineGraphic AddFilledArrow (Omnigraffle.Sheet canvas, Omnigraffle.ShapedGraphic @from, Omnigraffle.ShapedGraphic to)
+        static Omnigraffle.LineGraphic AddArrow (List<Graphic> canvas, Omnigraffle.Graphic @from, Omnigraffle.Graphic to)
+        {
+            var line = AddLine (canvas, @from, to);
+            line.Style.Stroke.HeadArrow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Arrow.Arrow;
+            return line;
+        }
+
+
+        static Omnigraffle.LineGraphic AddFilledArrow (List<Graphic>  canvas, Omnigraffle.Graphic @from, Omnigraffle.Graphic to)
         {
             var line = AddLine (canvas, @from, to);
             line.Style.Stroke.HeadArrow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Arrow.FilledArrow;
             return line;
         }
         
-        static Omnigraffle.LineGraphic AddSharpBackCrossArrow (Omnigraffle.Sheet canvas, Omnigraffle.ShapedGraphic @from, Omnigraffle.ShapedGraphic to)
+        static Omnigraffle.LineGraphic AddSharpBackCrossArrow (List<Graphic> canvas, Omnigraffle.Graphic @from, Omnigraffle.Graphic to)
         {
             var line = AddLine (canvas, @from, to);
             line.Style.Stroke.TailArrow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Arrow.SharpBackCross;
@@ -307,84 +371,88 @@ namespace KAOSFormalTools.OmnigraffleExport
             return graphic;
         }
 
-        static Omnigraffle.ShapedGraphic AddAgent (Omnigraffle.Sheet canvas,Agent agent)
+        static ShapedGraphic RenderAgent (Agent agent)
         {
-            var longestWord = agent.Name.Split (' ').Max (x => x.Length);
-
+            var longestWord = (string.IsNullOrEmpty (agent.Name) ? agent.Identifier : agent.Name).Split (' ').Max (x => x.Length);
             var graphic = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Bezier, 50, 50, longestWord * 6 + 30, 30);
-
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, -0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, -0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, -0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, -0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, -0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.5, 0));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.5, 0));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.5, 0));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, 0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, 0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, 0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, 0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, 0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, 0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.5, 0));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.5, 0));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.5, 0));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, -0.5));
-
-
-            graphic.Text = new Omnigraffle.TextInfo (agent.Name) {
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (-0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (-0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (0.5, 0));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (0.5, 0));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (0.5, 0));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (-0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (-0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (-0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (-0.5, 0));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (-0.5, 0));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (-0.5, 0));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (-0.45, -0.5));
+            graphic.Text = new Omnigraffle.TextInfo ((string.IsNullOrEmpty (agent.Name) ? agent.Identifier : agent.Name)) {
                 Alignement = KAOSFormalTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center
             };
             graphic.Style.Shadow.Draws = false;
-            
             graphic.FitText = KAOSFormalTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
             graphic.Flow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
-
-            if (agent.Software) 
+            if (agent.Software)
                 graphic.Style.Fill.Color = new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Color (0.99607843137, 0.80392156862, 0.58039215686);
             else
                 graphic.Style.Fill.Color = new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Color (0.824276, 0.670259, 1);
-            
+            return graphic;
+        }
+
+        static Omnigraffle.ShapedGraphic AddAgent (Omnigraffle.Sheet canvas,Agent agent)
+        {
+            var graphic = RenderAgent (agent);
             canvas.GraphicsList.Add (graphic);
 
             return graphic;
         }
 
-        static Omnigraffle.ShapedGraphic AddGoal (Omnigraffle.Sheet canvas, Goal goal)
+        static ShapedGraphic RenderGoal (Goal goal)
         {
             var graphic = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Bezier, 50, 50, 200, 70);
-
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, -0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, -0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.5, -0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.5, -0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.5, -0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, 0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, 0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, 0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.5, 0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.5, 0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.5, 0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, -0.5));
-
-            graphic.Text = new Omnigraffle.TextInfo (goal.Name) {
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (-0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (-0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (0.5, -0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (0.5, -0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (0.5, -0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (-0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (-0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (-0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (-0.45, -0.5));
+            graphic.Text = new Omnigraffle.TextInfo (string.IsNullOrEmpty (goal.Name) ? goal.Identifier : goal.Name) {
                 Alignement = KAOSFormalTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
-                SideMargin = 10, TopBottomMargin = 3
+                SideMargin = 10,
+                TopBottomMargin = 3
             };
             graphic.Style.Shadow.Draws = false;
             graphic.FitText = KAOSFormalTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
             graphic.Flow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
-
-            bool assignedToSoftwareAgents = (from a in goal.AssignedAgents select a.Software == true).Count () > 0;
-            if (assignedToSoftwareAgents) 
+            bool assignedToSoftwareAgents = (
+                from a in goal.AssignedAgents
+                select a.Software == true).Count () > 0;
+            if (assignedToSoftwareAgents)
                 graphic.Style.Fill.Color = new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Color (1, 0.979841, 0.672223);
-            else 
+            else
                 graphic.Style.Fill.Color = new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Color (0.810871, 0.896814, 1);
-
             if (goal.AssignedAgents.Count > 0)
                 graphic.Style.Stroke.Width = 2;
-            
+            return graphic;
+        }
+
+        static Omnigraffle.ShapedGraphic AddGoal (Omnigraffle.Sheet canvas, Goal goal)
+        {
+            var graphic = RenderGoal (goal);
+
             canvas.GraphicsList.Add (graphic);
             mapping[canvas].Add (goal.Identifier, graphic);
 

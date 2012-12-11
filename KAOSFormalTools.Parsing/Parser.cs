@@ -329,9 +329,9 @@ namespace KAOSFormalTools.Parsing
         {
             string identifier    = "";
             string name          = "";
-            var    refinements   = new List<GoalRefinement> ();
-            var    obstruction   = new List<KAOSFormalTools.Domain.Obstacle> ();
-            var    assignedAgents = new List<KAOSFormalTools.Domain.Agent> ();
+            var    refinements   = new HashSet<GoalRefinement> ();
+            var    obstruction   = new HashSet<KAOSFormalTools.Domain.Obstacle> ();
+            var    assignedAgents = new HashSet<KAOSFormalTools.Domain.Agent> ();
 
             foreach (var attribute in parsedGoal.Attributes) {
                 if (attribute is Identifier) {
@@ -417,12 +417,11 @@ namespace KAOSFormalTools.Parsing
             if (!parsedGoal.Override) {
                 foreach (var r in refinements)
                     goal.Refinements.Add (r);
-
                 foreach (var r in obstruction)
-                    goal.Obstruction.Add (r);
-                
+                    goal.Obstruction.Add (r);                
                 foreach (var r in assignedAgents)
                     goal.AssignedAgents.Add (r);
+
             } else {
                 goal.Refinements = refinements;
                 goal.Obstruction = obstruction;

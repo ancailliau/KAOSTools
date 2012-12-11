@@ -203,7 +203,7 @@ end
             Assert.AreEqual ("test2", child.Identifier);
 
             Assert.AreEqual (1, child.Refinements.Count);
-            Assert.AreEqual ("test3", child.Refinements[0].Children[0].Identifier);
+            Assert.AreEqual ("test3", child.Refinements.First ().Children.First ().Identifier);
         }
 
         [Test()]
@@ -271,7 +271,7 @@ end
             
             var root = gm.RootGoals.First ();
             Assert.AreEqual (1, root.Refinements.Count);
-            Assert.AreEqual ("test2", root.Refinements[0].Children[0].Identifier);
+            Assert.AreEqual ("test2", root.Refinements.First ().Children.First ().Identifier);
         }
         
         [Test()]
@@ -290,7 +290,7 @@ end
             
             var root = gm.RootGoals.First ();
             Assert.AreEqual (1, root.Refinements.Count);
-            Assert.AreEqual ("test2", root.Refinements[0].Children[0].Name);
+            Assert.AreEqual ("test2", root.Refinements.First ().Children[0].Name);
         }
 
         

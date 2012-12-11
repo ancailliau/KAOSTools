@@ -188,6 +188,15 @@ namespace KAOSFormalTools.OmnigraffleExport.Omnigraffle
         }
     }
 
+    public class Group : Graphic {
+        public List<Graphic> Graphics { get; set; }
+        public Group (int id) : base (id)
+        {
+            Graphics = new List<Graphic>();
+            Class = "Group";
+        }
+    }
+
     public class ShapedGraphic : Graphic {
         public Bounds    Bounds    { get; set; }
         public FitText   FitText   { get; set; }
@@ -339,6 +348,7 @@ namespace KAOSFormalTools.OmnigraffleExport.Omnigraffle
     }
 
     public class StrokeInfo {
+        public double CornerRadius { get; set; }
         public Color Color { get; set; }
         public Arrow HeadArrow { get; set; }
         public Arrow TailArrow { get; set; }
@@ -352,12 +362,13 @@ namespace KAOSFormalTools.OmnigraffleExport.Omnigraffle
             TailArrow = Arrow.None;
             Legacy = true;
             Width = 1;
+            CornerRadius = 0;
         }
     }
 
     public enum Arrow
     {
-        None, FilledArrow, SharpBackCross
+        None, FilledArrow, SharpBackCross, Arrow
     }
 
     public class FillInfo {

@@ -15,16 +15,16 @@ namespace KAOSFormalTools.Domain
         public float                  CPS             { get; set; }
         public float                  RDS             { get; set; }
 
-        public IList<GoalRefinement>  Refinements     { get; set; }
-        public IList<Obstacle>        Obstruction     { get; set; }
-        public IList<Agent>           AssignedAgents  { get; set; }
+        public ISet<GoalRefinement>   Refinements     { get; set; }
+        public ISet<Obstacle>         Obstruction     { get; set; }
+        public ISet<Agent>            AssignedAgents  { get; set; }
 
         public Goal ()
         {
             Identifier     = Guid.NewGuid ().ToString ();
-            Refinements    = new List<GoalRefinement> ();
-            Obstruction    = new List<Obstacle> ();
-            AssignedAgents = new List<Agent> ();
+            Refinements    = new HashSet<GoalRefinement> ();
+            Obstruction    = new HashSet<Obstacle> ();
+            AssignedAgents = new HashSet<Agent> ();
         }
     }
 
