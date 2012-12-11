@@ -24,6 +24,21 @@ end
         }
 
         [Test()]
+
+        public void TestEnvironmentAgent ()
+        {
+            var input = @"
+begin environment agent
+    id test
+end
+";
+            var gm = parser.Parse (input);
+            Assert.AreEqual (1, gm.Agents.Count);
+            Assert.AreEqual ("test", gm.Agents.First().Identifier);
+            Assert.IsTrue (gm.Agents.First().Type == KAOSFormalTools.Domain.AgentType.Environment);
+        }
+
+        [Test()]
         public void TestIdentifier ()
         {
             var input = @"
