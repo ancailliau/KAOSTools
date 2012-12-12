@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using ShallTests;
 
 namespace KAOSFormalTools.Parsing.Tests
 {
@@ -9,146 +10,182 @@ namespace KAOSFormalTools.Parsing.Tests
     {
         private static Parser parser = new Parser ();
 
-        [Test()]
-        public void TestSoftwareAgent ()
+        [TestCase(@"begin software agent
+                        id test
+                    end", KAOSFormalTools.Domain.AgentType.Software)]
+        [TestCase(@"begin environment agent
+                        id test
+                    end", KAOSFormalTools.Domain.AgentType.Environment)]
+        public void TestTypeOfAgent (string input, KAOSFormalTools.Domain.AgentType type)
         {
-            var input = @"
-begin software agent
-    id test
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (1, gm.Agents.Count);
-            Assert.AreEqual ("test", gm.Agents.First().Identifier);
-            Assert.IsTrue (gm.Agents.First().Type == KAOSFormalTools.Domain.AgentType.Software);
+            var model = parser.Parse (input);
+            model.Agents
+                .Where (x => x.Type == type)
+                .ShallBeSingle ();
         }
 
-        [Test()]
-
-        public void TestEnvironmentAgent ()
+        [TestCase(@"begin agent
+                        id test
+                    end", "test")]
+        [TestCase(@"begin agent
+                        id _test
+                    end", "_test")]
+        [TestCase(@"begin agent
+                        id -test
+                    end", "-test")]
+        [TestCase(@"begin agent
+                        id $test
+                    end", "$test")]
+        [TestCase(@"begin agent
+                        id test_long_identifier
+                    end", "test_long_identifier")]
+        [TestCase(@"begin agent
+                        id test-long-identifier
+                    end", "test-long-identifier")]
+        [TestCase(@"begin agent
+                        id test12
+                    end", "test12")]
+        [TestCase(@"begin agent
+                        id 0
+                    end", "0")]
+        public void TestIdentifier (string input, string identifier)
         {
-            var input = @"
-begin environment agent
-    id test
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (1, gm.Agents.Count);
-            Assert.AreEqual ("test", gm.Agents.First().Identifier);
-            Assert.IsTrue (gm.Agents.First().Type == KAOSFormalTools.Domain.AgentType.Environment);
-        }
-
-        [Test()]
-        public void TestIdentifier ()
-        {
-            var input = @"
-begin agent
-    id test
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (1, gm.Agents.Count);
-            Assert.AreEqual ("test", gm.Agents.First().Identifier);
-        }
-
-        [Test()]
-        public void TestName ()
-        {
-            var input = @"
-begin agent
-    name ""test""
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (1, gm.Agents.Count);
-            Assert.AreEqual ("test", gm.Agents.First().Name);
+            var model = parser.Parse (input);
+            model.Agents
+                .Where (x => x.Identifier == identifier)
+                .ShallBeSingle ();
         }
         
-        [Test()]
-        public void TestDescription ()
+        [TestCase(@"begin agent
+                        id 
+                    end")]
+        [TestCase(@"begin agent
+                        id -
+                    end")]
+        [TestCase(@"begin agent
+                        id _
+                    end")]
+        [TestCase(@"begin agent
+                        id $
+                    end")]
+        public void TestInvalidIdentifier (string input)
         {
-            var input = @"
-begin agent
-    name ""test""
-    description ""My description""
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (1, gm.Agents.Count);
-            Assert.AreEqual ("My description", gm.Agents.First().Description);
+            Assert.Throws<ParsingException> (() => {
+                parser.Parse (input);
+            });
         }
 
-
-        [Test()]
-        public void TestAssignedTo ()
+        [TestCase(@"begin agent
+                        name ""test""
+                    end", "test")]
+        [TestCase(@"begin agent
+                        name ""Long name with spaces and numbers 123""
+                    end", "Long name with spaces and numbers 123")]
+        [TestCase(@"begin agent
+                        name ""[-_-]""
+                    end", "[-_-]")]
+        public void TestName (string input, string expectedName)
         {
-            var input = @"
-begin agent
-    name ""test""
-end
-
-begin goal
-    name ""My goal""
-    assignedto ""test""
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (1, gm.Agents.Count);
-            Assert.AreEqual (1, gm.RootGoals.Count);
-            
-            Assert.AreEqual (1, gm.RootGoals.First ().AssignedAgents.Count);
-            Assert.AreEqual ("test", gm.RootGoals.First ().AssignedAgents.First ().Name);
+            var model = parser.Parse (input);
+            model.Agents
+                .Where (x => x.Name == expectedName)
+                .ShallBeSingle ();
+        }
+        
+        [TestCase(@"begin agent
+                        name """"
+                    end")]
+        [TestCase(@"begin agent
+                        name """"""
+                    end")]
+        public void TestInvalidName (string input)
+        {
+            Assert.Throws<ParsingException> (() => {
+                parser.Parse (input);
+            });
         }
 
-        [Test()]
-        public void TestAssignedToInline ()
+        [TestCase(@"begin agent
+                        id test
+                        description ""My description""
+                    end", "My description")]
+        [TestCase(@"begin agent
+                        id test
+                        description """"
+                    end", "")]
+        [TestCase(@"begin agent
+                        id test
+                        definition ""My description""
+                    end", "My description")]
+        [TestCase(@"begin agent
+                        id test
+                        definition """"
+                    end", "")]
+        public void TestDescription (string input, string expectedDescription)
         {
-            var input = @"
-begin goal
-    name ""My goal""
-    assignedto begin agent
-                 name ""test""
-               end
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (1, gm.Agents.Count);
-            Assert.AreEqual (1, gm.RootGoals.Count);
-            
-            Assert.AreEqual (1, gm.RootGoals.First ().AssignedAgents.Count);
-            Assert.AreEqual ("test", gm.RootGoals.First ().AssignedAgents.First ().Name);
+            var model = parser.Parse (input);
+            model.Agents
+                .Where (x => x.Identifier == "test")
+                .ShallBeSuchThat (x => x.Description == expectedDescription);
         }
 
-        [Test()]
-        public void TestAssignedToMultipleAgents ()
+        [TestCase(@"begin agent
+                        description 
+                    end")]
+        public void TestInvalidDescription (string input)
         {
-            var input = @"
-begin agent
-    name ""test""
-end
+            Assert.Throws<ParsingException> (() => {
+                parser.Parse (input);
+            });
+        }
 
-begin agent
-    name ""test2""
-end
+        [TestCase(@"begin goal
+                        id goal
+                        assignedto agent
+                    end")]
+        [TestCase(@"begin goal
+                        id goal
+                        assignedto begin agent
+                                     id agent
+                                   end
+                    end")]
+        public void TestAssignedTo (string input)
+        {
+            var model = parser.Parse (input);
+            model.Goals
+                .Where (x => x.Identifier == "goal" & x.AssignedAgents.Count() == 1)
+                .Select (x => x.AssignedAgents)
+                .ShallBeSingle ()
+                .ShallBeSuchThat (x => x.Identifier == "agent");
+        }
 
-begin goal
-    name ""My goal""
-    assignedto ""test"", ""test2""
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (2, gm.RootGoals.First ().AssignedAgents.Count);
+        [TestCase(@"begin goal
+                        id goal
+                        assignedto agent1, agent2
+                    end")]
+        [TestCase(@"begin goal
+                        id goal
+                        assignedto begin agent
+                                     id agent1
+                                   end, agent2
+                    end")]
+        [TestCase(@"begin goal
+                        id goal
+                        assignedto begin agent
+                                     id agent1
+                                   end, begin agent
+                                     id agent2
+                                   end
+                    end")]
+        public void TestAssignedToMultipleAgents (string input)
+        {
+            var model = parser.Parse (input);
 
-            gm.RootGoals
+            model.Goals
+                .Where (x => x.Identifier == "goal")
                 .SelectMany (x => x.AssignedAgents)
-                .Select (a => a.Name)
-                .ShallContain ("test");
-            
-            gm.RootGoals
-                .SelectMany (x => x.AssignedAgents)
-                .Select (a => a.Name)
-                .ShallContain ("test2");
-
+                .Select (x => x.Identifier)
+                .ShallOnlyContain (new string[] { "agent1", "agent2" });
         }
     }
 }

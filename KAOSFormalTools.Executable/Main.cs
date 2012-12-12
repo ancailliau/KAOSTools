@@ -32,8 +32,6 @@ namespace KAOSFormalTools.Executable
                 return;
             }
 
-
-
             if (reminderArgs.Count == 0) {
                 filename = ".";
                 input = Console.In.ReadToEnd ();

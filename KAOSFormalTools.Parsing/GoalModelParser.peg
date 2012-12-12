@@ -23,7 +23,7 @@ Id                 := 'id'         S Identifier                           `value
 Name               := 'name'       S '"' String '"'                       `value = BuildName(results);`
 FormalSpec         := 'formalspec' S '"' String '"'                       `value = BuildFormalSpec(results);`
 Definition         := 'definition' S '"' String '"'                       `value = BuildDefinition(results);`
-Description        := 'description' S '"' String '"'                      `value = BuildDescription(results);`
+Description        := ('definition' / 'description') S ('"' String '"' / '"' '"')          `value = BuildDescription(results);`
 RDS                := 'rds' S Float                                       `value = BuildRDS(results);`
 Probability        := 'probability' S Float                               `value = BuildProbability(results);`
                                                                          
@@ -40,7 +40,7 @@ IdOrNameOrGoal     := ( Goal / IdOrName )                                `value 
 IdOrNameOrAgent    := ( Agent / IdOrName )                               `value = results[0].Value;` `expected = "id or name"`
 
 IdOrName           := ( '"' String '"' / Identifier )                    `value = BuildIdOrName(results);` `expected = "id or name"`
-Identifier         := [a-zA-Z$_-] [a-zA-Z0-9$_-]*                        `value = null` `expected = "identifier"`
+Identifier         := ([$_-])? ([a-zA-Z0-9] [a-zA-Z0-9$_-]*)                        `value = null` `expected = "identifier"`
 String             := [^"]+                                              `value = null` `expected = "string"`
 Float              := [0-9]+ ('.' [0-9]+)?                               `value = null` `expected = "float"`
 

@@ -154,7 +154,10 @@ internal sealed partial class GoalModelParser
         
     private KAOSFormalTools.Parsing.Element BuildDescription (List<Result> results)
     {
-        return new KAOSFormalTools.Parsing.Description (results [2].Text);
+        if (results.Count == 4)
+            return new KAOSFormalTools.Parsing.Description (results [2].Text);
+        else 
+            return new KAOSFormalTools.Parsing.Description ("");
     }
     
     private KAOSFormalTools.Parsing.Element BuildRDS (List<Result> results)

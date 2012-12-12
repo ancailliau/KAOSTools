@@ -75,6 +75,12 @@ namespace KAOSFormalTools.Domain
             Identifier  = Guid.NewGuid ().ToString ();
             Type        = AgentType.None;
         }
+
+        public override string ToString ()
+        {
+            return string.Format ("[Agent: Identifier={0}, Name={1}, Description={2}, Type={3}]", Identifier, Name, Description, Type);
+        }
+        
     }
 
     public enum AgentType { None, Software, Environment }

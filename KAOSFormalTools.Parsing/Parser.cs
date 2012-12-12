@@ -31,7 +31,11 @@ namespace KAOSFormalTools.Parsing
 
         public GoalModel Parse (string input)
         {
-            return Parse (input, null);
+            try {
+                return Parse (input, null);
+            } catch (Exception e) {
+                throw new ParsingException (e.Message);
+            }
         }
 
         private void FirstPass (Elements elements)

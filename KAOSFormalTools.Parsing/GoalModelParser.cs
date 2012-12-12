@@ -457,18 +457,25 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Description := 'description' S '"' String '"'
+	// Description := ('definition' / 'description') S (('"' String '"') / ('"' '"'))
 	private State DoParseDescriptionRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
 		
 		_state = DoSequence(_state, results,
-			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "description");},
+			delegate (State s, List<Result> r) {return DoChoice(s, r,
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "definition");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "description");});},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
-			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "\"");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "String");},
-			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "\"");});
+			delegate (State s, List<Result> r) {return DoChoice(s, r,
+				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
+					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, "\"");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "String");},
+					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, "\"");});},
+				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
+					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, "\"");},
+					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, "\"");});});});
 		
 		if (_state.Parsed)
 		{
@@ -768,16 +775,19 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Identifier := [$_-a-zA-Z] [$_-a-zA-Z0-9]*
+	// Identifier := [$_-]? ([a-zA-Z0-9] [$_-a-zA-Z0-9]*)
 	private State DoParseIdentifierRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
 		
 		_state = DoSequence(_state, results,
-			delegate (State s, List<Result> r) {return DoParseRange(s, r, false, "$_-", "azAZ", null, "[$_-a-zA-Z]");},
-			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,
-				delegate (State s2, List<Result> r2) {return DoParseRange(s2, r2, false, "$_-", "azAZ09", null, "[$_-a-zA-Z0-9]");});});
+			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 1,
+				delegate (State s2, List<Result> r2) {return DoParseRange(s2, r2, false, "$_-", string.Empty, null, "[$_-]");});},
+			delegate (State s, List<Result> r) {return DoSequence(s, r,
+				delegate (State s2, List<Result> r2) {return DoParseRange(s2, r2, false, string.Empty, "azAZ09", null, "[a-zA-Z0-9]");},
+				delegate (State s2, List<Result> r2) {return DoRepetition(s2, r2, 0, 2147483647,
+					delegate (State s3, List<Result> r3) {return DoParseRange(s3, r3, false, "$_-", "azAZ09", null, "[$_-a-zA-Z0-9]");});});});
 		
 		if (_state.Parsed)
 		{

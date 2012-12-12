@@ -37,6 +37,9 @@
     <Reference Include="LtlSharp">
       <HintPath>..\Libraries\LtlSharp.dll</HintPath>
     </Reference>
+    <Reference Include="ShallTests">
+      <HintPath>..\Libraries\ShallTests.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TestParsingGoal.cs" />
