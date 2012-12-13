@@ -17,8 +17,6 @@ namespace KAOSFormalTools.Parsing
 
             if (o1.FormalSpec == null)
                 o1.FormalSpec = o2.FormalSpec;
-            else if (o2.FormalSpec != null)
-                Console.WriteLine ("Try to override 'FormalSpec' for obstacle '{0}'", o1.Name);
 
             foreach (var r in o2.Refinements)
                 if (!o1.Refinements.Contains (r))
@@ -42,9 +40,7 @@ namespace KAOSFormalTools.Parsing
 
             if (g1.FormalSpec == null)
                 g1.FormalSpec = g2.FormalSpec;
-            else if (g2.FormalSpec != null)
-                Console.WriteLine ("Try to override 'FormalSpec' for obstacle '{0}'", g1.Name);
-            
+
             foreach (var r in g2.Refinements)
                 if (!g1.Refinements.Contains (r))
                     g1.Refinements.Add (r);
@@ -57,6 +53,22 @@ namespace KAOSFormalTools.Parsing
                 if (!g1.Obstruction.Contains (r))
                     g1.Obstruction.Add (r);
         }
+
+        public static void Merge (this KAOSFormalTools.Domain.DomainProperty d1, KAOSFormalTools.Domain.DomainProperty d2)
+        {
+            if (string.IsNullOrEmpty (d1.Identifier))
+                d1.Identifier = d2.Identifier;
+            
+            if (string.IsNullOrEmpty (d1.Name))
+                d1.Name = d2.Name;
+            
+            if (string.IsNullOrEmpty (d1.Definition))
+                d1.Definition= d2.Definition;
+            
+            if (d1.FormalSpec == null)
+                d1.FormalSpec = d2.FormalSpec;
+        }
+
     }
 }
 

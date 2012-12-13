@@ -46,7 +46,7 @@
     <Compile Include="TestParsingDomainProperty.cs" />
     <Compile Include="TestParsingObstacles.cs" />
     <Compile Include="TestParsingExamples.cs" />
-    <Compile Include="TestAgent.cs" />
+    <Compile Include="TestParsingAgent.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

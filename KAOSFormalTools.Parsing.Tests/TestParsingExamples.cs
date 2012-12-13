@@ -60,17 +60,6 @@ namespace KAOSFormalTools.Parsing.Tests
                 .Select (d => d.Identifier)
                 .ShallContain ("achieve_destination_reached_if_gps_support");
         }
-
-        /*
-        [Test()]
-        public void TestCarPooling ()
-        {
-            string input = File.ReadAllText ("../../Examples/carpooling.kaos");
-            var model = parser.Parse (input);
-
-            Assert.IsNotNull (model);
-        }
-        */
     }
 
 }

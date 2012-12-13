@@ -3,6 +3,7 @@ using System.Linq;
 using NUnit.Framework;
 using KAOSFormalTools.Parsing;
 using LtlSharp;
+using ShallTests;
 
 namespace KAOSFormalTools.Parsing.Tests
 {
@@ -11,69 +12,154 @@ namespace KAOSFormalTools.Parsing.Tests
     {
         private static Parser parser = new Parser ();
         
-        [Test()]
-        public void TestMissingIdentifier ()
+        [TestCase(@"begin domainproperty
+                        id test
+                    end", "test")]
+        [TestCase(@"begin domainproperty
+                        id _test
+                    end", "_test")]
+        [TestCase(@"begin domainproperty
+                        id -test
+                    end", "-test")]
+        [TestCase(@"begin domainproperty
+                        id $test
+                    end", "$test")]
+        [TestCase(@"begin domainproperty
+                        id test_long_identifier
+                    end", "test_long_identifier")]
+        [TestCase(@"begin domainproperty
+                        id test-long-identifier
+                    end", "test-long-identifier")]
+        [TestCase(@"begin domainproperty
+                        id test12
+                    end", "test12")]
+        [TestCase(@"begin domainproperty
+                        id 0
+                    end", "0")]
+        [TestCase(@"begin domainproperty
+                        id test2
+                        id test
+                    end", "test")]
+        [TestCase(@"begin domainproperty
+                        id test
+                        id test
+                    end", "test")]
+        public void TestIdentifier (string input, string expectedIdentifier)
         {
-            var input = @"begin domainproperty end";
-            
-            var gm = parser.Parse (input);
-            Assert.AreEqual (1, gm.DomainProperties.Count);
+            var model = parser.Parse (input);
+            model.DomainProperties.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
         }
-
-        [Test()]
-        public void TestIdentifier ()
+        
+        [TestCase(@"begin domainproperty id   end")]
+        [TestCase(@"begin domainproperty id - end")]
+        [TestCase(@"begin domainproperty id _ end")]
+        [TestCase(@"begin domainproperty id $ end")]
+        public void TestInvalidIdentifier (string input)
         {
-            var input = @"
-begin domainproperty
-    id test
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual ("test", gm.DomainProperties.First().Identifier);
+            Assert.Throws<ParsingException> (() => {
+                parser.Parse (input);
+            });
         }
-
-        [Test()]
-        public void TestName ()
+        
+        [TestCase(@"begin domainproperty
+                        name ""test""
+                    end", "test")]
+        [TestCase(@"begin domainproperty
+                        name ""Long name with spaces and numbers 123""
+                    end", "Long name with spaces and numbers 123")]
+        [TestCase(@"begin domainproperty
+                        name ""[-_-]""
+                    end", "[-_-]")]
+        public void TestName (string input, string expectedName)
         {
-            var input = @"
-begin domainproperty
-    id test
-    name ""My domain property name""
-end
-";
-            
-            var gm = parser.Parse (input);
-            var root = gm.DomainProperties.First ();
-            Assert.AreEqual ("My domain property name", root.Name);
+            var model = parser.Parse (input);
+            model.DomainProperties
+                .Where (x => x.Name == expectedName)
+                    .ShallBeSingle ();
         }
-
+        
+        [TestCase(@"begin domainproperty
+                        name """"
+                    end")]
+        [TestCase(@"begin domainproperty
+                        name """"""
+                    end")]
+        public void TestInvalidName (string input)
+        {
+            Assert.Throws<ParsingException> (() => {
+                parser.Parse (input);
+            });
+        }        
+        
         [Test()]
         public void TestFormalSpec ()
         {
-            var input = @"
-begin domainproperty
-    id          test
-    name        ""My goal name""
-    formalspec  ""G (incidentReported -> F ambulanceOnScene)""
-end
-";
+            var input = @"begin domainproperty
+                              id          test
+                              formalspec  ""paf""
+                          end";
             
-            var gm = parser.Parse (input);
-            var root = gm.DomainProperties.First ();
-            Assert.IsInstanceOf (typeof(Globally), root.FormalSpec);
+            var model = parser.Parse (input);
+            var test = model.DomainProperties.Where (x => x.Identifier == "test").ShallBeSingle ();
+            Assert.IsNotNull (test.FormalSpec);
+        }
+                
+        [TestCase(@"begin domprop
+                        id test
+                        name ""old name""
+                        definition ""old definition""
+                        formalspec ""old""
+                    end
+
+                    begin domprop
+                        id test
+                        name ""new name""
+                        definition ""new definition""
+                        formalspec ""new""
+                    end")]
+        [TestCase(@"begin domprop
+                        id test
+                    end
+
+                    begin domprop
+                        id test
+                        name ""old name""
+                        definition ""old definition""
+                        formalspec ""old""
+                    end")]
+        public void TestMerge (string input)
+        {
+            var model = parser.Parse (input);
+            
+            var domprop = model.DomainProperties.Where (x => x.Identifier == "test").ShallBeSingle ();
+            domprop.Name.ShallEqual ("old name");
+            domprop.Definition.ShallEqual ("old definition");
+            domprop.FormalSpec.ShallBeSuchThat (x => (x as LtlSharp.Proposition).Name == "old");
         }
         
-        [Test()]
-        public void TestProbability ()
+        [TestCase(@"begin domainproperty id test  end
+                    begin domainproperty id test2 end")]
+        [TestCase(@"begin domprop id test  end
+                    begin domprop id test2 end")]
+        public void TestMultiple (string input)
         {
-            var input = @"
-begin domainproperty
-    id test
-    probability 0.30
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (0.3, gm.DomainProperties.First().EPS);
+            var model = parser.Parse (input);
+            model.DomainProperties.ShallContain (x => x.Identifier == "test");
+            model.DomainProperties.ShallContain (x => x.Identifier == "test2");
+        }
+
+        [TestCase(@"begin domprop id test probability 0.95 end", 0.95)]
+        [TestCase(@"begin domprop id test probability 1    end", 1)]
+        [TestCase(@"begin domprop id test probability 0    end", 0)]
+        [TestCase(@"begin domprop id test probability .01  end", .01)]
+        [TestCase(@"begin domprop id test eps 0.95 end", 0.95)]
+        [TestCase(@"begin domprop id test eps 1    end", 1)]
+        [TestCase(@"begin domprop id test eps 0    end", 0)]
+        [TestCase(@"begin domprop id test eps .01  end", .01)]
+        public void TestProbability (string input, double expected)
+        {
+            var model = parser.Parse (input);
+            model.DomainProperties.ShallContain (x => x.Identifier == "test").ShallBeSingle ().EPS.ShallEqual (expected);
         }
 
     }

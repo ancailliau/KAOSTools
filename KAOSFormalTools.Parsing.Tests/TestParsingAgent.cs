@@ -6,7 +6,7 @@ using ShallTests;
 namespace KAOSFormalTools.Parsing.Tests
 {
     [TestFixture()]
-    public class TestAgent
+    public class TestParsingAgent
     {
         private static Parser parser = new Parser ();
 

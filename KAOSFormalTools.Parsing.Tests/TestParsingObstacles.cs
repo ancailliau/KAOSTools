@@ -104,15 +104,14 @@ namespace KAOSFormalTools.Parsing.Tests
         [Test()]
         public void TestFormalSpec ()
         {
-            var input = @"begin goal
+            var input = @"begin obstacle
                               id          test
-                              name        ""My goal name""
-                              formalspec  ""G (incidentReported -> F ambulanceOnScene)""
+                              formalspec  ""pouf""
                           end";
             
             var model = parser.Parse (input);
-            var root = model.RootGoals.ShallBeSingle ();
-            Assert.IsNotNull (root.FormalSpec);
+            var test = model.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
+            Assert.IsNotNull (test.FormalSpec);
         }
         
         [Test()]

@@ -165,29 +165,50 @@ namespace KAOSFormalTools.Parsing.Tests
                 .ShallOnlyContain (new string[] { "new_agent" });
         }
 
-        [Test()]
-        public void TestMerge ()
-        {
-            var input = @"begin goal
-                            id test
-                            name ""old name""
-                            definition ""old definition""
-                            formalspec ""old""
-                            refinedby old_child1, old_child2
-                            obstructedby old_obstacle
-                            assignedto old_agent
-                        end
+        [TestCase(@"begin goal
+                        id test
+                        name ""old name""
+                        definition ""old definition""
+                        formalspec ""old""
+                        refinedby old_child1, old_child2
+                        obstructedby old_obstacle
+                        assignedto old_agent
+                    end
 
-                        begin goal
-                            id test
-                            name ""new name""
-                            definition ""new definition""
-                            formalspec ""new""
-                            refinedby new_child1, new_child2
-                            obstructedby new_obstacle
-                            assignedto new_agent
-                        end";
-            
+                    begin goal
+                        id test
+                        name ""new name""
+                        definition ""new definition""
+                        formalspec ""new""
+                        refinedby new_child1, new_child2
+                        obstructedby new_obstacle
+                        assignedto new_agent
+                    end")]
+        [TestCase(@"begin goal
+                        id test
+                    end
+
+                    begin goal 
+                        id test
+                        name ""old name""
+                        definition ""old definition""
+                        formalspec ""old""
+                        refinedby old_child1, old_child2
+                        obstructedby old_obstacle
+                        assignedto old_agent
+                    end
+
+                    begin goal
+                        id test
+                        name ""new name""
+                        definition ""new definition""
+                        formalspec ""new""
+                        refinedby new_child1, new_child2
+                        obstructedby new_obstacle
+                        assignedto new_agent
+                    end")]
+        public void TestMerge (string input)
+        {
             var model = parser.Parse (input);
             
             var goal = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
@@ -215,12 +236,11 @@ namespace KAOSFormalTools.Parsing.Tests
         {
             var input = @"begin goal
                               id          test
-                              name        ""My goal name""
-                              formalspec  ""G (incidentReported -> F ambulanceOnScene)""
+                              formalspec  ""pif""
                           end";
             
             var model = parser.Parse (input);
-            var root = model.RootGoals.ShallBeSingle ();
+            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
             Assert.IsNotNull (root.FormalSpec);
         }
 

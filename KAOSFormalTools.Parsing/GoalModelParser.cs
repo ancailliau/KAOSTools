@@ -185,7 +185,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// DomProp := 'begin' S 'domainproperty' S (DomPropAttribute S)* 'end'
+	// DomProp := 'begin' S ('domainproperty' / 'domprop') S (DomPropAttribute S)* 'end'
 	private State DoParseDomPropRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -194,7 +194,9 @@ internal sealed partial class GoalModelParser
 		_state = DoSequence(_state, results,
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "begin");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
-			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "domainproperty");},
+			delegate (State s, List<Result> r) {return DoChoice(s, r,
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "domainproperty");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "domprop");});},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,
 				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,

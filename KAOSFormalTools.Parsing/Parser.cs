@@ -15,12 +15,20 @@ namespace KAOSFormalTools.Parsing
 
         public GoalModel Parse (string input, string filename, GoalModel model)
         {
-            var elements = _parser.Parse (input, filename) as Elements;
+            Elements elements = null;
 
-            this.model = model;
-            FirstPass  (elements);
-            SecondPass (elements);
-            
+            try {
+                elements = _parser.Parse (input, filename) as Elements;    
+            } catch (Exception e) {
+                throw new ParsingException (e.Message);
+            }
+
+            if (elements != null) {
+                this.model = model;
+                FirstPass  (elements);
+                SecondPass (elements);
+            }
+
             return model;
         }
 
@@ -31,11 +39,7 @@ namespace KAOSFormalTools.Parsing
 
         public GoalModel Parse (string input)
         {
-            try {
-                return Parse (input, null);
-            } catch (Exception e) {
-                throw new ParsingException (e.Message);
-            }
+            return Parse (input, null);
         }
 
         private void FirstPass (Elements elements)
@@ -150,9 +154,18 @@ namespace KAOSFormalTools.Parsing
                 }
             }
 
-            if (model.DomainPropertyExists (domprop.Identifier))
-                throw new ParsingException (string.Format ("Identifier '{0}' is not unique", domprop.Identifier));
+            if (model.DomainPropertyExists (domprop.Identifier)) {
+                var d2 = model.GetDomainPropertyByIdentifier (domprop.Identifier);
+                d2.Merge (domprop);
+                return d2;
+            }
             
+            if (identifierAttribute == null && model.GetDomainPropertiesByName (domprop.Name).Count() == 1) {
+                var d2 = model.GetDomainPropertiesByName (domprop.Name).Single ();
+                d2.Merge (domprop);
+                return d2;
+            }
+
             // Ensure that parsed domprop has the same identifer than the new one
             // This is required for second pass, otherwise, entity could not be found
             if (identifierAttribute == null)
