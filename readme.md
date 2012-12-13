@@ -12,11 +12,11 @@ If you have any question regarding this software, do not hesitate to contact the
 
 ## Licence
 
-The KAOSFormalTools software has been developed by Antoine Cailliau 
-(Institute of Information and Communication Technologies, Electronics 
-and Applied Mathematics – ICTEAM, UCL) under an open-source MIT license. 
-It allows unrestricted use for academic purposes. For any use in commercial 
-products, please contact the Louvain Technology Transfer Office of UCL at ltto@uclouvain.be
+The KAOSFormalTools software has been developed by Antoine Cailliau (Institute of 
+Information and Communication Technologies, Electronics and Applied Mathematics 
+– ICTEAM, UCL) under an open-source MIT license. For any question about 
+licensing or usage in commercial or academic products, you can contact the Louvain 
+Technology Transfer Office of UCL at ltto@uclouvain.be.
 
 This licence apply to all files contained in this repository excepted 
 libraries (DLL files) in folder 'Libraries/' and files where licence is 
