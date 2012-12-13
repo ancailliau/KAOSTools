@@ -508,14 +508,16 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Probability := 'probability' S Float
+	// Probability := ('probability' / 'eps') S Float
 	private State DoParseProbabilityRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
 		
 		_state = DoSequence(_state, results,
-			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "probability");},
+			delegate (State s, List<Result> r) {return DoChoice(s, r,
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "probability");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "eps");});},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Float");});
 		
@@ -832,20 +834,25 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Float := [0-9]+ ('.' [0-9]+)?
+	// Float := ('.' [0-9]+) / ([0-9]+ ('.' [0-9]+)?)
 	private State DoParseFloatRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
 		
-		_state = DoSequence(_state, results,
-			delegate (State s, List<Result> r) {return DoRepetition(s, r, 1, 2147483647,
-				delegate (State s2, List<Result> r2) {return DoParseRange(s2, r2, false, string.Empty, "09", null, "[0-9]");});},
-			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 1,
-				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
-					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, ".");},
-					delegate (State s3, List<Result> r3) {return DoRepetition(s3, r3, 1, 2147483647,
-						delegate (State s4, List<Result> r4) {return DoParseRange(s4, r4, false, string.Empty, "09", null, "[0-9]");});});});});
+		_state = DoChoice(_state, results,
+			delegate (State s, List<Result> r) {return DoSequence(s, r,
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, ".");},
+				delegate (State s2, List<Result> r2) {return DoRepetition(s2, r2, 1, 2147483647,
+					delegate (State s3, List<Result> r3) {return DoParseRange(s3, r3, false, string.Empty, "09", null, "[0-9]");});});},
+			delegate (State s, List<Result> r) {return DoSequence(s, r,
+				delegate (State s2, List<Result> r2) {return DoRepetition(s2, r2, 1, 2147483647,
+					delegate (State s3, List<Result> r3) {return DoParseRange(s3, r3, false, string.Empty, "09", null, "[0-9]");});},
+				delegate (State s2, List<Result> r2) {return DoRepetition(s2, r2, 0, 1,
+					delegate (State s3, List<Result> r3) {return DoSequence(s3, r3,
+						delegate (State s4, List<Result> r4) {return DoParseLiteral(s4, r4, ".");},
+						delegate (State s4, List<Result> r4) {return DoRepetition(s4, r4, 1, 2147483647,
+							delegate (State s5, List<Result> r5) {return DoParseRange(s5, r5, false, string.Empty, "09", null, "[0-9]");});});});});});
 		
 		if (_state.Parsed)
 		{

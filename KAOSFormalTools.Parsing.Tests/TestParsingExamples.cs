@@ -6,6 +6,7 @@ using KAOSFormalTools.Parsing;
 using LtlSharp;
 using System.Net;
 using System.IO;
+using ShallTests;
 
 namespace KAOSFormalTools.Parsing.Tests
 {

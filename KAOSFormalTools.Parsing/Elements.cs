@@ -130,8 +130,8 @@ namespace KAOSFormalTools.Parsing
     
     public class Probability : Attribute
     {
-        public float Value { get ; set ; }
-        public Probability (float value)
+        public double Value { get ; set ; }
+        public Probability (double value)
         {
             Value = value;
         }
@@ -139,8 +139,8 @@ namespace KAOSFormalTools.Parsing
     
     public class RDS : Attribute
     {
-        public float Value { get ; set ; }
-        public RDS (float value)
+        public double Value { get ; set ; }
+        public RDS (double value)
         {
             Value = value;
         }

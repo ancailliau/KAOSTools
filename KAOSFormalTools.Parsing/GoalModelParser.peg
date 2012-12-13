@@ -25,7 +25,7 @@ FormalSpec         := 'formalspec' S '"' String '"'                       `value
 Definition         := 'definition' S '"' String '"'                       `value = BuildDefinition(results);`
 Description        := ('definition' / 'description') S ('"' String '"' / '"' '"')          `value = BuildDescription(results);`
 RDS                := 'rds' S Float                                       `value = BuildRDS(results);`
-Probability        := 'probability' S Float                               `value = BuildProbability(results);`
+Probability        := ('probability' / 'eps') S Float                               `value = BuildProbability(results);`
                                                                          
 RefinedByObstacle  := 'refinedby'    S IdOrNameOrObstacle (S ',' S IdOrNameOrObstacle)*       `value = BuildRefinedBy(results);`
 RefinedByGoal      := 'refinedby'    S IdOrNameOrGoal (S ',' S IdOrNameOrGoal)*       `value = BuildRefinedBy(results);`
@@ -42,7 +42,7 @@ IdOrNameOrAgent    := ( Agent / IdOrName )                               `value 
 IdOrName           := ( '"' String '"' / Identifier )                    `value = BuildIdOrName(results);` `expected = "id or name"`
 Identifier         := ([$_-])? ([a-zA-Z0-9] [a-zA-Z0-9$_-]*)                        `value = null` `expected = "identifier"`
 String             := [^"]+                                              `value = null` `expected = "string"`
-Float              := [0-9]+ ('.' [0-9]+)?                               `value = null` `expected = "float"`
+Float              := ('.' [0-9]+) / ( [0-9]+ ('.' [0-9]+)? )                               `value = null` `expected = "float"`
 
 # Scaffolding
 

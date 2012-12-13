@@ -12,8 +12,8 @@ namespace KAOSFormalTools.Domain
         public string                 Definition      { get; set; }
         public LTLFormula             FormalSpec      { get; set; }
 
-        public float                  CPS             { get; set; }
-        public float                  RDS             { get; set; }
+        public double                 CPS             { get; set; }
+        public double                 RDS             { get; set; }
 
         public ISet<GoalRefinement>   Refinements     { get; set; }
         public ISet<Obstacle>         Obstruction     { get; set; }
@@ -35,8 +35,8 @@ namespace KAOSFormalTools.Domain
         public string                           Definition   { get; set; }
         public LTLFormula                       FormalSpec   { get; set; }
 
-        public float                            EPS          { get; set; }
-        public float                            CPS          { get; set; }
+        public double                           EPS          { get; set; }
+        public double                           CPS          { get; set; }
 
         public IList<ObstacleRefinement>        Refinements  { get; set; }
         public IList<Goal>                      Resolutions  { get; set; }
@@ -55,7 +55,7 @@ namespace KAOSFormalTools.Domain
         public string      Name        { get; set; }
         public string      Definition  { get; set; }
         public LTLFormula  FormalSpec  { get; set; }
-        public float       EPS         { get; set; }
+        public double       EPS         { get; set; }
 
         public DomainProperty ()
         {

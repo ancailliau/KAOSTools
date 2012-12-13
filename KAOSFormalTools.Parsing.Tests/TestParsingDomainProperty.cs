@@ -73,7 +73,7 @@ begin domainproperty
 end
 ";
             var gm = parser.Parse (input);
-            Assert.AreEqual (0.3f, gm.DomainProperties.First().EPS);
+            Assert.AreEqual (0.3, gm.DomainProperties.First().EPS);
         }
 
     }

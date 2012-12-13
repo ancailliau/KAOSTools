@@ -4,6 +4,7 @@ using NUnit.Framework;
 using KAOSFormalTools.Parsing;
 using LtlSharp;
 using System.Collections.Generic;
+using ShallTests;
 
 namespace KAOSFormalTools.Parsing.Tests
 {
@@ -12,380 +13,351 @@ namespace KAOSFormalTools.Parsing.Tests
     {
         private static Parser parser = new Parser ();
 
-        [Test()]
-        public void TestIdentifier ()
+        [TestCase(@"begin obstacle
+                        id test
+                    end", "test")]
+        [TestCase(@"begin obstacle
+                        id _test
+                    end", "_test")]
+        [TestCase(@"begin obstacle
+                        id -test
+                    end", "-test")]
+        [TestCase(@"begin obstacle
+                        id $test
+                    end", "$test")]
+        [TestCase(@"begin obstacle
+                        id test_long_identifier
+                    end", "test_long_identifier")]
+        [TestCase(@"begin obstacle
+                        id test-long-identifier
+                    end", "test-long-identifier")]
+        [TestCase(@"begin obstacle
+                        id test12
+                    end", "test12")]
+        [TestCase(@"begin obstacle
+                        id 0
+                    end", "0")]
+        [TestCase(@"begin obstacle
+                        id test2
+                        id test
+                    end", "test")]
+        [TestCase(@"begin obstacle
+                        id test
+                        id test
+                    end", "test")]
+        public void TestIdentifier (string input, string expectedIdentifier)
         {
-            var input = @"
-begin obstacle
-    id test
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (1, gm.Obstacles.Count);
-            Assert.AreEqual ("test", gm.Obstacles.First().Identifier);
+            var model = parser.Parse (input);
+            model.Obstacles.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
+        }
+        
+        [TestCase(@"begin obstacle
+                        id 
+                    end")]
+        [TestCase(@"begin obstacle
+                        id -
+                    end")]
+        [TestCase(@"begin obstacle
+                        id _
+                    end")]
+        [TestCase(@"begin obstacle
+                        id $
+                    end")]
+        public void TestInvalidIdentifier (string input)
+        {
+            Assert.Throws<ParsingException> (() => {
+                parser.Parse (input);
+            });
+        }
+        
+        [TestCase(@"begin obstacle
+                        name ""test""
+                    end", "test")]
+        [TestCase(@"begin obstacle
+                        name ""Long name with spaces and numbers 123""
+                    end", "Long name with spaces and numbers 123")]
+        [TestCase(@"begin obstacle
+                        name ""[-_-]""
+                    end", "[-_-]")]
+        public void TestName (string input, string expectedName)
+        {
+            var model = parser.Parse (input);
+            model.Obstacles
+                .Where (x => x.Name == expectedName)
+                .ShallBeSingle ();
+        }
+        
+        [TestCase(@"begin obstacle
+                        name """"
+                    end")]
+        [TestCase(@"begin obstacle
+                        name """"""
+                    end")]
+        public void TestInvalidName (string input)
+        {
+            Assert.Throws<ParsingException> (() => {
+                parser.Parse (input);
+            });
         }
 
-        [Test()]
-        public void TestMultipleIdentifier ()
-        {
-            var input = @"
-begin obstacle
-    id test
-    id test2
-end
-";
-            
-            var gm = parser.Parse (input);
-            Assert.AreEqual (1, gm.Obstacles.Count);
-            Assert.AreEqual ("test2", gm.Obstacles.First().Identifier);
-        }
-
-        [Test()]
-        public void TestName ()
-        {
-            var input = @"
-begin obstacle
-    id test
-    name ""My obstacle""
-end
-";
-            
-            var gm = parser.Parse (input);
-            var root = gm.Obstacles.First ();
-            Assert.AreEqual ("My obstacle", root.Name);
-        }
-
+        
         [Test()]
         public void TestFormalSpec ()
         {
-            var input = @"
-begin obstacle
-    id          test
-    name        ""My obstacle""
-    formalspec  ""G (incidentReported -> F ambulanceOnScene)""
-end
-";
+            var input = @"begin goal
+                              id          test
+                              name        ""My goal name""
+                              formalspec  ""G (incidentReported -> F ambulanceOnScene)""
+                          end";
             
-            var gm = parser.Parse (input);
-            var root = gm.Obstacles.First ();
-            Assert.IsInstanceOf (typeof(Globally), root.FormalSpec);
-        }
-
-        [Test()]
-        public void TestMultipleObstacle ()
-        {
-            var input = @"
-begin obstacle
-    id test
-end
-
-begin obstacle
-    id test2
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (2, gm.Obstacles.Count);
-        }
-                   
-        [Test()]
-        public void TestRefinement ()
-        {
-            var input = @"
-begin obstacle
-    id         test
-    refinedby  test2, test3
-end
-
-begin obstacle 
-    id test2 
-end
-
-begin obstacle 
-    id test3
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (3, gm.Obstacles.Count);
-
-            var root = gm.Obstacles.First ();
-            Assert.AreEqual ("test", root.Identifier);
-            Assert.AreEqual (1, root.Refinements.Count);
-
-            var refinement = root.Refinements.First ();
-            Assert.AreEqual ("test2", refinement.Children[0].Identifier);
-            Assert.AreEqual ("test3", refinement.Children[1].Identifier);
-        }
-
-        [Test()]
-        public void TestRefinementRecursive ()
-        {
-            var input = @"
-begin obstacle
-    refinedby  
-        begin obstacle 
-            id test2 
-            refinedby
-                begin obstacle 
-                    id test3
-                end
-        end
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (3, gm.Obstacles.Count);
-
-            var root = gm.Obstacles.First ();
-            Assert.AreEqual (1, root.Refinements.Count);
-
-            var refinement = root.Refinements.First ();
-            Assert.AreEqual ("test2", refinement.Children[0].Identifier);
-            Assert.AreEqual ("test3", refinement.Children[0].Refinements[0].Children[0].Identifier);
-        }
-
-        [Test()]
-        public void TestMultipleRefinement ()
-        {
-            var input = @"
-begin obstacle
-    id         test
-    refinedby  test2
-    refinedby  test3
-end
-
-begin obstacle 
-    id test2 
-end
-
-begin obstacle 
-    id test3
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (3, gm.Obstacles.Count);
-
-            var root = gm.Obstacles.First ();
-            Assert.AreEqual ("test", root.Identifier);
-            Assert.AreEqual (2, root.Refinements.Count);
-
-            Assert.AreEqual ("test2", root.Refinements[0].Children[0].Identifier);
-            Assert.AreEqual ("test3", root.Refinements[1].Children[0].Identifier);
-        }
-
-        [Test()]
-        public void TestObstruction ()
-        {
-            var input = @"
-begin goal
-    obstructedby test2, test3
-    name         ""My obstacle""
-    
-    id         test
-end
-
-
-begin obstacle id test2 end
-begin obstacle id test3 end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (1, gm.RootGoals.Count);
-            Assert.AreEqual (2, gm.Obstacles.Count);
-
-            var root = gm.RootGoals.First ();
-            Assert.AreEqual (2, root.Obstruction.Count);
-
-            root.Obstruction.Select (x => x.Identifier).ShallContain ("test2");
-            root.Obstruction.Select (x => x.Identifier).ShallContain ("test3");
-        }
-
-        [Test()]
-        public void TestUnknownIdentifierReference ()
-        {
-            var input = @"
-begin goal
-    obstructedby  test2
-    name          ""My goal""
-    
-    id         test
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (1, gm.Goals.Count);
-            Assert.AreEqual (1, gm.Obstacles.Count);
-
-            var root = gm.RootGoals.First ();
-            Assert.AreEqual (1, root.Obstruction.Count);
-            root.Obstruction.Select (x => x.Identifier).ShallContain ("test2");
+            var model = parser.Parse (input);
+            var root = model.RootGoals.ShallBeSingle ();
+            Assert.IsNotNull (root.FormalSpec);
         }
         
         [Test()]
-        public void TestUnknownNameReference ()
+        public void TestMultiple ()
         {
-            var input = @"
-begin goal
-    obstructedby  ""test2""
-    name          ""My goal""
-    
-    id         test
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (1, gm.Goals.Count);
-            Assert.AreEqual (1, gm.Obstacles.Count);
-
-            var root = gm.RootGoals.First ();
-            Assert.AreEqual (1, root.Obstruction.Count);
-            root.Obstruction.Select (x => x.Name).ShallContain ("test2");
+            var input = @"begin obstacle id test  end
+                          begin obstacle id test2 end";
+            
+            var model = parser.Parse (input);
+            
+            model.Obstacles.Count.ShallEqual (2);
+            model.Obstacles.ShallContain (x => x.Identifier == "test");
+            model.Obstacles.ShallContain (x => x.Identifier == "test2");
         }
-
-        [Test()]
-        public void TestInlineDefinition ()
-        {
-            var input = @"
-begin goal
-    obstructedby  begin obstacle name ""test2"" end
-    name          ""My goal""
-    
-    id         test
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (1, gm.Goals.Count);
-            Assert.AreEqual (1, gm.Obstacles.Count);
-
-            var root = gm.RootGoals.First ();
-            Assert.AreEqual (1, root.Obstruction.Count);
-        }
-
-        [Test()]
-        public void TestInlineDefinitionWithIdentifier ()
-        {
-            var input = @"
-begin goal
-    obstructedby  begin obstacle id test2 end
-    name          ""My goal""
-    
-    id         test
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (1, gm.Goals.Count);
-            Assert.AreEqual (1, gm.Obstacles.Count);
-
-            var root = gm.RootGoals.First ();
-            Assert.AreEqual (1, root.Obstruction.Count);
-            root.Obstruction.Select (x => x.Identifier).ShallContain ("test2");
-        }
-
         
-        [Test()]
-        public void TestInlineDefinitionAnonymous ()
+        [TestCase(@"begin obstacle 
+                        id test
+                        refinedby child1, child2
+                    end")]
+        [TestCase(@"begin obstacle 
+                        id test
+                        refinedby begin obstacle id child1 end, child2
+                    end")]
+        [TestCase(@"begin obstacle 
+                        id test
+                        refinedby begin obstacle id child1 end, begin obstacle id child2 end
+                    end")]
+        public void TestRefinement (string input)
         {
-            var input = @"
-begin goal
-    obstructedby  begin obstacle end
-    name          ""My goal""
-    
-    id         test
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (1, gm.Goals.Count);
-            Assert.AreEqual (1, gm.Obstacles.Count);
+            var model = parser.Parse (input);
+            
+            var obstacle = model.Obstacles
+                .ShallContain (x => x.Identifier == "test")
+                    .ShallBeSingle ();
+            
+            obstacle.Refinements
+                .ShallContain (x => x.Children.Select(y => y.Identifier)
+                               .OnlyContains ( new string [] { "child1" , "child2" }));
+        }
 
-            var root = gm.RootGoals.First ();
-            Assert.AreEqual (1, root.Obstruction.Count);
+        [TestCase(@"begin obstacle 
+                        id test
+                        refinedby child1, child2
+                        refinedby child3, child4
+                    end")]
+        [TestCase(@"begin obstacle 
+                        id test
+                        refinedby child1, child2
+                        refinedby begin obstacle id child3 end, child4
+                    end")]
+        public void TestAlternatives (string input)
+        {
+            var model = parser.Parse (input);
+            
+            var obstacle = model.Obstacles
+                .ShallContain (x => x.Identifier == "test")
+                    .ShallBeSingle ();
+            
+            obstacle.Refinements.ShallContain (x => x.Children.Select(y => y.Identifier)
+                                                              .OnlyContains ( new string [] { "child1" , "child2" }));
+            obstacle.Refinements.ShallContain (x => x.Children.Select(y => y.Identifier)
+                                                              .OnlyContains ( new string [] { "child3" , "child4" }));
+        }
+        
+        [TestCase(@"begin obstacle 
+                        id test
+                        refinedby child1, child2
+                    end
+                    begin obstacle id child1 refinedby child3, child4 end")]
+        [TestCase(@"begin obstacle 
+                        id test
+                        refinedby begin obstacle id child1 refinedby child3, child4 end, child2
+                    end")]
+        [TestCase(@"begin obstacle 
+                        id test
+                        refinedby begin obstacle id child1 refinedby begin obstacle id child3 end, child4 end, child2
+                    end")]
+        public void TestRefinementRecursive (string input)
+        {
+            var model = parser.Parse (input);
+            
+            var test = model.Obstacles
+                .ShallContain (x => x.Identifier == "test")
+                    .ShallBeSingle ();
+            
+            test.Refinements
+                .ShallContain (x => x.Children.Select(y => y.Identifier)
+                               .OnlyContains ( new string [] { "child1" , "child2" }));
+            
+            var child1 = model.Obstacles
+                .ShallContain (x => x.Identifier == "child1")
+                    .ShallBeSingle ();
+            
+            child1.Refinements
+                .ShallContain (x => x.Children.Select(y => y.Identifier)
+                               .OnlyContains ( new string [] { "child3" , "child4" }));
+        }
+        
+        [TestCase(@"begin obstacle
+                        id         test
+                        refinedby  test2, domprop
+                    end
+                    begin domainproperty id domprop end")]
+        [TestCase(@"begin obstacle
+                        id         test
+                        refinedby  test2, ""domprop""
+                    end
+                    begin domainproperty id domprop name ""domprop"" end")]
+        public void TestRefinementWithDomainProperty (string input)
+        {
+            var model = parser.Parse (input);
+            
+            var test = model.Obstacles.ShallContain (x => x.Identifier == "test").ShallBeSingle ();
+            test.Refinements.ShallBeSingle ().DomainProperties.Select (x => x.Identifier).ShallOnlyContain (new string [] { "domprop" });
+        }
+        
+        [TestCase(@"begin obstacle 
+                        id test
+                        refinedby child1, ""child2""
+                    end
+                    begin obstacle id child1 name ""child1"" end")]
+        [TestCase(@"begin obstacle 
+                        id test
+                        refinedby ""child1"", ""child2""
+                    end")]
+        [TestCase(@"begin obstacle 
+                        id test
+                        refinedby begin obstacle name ""child1"" end, ""child2""
+                    end")]
+        [TestCase(@"begin obstacle 
+                        id test
+                        refinedby begin obstacle name ""child1"" end, begin obstacle name ""child2"" end
+                    end")]
+        public void TestRefinementByName (string input)
+        {
+            var model = parser.Parse (input);
+            
+            var goal = model.Obstacles
+                .ShallContain (x => x.Identifier == "test")
+                    .ShallBeSingle ();
+            
+            goal.Refinements
+                .ShallContain (x => x.Children.Select(y => y.Name)
+                               .OnlyContains ( new string [] { "child1" , "child2" }));
         }
 
         [Test()]
         public void TestMerge ()
         {
-            var input = @"
-begin obstacle
-    id test
-    refinedby ""Test Child 1""
-end
+            var input = @"begin obstacle
+                            id test
+                            name ""old name""
+                            definition ""old definition""
+                            formalspec ""old""
+                            refinedby old_child1, old_child2
+                            resolvedby old_goal
+                        end
 
-begin obstacle
-    id test
-    name ""Test""
-    refinedby ""Test Child 2""
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (3, gm.Obstacles.Count);
-
-            Assert.AreEqual ("test", gm.Obstacles[0].Identifier);
-            Assert.AreEqual ("Test", gm.Obstacles[0].Name);
-            Assert.AreEqual (2,      gm.Obstacles[0].Refinements.Count);
+                        begin obstacle
+                            id test
+                            name ""new name""
+                            definition ""new definition""
+                            formalspec ""new""
+                            refinedby new_child1, new_child2
+                            resolvedby new_goal
+                        end";
+            
+            var model = parser.Parse (input);
+            
+            var obstacle = model.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
+            obstacle.Name.ShallEqual ("old name");
+            obstacle.Definition.ShallEqual ("old definition");
+            obstacle.FormalSpec.ShallBeSuchThat (x => (x as LtlSharp.Proposition).Name == "old");
+            
+            obstacle.Refinements.ShallContain (y => y.Children.Select (x => x.Identifier)
+                                           .OnlyContains (new string[] { "old_child1", "old_child2" }));
+            
+            obstacle.Refinements.ShallContain (y => y.Children.Select (x => x.Identifier)
+                                           .OnlyContains (new string[] { "new_child1", "new_child2" }));
+            
+            obstacle.Resolutions
+                .Select (x => x.Identifier)
+                    .ShallOnlyContain (new string[] { "new_goal", "old_goal" });
         }
 
-        [Test()]
-        public void TestResolutions ()
+        [TestCase(@"begin goal
+                        id test
+                        obstructedby obstacle_1, obstacle_2
+                    end")]
+        [TestCase(@"begin goal
+                        id test
+                        obstructedby begin obstacle id obstacle_1 end, obstacle_2
+                    end")]
+        [TestCase(@"begin goal
+                        id test
+                        obstructedby begin obstacle id obstacle_1 end, begin obstacle id obstacle_2 end
+                    end")]
+        [TestCase(@"begin goal
+                        id test
+                        obstructedby obstacle_1
+                        obstructedby obstacle_2
+                    end")]
+        public void TestObstruction (string input)
         {
-            var input = @"
-begin obstacle
-    id test
-    resolvedby resolution1
-end
-
-begin goal 
-    id resolution1
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (1, gm.Obstacles.Count);
-
-            var obstacle = gm.Obstacles.First ();
-
-            Assert.AreEqual (1, obstacle.Resolutions.Count);
-            var resolvingGoal = obstacle.Resolutions.First ();
-            Assert.AreEqual ("resolution1", resolvingGoal.Identifier);
+            var model = parser.Parse (input);
+            var test = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            test.Obstruction.Select (x => x.Identifier).ShallOnlyContain (new string[] { "obstacle_1", "obstacle_2" });
         }
-
         
-        [Test()]
-        public void TestInlineResolutions ()
+        [TestCase(@"begin obstacle
+                        id test
+                        resolvedby goal_1, goal_2
+                    end")]
+        [TestCase(@"begin obstacle
+                        id test
+                        resolvedby begin goal id goal_1 end, goal_2
+                    end")]
+        [TestCase(@"begin obstacle
+                        id test
+                        resolvedby begin goal id goal_1 end, begin goal id goal_2 end
+                    end")]
+        [TestCase(@"begin obstacle
+                        id test
+                        resolvedby goal_1
+                        resolvedby goal_2
+                    end")]
+        public void TestResolution (string input)
         {
-            var input = @"
-begin obstacle
-    id test
-    resolvedby begin goal 
-                   id resolution1
-               end
-end
-
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (1, gm.Obstacles.Count);
-            
-            var obstacle = gm.Obstacles.First ();
-            
-            Assert.AreEqual (1, obstacle.Resolutions.Count);
-            var resolvingGoal = obstacle.Resolutions.First ();
-            Assert.AreEqual ("resolution1", resolvingGoal.Identifier);
+            var model = parser.Parse (input);
+            var test = model.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
+            test.Resolutions.Select (x => x.Identifier).ShallOnlyContain (new string[] { "goal_1", "goal_2" });
         }
 
-        [Test()]
-        public void TestProbability ()
+        [TestCase(@"begin obstacle id test probability 0.95 end", 0.95)]
+        [TestCase(@"begin obstacle id test probability 1    end", 1)]
+        [TestCase(@"begin obstacle id test probability 0    end", 0)]
+        [TestCase(@"begin obstacle id test probability .01  end", .01)]
+        [TestCase(@"begin obstacle id test eps 0.95 end", 0.95)]
+        [TestCase(@"begin obstacle id test eps 1    end", 1)]
+        [TestCase(@"begin obstacle id test eps 0    end", 0)]
+        [TestCase(@"begin obstacle id test eps .01  end", .01)]
+        public void TestProbability (string input, double expected)
         {
-            var input = @"
-begin obstacle
-    id           test
-    probability  0.42
-end
-";
-            var gm = parser.Parse (input);
-            Assert.AreEqual (1, gm.Obstacles.Count);
-            Assert.AreEqual (0.42f, gm.Obstacles.First().EPS);
-        }
-    }
-
-    public static class AssertHelpers {
-        public static void ShallContain<T> (this IEnumerable<T> enumerable, T expected)
-        {
-            if (!enumerable.Any (x => x.Equals (expected))) {
-                Assert.Fail ("Enumerable does not contains {0}", expected);
-            }
+            var model = parser.Parse (input);
+            model.Obstacles.ShallContain (x => x.Identifier == "test").ShallBeSingle ().EPS.ShallEqual (expected);
         }
     }
 }
