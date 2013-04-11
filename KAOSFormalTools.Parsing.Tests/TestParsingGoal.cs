@@ -33,7 +33,7 @@ namespace KAOSFormalTools.Parsing.Tests
         public void TestComment (string input)
         {
             var model = parser.Parse (input);
-            model.Goals.ShallBeSingle ();
+            model.GoalModel.Goals.ShallBeSingle ();
         }
 
         [TestCase(@"begin goal
@@ -71,7 +71,7 @@ namespace KAOSFormalTools.Parsing.Tests
         public void TestIdentifier (string input, string expectedIdentifier)
         {
             var model = parser.Parse (input);
-            model.Goals.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
+            model.GoalModel.Goals.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
         }
 
         [TestCase(@"begin goal
@@ -105,7 +105,7 @@ namespace KAOSFormalTools.Parsing.Tests
         public void TestName (string input, string expectedName)
         {
             var model = parser.Parse (input);
-            model.Goals
+            model.GoalModel.Goals
                 .Where (x => x.Name == expectedName)
                     .ShallBeSingle ();
         }
@@ -148,7 +148,7 @@ namespace KAOSFormalTools.Parsing.Tests
             
             var model = parser.Parse (input);
 
-            var goal = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var goal = model.GoalModel.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
             goal.Name.ShallEqual ("new name");
             goal.Definition.ShallEqual ("new definition");
             goal.FormalSpec.ShallBeSuchThat (x => (x as LtlSharp.Proposition).Name == "new");
@@ -211,7 +211,7 @@ namespace KAOSFormalTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var goal = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var goal = model.GoalModel.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
             goal.Name.ShallEqual ("old name");
             goal.Definition.ShallEqual ("old definition");
             goal.FormalSpec.ShallBeSuchThat (x => (x as LtlSharp.Proposition).Name == "old");
@@ -240,7 +240,7 @@ namespace KAOSFormalTools.Parsing.Tests
                           end";
             
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.GoalModel.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
             Assert.IsNotNull (root.FormalSpec);
         }
 
@@ -252,9 +252,9 @@ namespace KAOSFormalTools.Parsing.Tests
 
             var model = parser.Parse (input);
 
-            model.Goals.Count.ShallEqual (2);
-            model.Goals.ShallContain (x => x.Identifier == "test");
-            model.Goals.ShallContain (x => x.Identifier == "test2");
+            model.GoalModel.Goals.Count.ShallEqual (2);
+            model.GoalModel.Goals.ShallContain (x => x.Identifier == "test");
+            model.GoalModel.Goals.ShallContain (x => x.Identifier == "test2");
         }
                 
         [TestCase(@"begin goal 
@@ -273,7 +273,7 @@ namespace KAOSFormalTools.Parsing.Tests
         {
             var model = parser.Parse (input);
 
-            var goal = model.Goals
+            var goal = model.GoalModel.Goals
                 .ShallContain (x => x.Identifier == "test")
                 .ShallBeSingle ();
 
@@ -299,7 +299,7 @@ namespace KAOSFormalTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var test = model.Goals
+            var test = model.GoalModel.Goals
                 .ShallContain (x => x.Identifier == "test")
                 .ShallBeSingle ();
             
@@ -307,7 +307,7 @@ namespace KAOSFormalTools.Parsing.Tests
                 .ShallContain (x => x.Children.Select(y => y.Identifier)
                                               .OnlyContains ( new string [] { "child1" , "child2" }));
 
-            var child1 = model.Goals
+            var child1 = model.GoalModel.Goals
                 .ShallContain (x => x.Identifier == "child1")
                 .ShallBeSingle ();
             
@@ -330,7 +330,7 @@ namespace KAOSFormalTools.Parsing.Tests
         {
             var model = parser.Parse (input);
 
-            var test = model.Goals.ShallContain (x => x.Identifier == "test").ShallBeSingle ();
+            var test = model.GoalModel.Goals.ShallContain (x => x.Identifier == "test").ShallBeSingle ();
             test.Refinements.ShallBeSingle ().DomainProperties.Select (x => x.Identifier).ShallOnlyContain (new string [] { "domprop" });
         }
             
@@ -355,7 +355,7 @@ namespace KAOSFormalTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var goal = model.Goals
+            var goal = model.GoalModel.Goals
                 .ShallContain (x => x.Identifier == "test")
                     .ShallBeSingle ();
             
@@ -371,7 +371,7 @@ namespace KAOSFormalTools.Parsing.Tests
         public void TestRequiredDegreeOfSatisfaction (string input, double expected)
         {
             var model = parser.Parse (input);
-            model.Goals.ShallContain (x => x.Identifier == "test").ShallBeSingle ().RDS.ShallEqual (expected);
+            model.GoalModel.Goals.ShallContain (x => x.Identifier == "test").ShallBeSingle ().RDS.ShallEqual (expected);
         }
 
     }

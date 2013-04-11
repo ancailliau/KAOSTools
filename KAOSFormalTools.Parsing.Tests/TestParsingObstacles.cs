@@ -48,7 +48,7 @@ namespace KAOSFormalTools.Parsing.Tests
         public void TestIdentifier (string input, string expectedIdentifier)
         {
             var model = parser.Parse (input);
-            model.Obstacles.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
+            model.GoalModel.Obstacles.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
         }
         
         [TestCase(@"begin obstacle
@@ -82,7 +82,7 @@ namespace KAOSFormalTools.Parsing.Tests
         public void TestName (string input, string expectedName)
         {
             var model = parser.Parse (input);
-            model.Obstacles
+            model.GoalModel.Obstacles
                 .Where (x => x.Name == expectedName)
                 .ShallBeSingle ();
         }
@@ -110,7 +110,7 @@ namespace KAOSFormalTools.Parsing.Tests
                           end";
             
             var model = parser.Parse (input);
-            var test = model.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var test = model.GoalModel.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
             Assert.IsNotNull (test.FormalSpec);
         }
         
@@ -122,9 +122,9 @@ namespace KAOSFormalTools.Parsing.Tests
             
             var model = parser.Parse (input);
             
-            model.Obstacles.Count.ShallEqual (2);
-            model.Obstacles.ShallContain (x => x.Identifier == "test");
-            model.Obstacles.ShallContain (x => x.Identifier == "test2");
+            model.GoalModel.Obstacles.Count.ShallEqual (2);
+            model.GoalModel.Obstacles.ShallContain (x => x.Identifier == "test");
+            model.GoalModel.Obstacles.ShallContain (x => x.Identifier == "test2");
         }
         
         [TestCase(@"begin obstacle 
@@ -143,7 +143,7 @@ namespace KAOSFormalTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var obstacle = model.Obstacles
+            var obstacle = model.GoalModel.Obstacles
                 .ShallContain (x => x.Identifier == "test")
                     .ShallBeSingle ();
             
@@ -166,7 +166,7 @@ namespace KAOSFormalTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var obstacle = model.Obstacles
+            var obstacle = model.GoalModel.Obstacles
                 .ShallContain (x => x.Identifier == "test")
                     .ShallBeSingle ();
             
@@ -193,7 +193,7 @@ namespace KAOSFormalTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var test = model.Obstacles
+            var test = model.GoalModel.Obstacles
                 .ShallContain (x => x.Identifier == "test")
                     .ShallBeSingle ();
             
@@ -201,7 +201,7 @@ namespace KAOSFormalTools.Parsing.Tests
                 .ShallContain (x => x.Children.Select(y => y.Identifier)
                                .OnlyContains ( new string [] { "child1" , "child2" }));
             
-            var child1 = model.Obstacles
+            var child1 = model.GoalModel.Obstacles
                 .ShallContain (x => x.Identifier == "child1")
                     .ShallBeSingle ();
             
@@ -224,7 +224,7 @@ namespace KAOSFormalTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var test = model.Obstacles.ShallContain (x => x.Identifier == "test").ShallBeSingle ();
+            var test = model.GoalModel.Obstacles.ShallContain (x => x.Identifier == "test").ShallBeSingle ();
             test.Refinements.ShallBeSingle ().DomainProperties.Select (x => x.Identifier).ShallOnlyContain (new string [] { "domprop" });
         }
         
@@ -249,7 +249,7 @@ namespace KAOSFormalTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var goal = model.Obstacles
+            var goal = model.GoalModel.Obstacles
                 .ShallContain (x => x.Identifier == "test")
                     .ShallBeSingle ();
             
@@ -281,7 +281,7 @@ namespace KAOSFormalTools.Parsing.Tests
             
             var model = parser.Parse (input);
             
-            var obstacle = model.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var obstacle = model.GoalModel.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
             obstacle.Name.ShallEqual ("old name");
             obstacle.Definition.ShallEqual ("old definition");
             obstacle.FormalSpec.ShallBeSuchThat (x => (x as LtlSharp.Proposition).Name == "old");
@@ -317,7 +317,7 @@ namespace KAOSFormalTools.Parsing.Tests
         public void TestObstruction (string input)
         {
             var model = parser.Parse (input);
-            var test = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var test = model.GoalModel.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
             test.Obstruction.Select (x => x.Identifier).ShallOnlyContain (new string[] { "obstacle_1", "obstacle_2" });
         }
         
@@ -341,7 +341,7 @@ namespace KAOSFormalTools.Parsing.Tests
         public void TestResolution (string input)
         {
             var model = parser.Parse (input);
-            var test = model.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var test = model.GoalModel.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
             test.Resolutions.Select (x => x.Identifier).ShallOnlyContain (new string[] { "goal_1", "goal_2" });
         }
 
@@ -356,7 +356,7 @@ namespace KAOSFormalTools.Parsing.Tests
         public void TestProbability (string input, double expected)
         {
             var model = parser.Parse (input);
-            model.Obstacles.ShallContain (x => x.Identifier == "test").ShallBeSingle ().EPS.ShallEqual (expected);
+            model.GoalModel.Obstacles.ShallContain (x => x.Identifier == "test").ShallBeSingle ().EPS.ShallEqual (expected);
         }
     }
 }

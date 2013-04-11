@@ -47,7 +47,7 @@ namespace KAOSFormalTools.Parsing.Tests
         public void TestIdentifier (string input, string expectedIdentifier)
         {
             var model = parser.Parse (input);
-            model.DomainProperties.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
+            model.GoalModel.DomainProperties.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
         }
         
         [TestCase(@"begin domainproperty id   end")]
@@ -73,7 +73,7 @@ namespace KAOSFormalTools.Parsing.Tests
         public void TestName (string input, string expectedName)
         {
             var model = parser.Parse (input);
-            model.DomainProperties
+            model.GoalModel.DomainProperties
                 .Where (x => x.Name == expectedName)
                     .ShallBeSingle ();
         }
@@ -100,7 +100,7 @@ namespace KAOSFormalTools.Parsing.Tests
                           end";
             
             var model = parser.Parse (input);
-            var test = model.DomainProperties.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var test = model.GoalModel.DomainProperties.Where (x => x.Identifier == "test").ShallBeSingle ();
             Assert.IsNotNull (test.FormalSpec);
         }
                 
@@ -131,7 +131,7 @@ namespace KAOSFormalTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var domprop = model.DomainProperties.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var domprop = model.GoalModel.DomainProperties.Where (x => x.Identifier == "test").ShallBeSingle ();
             domprop.Name.ShallEqual ("old name");
             domprop.Definition.ShallEqual ("old definition");
             domprop.FormalSpec.ShallBeSuchThat (x => (x as LtlSharp.Proposition).Name == "old");
@@ -144,8 +144,8 @@ namespace KAOSFormalTools.Parsing.Tests
         public void TestMultiple (string input)
         {
             var model = parser.Parse (input);
-            model.DomainProperties.ShallContain (x => x.Identifier == "test");
-            model.DomainProperties.ShallContain (x => x.Identifier == "test2");
+            model.GoalModel.DomainProperties.ShallContain (x => x.Identifier == "test");
+            model.GoalModel.DomainProperties.ShallContain (x => x.Identifier == "test2");
         }
 
         [TestCase(@"begin domprop id test probability 0.95 end", 0.95)]
@@ -159,7 +159,7 @@ namespace KAOSFormalTools.Parsing.Tests
         public void TestProbability (string input, double expected)
         {
             var model = parser.Parse (input);
-            model.DomainProperties.ShallContain (x => x.Identifier == "test").ShallBeSingle ().EPS.ShallEqual (expected);
+            model.GoalModel.DomainProperties.ShallContain (x => x.Identifier == "test").ShallBeSingle ().EPS.ShallEqual (expected);
         }
 
     }

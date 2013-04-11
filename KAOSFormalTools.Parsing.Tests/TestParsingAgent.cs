@@ -19,7 +19,7 @@ namespace KAOSFormalTools.Parsing.Tests
         public void TestTypeOfAgent (string input, KAOSFormalTools.Domain.AgentType type)
         {
             var model = parser.Parse (input);
-            model.Agents
+            model.GoalModel.Agents
                 .Where (x => x.Type == type)
                 .ShallBeSingle ();
         }
@@ -51,7 +51,7 @@ namespace KAOSFormalTools.Parsing.Tests
         public void TestIdentifier (string input, string identifier)
         {
             var model = parser.Parse (input);
-            model.Agents
+            model.GoalModel.Agents
                 .Where (x => x.Identifier == identifier)
                 .ShallBeSingle ();
         }
@@ -87,7 +87,7 @@ namespace KAOSFormalTools.Parsing.Tests
         public void TestName (string input, string expectedName)
         {
             var model = parser.Parse (input);
-            model.Agents
+            model.GoalModel.Agents
                 .Where (x => x.Name == expectedName)
                 .ShallBeSingle ();
         }
@@ -124,7 +124,7 @@ namespace KAOSFormalTools.Parsing.Tests
         public void TestDescription (string input, string expectedDescription)
         {
             var model = parser.Parse (input);
-            model.Agents
+            model.GoalModel.Agents
                 .Where (x => x.Identifier == "test")
                 .ShallBeSuchThat (x => x.Description == expectedDescription);
         }
@@ -152,7 +152,7 @@ namespace KAOSFormalTools.Parsing.Tests
         public void TestAssignedTo (string input)
         {
             var model = parser.Parse (input);
-            model.Goals
+            model.GoalModel.Goals
                 .Where (x => x.Identifier == "goal" & x.AssignedAgents.Count() == 1)
                 .Select (x => x.AssignedAgents)
                 .ShallBeSingle ()
@@ -181,7 +181,7 @@ namespace KAOSFormalTools.Parsing.Tests
         {
             var model = parser.Parse (input);
 
-            model.Goals
+            model.GoalModel.Goals
                 .Where (x => x.Identifier == "goal")
                 .SelectMany (x => x.AssignedAgents)
                 .Select (x => x.Identifier)

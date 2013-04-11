@@ -6,7 +6,7 @@ using KAOSFormalTools.Parsing;
 namespace KAOSFormalTools.Domain.Tests
 {
     [TestFixture()]
-    public class Test
+    public class TestExperimentalResponsibilities
     {
         [Test()]
         public void TestCase ()
