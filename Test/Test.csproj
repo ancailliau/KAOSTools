@@ -18,7 +18,7 @@
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Externalconsole>True</Externalconsole>
+    <ConsolePause>False</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -30,10 +30,24 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="LtlSharp">
+      <HintPath>..\Libraries\LtlSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\KAOSFormalTools.Domain\KAOSFormalTools.Domain.csproj">
+      <Project>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</Project>
+      <Name>KAOSFormalTools.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KAOSFormalTools.Domain.Tests\KAOSFormalTools.Domain.Tests.csproj">
+      <Project>{785D5DDF-8D86-485E-84C6-E429FC6CADE1}</Project>
+      <Name>KAOSFormalTools.Domain.Tests</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

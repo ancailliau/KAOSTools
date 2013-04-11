@@ -57,7 +57,7 @@ namespace KAOSFormalTools.Executable
         protected static GoalModel BuildModel ()
         {
             var parser = new KAOSFormalTools.Parsing.Parser ();
-            return parser.Parse (input, filename);
+            return parser.Parse (input, filename).GoalModel;
         }
         
         protected static void ShowHelp (OptionSet p)

@@ -75,7 +75,7 @@ namespace KAOSFormalTools.TextExporter
         static GoalModel BuildModel (string filename)
         {
             var parser = new KAOSFormalTools.Parsing.Parser ();
-            return parser.Parse (File.ReadAllText (filename));
+            return parser.Parse (File.ReadAllText (filename)).GoalModel;
         }
         
         static void ShowHelp (OptionSet p)
