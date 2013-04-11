@@ -130,8 +130,16 @@ internal sealed partial class GoalModelParser
     private KAOSFormalTools.Parsing.Element BuildAssignedTo (List<Result> results)
     {
         var list = new AssignedToList ();
-        for (int i = 1; i < results.Count; i = i + 2) {
-            list.Values.Add (results[i].Value);
+        if (results[1].Text == "[") {
+            list.AlternativeIdentifier = results[3].Text;
+            for (int i = 6; i < results.Count; i = i + 2) {
+                list.Values.Add (results[i].Value);
+            }
+            
+        } else {
+            for (int i = 1; i < results.Count; i = i + 2) {
+                list.Values.Add (results[i].Value);
+            }
         }
 
         return list;

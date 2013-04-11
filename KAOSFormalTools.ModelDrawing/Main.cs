@@ -88,8 +88,10 @@ namespace KAOSFormalTools.ModelDrawing
                             exporter.ExportRefinement (g, refinement);
                             foreach (var child in refinement.Children) {
                                 exporter.ExportGoal (child);
-                                foreach (var agent in child.AssignedAgents) {
-                                    exporter.ExportResponsibility (agent, child);
+                                foreach (var assignment in child.AssignedAgents) {
+                                    foreach (var agent in assignment.Agents) {
+                                        exporter.ExportResponsibility (agent, child);
+                                    }
                                 }
                             }
                         }
@@ -152,8 +154,10 @@ namespace KAOSFormalTools.ModelDrawing
 
                     foreach (var g in goals) {
                         exporter.ExportGoal (g);
-                        foreach (var agent in g.AssignedAgents) {
-                            exporter.ExportResponsibility (agent, g);
+                        foreach (var assignment in g.AssignedAgents) {
+                            foreach (var agent in assignment.Agents) {
+                                exporter.ExportResponsibility (agent, g);
+                            }
                         }
                     }
                 }

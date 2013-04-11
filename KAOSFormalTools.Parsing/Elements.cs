@@ -84,10 +84,12 @@ namespace KAOSFormalTools.Parsing
 
     public class AssignedToList : Attribute
     {
+        public string AlternativeIdentifier { get; set; }
         public List<Element> Values    { get; set; }
 
         public AssignedToList ()
         {
+            AlternativeIdentifier = "";
             Values = new List<Element> ();
         }
     }

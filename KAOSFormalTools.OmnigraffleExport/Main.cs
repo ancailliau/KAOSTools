@@ -104,7 +104,7 @@ namespace KAOSFormalTools.OmnigraffleExport
                 mapping.Add (agentCanvas, new Dictionary<string, KAOSFormalTools.OmnigraffleExport.Omnigraffle.ShapedGraphic> ());
 
                 var agentGraphic = AddAgent (agentCanvas, agent);
-                foreach (var goal in model.Goals.Where (g => g.AssignedAgents.Contains (agent))) {
+                foreach (var goal in model.Goals.Where (g => g.AssignedAgents.SelectMany(x => x.Agents).Contains (agent))) {
                     var goalGraphic = AddGoal (agentCanvas, goal);
                     AddResponsibility (agentCanvas.GraphicsList, agentGraphic, goalGraphic);
                 }
@@ -213,9 +213,37 @@ namespace KAOSFormalTools.OmnigraffleExport
                 }
             }
             
-            foreach (var agent in goal.AssignedAgents) {
-                var agentGraphic = AddAgent (canvas, agent);
-                AddResponsibility (canvas.GraphicsList, agentGraphic, parentGraphic);
+            foreach (var assignment in goal.AssignedAgents) {
+
+                var circle = AddCircle (canvas.GraphicsList);
+                
+                // We add the arrow to the canvas after the label, so that label is above the arrow
+                var topArrow = AddFilledArrow (canvas.GraphicsList, circle, parentGraphic, false);
+
+                if (!string.IsNullOrEmpty (assignment.AlternativeIdentifier)) {
+                    var alternativeText = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Rectangle, 50, 50, 100, 100);
+                    alternativeText.Text = new Omnigraffle.TextInfo (assignment.AlternativeIdentifier) {
+                        Alignement = KAOSFormalTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
+                        SideMargin = 0, TopBottomMargin = 0
+                    };
+                    alternativeText.FontInfo.Size = 10;
+                    alternativeText.Style.Shadow.Draws = false;
+                    alternativeText.FitText = KAOSFormalTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
+                    alternativeText.Flow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
+                    alternativeText.Style.Fill.Color = new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Color (1, 1, 1);
+                    alternativeText.Style.Stroke.Draws = false;
+                    alternativeText.Line = new LineInfo (topArrow.ID);
+                    canvas.GraphicsList.Add (alternativeText);
+                }
+                
+                // Ad the arrow
+                canvas.GraphicsList.Add (topArrow);
+
+                foreach (var agent in assignment.Agents) {
+                    var agentGraphic = AddAgent (canvas, agent);
+                    AddLine (canvas.GraphicsList, agentGraphic, circle);
+                    // AddResponsibility (canvas.GraphicsList, agentGraphic, parentGraphic);
+                }
             }
         }
         
@@ -459,7 +487,7 @@ namespace KAOSFormalTools.OmnigraffleExport
             graphic.FitText = KAOSFormalTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
             graphic.Flow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
             bool assignedToSoftwareAgents = (
-                from a in goal.AssignedAgents
+                from a in goal.AssignedAgents.SelectMany (x => x.Agents)
                 select a.Type == AgentType.Software).Count () > 0;
             if (assignedToSoftwareAgents)
                 graphic.Style.Fill.Color = new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Color (1, 0.979841, 0.672223);

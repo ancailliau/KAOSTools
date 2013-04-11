@@ -148,12 +148,14 @@ namespace KAOSFormalTools.LatexExporter
                         
             if (g.AssignedAgents.Count > 0) {
                 Console.WriteLine ("\\paragraph{Assigned to : }");
-                Console.WriteLine ("\\begin{itemize}");
-                foreach (var agent in g.AssignedAgents) {
-                    Console.WriteLine ("\\item {0}", agent.Name);
+                foreach (var assignment in g.AssignedAgents) {
+                    Console.WriteLine ("\\begin{itemize}");
+                    foreach (var agent in assignment.Agents)
+                        Console.WriteLine ("\\item {0}", agent.Name);
+                    Console.WriteLine ("\\end{itemize}");
                 }
-                Console.WriteLine ("\\end{itemize}");
             }
+
 
             Console.WriteLine ();
         }
@@ -236,7 +238,7 @@ namespace KAOSFormalTools.LatexExporter
             
             Console.WriteLine ("\\paragraph{Responsibilities :}");
             Console.WriteLine ("\\begin{itemize}");            
-            foreach (var goal in model.Goals.Where (g => g.AssignedAgents.Where (a2 => a2.Name == a.Name).Count() > 0))
+            foreach (var goal in model.Goals.Where (g => g.AssignedAgents.SelectMany(x => x.Agents).Where (a2 => a2.Name == a.Name).Count() > 0))
                 Console.WriteLine ("\\item {0}", goal.Name);
             Console.WriteLine ("\\end{itemize}");
 

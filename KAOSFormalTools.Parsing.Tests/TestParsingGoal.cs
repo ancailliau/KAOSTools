@@ -161,6 +161,7 @@ namespace KAOSFormalTools.Parsing.Tests
                 .ShallOnlyContain (new string[] { "new_obstacle" });
             
             goal.AssignedAgents
+                .SelectMany (x => x.Agents)
                 .Select (x => x.Identifier)
                 .ShallOnlyContain (new string[] { "new_agent" });
         }
@@ -227,6 +228,7 @@ namespace KAOSFormalTools.Parsing.Tests
                 .ShallOnlyContain (new string[] { "new_obstacle", "old_obstacle" });
             
             goal.AssignedAgents
+                .SelectMany (x => x.Agents)
                 .Select (x => x.Identifier)
                 .ShallOnlyContain (new string[] { "new_agent", "old_agent" });
         }

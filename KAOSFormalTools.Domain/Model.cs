@@ -17,14 +17,14 @@ namespace KAOSFormalTools.Domain
 
         public ISet<GoalRefinement>   Refinements     { get; set; }
         public ISet<Obstacle>         Obstruction     { get; set; }
-        public ISet<Agent>            AssignedAgents  { get; set; }
+        public ISet<AgentAssignment>            AssignedAgents  { get; set; }
 
         public Goal ()
         {
             Identifier     = Guid.NewGuid ().ToString ();
             Refinements    = new HashSet<GoalRefinement> ();
             Obstruction    = new HashSet<Obstacle> ();
-            AssignedAgents = new HashSet<Agent> ();
+            AssignedAgents = new HashSet<AgentAssignment> ();
         }
     }
 
@@ -84,6 +84,18 @@ namespace KAOSFormalTools.Domain
     }
 
     public enum AgentType { None, Software, Environment }
+
+    public class AgentAssignment
+    {
+        public string                AlternativeIdentifier { get; set; }
+        public IList<Agent>          Agents                { get; set; }
+
+        public AgentAssignment ()
+        {
+            AlternativeIdentifier = "";
+            Agents = new List<Agent> ();   
+        }
+    }
 
     public class GoalRefinement
     {

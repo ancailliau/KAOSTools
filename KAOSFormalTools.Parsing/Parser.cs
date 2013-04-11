@@ -352,7 +352,7 @@ namespace KAOSFormalTools.Parsing
             string name          = "";
             var    refinements   = new HashSet<GoalRefinement> ();
             var    obstruction   = new HashSet<KAOSFormalTools.Domain.Obstacle> ();
-            var    assignedAgents = new HashSet<KAOSFormalTools.Domain.Agent> ();
+            var    assignedAgents = new HashSet<KAOSFormalTools.Domain.AgentAssignment> ();
 
             foreach (var attribute in parsedGoal.Attributes) {
                 if (attribute is Identifier) {
@@ -407,16 +407,19 @@ namespace KAOSFormalTools.Parsing
                     }
                 
                 } else if (attribute is AssignedToList) {
+                    var assignment = new AgentAssignment();
+                    assignment.AlternativeIdentifier = (attribute as AssignedToList).AlternativeIdentifier;
                     foreach (var assignedto in (attribute as AssignedToList).Values) {
                         if (assignedto is IdentifierOrName) {
                             var candidate = GetOrCreateAgent (assignedto as IdentifierOrName, true);
                             if (candidate != null)
-                                assignedAgents.Add (candidate);
+                                assignment.Agents.Add (candidate);
                         } else if (assignedto is Agent) {
                             var a = BuildAgent (assignedto as Agent);
-                            assignedAgents.Add (a);
+                            assignment.Agents.Add (a);
                         }
                     }
+                    assignedAgents.Add (assignment);
                 }
             }
 
@@ -442,8 +445,9 @@ namespace KAOSFormalTools.Parsing
                     goal.Refinements.Add (r);
                 foreach (var r in obstruction)
                     goal.Obstruction.Add (r);                
-                foreach (var r in assignedAgents)
+                foreach (var r in assignedAgents) {
                     goal.AssignedAgents.Add (r);
+                }
 
             } else {
                 goal.Refinements = refinements;

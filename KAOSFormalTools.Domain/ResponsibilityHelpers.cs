@@ -109,12 +109,14 @@ namespace KAOSFormalTools.Domain
                         RecursiveGetResponsibilities (newNode, childGoal);
                 }
                 
-                foreach (var agent in goal.AssignedAgents) {
-                    var newNode = new ResponsibilityNode (current);
-                    
-                    if (!newNode.Responsibility.ContainsKey(agent))
-                        newNode.Responsibility.Add (agent, new List<Goal> ());
-                    newNode.Responsibility[agent].Add (goal);
+                foreach (var assignment in goal.AssignedAgents) {
+                    foreach (var agent in assignment.Agents) {
+                        var newNode = new ResponsibilityNode (current);
+                        
+                        if (!newNode.Responsibility.ContainsKey(agent))
+                            newNode.Responsibility.Add (agent, new List<Goal> ());
+                        newNode.Responsibility[agent].Add (goal);
+                    }
                 }
                 
             } else {
@@ -123,10 +125,12 @@ namespace KAOSFormalTools.Domain
                         RecursiveGetResponsibilities (current, childGoal);
                 }
                 
-                foreach (var agent in goal.AssignedAgents) {
-                    if (!current.Responsibility.ContainsKey(agent))
-                        current.Responsibility.Add (agent, new List<Goal> ());
-                    current.Responsibility[agent].Add (goal);
+                foreach (var assignment in goal.AssignedAgents) {
+                    foreach (var agent in assignment.Agents) {
+                        if (!current.Responsibility.ContainsKey(agent))
+                            current.Responsibility.Add (agent, new List<Goal> ());
+                        current.Responsibility[agent].Add (goal);
+                    }
                 }
             }
         }

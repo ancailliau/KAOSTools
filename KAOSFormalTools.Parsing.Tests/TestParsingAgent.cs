@@ -154,7 +154,8 @@ namespace KAOSFormalTools.Parsing.Tests
             var model = parser.Parse (input);
             model.GoalModel.Goals
                 .Where (x => x.Identifier == "goal" & x.AssignedAgents.Count() == 1)
-                .Select (x => x.AssignedAgents)
+                .SelectMany (x => x.AssignedAgents)
+                .SelectMany (x => x.Agents)
                 .ShallBeSingle ()
                 .ShallBeSuchThat (x => x.Identifier == "agent");
         }
@@ -184,6 +185,7 @@ namespace KAOSFormalTools.Parsing.Tests
             model.GoalModel.Goals
                 .Where (x => x.Identifier == "goal")
                 .SelectMany (x => x.AssignedAgents)
+                .SelectMany (x => x.Agents)
                 .Select (x => x.Identifier)
                 .ShallOnlyContain (new string[] { "agent1", "agent2" });
         }

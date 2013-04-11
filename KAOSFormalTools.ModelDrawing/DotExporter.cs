@@ -24,7 +24,7 @@ namespace KAOSFormalTools.ModelDrawing
 
         public void ExportGoal (Goal g)
         {
-            bool assignedToSoftwareAgents = (from a in g.AssignedAgents select a.Type == AgentType.Software ).Count () > 0;
+            bool assignedToSoftwareAgents = (from a in g.AssignedAgents.SelectMany (x => x.Agents) select a.Type == AgentType.Software ).Count () > 0;
             var name = new StringBuilder (g.Name);
             if (name.Length > 30) {
                 var midspace = g.Name.IndexOf (' ', (g.Name.Length / 2) - 1);
@@ -178,8 +178,10 @@ namespace KAOSFormalTools.ModelDrawing
 
             foreach (var g in model.Goals) {
                 if (g.AssignedAgents.Count > 0) {
-                    foreach (var agent in g.AssignedAgents) {
-                        ExportResponsibility (agent, g);
+                    foreach (var assignment in g.AssignedAgents) {
+                        foreach (var agent in assignment.Agents) {
+                            ExportResponsibility (agent, g);
+                        }
                     }
                 }
             }
