@@ -360,6 +360,14 @@ namespace KAOSFormalTools.OmnigraffleExport
             if (graphic.Text != default(Omnigraffle.TextInfo))
                 dict.Add ("Text", ExportText (graphic));
 
+            if (graphic.Line != null) {
+                var d2 = new PListDict();
+                d2.Add ("ID", new PListInteger(graphic.Line.ID));
+                d2.Add ("Position", new PListReal(graphic.Line.Position));
+                d2.Add ("RotationType", new PListInteger(graphic.Line.RotationType == Omnigraffle.RotationType.Default ? 0 : 0));
+                dict.Add ("Line", d2);
+            }
+
             return dict;
         }
 
@@ -447,6 +455,8 @@ namespace KAOSFormalTools.OmnigraffleExport
         static IPListElement ExportStroke (Omnigraffle.StrokeInfo stroke)
         {
             var dict = new PListDict ();
+
+            if (stroke.Draws) {
             dict.Add ("HeadArrow", ExportArrow (stroke.HeadArrow));
             dict.Add ("TailArrow", ExportArrow (stroke.TailArrow));
             
@@ -455,6 +465,9 @@ namespace KAOSFormalTools.OmnigraffleExport
             dict.Add ("Width", new PListReal (stroke.Width));
 
             dict.Add ("CornerRadius", new PListReal (stroke.CornerRadius));
+            } else {
+                dict.Add ("Draws", new PListString (stroke.Draws ? "YES" : "NO"));
+            }
 
             return dict;
         }
@@ -518,10 +531,10 @@ namespace KAOSFormalTools.OmnigraffleExport
 
 \f0\fs{2} \cf0 {0}}}", GetRtfUnicodeEscapedString (graphic.Text.Text), graphic.FontInfo.Font, graphic.FontInfo.Size * 2, alignement)));
 
-            if (graphic.Text.SideMargin > 0)
+            // if (graphic.Text.SideMargin > 0)
                 dict.Add ("Pad", new PListInteger (graphic.Text.SideMargin));
 
-            if (graphic.Text.TopBottomMargin > 0)
+            // if (graphic.Text.TopBottomMargin > 0)
                 dict.Add ("VerticalPad", new PListInteger (graphic.Text.TopBottomMargin));
 
             return dict;

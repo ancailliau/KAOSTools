@@ -212,6 +212,8 @@ namespace KAOSFormalTools.OmnigraffleExport.Omnigraffle
 
         public bool AllowConnections { get; set; }
 
+        public LineInfo Line { get; set; } 
+
 
         public ShapedGraphic (int id, Shape shape, double x1, double y1, double x2, double y2)
             : base (id)
@@ -223,12 +225,29 @@ namespace KAOSFormalTools.OmnigraffleExport.Omnigraffle
             this.ShapeData = new ShapeData ();
 
             FontInfo = new FontInfo ();
-
             Style = new StyleInfo ();
 
             VFlip = false;
             HFlip = false;
             AllowConnections = true;
+            Line = null;
+        }
+    }
+
+    public enum RotationType {
+        Default
+    }
+
+    public class LineInfo {
+        public int ID { get; set; }
+        public double Position { get; set; }
+        public RotationType RotationType { get; set; }
+
+        public LineInfo (int ID)
+        {
+            this.ID = ID;
+            this.Position = 0.5d;
+            this.RotationType = RotationType.Default;
         }
     }
 
@@ -329,8 +348,8 @@ namespace KAOSFormalTools.OmnigraffleExport.Omnigraffle
         public FontInfo ()
         {
             Color = new Color (0, 0, 0);
-            Font = "Helvetica";
-            Size = 14;
+            Font = "Arial";
+            Size = 12;
         }
     }
 
@@ -354,6 +373,7 @@ namespace KAOSFormalTools.OmnigraffleExport.Omnigraffle
         public Arrow TailArrow { get; set; }
         public bool Legacy { get; set; }
         public double Width { get; set; }
+        public bool Draws { get; set; }
 
         public StrokeInfo ()
         {
@@ -363,6 +383,7 @@ namespace KAOSFormalTools.OmnigraffleExport.Omnigraffle
             Legacy = true;
             Width = 1;
             CornerRadius = 0;
+            Draws = true;
         }
     }
 

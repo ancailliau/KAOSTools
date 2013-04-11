@@ -179,8 +179,28 @@ namespace KAOSFormalTools.OmnigraffleExport
             foreach (var refinement in goal.Refinements.Reverse ()) {
                 var circle = AddCircle (canvas.GraphicsList);
 
-                AddFilledArrow (canvas.GraphicsList, circle, parentGraphic);
-                
+                // We add the arrow to the canvas after the label, so that label is above the arrow
+                var topArrow = AddFilledArrow (canvas.GraphicsList, circle, parentGraphic, false);
+
+                if (!string.IsNullOrEmpty (refinement.AlternativeIdentifier)) {
+                    var alternativeText = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Rectangle, 50, 50, 100, 100);
+                    alternativeText.Text = new Omnigraffle.TextInfo (refinement.AlternativeIdentifier) {
+                        Alignement = KAOSFormalTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
+                        SideMargin = 0, TopBottomMargin = 0
+                    };
+                    alternativeText.FontInfo.Size = 10;
+                    alternativeText.Style.Shadow.Draws = false;
+                    alternativeText.FitText = KAOSFormalTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
+                    alternativeText.Flow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
+                    alternativeText.Style.Fill.Color = new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Color (1, 1, 1);
+                    alternativeText.Style.Stroke.Draws = false;
+                    alternativeText.Line = new LineInfo (topArrow.ID);
+                    canvas.GraphicsList.Add (alternativeText);
+                }
+
+                // Ad the arrow
+                canvas.GraphicsList.Add (topArrow);
+
                 foreach (var child in refinement.Children.Reverse ()) {
                     RecursiveExportGoal (canvas, child);
                     var childGraphic = mapping[canvas][child.Identifier];
@@ -260,7 +280,7 @@ namespace KAOSFormalTools.OmnigraffleExport
             return circle;
         }
 
-        static Omnigraffle.LineGraphic AddLine (List<Graphic> canvas, Omnigraffle.Graphic @from, Omnigraffle.Graphic to)
+        static Omnigraffle.LineGraphic AddLine (List<Graphic> canvas, Omnigraffle.Graphic @from, Omnigraffle.Graphic to, bool add = true)
         {
             var line = new Omnigraffle.LineGraphic (NextId);
             line.Head = new Omnigraffle.LineEndInfo (to.ID);
@@ -276,7 +296,8 @@ namespace KAOSFormalTools.OmnigraffleExport
 
             line.Style.Shadow.Draws = false;
 
-            canvas.Add (line);
+            if (add)
+                canvas.Add (line);
 
             return line;
         }
@@ -289,9 +310,9 @@ namespace KAOSFormalTools.OmnigraffleExport
         }
 
 
-        static Omnigraffle.LineGraphic AddFilledArrow (List<Graphic>  canvas, Omnigraffle.Graphic @from, Omnigraffle.Graphic to)
+        static Omnigraffle.LineGraphic AddFilledArrow (List<Graphic>  canvas, Omnigraffle.Graphic @from, Omnigraffle.Graphic to, bool add = true)
         {
-            var line = AddLine (canvas, @from, to);
+            var line = AddLine (canvas, @from, to, add);
             line.Style.Stroke.HeadArrow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Arrow.FilledArrow;
             return line;
         }
@@ -416,7 +437,7 @@ namespace KAOSFormalTools.OmnigraffleExport
 
         static ShapedGraphic RenderGoal (Goal goal)
         {
-            var graphic = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Bezier, 50, 50, 200, 70);
+            var graphic = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Bezier, 50, 50, 175, 70);
             graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (-0.45, -0.5));
             graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (-0.45, -0.5));
             graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (0.5, -0.5));
