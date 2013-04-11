@@ -9,11 +9,11 @@ namespace KAOSFormalTools.Parsing
     public class Parser
     {
         private GoalModelParser _parser = new GoalModelParser ();
-        private GoalModel model;
+        private KAOSModel model;
 
         public Parser (){}
 
-        public GoalModel Parse (string input, string filename, GoalModel model)
+        public KAOSModel Parse (string input, string filename, KAOSModel model)
         {
             Elements elements = null;
 
@@ -32,12 +32,12 @@ namespace KAOSFormalTools.Parsing
             return model;
         }
 
-        public GoalModel Parse (string input, string filename)
+        public KAOSModel Parse (string input, string filename)
         {
-            return Parse (input, filename, new GoalModel());
+            return Parse (input, filename, new KAOSModel());
         }
 
-        public GoalModel Parse (string input)
+        public KAOSModel Parse (string input)
         {
             return Parse (input, null);
         }
@@ -98,24 +98,24 @@ namespace KAOSFormalTools.Parsing
                 }
             }
 
-            if (model.GoalExists (goal.Identifier)) {
-                var g2 = model.GetGoalByIdentifier (goal.Identifier);
+            if (model.GoalModel.GoalExists (goal.Identifier)) {
+                var g2 = model.GoalModel.GetGoalByIdentifier (goal.Identifier);
                 if (!parsedGoal.Override) {
                     g2.Merge (goal);
                     return g2;
                 } else {
-                    model.ReplaceGoal (g2, goal);
+                    model.GoalModel.ReplaceGoal (g2, goal);
                     return goal;
                 }
             }
             
-            if (identifierAttribute == null && model.GetGoalsByName (goal.Name).Count() == 1) {
-                var g2 = model.GetGoalsByName (goal.Name).Single ();
+            if (identifierAttribute == null && model.GoalModel.GetGoalsByName (goal.Name).Count() == 1) {
+                var g2 = model.GoalModel.GetGoalsByName (goal.Name).Single ();
                 if (!parsedGoal.Override) {
                     g2.Merge (goal);
                     return g2;
                 } else {
-                    model.ReplaceGoal (g2, goal);
+                    model.GoalModel.ReplaceGoal (g2, goal);
                     return goal;
                 }
             }
@@ -125,7 +125,7 @@ namespace KAOSFormalTools.Parsing
             if (identifierAttribute == null)
                 parsedGoal.Attributes.Add (new Identifier (goal.Identifier));
 
-            model.Goals.Add (goal);
+            model.GoalModel.Goals.Add (goal);
 
             return goal;
         }
@@ -154,14 +154,14 @@ namespace KAOSFormalTools.Parsing
                 }
             }
 
-            if (model.DomainPropertyExists (domprop.Identifier)) {
-                var d2 = model.GetDomainPropertyByIdentifier (domprop.Identifier);
+            if (model.GoalModel.DomainPropertyExists (domprop.Identifier)) {
+                var d2 = model.GoalModel.GetDomainPropertyByIdentifier (domprop.Identifier);
                 d2.Merge (domprop);
                 return d2;
             }
             
-            if (identifierAttribute == null && model.GetDomainPropertiesByName (domprop.Name).Count() == 1) {
-                var d2 = model.GetDomainPropertiesByName (domprop.Name).Single ();
+            if (identifierAttribute == null && model.GoalModel.GetDomainPropertiesByName (domprop.Name).Count() == 1) {
+                var d2 = model.GoalModel.GetDomainPropertiesByName (domprop.Name).Single ();
                 d2.Merge (domprop);
                 return d2;
             }
@@ -171,7 +171,7 @@ namespace KAOSFormalTools.Parsing
             if (identifierAttribute == null)
                 parsedDomProp.Attributes.Add (new Identifier (domprop.Identifier));
 
-            model.DomainProperties.Add (domprop);
+            model.GoalModel.DomainProperties.Add (domprop);
 
             return domprop;
         }
@@ -200,14 +200,14 @@ namespace KAOSFormalTools.Parsing
                 }
             }
 
-            if (model.ObstacleExists (obstacle.Identifier)) {
-                var o2 = model.GetObstacleByIdentifier (obstacle.Identifier);
+            if (model.GoalModel.ObstacleExists (obstacle.Identifier)) {
+                var o2 = model.GoalModel.GetObstacleByIdentifier (obstacle.Identifier);
                 o2.Merge (obstacle);
                 return o2;
             }
 
-            if (identifierAttribute == null && model.GetObstaclesByName (obstacle.Name).Count() == 1) {
-                var o2 = model.GetObstaclesByName (obstacle.Name).Single ();
+            if (identifierAttribute == null && model.GoalModel.GetObstaclesByName (obstacle.Name).Count() == 1) {
+                var o2 = model.GoalModel.GetObstaclesByName (obstacle.Name).Single ();
                 o2.Merge (obstacle);
                 return o2;
             }
@@ -217,7 +217,7 @@ namespace KAOSFormalTools.Parsing
             if (identifierAttribute == null)
                 parsedObstacle.Attributes.Add (new Identifier (obstacle.Identifier));
 
-            model.Obstacles.Add (obstacle);
+            model.GoalModel.Obstacles.Add (obstacle);
 
             return obstacle;
         }
@@ -244,7 +244,7 @@ namespace KAOSFormalTools.Parsing
                 }
             }
 
-            if (model.AgentExists (agent.Identifier))
+            if (model.GoalModel.AgentExists (agent.Identifier))
                 throw new ParsingException (string.Format ("Identifier '{0}' is not unique", agent.Identifier));
             
             // Ensure that parsed agent has the same identifer than the new one
@@ -252,7 +252,7 @@ namespace KAOSFormalTools.Parsing
             if (identifierAttribute == null)
                 parsedAgent.Attributes.Add (new Identifier (agent.Identifier));
 
-            model.Agents.Add (agent);
+            model.GoalModel.Agents.Add (agent);
 
             return agent;
         }
@@ -324,7 +324,7 @@ namespace KAOSFormalTools.Parsing
 
             KAOSFormalTools.Domain.Obstacle obstacle = null;
             if (string.IsNullOrEmpty (identifier)) {
-                var obstacles = model.GetObstaclesByName (name);
+                var obstacles = model.GoalModel.GetObstaclesByName (name);
                 if (obstacles.Count() > 1)
                     throw new ParsingException (string.Format ("Obstacle '{0}' is ambiguous", name));
                 else if (obstacles.Count() == 0)
@@ -333,7 +333,7 @@ namespace KAOSFormalTools.Parsing
                     obstacle = obstacles.Single ();
 
             } else {
-                obstacle = model.GetObstacleByIdentifier (identifier);
+                obstacle = model.GoalModel.GetObstacleByIdentifier (identifier);
                 
                 if (obstacle == null)
                     throw new ParsingException (string.Format ("Obstacle '{0}' not found", identifier));
@@ -364,6 +364,8 @@ namespace KAOSFormalTools.Parsing
                 } else if (attribute is RefinedByList) {
                     var children = attribute as RefinedByList;
                     var refinement = new GoalRefinement ();
+
+                    refinement.AlternativeIdentifier = children.AlternativeIdentifier;
 
                     foreach (var child in children.Values) {
                         if (child is IdentifierOrName) {
@@ -420,7 +422,7 @@ namespace KAOSFormalTools.Parsing
 
             KAOSFormalTools.Domain.Goal goal = null;
             if (string.IsNullOrEmpty (identifier)) {
-                var goals = model.GetGoalsByName (name);
+                var goals = model.GoalModel.GetGoalsByName (name);
                 if (goals.Count() > 1)
                     throw new ParsingException (string.Format ("Goal '{0}' is ambiguous", name));
                 else if (goals.Count() == 0)
@@ -429,7 +431,7 @@ namespace KAOSFormalTools.Parsing
                     goal = goals.Single ();
 
             } else {
-                goal = model.GetGoalByIdentifier (identifier);
+                goal = model.GoalModel.GetGoalByIdentifier (identifier);
                 
                 if (goal == null)
                     throw new ParsingException (string.Format ("Goal '{0}' not found", identifier));
@@ -460,14 +462,14 @@ namespace KAOSFormalTools.Parsing
 
             if (attribute is Name) {
                 var name = (attribute as Name).Value;
-                var candidates = model.GetObstaclesByName (name);
+                var candidates = model.GoalModel.GetObstaclesByName (name);
 
                 if (candidates.Count() == 0) {
                     if (create) {
                         candidate = new KAOSFormalTools.Domain.Obstacle() { 
                             Name = (attribute as Name).Value
                         };
-                        model.Obstacles.Add (candidate);
+                        model.GoalModel.Obstacles.Add (candidate);
                     } else {
                         throw new ParsingException (string.Format ("Obstacle '{0}' could not be found", (attribute as Name).Value));
                     }
@@ -480,14 +482,14 @@ namespace KAOSFormalTools.Parsing
                 }
 
             } else if (attribute is Identifier) {
-                candidate = model.GetObstacleByIdentifier ((attribute as Identifier).Value);
+                candidate = model.GoalModel.GetObstacleByIdentifier ((attribute as Identifier).Value);
 
                 if (candidate == null) {
                     if (create) {
                         candidate = new KAOSFormalTools.Domain.Obstacle() { 
                             Identifier = (attribute as Identifier).Value
                         };
-                        model.Obstacles.Add (candidate);
+                        model.GoalModel.Obstacles.Add (candidate);
                     } else {
                         throw new ParsingException (string.Format ("Obstacle '{0}' could not be found", (attribute as Identifier).Value));
                     }
@@ -502,7 +504,7 @@ namespace KAOSFormalTools.Parsing
             
             if (attribute is Name) {
                 var name = (attribute as Name).Value;
-                var domprop_candidate = model.GetDomainPropertiesByName (name);
+                var domprop_candidate = model.GoalModel.GetDomainPropertiesByName (name);
 
                 if (domprop_candidate.Count() > 1) {
                     return domprop_candidate.First ();
@@ -513,7 +515,7 @@ namespace KAOSFormalTools.Parsing
 
             } else if (attribute is Identifier) {
                 var identifier = (attribute as Identifier).Value;
-                return model.GetDomainPropertyByIdentifier (identifier);
+                return model.GoalModel.GetDomainPropertyByIdentifier (identifier);
             }
 
             return null;
@@ -525,14 +527,14 @@ namespace KAOSFormalTools.Parsing
 
             if (attribute is Name) {
                 var name = (attribute as Name).Value;
-                var candidates = model.GetGoalsByName (name);
+                var candidates = model.GoalModel.GetGoalsByName (name);
 
                 if (candidates.Count() == 0) {
                         if (create) {
                             candidate = new KAOSFormalTools.Domain.Goal() { 
                                 Name = (attribute as Name).Value
                             };
-                            model.Goals.Add (candidate);
+                            model.GoalModel.Goals.Add (candidate);
                         } else {
                             throw new ParsingException (string.Format ("Goal '{0}' could not be found", (attribute as Name).Value));
                         }
@@ -545,14 +547,14 @@ namespace KAOSFormalTools.Parsing
                 }
 
             } else if (attribute is Identifier) {
-                candidate = model.GetGoalByIdentifier ((attribute as Identifier).Value);
+                candidate = model.GoalModel.GetGoalByIdentifier ((attribute as Identifier).Value);
 
                 if (candidate == null) {
                     if (create) {
                         candidate = new KAOSFormalTools.Domain.Goal() { 
                             Identifier = (attribute as Identifier).Value
                         };
-                        model.Goals.Add (candidate);
+                        model.GoalModel.Goals.Add (candidate);
                     } else {
                         throw new ParsingException (string.Format ("Goal '{0}' could not be found", (attribute as Identifier).Value));
                     }
@@ -568,14 +570,14 @@ namespace KAOSFormalTools.Parsing
 
             if (attribute is Name) {
                 var name = (attribute as Name).Value;
-                var candidates = model.GetAgentsByName (name);
+                var candidates = model.GoalModel.GetAgentsByName (name);
 
                 if (candidates.Count() == 0) {
                     if (create) {
                         candidate = new KAOSFormalTools.Domain.Agent() { 
                             Name = (attribute as Name).Value
                         };
-                        model.Agents.Add (candidate);
+                        model.GoalModel.Agents.Add (candidate);
                     } else {
                         throw new ParsingException (string.Format ("Agent '{0}' could not be found", (attribute as Name).Value));
                     }
@@ -588,14 +590,14 @@ namespace KAOSFormalTools.Parsing
                 }
 
             } else if (attribute is Identifier) {
-                candidate = model.GetAgentByIdentifier ((attribute as Identifier).Value);
+                candidate = model.GoalModel.GetAgentByIdentifier ((attribute as Identifier).Value);
 
                 if (candidate == null) {
                     if (create) {
                         candidate = new KAOSFormalTools.Domain.Agent () { 
                             Identifier = (attribute as Identifier).Value
                         };
-                        model.Agents.Add (candidate);
+                        model.GoalModel.Agents.Add (candidate);
                     } else {
                         throw new ParsingException (string.Format ("Agent '{0}' could not be found", (attribute as Identifier).Value));
                     }

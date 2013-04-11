@@ -62,10 +62,12 @@ namespace KAOSFormalTools.Parsing
 
     public class RefinedByList : Attribute
     {
+        public string AlternativeIdentifier { get; set; }
         public List<Element> Values    { get; set; }
 
         public RefinedByList ()
         {
+            AlternativeIdentifier = "";
             Values = new List<Element> ();
         }
     }

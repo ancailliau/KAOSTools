@@ -560,7 +560,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// RefinedByGoal := 'refinedby' S IdOrNameOrGoal (S ',' S IdOrNameOrGoal)*
+	// RefinedByGoal := 'refinedby' ('[' S '"' String '"' S ']')? S IdOrNameOrGoal (S ',' S IdOrNameOrGoal)*
 	private State DoParseRefinedByGoalRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -568,6 +568,15 @@ internal sealed partial class GoalModelParser
 		
 		_state = DoSequence(_state, results,
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "refinedby");},
+			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 1,
+				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
+					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, "[");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
+					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, "\"");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "String");},
+					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, "\"");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
+					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, "]");});});},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "IdOrNameOrGoal");},
 			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,

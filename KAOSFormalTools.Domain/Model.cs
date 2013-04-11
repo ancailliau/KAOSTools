@@ -87,11 +87,13 @@ namespace KAOSFormalTools.Domain
 
     public class GoalRefinement
     {
+        public string                AlternativeIdentifier { get; set; }
         public IList<Goal>           Children          { get; set; }
         public IList<DomainProperty> DomainProperties  { get; set; }
 
         public GoalRefinement ()
         {
+            AlternativeIdentifier = "";
             Children = new List<Goal> ();
             DomainProperties = new List<DomainProperty> ();
         }

@@ -28,7 +28,7 @@ RDS                := 'rds' S Float                                       `value
 Probability        := ('probability' / 'eps') S Float                               `value = BuildProbability(results);`
                                                                          
 RefinedByObstacle  := 'refinedby'    S IdOrNameOrObstacle (S ',' S IdOrNameOrObstacle)*       `value = BuildRefinedBy(results);`
-RefinedByGoal      := 'refinedby'    S IdOrNameOrGoal (S ',' S IdOrNameOrGoal)*       `value = BuildRefinedBy(results);`
+RefinedByGoal      := 'refinedby' ('[' S '"' String '"' S ']')?    S IdOrNameOrGoal (S ',' S IdOrNameOrGoal)*       `value = BuildRefinedBy(results);`
 ObstructedBy       := 'obstructedby' S IdOrNameOrObstacle (S ',' S IdOrNameOrObstacle)*       `value = BuildObstructedBy(results);`
 AssignedTo         := 'assignedto'   S IdOrNameOrAgent (S ',' S IdOrNameOrAgent)*       `value = BuildAssignedTo(results);`
 ResolvedBy         := 'resolvedby'   S IdOrNameOrGoal (S ',' S IdOrNameOrGoal)*       `value = BuildResolvedBy(results);`
