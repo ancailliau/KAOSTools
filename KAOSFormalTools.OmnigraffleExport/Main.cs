@@ -13,6 +13,7 @@ namespace KAOSFormalTools.OmnigraffleExport
     class MainClass : KAOSFormalToolsCLI
     {
         static Dictionary<Omnigraffle.Sheet, Dictionary<string, Omnigraffle.ShapedGraphic>> mapping;
+        static ExportOptions exportOptions;
 
         private static int _i = 1;
         private static int NextId {
@@ -25,8 +26,12 @@ namespace KAOSFormalTools.OmnigraffleExport
         {
             string filename = "";
             bool experimental = false;
+            
+            exportOptions = new ExportOptions ();
+
             options.Add ("o|output=", "Export in specified filename", v => filename = v);
             options.Add ("experimental", "Export experimental diagrams", v => experimental = true);
+            options.Add ("i|identifier", "Display identifier in diagrams", v => exportOptions.DisplayIdentifiers = true);
 
             Init (args);
 
@@ -479,7 +484,19 @@ namespace KAOSFormalTools.OmnigraffleExport
             graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (-0.5, 0.5));
             graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (-0.5, 0.5));
             graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (-0.45, -0.5));
-            graphic.Text = new Omnigraffle.TextInfo (string.IsNullOrEmpty (goal.Name) ? goal.Identifier : goal.Name) {
+
+            string text = "";
+            if (string.IsNullOrEmpty (goal.Name)) {
+                text = goal.Identifier;
+            } else {
+                text = goal.Name;
+
+                if (exportOptions.DisplayIdentifiers) {
+                    text = goal.Identifier + " : " + text;
+                }
+            }
+
+            graphic.Text = new Omnigraffle.TextInfo (text) {
                 Alignement = KAOSFormalTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
                 SideMargin = 10,
                 TopBottomMargin = 3

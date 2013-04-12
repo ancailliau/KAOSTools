@@ -46,6 +46,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="OmniGraffleGenerator.cs" />
     <Compile Include="Omnigraffle\Graphic.cs" />
+    <Compile Include="ExportOptions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
