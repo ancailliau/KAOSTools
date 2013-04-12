@@ -487,15 +487,19 @@ namespace KAOSFormalTools.OmnigraffleExport
             graphic.Style.Shadow.Draws = false;
             graphic.FitText = KAOSFormalTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
             graphic.Flow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
-            bool assignedToSoftwareAgents = (
+
+            bool assignedToEnvAgents = (
                 from a in goal.AssignedAgents.SelectMany (x => x.Agents)
-                where a.Type == AgentType.Software select a).Count () > 0;
-            if (assignedToSoftwareAgents)
+                where a.Type != AgentType.Software select a).Count () > 0;
+
+            if (assignedToEnvAgents)
                 graphic.Style.Fill.Color = new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Color (1, 0.979841, 0.672223);
             else
                 graphic.Style.Fill.Color = new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Color (0.810871, 0.896814, 1);
+
             if (goal.AssignedAgents.Count > 0)
                 graphic.Style.Stroke.Width = 2;
+
             return graphic;
         }
 
