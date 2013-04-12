@@ -443,7 +443,8 @@ namespace KAOSFormalTools.OmnigraffleExport
             graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (-0.5, 0));
             graphic.ShapeData.UnitPoints.Add (new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point (-0.45, -0.5));
             graphic.Text = new Omnigraffle.TextInfo ((string.IsNullOrEmpty (agent.Name) ? agent.Identifier : agent.Name)) {
-                Alignement = KAOSFormalTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center
+                Alignement = KAOSFormalTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
+                SideMargin = 10, TopBottomMargin = 3
             };
             graphic.Style.Shadow.Draws = false;
             graphic.FitText = KAOSFormalTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
@@ -488,7 +489,7 @@ namespace KAOSFormalTools.OmnigraffleExport
             graphic.Flow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
             bool assignedToSoftwareAgents = (
                 from a in goal.AssignedAgents.SelectMany (x => x.Agents)
-                select a.Type == AgentType.Software).Count () > 0;
+                where a.Type == AgentType.Software select a).Count () > 0;
             if (assignedToSoftwareAgents)
                 graphic.Style.Fill.Color = new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Color (1, 0.979841, 0.672223);
             else
