@@ -30,6 +30,17 @@ internal sealed partial class GoalModelParser
         return attrs;
     }
 
+    private KAOSFormalTools.Parsing.Predicate BuildPredicate (List<Result> results)
+    {
+        var predicate = new KAOSFormalTools.Parsing.Predicate ();
+
+        for (int i = 1; i < results.Count; i++) {
+            predicate.Attributes.Add (results[i].Value as KAOSFormalTools.Parsing.Attribute);
+        }
+        
+        return predicate;
+    }
+
     private KAOSFormalTools.Parsing.Element BuildGoal (List<Result> results)
     {
         var goal = new KAOSFormalTools.Parsing.Goal ();
@@ -164,6 +175,16 @@ internal sealed partial class GoalModelParser
     private KAOSFormalTools.Parsing.Element BuildName (List<Result> results)
     {
         return new KAOSFormalTools.Parsing.Name(results[2].Text);
+    }
+
+    private KAOSFormalTools.Parsing.Element BuildStringFormalSpec (List<Result> results)
+    {
+        return new KAOSFormalTools.Parsing.StringFormalSpec(results[2].Text);
+    }
+
+    private KAOSFormalTools.Parsing.Element BuildSignature (List<Result> results)
+    {
+        return new KAOSFormalTools.Parsing.Signature(results[2].Text);
     }
 
     private KAOSFormalTools.Parsing.Element BuildFormalSpec (List<Result> results)

@@ -4,9 +4,10 @@ debug =
 
 
 Start              := S Elements S;
-Elements           := ( ( Goal / DomProp / Obstacle / Agent / Import / DomHyp ) S )*                     `value = BuildElements (results);`
+Elements           := ( ( Predicate / Goal / DomProp / Obstacle / Agent / Import / DomHyp ) S )*                     `value = BuildElements (results);`
 
 Import             := 'import' S '"' String '"' `value = Import(results[2].Text);`
+Predicate := 'begin' S 'predicate' S (PredicateAttribute S)* 'end' `value = BuildPredicate(results);`
                                                                          
 Goal               := ( 'begin' / 'override' ) S 'goal'                   S (GoalAttribute S)*      'end'   `value = BuildGoal(results);`
 DomProp            := 'begin' S ('domainproperty' / 'domprop' )         S (DomPropAttribute S)*   'end'   `value = BuildDomainProperty(results);`
@@ -21,8 +22,12 @@ DomHypAttribute    := ( Id / Name / Definition )                          `value
 ObstacleAttribute  := ( Id / Name / Definition / FormalSpec / RefinedByObstacle / ResolvedBy / Probability )              `value = results[0].Value;`
 AgentAttribute     := ( Id / Name / Description )                                       `value = results[0].Value;`
                                                                          
+PredicateAttribute := ( Name / Definition / Signature / StringFormalSpec ) `value = results[0].Value;`
+
 Id                 := 'id'         S Identifier                           `value = BuildId(results);`
 Name               := 'name'       S '"' String '"'                       `value = BuildName(results);`
+Signature          := 'signature'  S '"' String '"'                       `value = BuildSignature(results);`
+StringFormalSpec   := 'formalspec' S '"' String '"'                       `value = BuildStringFormalSpec(results);`
 FormalSpec         := 'formalspec' S '"' String '"'                       `value = BuildFormalSpec(results);`
 Definition         := 'definition' S '"' String '"'                       `value = BuildDefinition(results);`
 Description        := ('definition' / 'description') S ('"' String '"' / '"' '"')          `value = BuildDescription(results);`

@@ -42,6 +42,7 @@ internal sealed partial class GoalModelParser
 		m_nonterminals.Add("Start", new ParseMethod[]{this.DoParseStartRule});
 		m_nonterminals.Add("Elements", new ParseMethod[]{this.DoParseElementsRule});
 		m_nonterminals.Add("Import", new ParseMethod[]{this.DoParseImportRule});
+		m_nonterminals.Add("Predicate", new ParseMethod[]{this.DoParsePredicateRule});
 		m_nonterminals.Add("Goal", new ParseMethod[]{this.DoParseGoalRule});
 		m_nonterminals.Add("DomProp", new ParseMethod[]{this.DoParseDomPropRule});
 		m_nonterminals.Add("Obstacle", new ParseMethod[]{this.DoParseObstacleRule});
@@ -52,8 +53,11 @@ internal sealed partial class GoalModelParser
 		m_nonterminals.Add("DomHypAttribute", new ParseMethod[]{this.DoParseDomHypAttributeRule});
 		m_nonterminals.Add("ObstacleAttribute", new ParseMethod[]{this.DoParseObstacleAttributeRule});
 		m_nonterminals.Add("AgentAttribute", new ParseMethod[]{this.DoParseAgentAttributeRule});
+		m_nonterminals.Add("PredicateAttribute", new ParseMethod[]{this.DoParsePredicateAttributeRule});
 		m_nonterminals.Add("Id", new ParseMethod[]{this.DoParseIdRule});
 		m_nonterminals.Add("Name", new ParseMethod[]{this.DoParseNameRule});
+		m_nonterminals.Add("Signature", new ParseMethod[]{this.DoParseSignatureRule});
+		m_nonterminals.Add("StringFormalSpec", new ParseMethod[]{this.DoParseStringFormalSpecRule});
 		m_nonterminals.Add("FormalSpec", new ParseMethod[]{this.DoParseFormalSpecRule});
 		m_nonterminals.Add("Definition", new ParseMethod[]{this.DoParseDefinitionRule});
 		m_nonterminals.Add("Description", new ParseMethod[]{this.DoParseDescriptionRule});
@@ -109,7 +113,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Elements := ((Goal / DomProp / Obstacle / Agent / Import / DomHyp) S)*
+	// Elements := ((Predicate / Goal / DomProp / Obstacle / Agent / Import / DomHyp) S)*
 	private State DoParseElementsRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -118,6 +122,7 @@ internal sealed partial class GoalModelParser
 		_state = DoRepetition(_state, results, 0, 2147483647,
 			delegate (State s, List<Result> r) {return DoSequence(s, r,
 				delegate (State s2, List<Result> r2) {return DoChoice(s2, r2,
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Predicate");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Goal");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "DomProp");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Obstacle");},
@@ -153,6 +158,33 @@ internal sealed partial class GoalModelParser
 		{
 			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
 			value = Import(results[2].Text);
+			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+		}
+		
+		return _state;
+	}
+	
+	// Predicate := 'begin' S 'predicate' S (PredicateAttribute S)* 'end'
+	private State DoParsePredicateRule(State _state, List<Result> _outResults)
+	{
+		State _start = _state;
+		List<Result> results = new List<Result>();
+		
+		_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "begin");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "predicate");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,
+				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "PredicateAttribute");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");});});},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "end");});
+		
+		if (_state.Parsed)
+		{
+			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			value = BuildPredicate(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
 		
@@ -422,6 +454,28 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
+	// PredicateAttribute := Name / Definition / Signature / StringFormalSpec
+	private State DoParsePredicateAttributeRule(State _state, List<Result> _outResults)
+	{
+		State _start = _state;
+		List<Result> results = new List<Result>();
+		
+		_state = DoChoice(_state, results,
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Name");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Definition");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Signature");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "StringFormalSpec");});
+		
+		if (_state.Parsed)
+		{
+			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			value = results[0].Value;
+			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+		}
+		
+		return _state;
+	}
+	
 	// Id := 'id' S Identifier
 	private State DoParseIdRule(State _state, List<Result> _outResults)
 	{
@@ -460,6 +514,52 @@ internal sealed partial class GoalModelParser
 		{
 			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
 			value = BuildName(results);
+			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+		}
+		
+		return _state;
+	}
+	
+	// Signature := 'signature' S '"' String '"'
+	private State DoParseSignatureRule(State _state, List<Result> _outResults)
+	{
+		State _start = _state;
+		List<Result> results = new List<Result>();
+		
+		_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "signature");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "\"");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "String");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "\"");});
+		
+		if (_state.Parsed)
+		{
+			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			value = BuildSignature(results);
+			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+		}
+		
+		return _state;
+	}
+	
+	// StringFormalSpec := 'formalspec' S '"' String '"'
+	private State DoParseStringFormalSpecRule(State _state, List<Result> _outResults)
+	{
+		State _start = _state;
+		List<Result> results = new List<Result>();
+		
+		_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "formalspec");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "\"");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "String");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "\"");});
+		
+		if (_state.Parsed)
+		{
+			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			value = BuildStringFormalSpec(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
 		

@@ -60,6 +60,9 @@ namespace KAOSFormalTools.Parsing
                 } else if (element is Agent) {
                     BuildAgent (element as Agent);
 
+                } else if (element is Predicate) {
+                    BuildPredicate (element as Predicate);
+                    
                 }
             }
         }
@@ -299,6 +302,35 @@ namespace KAOSFormalTools.Parsing
             model.GoalModel.Agents.Add (agent);
 
             return agent;
+        }
+
+        private KAOSFormalTools.Domain.Predicate BuildPredicate (Predicate parsedPredicate)
+        {
+            var predicate = new KAOSFormalTools.Domain.Predicate ();
+            
+            Identifier identifierAttribute = null;
+
+            foreach (var attr in parsedPredicate.Attributes) {
+                if (attr is Name) {
+                    predicate.Name = (attr as Name).Value;
+                } else if (attr is Description) {
+                    predicate.Definition = (attr as Description).Value;
+                } else if (attr is StringFormalSpec) {
+                    predicate.FormalSpec = (attr as StringFormalSpec).Value;
+                } else if (attr is Signature) {
+                    predicate.Signature = (attr as Signature).Value;
+                }
+            }
+            
+            if (string.IsNullOrWhiteSpace (predicate.Name))
+                throw new ParsingException ("Predicate shall have a name");
+
+            if (model.Predicates.ContainsKey (predicate.Name))
+                throw new ParsingException (string.Format ("Predicate '{0}' is not unique", predicate.Name));
+            
+            model.Predicates.Add (predicate.Name, predicate);
+            
+            return predicate;
         }
 
         #endregion

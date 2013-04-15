@@ -12,6 +12,12 @@ namespace KAOSFormalTools.Parsing
             Values = new List<Element>();
         }
     }
+    
+    public class Predicate : Element
+    {
+        public List<Attribute> Attributes { get; set; }
+        public Predicate () { Attributes = new List<Attribute>(); }
+    }
 
     public class Goal : Element
     {
@@ -167,6 +173,24 @@ namespace KAOSFormalTools.Parsing
             if (Value == null) {
                 throw new ParsingException (string.Format ("Could not parse '{0}'", value));
             }
+        }
+    }
+
+    public class StringFormalSpec : Attribute
+    {
+        public string Value { get; set; }
+        public StringFormalSpec (string value)
+        {
+            Value = value;
+        }
+    }
+
+    public class Signature : Attribute
+    {
+        public string Value { get; set; }
+        public Signature (string value)
+        {
+            Value = value;
         }
     }
 }
