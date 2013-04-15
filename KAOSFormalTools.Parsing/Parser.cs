@@ -50,7 +50,10 @@ namespace KAOSFormalTools.Parsing
 
                 } else if (element is DomainProperty) {
                     BuildDomainProperty (element as DomainProperty);
-                
+                    
+                } else if (element is DomainHypothesis) {
+                    BuildDomainHypothesis (element as DomainHypothesis);
+
                 } else if (element is Obstacle) {
                     BuildObstacle (element as Obstacle);
 
@@ -174,6 +177,47 @@ namespace KAOSFormalTools.Parsing
             model.GoalModel.DomainProperties.Add (domprop);
 
             return domprop;
+        }
+
+        private KAOSFormalTools.Domain.DomainHypothesis BuildDomainHypothesis (DomainHypothesis parsedDomHyp)
+        {
+            var domHyp = new KAOSFormalTools.Domain.DomainHypothesis();
+            Identifier identifierAttribute = null;
+            
+            foreach (var attr in parsedDomHyp.Attributes) {
+                if (attr is Identifier) {
+                    domHyp.Identifier = (attr as Identifier).Value;
+                    identifierAttribute = (attr as Identifier);
+                    
+                } else if (attr is Name) {
+                    domHyp.Name = (attr as Name).Value;
+
+                } else if (attr is Definition) {
+                    domHyp.Definition = (attr as Definition).Value;
+
+                }
+            }
+            
+            if (model.GoalModel.DomainHypothesisExists (domHyp.Identifier)) {
+                var d2 = model.GoalModel.GetDomainHypothesisByIdentifier (domHyp.Identifier);
+                d2.Merge (domHyp);
+                return d2;
+            }
+            
+            if (identifierAttribute == null && model.GoalModel.GetDomainHypothesesByName (domHyp.Name).Count() == 1) {
+                var d2 = model.GoalModel.GetDomainHypothesesByName (domHyp.Name).Single ();
+                d2.Merge (domHyp);
+                return d2;
+            }
+            
+            // Ensure that parsed domhyp has the same identifer than the new one
+            // This is required for second pass, otherwise, entity could not be found
+            if (identifierAttribute == null)
+                parsedDomHyp.Attributes.Add (new Identifier (domHyp.Identifier));
+            
+            model.GoalModel.DomainHypotheses.Add (domHyp);
+            
+            return domHyp;
         }
 
         private KAOSFormalTools.Domain.Obstacle BuildObstacle (Obstacle parsedObstacle)
@@ -370,9 +414,13 @@ namespace KAOSFormalTools.Parsing
                     foreach (var child in children.Values) {
                         if (child is IdentifierOrName) {
                             var domprop = GetDomainProperty (child as IdentifierOrName);
+                            var domhyp = GetDomainHypothesis (child as IdentifierOrName);
                             if (domprop != null) {
                                 refinement.DomainProperties.Add (domprop);
-                                
+                            
+                            } else if (domhyp != null) {
+                                refinement.DomainHypotheses.Add (domhyp);
+
                             } else {
                                 var candidate = GetOrCreateGoal (child as IdentifierOrName, true);
                                 if (candidate != null)
@@ -384,10 +432,19 @@ namespace KAOSFormalTools.Parsing
                             refinement.Children.Add (g);
                             
                             BuildGoalRelations (child as Goal);
+
+                        } else if (child is DomainProperty) {
+                            var g = BuildDomainProperty (child as DomainProperty);
+                            refinement.DomainProperties.Add (g);
+
+                        } else if (child is DomainHypothesis) {
+                            var g = BuildDomainHypothesis (child as DomainHypothesis);
+                            refinement.DomainHypotheses.Add (g);
+
                         }
                     }
 
-                    if (refinement.Children.Count > 0 | refinement.DomainProperties.Count > 0)
+                    if ((refinement.Children.Count + refinement.DomainHypotheses.Count + refinement.DomainProperties.Count) > 0)
                         refinements.Add (refinement);
 
                 } else if (attribute is ObstructedByList) {
@@ -522,6 +579,28 @@ namespace KAOSFormalTools.Parsing
                 return model.GoalModel.GetDomainPropertyByIdentifier (identifier);
             }
 
+            return null;
+        }
+
+        private KAOSFormalTools.Domain.DomainHypothesis GetDomainHypothesis (IdentifierOrName attribute)
+        {
+            
+            if (attribute is Name) {
+                var name = (attribute as Name).Value;
+                var domhyp_candidate = model.GoalModel.GetDomainHypothesesByName (name);
+                
+                if (domhyp_candidate.Count() > 1) {
+                    return domhyp_candidate.First ();
+                } else if (domhyp_candidate.Count() == 1) {
+                    return domhyp_candidate.Single ();
+                }
+                return null;
+                
+            } else if (attribute is Identifier) {
+                var identifier = (attribute as Identifier).Value;
+                return model.GoalModel.GetDomainHypothesisByIdentifier (identifier);
+            }
+            
             return null;
         }
 

@@ -49,6 +49,18 @@ namespace KAOSFormalTools.Domain
         }
     }
 
+    public class DomainHypothesis
+    {   
+        public string      Identifier  { get; set; }
+        public string      Name        { get; set; }
+        public string      Definition  { get; set; }
+        
+        public DomainHypothesis ()
+        {
+            Identifier  = Guid.NewGuid ().ToString ();
+        }
+    }
+
     public class DomainProperty
     {   
         public string      Identifier  { get; set; }
@@ -102,12 +114,14 @@ namespace KAOSFormalTools.Domain
         public string                AlternativeIdentifier { get; set; }
         public IList<Goal>           Children          { get; set; }
         public IList<DomainProperty> DomainProperties  { get; set; }
+        public IList<DomainHypothesis> DomainHypotheses  { get; set; }
 
         public GoalRefinement ()
         {
             AlternativeIdentifier = "";
             Children = new List<Goal> ();
             DomainProperties = new List<DomainProperty> ();
+            DomainHypotheses = new List<DomainHypothesis> ();
         }
 
         public GoalRefinement (Goal goal) : this ()

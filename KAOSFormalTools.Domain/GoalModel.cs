@@ -8,10 +8,11 @@ namespace KAOSFormalTools.Domain
 {
     public class GoalModel
     {
-        public IList<Goal>           Goals             { get; set; }
-        public IList<DomainProperty> DomainProperties  { get; set; }
-        public IList<Obstacle>       Obstacles         { get; set; }
-        public IList<Agent>          Agents            { get; set; }
+        public IList<Goal>             Goals             { get; set; }
+        public IList<DomainProperty>   DomainProperties  { get; set; }
+        public IList<DomainHypothesis> DomainHypotheses  { get; set; }
+        public IList<Obstacle>         Obstacles         { get; set; }
+        public IList<Agent>            Agents            { get; set; }
 
         public IList<Goal>           RootGoals { 
             get {
@@ -43,6 +44,7 @@ namespace KAOSFormalTools.Domain
         {
             Goals             = new List<Goal> ();
             DomainProperties  = new List<DomainProperty> ();
+            DomainHypotheses  = new List<DomainHypothesis> ();
             Obstacles         = new List<Obstacle> ();
             Agents            = new List<Agent> ();
         }
@@ -106,6 +108,21 @@ namespace KAOSFormalTools.Domain
         public bool DomainPropertyExists (string identifier)
         {
             return DomainProperties.Where (x => x.Identifier == identifier).Count () > 0;
+        }
+
+        public DomainHypothesis GetDomainHypothesisByIdentifier (string identifier)
+        {
+            return DomainHypotheses.Where (x => x.Identifier == identifier).SingleOrDefault ();
+        }
+        
+        public IEnumerable<DomainHypothesis> GetDomainHypothesesByName (string name)
+        {
+            return DomainHypotheses.Where (x => x.Name == name);
+        }
+        
+        public bool DomainHypothesisExists (string identifier)
+        {
+            return DomainHypotheses.Where (x => x.Identifier == identifier).Count () > 0;
         }
 
         public Agent GetAgentByIdentifier (string identifier)

@@ -46,8 +46,10 @@ internal sealed partial class GoalModelParser
 		m_nonterminals.Add("DomProp", new ParseMethod[]{this.DoParseDomPropRule});
 		m_nonterminals.Add("Obstacle", new ParseMethod[]{this.DoParseObstacleRule});
 		m_nonterminals.Add("Agent", new ParseMethod[]{this.DoParseAgentRule});
+		m_nonterminals.Add("DomHyp", new ParseMethod[]{this.DoParseDomHypRule});
 		m_nonterminals.Add("GoalAttribute", new ParseMethod[]{this.DoParseGoalAttributeRule});
 		m_nonterminals.Add("DomPropAttribute", new ParseMethod[]{this.DoParseDomPropAttributeRule});
+		m_nonterminals.Add("DomHypAttribute", new ParseMethod[]{this.DoParseDomHypAttributeRule});
 		m_nonterminals.Add("ObstacleAttribute", new ParseMethod[]{this.DoParseObstacleAttributeRule});
 		m_nonterminals.Add("AgentAttribute", new ParseMethod[]{this.DoParseAgentAttributeRule});
 		m_nonterminals.Add("Id", new ParseMethod[]{this.DoParseIdRule});
@@ -107,7 +109,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Elements := ((Goal / DomProp / Obstacle / Agent / Import) S)*
+	// Elements := ((Goal / DomProp / Obstacle / Agent / Import / DomHyp) S)*
 	private State DoParseElementsRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -120,7 +122,8 @@ internal sealed partial class GoalModelParser
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "DomProp");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Obstacle");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Agent");},
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Import");});},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Import");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "DomHyp");});},
 				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");});});
 		
 		if (_state.Parsed)
@@ -274,6 +277,35 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
+	// DomHyp := 'begin' S ('domainhypothesis' / 'domhyp') S (DomHypAttribute S)* 'end'
+	private State DoParseDomHypRule(State _state, List<Result> _outResults)
+	{
+		State _start = _state;
+		List<Result> results = new List<Result>();
+		
+		_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "begin");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoChoice(s, r,
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "domainhypothesis");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "domhyp");});},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,
+				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "DomHypAttribute");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");});});},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "end");});
+		
+		if (_state.Parsed)
+		{
+			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			value = BuildDomainHypothesis(results);
+			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+		}
+		
+		return _state;
+	}
+	
 	// GoalAttribute := Id / Name / Definition / FormalSpec / RefinedByGoal / ObstructedBy / AssignedTo / RDS
 	private State DoParseGoalAttributeRule(State _state, List<Result> _outResults)
 	{
@@ -312,6 +344,27 @@ internal sealed partial class GoalModelParser
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Definition");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpec");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Probability");});
+		
+		if (_state.Parsed)
+		{
+			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			value = results[0].Value;
+			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+		}
+		
+		return _state;
+	}
+	
+	// DomHypAttribute := Id / Name / Definition
+	private State DoParseDomHypAttributeRule(State _state, List<Result> _outResults)
+	{
+		State _start = _state;
+		List<Result> results = new List<Result>();
+		
+		_state = DoChoice(_state, results,
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Id");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Name");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Definition");});
 		
 		if (_state.Parsed)
 		{
@@ -713,7 +766,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// IdOrNameOrGoal := Goal / IdOrName
+	// IdOrNameOrGoal := Goal / DomProp / DomHyp / IdOrName
 	private State DoParseIdOrNameOrGoalRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -721,6 +774,8 @@ internal sealed partial class GoalModelParser
 		
 		_state = DoChoice(_state, results,
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Goal");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "DomProp");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "DomHyp");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "IdOrName");});
 		
 		if (_state.Parsed)

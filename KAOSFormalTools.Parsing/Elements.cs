@@ -26,6 +26,12 @@ namespace KAOSFormalTools.Parsing
         public DomainProperty () { Attributes = new List<Attribute>(); }
     }
 
+    public class DomainHypothesis : Element
+    {
+        public List<Attribute> Attributes { get; set; }
+        public DomainHypothesis () { Attributes = new List<Attribute>(); }
+    }
+
     public class Obstacle : Element
     {
         public List<Attribute> Attributes { get; set; }

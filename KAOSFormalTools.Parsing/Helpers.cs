@@ -68,6 +68,18 @@ namespace KAOSFormalTools.Parsing
             if (d1.FormalSpec == null)
                 d1.FormalSpec = d2.FormalSpec;
         }
+        
+        public static void Merge (this KAOSFormalTools.Domain.DomainHypothesis d1, KAOSFormalTools.Domain.DomainHypothesis d2)
+        {
+            if (string.IsNullOrEmpty (d1.Identifier))
+                d1.Identifier = d2.Identifier;
+            
+            if (string.IsNullOrEmpty (d1.Name))
+                d1.Name = d2.Name;
+            
+            if (string.IsNullOrEmpty (d1.Definition))
+                d1.Definition= d2.Definition;
+        }
 
     }
 }

@@ -53,6 +53,17 @@ internal sealed partial class GoalModelParser
 
         return domprop;
     }
+    
+    private KAOSFormalTools.Parsing.Element BuildDomainHypothesis (List<Result> results)
+    {
+        var domhyp = new KAOSFormalTools.Parsing.DomainHypothesis ();
+        
+        for (int i = 1; i < results.Count; i++) {
+            domhyp.Attributes.Add (results[i].Value as KAOSFormalTools.Parsing.Attribute);
+        }
+        
+        return domhyp;
+    }
 
     private KAOSFormalTools.Parsing.Element BuildObstacle (List<Result> results)
     {

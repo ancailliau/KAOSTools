@@ -216,6 +216,11 @@ namespace KAOSFormalTools.OmnigraffleExport
                     var childGraphic = AddDomainProperty (canvas, domprop);
                     AddLine (canvas.GraphicsList, childGraphic, circle);
                 }
+                
+                foreach (var domhyp in refinement.DomainHypotheses.Reverse ()) {
+                    var childGraphic = AddDomainHypothesis (canvas, domhyp);
+                    AddLine (canvas.GraphicsList, childGraphic, circle);
+                }
             }
             
             foreach (var assignment in goal.AssignedAgents) {
@@ -422,6 +427,38 @@ namespace KAOSFormalTools.OmnigraffleExport
             
             canvas.GraphicsList.Add (graphic);
 
+            return graphic;
+        }
+
+        static Omnigraffle.ShapedGraphic AddDomainHypothesis (Omnigraffle.Sheet canvas, DomainHypothesis domhyp)
+        {
+            var graphic = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Bezier, 50, 50, 150, 70);
+            
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add(new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Point(-0.45, -0.5));
+            
+            graphic.Text = new Omnigraffle.TextInfo (domhyp.Name) {
+                Alignement = KAOSFormalTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
+                SideMargin = 10, TopBottomMargin = 3
+            };
+            graphic.Style.Shadow.Draws = false;
+            graphic.FitText = KAOSFormalTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
+            graphic.Flow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
+            
+            graphic.Style.Fill.Color = new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Color (1, 0.92156862745, 0.92156862745);
+            
+            canvas.GraphicsList.Add (graphic);
+            
             return graphic;
         }
 
