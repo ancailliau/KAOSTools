@@ -214,7 +214,7 @@ internal sealed partial class GoalModelParser
             return m2;
 
         } else {
-            throw new FileNotFoundException ("Included file not found", filename);
+            throw new FileNotFoundException ("Included file `" + filename + "` not found", filename);
         }
     }
 }
