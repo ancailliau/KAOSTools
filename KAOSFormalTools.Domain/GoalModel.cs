@@ -9,7 +9,7 @@ namespace KAOSFormalTools.Domain
     public class GoalModel
     {
         public IList<Goal>           Goals             { get; set; }
-        public IList<DomainProperty> DomainProperties  { get; private set; }
+        public IList<DomainProperty> DomainProperties  { get; set; }
         public IList<Obstacle>       Obstacles         { get; set; }
         public IList<Agent>          Agents            { get; set; }
 
