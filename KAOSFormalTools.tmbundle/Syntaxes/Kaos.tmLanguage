@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>fileTypes</key>
+	<array>
+		<string>kaos</string>
+	</array>
+	<key>foldingStartMarker</key>
+	<string>^\s*#\s*region|^\s*/\*|^(?![^{]*?//|[^{]*?/\*(?!.*?\*/.*?\{)).*?\{\s*($|//|/\*(?!.*?\*/.*\S))</string>
+	<key>foldingStopMarker</key>
+	<string>^\s*#\s*endregion|^\s*\*/|^\s*\}</string>
+	<key>name</key>
+	<string>Kaos</string>
+	<key>patterns</key>
+	<array>
+		<dict>
+			<key>match</key>
+			<string>\b(declare|end)\b</string>
+			<key>name</key>
+			<string>keyword.control.kaos</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>\b(refinedby|definition|name|import|id|assignedto)\b</string>
+			<key>name</key>
+			<string>constant.other.kaos</string>
+		</dict>
+		<dict>
+			<key>begin</key>
+			<string>"</string>
+			<key>end</key>
+			<string>"</string>
+			<key>name</key>
+			<string>string.quoted.double.untitled</string>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>match</key>
+					<string>\\.</string>
+					<key>name</key>
+					<string>constant.character.escape.untitled</string>
+				</dict>
+			</array>
+		</dict>
+		<dict>
+			<key>captures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.definition.comment.kaos</string>
+				</dict>
+			</dict>
+			<key>match</key>
+			<string>(?:^[ \t]+)?(#).*$\n?</string>
+			<key>name</key>
+			<string>comment.line.number-sign.kaos</string>
+		</dict>
+	</array>
+	<key>scopeName</key>
+	<string>source.kaos</string>
+	<key>uuid</key>
+	<string>14847061-D227-43E7-98AC-F7D2443C47BD</string>
+</dict>
+</plist>
