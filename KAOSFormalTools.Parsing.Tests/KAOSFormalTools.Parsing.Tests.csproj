@@ -47,7 +47,6 @@
     <Compile Include="TestParsingObstacles.cs" />
     <Compile Include="TestParsingExamples.cs" />
     <Compile Include="TestParsingAgent.cs" />
-    <Compile Include="TestParsingStateMachine.cs" />
     <Compile Include="TestParsingDomainHypothesis.cs" />
     <Compile Include="TestParsingPredicate.cs" />
     <Compile Include="TestParsingAlternatives.cs" />
