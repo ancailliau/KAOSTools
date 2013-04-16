@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>beforeRunningCommand</key>
+	<string>nop</string>
+	<key>command</key>
+	<string>#!/bin/sh
+mono /Users/blambeau/work/devel/KAOSFormalTools/KAOSFormalTools.OmnigraffleExport/bin/Debug/KAOSFormalTools.OmnigraffleExport.exe -o "/tmp/output.graffle" "$TM_FILEPATH"
+open "/tmp/output.graffle"
+</string>
+	<key>input</key>
+	<string>document</string>
+	<key>keyEquivalent</key>
+	<string>@g</string>
+	<key>name</key>
+	<string>Export to OmniGraffle</string>
+	<key>output</key>
+	<string>discard</string>
+	<key>uuid</key>
+	<string>DDBF472C-BCB1-48E8-98AF-2C59A6898C9F</string>
+</dict>
+</plist>
