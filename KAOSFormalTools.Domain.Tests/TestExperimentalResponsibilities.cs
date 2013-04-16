@@ -12,22 +12,22 @@ namespace KAOSFormalTools.Domain.Tests
         public void TestCase ()
         {
             var input = @"
-begin goal 
+declare goal 
     id root
     refinedby child1, child2
 end
 
-begin goal 
+declare goal 
     id child1
     assignedto myagent
 end
 
-begin goal 
+declare goal 
     id child2
     assignedto myagent
 end
 
-begin agent
+declare agent
     id myagent
 end
 ";
@@ -42,28 +42,28 @@ end
         public void TestCase2 ()
         {
             var input = @"
-begin goal 
+declare goal 
     id root
     refinedby child1, child2
     refinedby child3
 end
 
-begin goal 
+declare goal 
     id child1
     assignedto myagent
 end
 
-begin goal 
+declare goal 
     id child2
     assignedto myagent
 end
 
-begin goal 
+declare goal 
     id child3
     assignedto myagent
 end
 
-begin agent
+declare agent
     id myagent
 end
 ";
@@ -78,38 +78,38 @@ end
         public void TestCase3 ()
         {
             var input = @"
-begin goal 
+declare goal 
     id root
     refinedby child1, child2
     refinedby child3
 end
 
-begin goal 
+declare goal 
     id child1
     assignedto myagent
 end
 
-begin goal 
+declare goal 
     id child2
     assignedto myagent
 end
 
-begin goal 
+declare goal 
     id child3
     refinedby child4, child5
 end
 
-begin goal 
+declare goal 
     id child4
     assignedto myagent
 end
 
-begin goal 
+declare goal 
     id child5
     assignedto myagent
 end
 
-begin agent
+declare agent
     id myagent
 end
 ";
@@ -124,38 +124,38 @@ end
         public void TestCase4 ()
         {
             var input = @"
-begin goal 
+declare goal 
     id root
     refinedby child1, child2
     refinedby child3, child2
 end
 
-begin goal 
+declare goal 
     id child1
     assignedto myagent
 end
 
-begin goal 
+declare goal 
     id child2
     assignedto myagent
 end
 
-begin goal 
+declare goal 
     id child3
     refinedby child4, child5
 end
 
-begin goal 
+declare goal 
     id child4
     assignedto myagent
 end
 
-begin goal 
+declare goal 
     id child5
     assignedto myagent
 end
 
-begin agent
+declare agent
     id myagent
 end
 ";
@@ -170,34 +170,34 @@ end
         public void TestCase5 ()
         {
             var input = @"
-begin goal 
+declare goal 
     id root
     refinedby child1, child2
     refinedby child1, child2
     refinedby child3, child4
 end
 
-begin goal 
+declare goal 
     id child1
     assignedto myagent
 end
 
-begin goal 
+declare goal 
     id child2
     assignedto myagent
 end
 
-begin goal 
+declare goal 
     id child3
     assignedto myagent
 end
 
-begin goal 
+declare goal 
     id child4
     assignedto myagent
 end
 
-begin agent
+declare agent
     id myagent
 end
 ";

@@ -12,23 +12,23 @@ namespace KAOSFormalTools.Parsing.Tests
     {
         private static Parser parser = new Parser ();
        
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         # test
                         id test
                     end")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         # test
                         id # test
                         test
                     end")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         # test
                         # id test
                     end")]
-        [TestCase(@"# begin goal
+        [TestCase(@"# declare goal
                         # test
                         # id test
-                        begin goal id test end #
+                        declare goal id test end #
                     # end")]
         public void TestComment (string input)
         {
@@ -36,35 +36,35 @@ namespace KAOSFormalTools.Parsing.Tests
             model.GoalModel.Goals.ShallBeSingle ();
         }
 
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id test
                     end", "test")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id _test
                     end", "_test")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id -test
                     end", "-test")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id $test
                     end", "$test")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id test_long_identifier
                     end", "test_long_identifier")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id test-long-identifier
                     end", "test-long-identifier")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id test12
                     end", "test12")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id 0
                     end", "0")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id test2
                         id test
                     end", "test")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id test
                         id test
                     end", "test")]
@@ -74,16 +74,16 @@ namespace KAOSFormalTools.Parsing.Tests
             model.GoalModel.Goals.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
         }
 
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id 
                     end")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id -
                     end")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id _
                     end")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id $
                     end")]
         public void TestInvalidIdentifier (string input)
@@ -93,13 +93,13 @@ namespace KAOSFormalTools.Parsing.Tests
             });
         }
 
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         name ""test""
                     end", "test")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         name ""Long name with spaces and numbers 123""
                     end", "Long name with spaces and numbers 123")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         name ""[-_-]""
                     end", "[-_-]")]
         public void TestName (string input, string expectedName)
@@ -110,10 +110,10 @@ namespace KAOSFormalTools.Parsing.Tests
                     .ShallBeSingle ();
         }
         
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         name """"
                     end")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         name """"""
                     end")]
         public void TestInvalidName (string input)
@@ -126,7 +126,7 @@ namespace KAOSFormalTools.Parsing.Tests
         [Test()]
         public void TestOverride ()
         {
-            var input = @"begin goal
+            var input = @"declare goal
                             id test
                             name ""old name""
                             definition ""old definition""
@@ -166,7 +166,7 @@ namespace KAOSFormalTools.Parsing.Tests
                 .ShallOnlyContain (new string[] { "new_agent" });
         }
 
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id test
                         name ""old name""
                         definition ""old definition""
@@ -176,7 +176,7 @@ namespace KAOSFormalTools.Parsing.Tests
                         assignedto old_agent
                     end
 
-                    begin goal
+                    declare goal
                         id test
                         name ""new name""
                         definition ""new definition""
@@ -185,11 +185,11 @@ namespace KAOSFormalTools.Parsing.Tests
                         obstructedby new_obstacle
                         assignedto new_agent
                     end")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id test
                     end
 
-                    begin goal 
+                    declare goal 
                         id test
                         name ""old name""
                         definition ""old definition""
@@ -199,7 +199,7 @@ namespace KAOSFormalTools.Parsing.Tests
                         assignedto old_agent
                     end
 
-                    begin goal
+                    declare goal
                         id test
                         name ""new name""
                         definition ""new definition""
@@ -236,7 +236,7 @@ namespace KAOSFormalTools.Parsing.Tests
         [Test()]
         public void TestFormalSpec ()
         {
-            var input = @"begin goal
+            var input = @"declare goal
                               id          test
                               formalspec  ""pif""
                           end";
@@ -249,8 +249,8 @@ namespace KAOSFormalTools.Parsing.Tests
         [Test()]
         public void TestMultipleGoals ()
         {
-            var input = @"begin goal id test  end
-                          begin goal id test2 end";
+            var input = @"declare goal id test  end
+                          declare goal id test2 end";
 
             var model = parser.Parse (input);
 
@@ -259,17 +259,17 @@ namespace KAOSFormalTools.Parsing.Tests
             model.GoalModel.Goals.ShallContain (x => x.Identifier == "test2");
         }
                 
-        [TestCase(@"begin goal 
+        [TestCase(@"declare goal 
                         id test
                         refinedby child1, child2
                     end")]
-        [TestCase(@"begin goal 
+        [TestCase(@"declare goal 
                         id test
-                        refinedby begin goal id child1 end, child2
+                        refinedby declare goal id child1 end, child2
                     end")]
-        [TestCase(@"begin goal 
+        [TestCase(@"declare goal 
                         id test
-                        refinedby begin goal id child1 end, begin goal id child2 end
+                        refinedby declare goal id child1 end, declare goal id child2 end
                     end")]
         public void TestRefinement (string input)
         {
@@ -284,18 +284,18 @@ namespace KAOSFormalTools.Parsing.Tests
                                               .OnlyContains ( new string [] { "child1" , "child2" }));
         }
 
-        [TestCase(@"begin goal 
+        [TestCase(@"declare goal 
                         id test
                         refinedby child1, child2
                     end
-                    begin goal id child1 refinedby child3, child4 end")]
-        [TestCase(@"begin goal 
+                    declare goal id child1 refinedby child3, child4 end")]
+        [TestCase(@"declare goal 
                         id test
-                        refinedby begin goal id child1 refinedby child3, child4 end, child2
+                        refinedby declare goal id child1 refinedby child3, child4 end, child2
                     end")]
-        [TestCase(@"begin goal 
+        [TestCase(@"declare goal 
                         id test
-                        refinedby begin goal id child1 refinedby begin goal id child3 end, child4 end, child2
+                        refinedby declare goal id child1 refinedby declare goal id child3 end, child4 end, child2
                     end")]
         public void TestRefinementRecursive (string input)
         {
@@ -318,16 +318,16 @@ namespace KAOSFormalTools.Parsing.Tests
                                               .OnlyContains ( new string [] { "child3" , "child4" }));
         }
 
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id         test
                         refinedby  test2, domprop
                     end
-                    begin domainproperty id domprop end")]
-        [TestCase(@"begin goal
+                    declare domainproperty id domprop end")]
+        [TestCase(@"declare goal
                         id         test
                         refinedby  test2, ""domprop""
                     end
-                    begin domainproperty id domprop name ""domprop"" end")]
+                    declare domainproperty id domprop name ""domprop"" end")]
         public void TestRefinementWithDomainProperty (string input)
         {
             var model = parser.Parse (input);
@@ -336,22 +336,22 @@ namespace KAOSFormalTools.Parsing.Tests
             test.Refinements.ShallBeSingle ().DomainProperties.Select (x => x.Identifier).ShallOnlyContain (new string [] { "domprop" });
         }
             
-        [TestCase(@"begin goal 
+        [TestCase(@"declare goal 
                         id test
                         refinedby child1, ""child2""
                     end
-                    begin goal id child1 name ""child1"" end")]
-        [TestCase(@"begin goal 
+                    declare goal id child1 name ""child1"" end")]
+        [TestCase(@"declare goal 
                         id test
                         refinedby ""child1"", ""child2""
                     end")]
-        [TestCase(@"begin goal 
+        [TestCase(@"declare goal 
                         id test
-                        refinedby begin goal name ""child1"" end, ""child2""
+                        refinedby declare goal name ""child1"" end, ""child2""
                     end")]
-        [TestCase(@"begin goal 
+        [TestCase(@"declare goal 
                         id test
-                        refinedby begin goal name ""child1"" end, begin goal name ""child2"" end
+                        refinedby declare goal name ""child1"" end, declare goal name ""child2"" end
                     end")]
         public void TestRefinementByName (string input)
         {
@@ -367,10 +367,10 @@ namespace KAOSFormalTools.Parsing.Tests
         }
 
 
-        [TestCase(@"begin goal id test rds 0.95 end", 0.95)]
-        [TestCase(@"begin goal id test rds 1    end", 1)]
-        [TestCase(@"begin goal id test rds 0    end", 0)]
-        [TestCase(@"begin goal id test rds .01  end", .01)]
+        [TestCase(@"declare goal id test rds 0.95 end", 0.95)]
+        [TestCase(@"declare goal id test rds 1    end", 1)]
+        [TestCase(@"declare goal id test rds 0    end", 0)]
+        [TestCase(@"declare goal id test rds .01  end", .01)]
         public void TestRequiredDegreeOfSatisfaction (string input, double expected)
         {
             var model = parser.Parse (input);

@@ -12,35 +12,35 @@ namespace KAOSFormalTools.Parsing.Tests
     {
         private static Parser parser = new Parser ();
         
-        [TestCase(@"begin alternative
+        [TestCase(@"declare alternative
                         id test
                     end", "test")]
-        [TestCase(@"begin alternative
+        [TestCase(@"declare alternative
                         id _test
                     end", "_test")]
-        [TestCase(@"begin alternative
+        [TestCase(@"declare alternative
                         id -test
                     end", "-test")]
-        [TestCase(@"begin alternative
+        [TestCase(@"declare alternative
                         id $test
                     end", "$test")]
-        [TestCase(@"begin alternative
+        [TestCase(@"declare alternative
                         id test_long_identifier
                     end", "test_long_identifier")]
-        [TestCase(@"begin alternative
+        [TestCase(@"declare alternative
                         id test-long-identifier
                     end", "test-long-identifier")]
-        [TestCase(@"begin alternative
+        [TestCase(@"declare alternative
                         id test12
                     end", "test12")]
-        [TestCase(@"begin alternative
+        [TestCase(@"declare alternative
                         id 0
                     end", "0")]
-        [TestCase(@"begin alternative
+        [TestCase(@"declare alternative
                         id test2
                         id test
                     end", "test")]
-        [TestCase(@"begin alternative
+        [TestCase(@"declare alternative
                         id test
                         id test
                     end", "test")]
@@ -50,10 +50,10 @@ namespace KAOSFormalTools.Parsing.Tests
             model.GoalModel.Alternatives.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
         }
         
-        [TestCase(@"begin alternative id   end")]
-        [TestCase(@"begin alternative id - end")]
-        [TestCase(@"begin alternative id _ end")]
-        [TestCase(@"begin alternative id $ end")]
+        [TestCase(@"declare alternative id   end")]
+        [TestCase(@"declare alternative id - end")]
+        [TestCase(@"declare alternative id _ end")]
+        [TestCase(@"declare alternative id $ end")]
         public void TestInvalidIdentifier (string input)
         {
             Assert.Throws<ParsingException> (() => {
@@ -61,13 +61,13 @@ namespace KAOSFormalTools.Parsing.Tests
             });
         }
         
-        [TestCase(@"begin alternative
+        [TestCase(@"declare alternative
                         name ""test""
                     end", "test")]
-        [TestCase(@"begin alternative
+        [TestCase(@"declare alternative
                         name ""Long name with spaces and numbers 123""
                     end", "Long name with spaces and numbers 123")]
-        [TestCase(@"begin alternative
+        [TestCase(@"declare alternative
                         name ""[-_-]""
                     end", "[-_-]")]
         public void TestName (string input, string expectedName)
@@ -78,10 +78,10 @@ namespace KAOSFormalTools.Parsing.Tests
                     .ShallBeSingle ();
         }
         
-        [TestCase(@"begin alternative
+        [TestCase(@"declare alternative
                         name """"
                     end")]
-        [TestCase(@"begin alternative
+        [TestCase(@"declare alternative
                         name """"""
                     end")]
         public void TestInvalidName (string input)
@@ -91,8 +91,8 @@ namespace KAOSFormalTools.Parsing.Tests
             });
         }
            
-        [TestCase(@"begin alternative id test  end
-                    begin alternative id test2 end")]
+        [TestCase(@"declare alternative id test  end
+                    declare alternative id test2 end")]
         public void TestMultiple (string input)
         {
             var model = parser.Parse (input);
@@ -101,30 +101,30 @@ namespace KAOSFormalTools.Parsing.Tests
         }
 
         
-        [TestCase(@"begin goal 
+        [TestCase(@"declare goal 
                         id test
                         refinedby[""Alternative 1""] child1, child2
                         refinedby[""Alternative 2""] child1, child2
                     end
 
-                    begin goal
+                    declare goal
                         id test2
                         refinedby[""Alternative 3""] child3
                     end")]
-        [TestCase(@"begin goal 
+        [TestCase(@"declare goal 
                         id test
                         refinedby[alt1] child1, child2
                         refinedby[alt2] child1, child2
                     end
 
-                    begin goal
+                    declare goal
                         id test2
                         refinedby[alt3] child3
                     end
 
-                    begin alternative id alt1 name ""Alternative 1"" end
-                    begin alternative id alt2 name ""Alternative 2"" end
-                    begin alternative id alt3 name ""Alternative 3"" end")]
+                    declare alternative id alt1 name ""Alternative 1"" end
+                    declare alternative id alt2 name ""Alternative 2"" end
+                    declare alternative id alt3 name ""Alternative 3"" end")]
         public void TestRefinementAlternative (string input)
         {
             var model = parser.Parse (input);
@@ -147,13 +147,13 @@ namespace KAOSFormalTools.Parsing.Tests
                 .ShallOnlyContain (new string[] { "Alternative 3" });
         }
 
-        [TestCase(@"begin goal 
+        [TestCase(@"declare goal 
                         id test
                         refinedby[alt1] child1, child2
                         refinedby[alt2] child1, child2
                     end
 
-                    begin goal
+                    declare goal
                         id test2
                         refinedby[alt3] child3
                     end")]

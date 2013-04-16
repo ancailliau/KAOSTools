@@ -12,35 +12,35 @@ namespace KAOSFormalTools.Parsing.Tests
     {
         private static Parser parser = new Parser ();
         
-        [TestCase(@"begin domainproperty
+        [TestCase(@"declare domainproperty
                         id test
                     end", "test")]
-        [TestCase(@"begin domainproperty
+        [TestCase(@"declare domainproperty
                         id _test
                     end", "_test")]
-        [TestCase(@"begin domainproperty
+        [TestCase(@"declare domainproperty
                         id -test
                     end", "-test")]
-        [TestCase(@"begin domainproperty
+        [TestCase(@"declare domainproperty
                         id $test
                     end", "$test")]
-        [TestCase(@"begin domainproperty
+        [TestCase(@"declare domainproperty
                         id test_long_identifier
                     end", "test_long_identifier")]
-        [TestCase(@"begin domainproperty
+        [TestCase(@"declare domainproperty
                         id test-long-identifier
                     end", "test-long-identifier")]
-        [TestCase(@"begin domainproperty
+        [TestCase(@"declare domainproperty
                         id test12
                     end", "test12")]
-        [TestCase(@"begin domainproperty
+        [TestCase(@"declare domainproperty
                         id 0
                     end", "0")]
-        [TestCase(@"begin domainproperty
+        [TestCase(@"declare domainproperty
                         id test2
                         id test
                     end", "test")]
-        [TestCase(@"begin domainproperty
+        [TestCase(@"declare domainproperty
                         id test
                         id test
                     end", "test")]
@@ -50,10 +50,10 @@ namespace KAOSFormalTools.Parsing.Tests
             model.GoalModel.DomainProperties.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
         }
         
-        [TestCase(@"begin domainproperty id   end")]
-        [TestCase(@"begin domainproperty id - end")]
-        [TestCase(@"begin domainproperty id _ end")]
-        [TestCase(@"begin domainproperty id $ end")]
+        [TestCase(@"declare domainproperty id   end")]
+        [TestCase(@"declare domainproperty id - end")]
+        [TestCase(@"declare domainproperty id _ end")]
+        [TestCase(@"declare domainproperty id $ end")]
         public void TestInvalidIdentifier (string input)
         {
             Assert.Throws<ParsingException> (() => {
@@ -61,13 +61,13 @@ namespace KAOSFormalTools.Parsing.Tests
             });
         }
         
-        [TestCase(@"begin domainproperty
+        [TestCase(@"declare domainproperty
                         name ""test""
                     end", "test")]
-        [TestCase(@"begin domainproperty
+        [TestCase(@"declare domainproperty
                         name ""Long name with spaces and numbers 123""
                     end", "Long name with spaces and numbers 123")]
-        [TestCase(@"begin domainproperty
+        [TestCase(@"declare domainproperty
                         name ""[-_-]""
                     end", "[-_-]")]
         public void TestName (string input, string expectedName)
@@ -78,10 +78,10 @@ namespace KAOSFormalTools.Parsing.Tests
                     .ShallBeSingle ();
         }
         
-        [TestCase(@"begin domainproperty
+        [TestCase(@"declare domainproperty
                         name """"
                     end")]
-        [TestCase(@"begin domainproperty
+        [TestCase(@"declare domainproperty
                         name """"""
                     end")]
         public void TestInvalidName (string input)
@@ -94,7 +94,7 @@ namespace KAOSFormalTools.Parsing.Tests
         [Test()]
         public void TestFormalSpec ()
         {
-            var input = @"begin domainproperty
+            var input = @"declare domainproperty
                               id          test
                               formalspec  ""paf""
                           end";
@@ -104,24 +104,24 @@ namespace KAOSFormalTools.Parsing.Tests
             Assert.IsNotNull (test.FormalSpec);
         }
                 
-        [TestCase(@"begin domprop
+        [TestCase(@"declare domprop
                         id test
                         name ""old name""
                         definition ""old definition""
                         formalspec ""old""
                     end
 
-                    begin domprop
+                    declare domprop
                         id test
                         name ""new name""
                         definition ""new definition""
                         formalspec ""new""
                     end")]
-        [TestCase(@"begin domprop
+        [TestCase(@"declare domprop
                         id test
                     end
 
-                    begin domprop
+                    declare domprop
                         id test
                         name ""old name""
                         definition ""old definition""
@@ -137,10 +137,10 @@ namespace KAOSFormalTools.Parsing.Tests
             domprop.FormalSpec.ShallBeSuchThat (x => (x as LtlSharp.Proposition).Name == "old");
         }
         
-        [TestCase(@"begin domainproperty id test  end
-                    begin domainproperty id test2 end")]
-        [TestCase(@"begin domprop id test  end
-                    begin domprop id test2 end")]
+        [TestCase(@"declare domainproperty id test  end
+                    declare domainproperty id test2 end")]
+        [TestCase(@"declare domprop id test  end
+                    declare domprop id test2 end")]
         public void TestMultiple (string input)
         {
             var model = parser.Parse (input);
@@ -148,14 +148,14 @@ namespace KAOSFormalTools.Parsing.Tests
             model.GoalModel.DomainProperties.ShallContain (x => x.Identifier == "test2");
         }
 
-        [TestCase(@"begin domprop id test probability 0.95 end", 0.95)]
-        [TestCase(@"begin domprop id test probability 1    end", 1)]
-        [TestCase(@"begin domprop id test probability 0    end", 0)]
-        [TestCase(@"begin domprop id test probability .01  end", .01)]
-        [TestCase(@"begin domprop id test eps 0.95 end", 0.95)]
-        [TestCase(@"begin domprop id test eps 1    end", 1)]
-        [TestCase(@"begin domprop id test eps 0    end", 0)]
-        [TestCase(@"begin domprop id test eps .01  end", .01)]
+        [TestCase(@"declare domprop id test probability 0.95 end", 0.95)]
+        [TestCase(@"declare domprop id test probability 1    end", 1)]
+        [TestCase(@"declare domprop id test probability 0    end", 0)]
+        [TestCase(@"declare domprop id test probability .01  end", .01)]
+        [TestCase(@"declare domprop id test eps 0.95 end", 0.95)]
+        [TestCase(@"declare domprop id test eps 1    end", 1)]
+        [TestCase(@"declare domprop id test eps 0    end", 0)]
+        [TestCase(@"declare domprop id test eps .01  end", .01)]
         public void TestProbability (string input, double expected)
         {
             var model = parser.Parse (input);

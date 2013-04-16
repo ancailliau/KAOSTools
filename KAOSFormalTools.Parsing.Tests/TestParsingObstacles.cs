@@ -13,35 +13,35 @@ namespace KAOSFormalTools.Parsing.Tests
     {
         private static Parser parser = new Parser ();
 
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         id test
                     end", "test")]
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         id _test
                     end", "_test")]
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         id -test
                     end", "-test")]
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         id $test
                     end", "$test")]
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         id test_long_identifier
                     end", "test_long_identifier")]
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         id test-long-identifier
                     end", "test-long-identifier")]
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         id test12
                     end", "test12")]
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         id 0
                     end", "0")]
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         id test2
                         id test
                     end", "test")]
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         id test
                         id test
                     end", "test")]
@@ -51,16 +51,16 @@ namespace KAOSFormalTools.Parsing.Tests
             model.GoalModel.Obstacles.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
         }
         
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         id 
                     end")]
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         id -
                     end")]
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         id _
                     end")]
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         id $
                     end")]
         public void TestInvalidIdentifier (string input)
@@ -70,13 +70,13 @@ namespace KAOSFormalTools.Parsing.Tests
             });
         }
         
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         name ""test""
                     end", "test")]
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         name ""Long name with spaces and numbers 123""
                     end", "Long name with spaces and numbers 123")]
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         name ""[-_-]""
                     end", "[-_-]")]
         public void TestName (string input, string expectedName)
@@ -87,10 +87,10 @@ namespace KAOSFormalTools.Parsing.Tests
                 .ShallBeSingle ();
         }
         
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         name """"
                     end")]
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         name """"""
                     end")]
         public void TestInvalidName (string input)
@@ -104,7 +104,7 @@ namespace KAOSFormalTools.Parsing.Tests
         [Test()]
         public void TestFormalSpec ()
         {
-            var input = @"begin obstacle
+            var input = @"declare obstacle
                               id          test
                               formalspec  ""pouf""
                           end";
@@ -117,8 +117,8 @@ namespace KAOSFormalTools.Parsing.Tests
         [Test()]
         public void TestMultiple ()
         {
-            var input = @"begin obstacle id test  end
-                          begin obstacle id test2 end";
+            var input = @"declare obstacle id test  end
+                          declare obstacle id test2 end";
             
             var model = parser.Parse (input);
             
@@ -127,17 +127,17 @@ namespace KAOSFormalTools.Parsing.Tests
             model.GoalModel.Obstacles.ShallContain (x => x.Identifier == "test2");
         }
         
-        [TestCase(@"begin obstacle 
+        [TestCase(@"declare obstacle 
                         id test
                         refinedby child1, child2
                     end")]
-        [TestCase(@"begin obstacle 
+        [TestCase(@"declare obstacle 
                         id test
-                        refinedby begin obstacle id child1 end, child2
+                        refinedby declare obstacle id child1 end, child2
                     end")]
-        [TestCase(@"begin obstacle 
+        [TestCase(@"declare obstacle 
                         id test
-                        refinedby begin obstacle id child1 end, begin obstacle id child2 end
+                        refinedby declare obstacle id child1 end, declare obstacle id child2 end
                     end")]
         public void TestRefinement (string input)
         {
@@ -152,15 +152,15 @@ namespace KAOSFormalTools.Parsing.Tests
                                .OnlyContains ( new string [] { "child1" , "child2" }));
         }
 
-        [TestCase(@"begin obstacle 
+        [TestCase(@"declare obstacle 
                         id test
                         refinedby child1, child2
                         refinedby child3, child4
                     end")]
-        [TestCase(@"begin obstacle 
+        [TestCase(@"declare obstacle 
                         id test
                         refinedby child1, child2
-                        refinedby begin obstacle id child3 end, child4
+                        refinedby declare obstacle id child3 end, child4
                     end")]
         public void TestAlternatives (string input)
         {
@@ -176,18 +176,18 @@ namespace KAOSFormalTools.Parsing.Tests
                                                               .OnlyContains ( new string [] { "child3" , "child4" }));
         }
         
-        [TestCase(@"begin obstacle 
+        [TestCase(@"declare obstacle 
                         id test
                         refinedby child1, child2
                     end
-                    begin obstacle id child1 refinedby child3, child4 end")]
-        [TestCase(@"begin obstacle 
+                    declare obstacle id child1 refinedby child3, child4 end")]
+        [TestCase(@"declare obstacle 
                         id test
-                        refinedby begin obstacle id child1 refinedby child3, child4 end, child2
+                        refinedby declare obstacle id child1 refinedby child3, child4 end, child2
                     end")]
-        [TestCase(@"begin obstacle 
+        [TestCase(@"declare obstacle 
                         id test
-                        refinedby begin obstacle id child1 refinedby begin obstacle id child3 end, child4 end, child2
+                        refinedby declare obstacle id child1 refinedby declare obstacle id child3 end, child4 end, child2
                     end")]
         public void TestRefinementRecursive (string input)
         {
@@ -210,16 +210,16 @@ namespace KAOSFormalTools.Parsing.Tests
                                .OnlyContains ( new string [] { "child3" , "child4" }));
         }
         
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         id         test
                         refinedby  test2, domprop
                     end
-                    begin domainproperty id domprop end")]
-        [TestCase(@"begin obstacle
+                    declare domainproperty id domprop end")]
+        [TestCase(@"declare obstacle
                         id         test
                         refinedby  test2, ""domprop""
                     end
-                    begin domainproperty id domprop name ""domprop"" end")]
+                    declare domainproperty id domprop name ""domprop"" end")]
         public void TestRefinementWithDomainProperty (string input)
         {
             var model = parser.Parse (input);
@@ -228,22 +228,22 @@ namespace KAOSFormalTools.Parsing.Tests
             test.Refinements.ShallBeSingle ().DomainProperties.Select (x => x.Identifier).ShallOnlyContain (new string [] { "domprop" });
         }
         
-        [TestCase(@"begin obstacle 
+        [TestCase(@"declare obstacle 
                         id test
                         refinedby child1, ""child2""
                     end
-                    begin obstacle id child1 name ""child1"" end")]
-        [TestCase(@"begin obstacle 
+                    declare obstacle id child1 name ""child1"" end")]
+        [TestCase(@"declare obstacle 
                         id test
                         refinedby ""child1"", ""child2""
                     end")]
-        [TestCase(@"begin obstacle 
+        [TestCase(@"declare obstacle 
                         id test
-                        refinedby begin obstacle name ""child1"" end, ""child2""
+                        refinedby declare obstacle name ""child1"" end, ""child2""
                     end")]
-        [TestCase(@"begin obstacle 
+        [TestCase(@"declare obstacle 
                         id test
-                        refinedby begin obstacle name ""child1"" end, begin obstacle name ""child2"" end
+                        refinedby declare obstacle name ""child1"" end, declare obstacle name ""child2"" end
                     end")]
         public void TestRefinementByName (string input)
         {
@@ -261,7 +261,7 @@ namespace KAOSFormalTools.Parsing.Tests
         [Test()]
         public void TestMerge ()
         {
-            var input = @"begin obstacle
+            var input = @"declare obstacle
                             id test
                             name ""old name""
                             definition ""old definition""
@@ -270,7 +270,7 @@ namespace KAOSFormalTools.Parsing.Tests
                             resolvedby old_goal
                         end
 
-                        begin obstacle
+                        declare obstacle
                             id test
                             name ""new name""
                             definition ""new definition""
@@ -297,19 +297,19 @@ namespace KAOSFormalTools.Parsing.Tests
                     .ShallOnlyContain (new string[] { "new_goal", "old_goal" });
         }
 
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id test
                         obstructedby obstacle_1, obstacle_2
                     end")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id test
-                        obstructedby begin obstacle id obstacle_1 end, obstacle_2
+                        obstructedby declare obstacle id obstacle_1 end, obstacle_2
                     end")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id test
-                        obstructedby begin obstacle id obstacle_1 end, begin obstacle id obstacle_2 end
+                        obstructedby declare obstacle id obstacle_1 end, declare obstacle id obstacle_2 end
                     end")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id test
                         obstructedby obstacle_1
                         obstructedby obstacle_2
@@ -321,19 +321,19 @@ namespace KAOSFormalTools.Parsing.Tests
             test.Obstruction.Select (x => x.Identifier).ShallOnlyContain (new string[] { "obstacle_1", "obstacle_2" });
         }
         
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         id test
                         resolvedby goal_1, goal_2
                     end")]
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         id test
-                        resolvedby begin goal id goal_1 end, goal_2
+                        resolvedby declare goal id goal_1 end, goal_2
                     end")]
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         id test
-                        resolvedby begin goal id goal_1 end, begin goal id goal_2 end
+                        resolvedby declare goal id goal_1 end, declare goal id goal_2 end
                     end")]
-        [TestCase(@"begin obstacle
+        [TestCase(@"declare obstacle
                         id test
                         resolvedby goal_1
                         resolvedby goal_2
@@ -345,14 +345,14 @@ namespace KAOSFormalTools.Parsing.Tests
             test.Resolutions.Select (x => x.Identifier).ShallOnlyContain (new string[] { "goal_1", "goal_2" });
         }
 
-        [TestCase(@"begin obstacle id test probability 0.95 end", 0.95)]
-        [TestCase(@"begin obstacle id test probability 1    end", 1)]
-        [TestCase(@"begin obstacle id test probability 0    end", 0)]
-        [TestCase(@"begin obstacle id test probability .01  end", .01)]
-        [TestCase(@"begin obstacle id test eps 0.95 end", 0.95)]
-        [TestCase(@"begin obstacle id test eps 1    end", 1)]
-        [TestCase(@"begin obstacle id test eps 0    end", 0)]
-        [TestCase(@"begin obstacle id test eps .01  end", .01)]
+        [TestCase(@"declare obstacle id test probability 0.95 end", 0.95)]
+        [TestCase(@"declare obstacle id test probability 1    end", 1)]
+        [TestCase(@"declare obstacle id test probability 0    end", 0)]
+        [TestCase(@"declare obstacle id test probability .01  end", .01)]
+        [TestCase(@"declare obstacle id test eps 0.95 end", 0.95)]
+        [TestCase(@"declare obstacle id test eps 1    end", 1)]
+        [TestCase(@"declare obstacle id test eps 0    end", 0)]
+        [TestCase(@"declare obstacle id test eps .01  end", .01)]
         public void TestProbability (string input, double expected)
         {
             var model = parser.Parse (input);

@@ -167,14 +167,14 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Predicate := 'begin' S 'predicate' S (PredicateAttribute S)* 'end'
+	// Predicate := 'declare' S 'predicate' S (PredicateAttribute S)* 'end'
 	private State DoParsePredicateRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
 		
 		_state = DoSequence(_state, results,
-			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "begin");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "declare");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "predicate");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
@@ -194,14 +194,14 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Alternative := 'begin' S 'alternative' S (AlternativeAttribute S)* 'end'
+	// Alternative := 'declare' S 'alternative' S (AlternativeAttribute S)* 'end'
 	private State DoParseAlternativeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
 		
 		_state = DoSequence(_state, results,
-			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "begin");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "declare");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "alternative");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
@@ -221,7 +221,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Goal := ('begin' / 'override') S 'goal' S (GoalAttribute S)* 'end'
+	// Goal := ('declare' / 'override') S 'goal' S (GoalAttribute S)* 'end'
 	private State DoParseGoalRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -229,7 +229,7 @@ internal sealed partial class GoalModelParser
 		
 		_state = DoSequence(_state, results,
 			delegate (State s, List<Result> r) {return DoChoice(s, r,
-				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "begin");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "declare");},
 				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "override");});},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "goal");},
@@ -250,14 +250,14 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// DomProp := 'begin' S ('domainproperty' / 'domprop') S (DomPropAttribute S)* 'end'
+	// DomProp := 'declare' S ('domainproperty' / 'domprop') S (DomPropAttribute S)* 'end'
 	private State DoParseDomPropRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
 		
 		_state = DoSequence(_state, results,
-			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "begin");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "declare");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoChoice(s, r,
 				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "domainproperty");},
@@ -279,14 +279,14 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Obstacle := 'begin' S 'obstacle' S (ObstacleAttribute S)* 'end'
+	// Obstacle := 'declare' S 'obstacle' S (ObstacleAttribute S)* 'end'
 	private State DoParseObstacleRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
 		
 		_state = DoSequence(_state, results,
-			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "begin");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "declare");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "obstacle");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
@@ -306,14 +306,14 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Agent := 'begin' S (('software' / 'environment') S)? 'agent' S (AgentAttribute S)* 'end'
+	// Agent := 'declare' S (('software' / 'environment') S)? 'agent' S (AgentAttribute S)* 'end'
 	private State DoParseAgentRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
 		
 		_state = DoSequence(_state, results,
-			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "begin");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "declare");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 1,
 				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
@@ -339,14 +339,14 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// DomHyp := 'begin' S ('domainhypothesis' / 'domhyp') S (DomHypAttribute S)* 'end'
+	// DomHyp := 'declare' S ('domainhypothesis' / 'domhyp') S (DomHypAttribute S)* 'end'
 	private State DoParseDomHypRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
 		
 		_state = DoSequence(_state, results,
-			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "begin");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "declare");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoChoice(s, r,
 				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "domainhypothesis");},

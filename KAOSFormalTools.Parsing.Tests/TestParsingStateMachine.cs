@@ -10,7 +10,7 @@ namespace KAOSFormalTools.Parsing.Tests
     {
         private static Parser parser = new Parser ();
 
-        [TestCase(@"begin statemachine
+        [TestCase(@"declare statemachine
                         state1 -> (.90) state2
                         state1 -> (.10) state3
                     end")]

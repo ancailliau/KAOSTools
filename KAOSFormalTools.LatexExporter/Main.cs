@@ -68,7 +68,7 @@ namespace KAOSFormalTools.LatexExporter
                 Console.WriteLine ("\\documentclass{article}");
                 Console.WriteLine ("\\usepackage{latexsym}");
 
-                Console.WriteLine ("\\begin{document}");
+                Console.WriteLine ("\\declare{document}");
 
                 Console.WriteLine ("\\title{" + title + "}");
                 Console.WriteLine ("\\author{" + authors + "}");
@@ -129,7 +129,7 @@ namespace KAOSFormalTools.LatexExporter
                     Console.WriteLine ("\\paragraph{Refinement : }");
                 }
 
-                Console.WriteLine ("\\begin{itemize}");
+                Console.WriteLine ("\\declare{itemize}");
                 
                 foreach (var goal in refinement.Children)
                     Console.WriteLine ("\\item {0}", goal.Name);
@@ -139,7 +139,7 @@ namespace KAOSFormalTools.LatexExporter
 
             if (g.Obstruction.Count > 0) {
                 Console.WriteLine ("\\paragraph{Obstructed by : }");
-                Console.WriteLine ("\\begin{itemize}");
+                Console.WriteLine ("\\declare{itemize}");
                 foreach (var obstacle in g.Obstruction) {
                     Console.WriteLine ("\\item {0}", obstacle.Name);
                 }
@@ -149,7 +149,7 @@ namespace KAOSFormalTools.LatexExporter
             if (g.AssignedAgents.Count > 0) {
                 Console.WriteLine ("\\paragraph{Assigned to : }");
                 foreach (var assignment in g.AssignedAgents) {
-                    Console.WriteLine ("\\begin{itemize}");
+                    Console.WriteLine ("\\declare{itemize}");
                     foreach (var agent in assignment.Agents)
                         Console.WriteLine ("\\item {0}", agent.Name);
                     Console.WriteLine ("\\end{itemize}");
@@ -186,7 +186,7 @@ namespace KAOSFormalTools.LatexExporter
                     Console.WriteLine ("\\paragraph{Refinement : }");
                 }
                 
-                Console.WriteLine ("\\begin{itemize}");
+                Console.WriteLine ("\\declare{itemize}");
                 
                 foreach (var goal in refinement.Children)
                     Console.WriteLine ("\\item {0}", goal.Name);
@@ -196,7 +196,7 @@ namespace KAOSFormalTools.LatexExporter
 
             if (o.Resolutions.Count > 0) {
                 Console.WriteLine ("\\paragraph{Resolved by : }");
-                Console.WriteLine ("\\begin{itemize}");
+                Console.WriteLine ("\\declare{itemize}");
                 foreach (var goal in o.Resolutions) {
                     Console.WriteLine ("\\item {0}", goal.Name);
                 }
@@ -237,7 +237,7 @@ namespace KAOSFormalTools.LatexExporter
             }
             
             Console.WriteLine ("\\paragraph{Responsibilities :}");
-            Console.WriteLine ("\\begin{itemize}");            
+            Console.WriteLine ("\\declare{itemize}");            
             foreach (var goal in model.Goals.Where (g => g.AssignedAgents.SelectMany(x => x.Agents).Where (a2 => a2.Name == a.Name).Count() > 0))
                 Console.WriteLine ("\\item {0}", goal.Name);
             Console.WriteLine ("\\end{itemize}");

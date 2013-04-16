@@ -1,4 +1,4 @@
-begin goal
+declare goal
   id          achieve_destination_reached_if_passenger_has_been_taken
   name        "Achieve[Destination reached if passenger has been taken]"
 end

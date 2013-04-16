@@ -2,7 +2,7 @@
 # Goals
 #
 
-begin goal
+declare goal
   id          achieve_ambulance_on_scene_when_incident_reported
   name        "Achieve [AmbulanceOnScene When IncidentReported]"
   definition  "Sooner-or-later, ambulance shall be on scene when incident is reported."
@@ -12,7 +12,7 @@ begin goal
               achieve_ambulance_on_scene_when_ambulance_allocated
 end
 
-begin goal
+declare goal
   id          achieve_ambulance_allocated_when_incident_reported
   name        "Achieve [AmbulanceAllocated When IncidentReported]"
   definition  "Sooner-or-later, ambulance shall be allocated when incident is reported."
@@ -20,7 +20,7 @@ begin goal
   assignedto  "ADS"
 end
 
-begin goal
+declare goal
   id          achieve_ambulance_on_scene_when_ambulance_allocated
   name        "Achieve [AmbulanceOnScene When AmbulanceAllocated]"
   definition  "Sooner-or-later, ambulance shall be on scene when allocated."
@@ -30,7 +30,7 @@ begin goal
               achieve_ambulance_on_scene_when_ambulance_mobilized
 end
 
-begin goal
+declare goal
   id          achieve_ambulance_mobilized_when_ambulance_allocated
   name        "Achieve [AmbulanceMobilized When AmbulanceAllocated]"
   definition  "Sooner-or-later, ambulance shall be mobilized when allocated."
@@ -40,7 +40,7 @@ begin goal
               achieve_ambulance_mobilized_when_ambulance_allocated_at_station
 end
 
-begin goal
+declare goal
   id           achieve_ambulance_on_scene_when_ambulance_mobilized
   name         "Achieve [AmbulanceOnScene When AmbulanceMobilized]"
   definition   "Sooner-or-later, ambulance shall be on scene when mobilized."
@@ -50,7 +50,7 @@ begin goal
   obstructedby mobilized_ambulance_not_on_scene_in_time
 end
 
-begin goal
+declare goal
   id           achieve_ambulance_mobilized_when_ambulance_allocated_on_road
   name         "Achieve [AmbulanceMobilized When AmbulanceAllocatedOnRoad]"
   definition   "Sooner-or-later, ambulance shall be mobilized when allocated and on road."
@@ -58,7 +58,7 @@ begin goal
   assignedto   "Despatcher"
 end
 
-begin goal
+declare goal
   id           achieve_ambulance_mobilized_when_ambulance_allocated_at_station
   name         "Achieve [AmbulanceMobilized When AmbulanceAllocatedAtStation]"
   definition   "Sooner-or-later, ambulance shall be mobilized when allocated and at station."
@@ -69,7 +69,7 @@ begin goal
                by_fax_or_by_phone_mobilization
 end
 
-begin goal
+declare goal
   id           achieve_ambulance_mobilized_by_fax
   name         "Achieve [AmbulanceMobilizedByFax When AmbulanceAllocatedAtStation]"
   definition   "Sooner-or-later, ambulance shall be mobilized by fax when allocated and at station."
@@ -77,7 +77,7 @@ begin goal
   assignedto   "ADS"
 end
 
-begin goal
+declare goal
   id           achieve_ambulance_mobilized_by_phone
   name         "Achieve [AmbulanceMobilizedByPhone When AmbulanceAllocatedAtStation]"
   definition   "Sooner-or-later, ambulance shall be mobilized by phone when allocated and at station."
@@ -89,7 +89,7 @@ end
 # Obstacles
 #
 
-begin obstacle
+declare obstacle
   id           mobilized_ambulance_not_on_scene_in_time
   name         "Mobilized Ambulance Not On Scene in Time"
   definition   "Ambulance is mobilized and cannot reach the incident scene within time constraints"
@@ -100,14 +100,14 @@ begin obstacle
   refinedby    ambulance_broken_down, ambulance_on_scene_not_broken_down
 end
 
-begin obstacle
+declare obstacle
   id           ambulance_stuck_in_traffic_jam
   name         "Ambulance Stuck In Traffic Jam"
   definition   "Ambulance is mobilized and is stuck in traffic jams"
   formalspec   "F (ambulanceMobilized & G (ambulanceInTrafficJam))"
 end
 
-begin obstacle
+declare obstacle
   id           ambulance_lost
   name         "Ambulance Lost"
   definition   "Ambulance is mobilized and is lost and cannot find his way to incident scene"
@@ -115,21 +115,21 @@ begin obstacle
   refinedby    ambulance_not_in_familiar_area, gps_not_working, ambulance_lost_iff_gps_not_working_and_not_in_familiar_area
 end
 
-begin obstacle
+declare obstacle
   id           ambulance_broken_down
   name         "Ambulance Broken Down"
   definition   "Ambulance is mobilized and is broken down"
   formalspec   "F (ambulanceMobilized & G (ambulanceBrokenDown))"
 end
 
-begin obstacle
+declare obstacle
   id           ambulance_not_in_familiar_area
   name         "Ambulance Not In Familiar Area"
   definition   "Ambulance is mobilized and is in a unfamiliar area"
   formalspec   "F (ambulanceMobilized & G (!ambulanceInFamiliarArea))"
 end
 
-begin obstacle
+declare obstacle
   id           gps_not_working
   name         "GPS Not Working"
   definition   "Ambulance is mobilized and the GPS is not working"
@@ -140,12 +140,12 @@ end
 # Resolutions
 #
 
-begin obstacle
+declare obstacle
   id          ambulance_not_in_familiar_area
   resolvedby  avoid_ambulance_not_in_familiar_area
 end
 
-begin goal
+declare goal
   id          avoid_ambulance_not_in_familiar_area
   name        "Avoid [Ambulance Not In Familiar Area]"
   formalspec  "ambulanceMobilized => ambulanceInFamiliarArea"
@@ -155,35 +155,35 @@ end
 # Domain properties
 #
 
-begin domainproperty
+declare domainproperty
   id           ambulance_on_scene_not_in_traffic_jam
   name         "Ambulance On Scene Not In Traffic Jam"
   definition   "Ambulance cannot reach incident scene if stuck in traffic jams."
   formalspec   "G (ambulanceOnScene -> !ambulanceInTrafficJam)"
 end
 
-begin domainproperty
+declare domainproperty
   id           ambulance_on_scene_not_lost
   name         "Ambulance On Scene Not Lost"
   definition   "Ambulance cannot reach incident scene if lost."
   formalspec   "G (ambulanceOnScene -> !ambulanceLost)"
 end
 
-begin domainproperty
+declare domainproperty
   id           ambulance_on_scene_not_broken_down
   name         "Ambulance On Scene Broken Down"
   definition   "Ambulance cannot reach incident scene if broken down."
   formalspec   "G (ambulanceOnScene -> !ambulanceBrokenDown)"
 end
 
-begin domainproperty
+declare domainproperty
   id           ambulance_lost_iff_gps_not_working_and_not_in_familiar_area
   name         "Ambulance Lost Iff GPS Not Working And Not In Familiar Area"
   definition   "Ambulance cannot reach incident scene if in unfamiliar area and if the GPS is not working."
   formalspec   "G (ambulanceLost <-> (!ambulanceInFamiliarArea & gpsNotWorking))"
 end
 
-begin domainproperty
+declare domainproperty
   id           by_fax_or_by_phone_mobilization
   name         "Ambulance Mobilized By Fax or Phone"
   definition   "An ambulance mobilized by fax or by phone is considered as mobilized."
@@ -194,18 +194,18 @@ end
 # Agents
 #
 
-begin agent 
+declare agent 
   name         "Despatcher"
   description  "Despatcher is the person at the call center dealing 
                 with urgent calls and ambulance mobilization."
 end
 
-begin agent 
+declare agent 
   name         "Ambulance Staff"
   description  "Ambulance Staff contains the ambulance driver and the paramedic(s)."
 end
 
-begin software agent
+declare software agent
   name         "ADS"
   description  "Automated despatching system"
 end

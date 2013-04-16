@@ -10,7 +10,7 @@ namespace KAOSFormalTools.Parsing.Tests
     {
         private static Parser parser = new Parser ();
 
-        [TestCase(@"begin predicate
+        [TestCase(@"declare predicate
                         name ""Test""
                         definition ""My definition""
                         signature ""Test(c:Test)""

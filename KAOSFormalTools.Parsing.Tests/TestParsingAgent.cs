@@ -10,10 +10,10 @@ namespace KAOSFormalTools.Parsing.Tests
     {
         private static Parser parser = new Parser ();
 
-        [TestCase(@"begin software agent
+        [TestCase(@"declare software agent
                         id test
                     end", KAOSFormalTools.Domain.AgentType.Software)]
-        [TestCase(@"begin environment agent
+        [TestCase(@"declare environment agent
                         id test
                     end", KAOSFormalTools.Domain.AgentType.Environment)]
         public void TestTypeOfAgent (string input, KAOSFormalTools.Domain.AgentType type)
@@ -24,28 +24,28 @@ namespace KAOSFormalTools.Parsing.Tests
                 .ShallBeSingle ();
         }
 
-        [TestCase(@"begin agent
+        [TestCase(@"declare agent
                         id test
                     end", "test")]
-        [TestCase(@"begin agent
+        [TestCase(@"declare agent
                         id _test
                     end", "_test")]
-        [TestCase(@"begin agent
+        [TestCase(@"declare agent
                         id -test
                     end", "-test")]
-        [TestCase(@"begin agent
+        [TestCase(@"declare agent
                         id $test
                     end", "$test")]
-        [TestCase(@"begin agent
+        [TestCase(@"declare agent
                         id test_long_identifier
                     end", "test_long_identifier")]
-        [TestCase(@"begin agent
+        [TestCase(@"declare agent
                         id test-long-identifier
                     end", "test-long-identifier")]
-        [TestCase(@"begin agent
+        [TestCase(@"declare agent
                         id test12
                     end", "test12")]
-        [TestCase(@"begin agent
+        [TestCase(@"declare agent
                         id 0
                     end", "0")]
         public void TestIdentifier (string input, string identifier)
@@ -56,16 +56,16 @@ namespace KAOSFormalTools.Parsing.Tests
                 .ShallBeSingle ();
         }
         
-        [TestCase(@"begin agent
+        [TestCase(@"declare agent
                         id 
                     end")]
-        [TestCase(@"begin agent
+        [TestCase(@"declare agent
                         id -
                     end")]
-        [TestCase(@"begin agent
+        [TestCase(@"declare agent
                         id _
                     end")]
-        [TestCase(@"begin agent
+        [TestCase(@"declare agent
                         id $
                     end")]
         public void TestInvalidIdentifier (string input)
@@ -75,13 +75,13 @@ namespace KAOSFormalTools.Parsing.Tests
             });
         }
 
-        [TestCase(@"begin agent
+        [TestCase(@"declare agent
                         name ""test""
                     end", "test")]
-        [TestCase(@"begin agent
+        [TestCase(@"declare agent
                         name ""Long name with spaces and numbers 123""
                     end", "Long name with spaces and numbers 123")]
-        [TestCase(@"begin agent
+        [TestCase(@"declare agent
                         name ""[-_-]""
                     end", "[-_-]")]
         public void TestName (string input, string expectedName)
@@ -92,10 +92,10 @@ namespace KAOSFormalTools.Parsing.Tests
                 .ShallBeSingle ();
         }
         
-        [TestCase(@"begin agent
+        [TestCase(@"declare agent
                         name """"
                     end")]
-        [TestCase(@"begin agent
+        [TestCase(@"declare agent
                         name """"""
                     end")]
         public void TestInvalidName (string input)
@@ -105,19 +105,19 @@ namespace KAOSFormalTools.Parsing.Tests
             });
         }
 
-        [TestCase(@"begin agent
+        [TestCase(@"declare agent
                         id test
                         description ""My description""
                     end", "My description")]
-        [TestCase(@"begin agent
+        [TestCase(@"declare agent
                         id test
                         description """"
                     end", "")]
-        [TestCase(@"begin agent
+        [TestCase(@"declare agent
                         id test
                         definition ""My description""
                     end", "My description")]
-        [TestCase(@"begin agent
+        [TestCase(@"declare agent
                         id test
                         definition """"
                     end", "")]
@@ -129,7 +129,7 @@ namespace KAOSFormalTools.Parsing.Tests
                 .ShallBeSuchThat (x => x.Description == expectedDescription);
         }
 
-        [TestCase(@"begin agent
+        [TestCase(@"declare agent
                         description 
                     end")]
         public void TestInvalidDescription (string input)
@@ -139,13 +139,13 @@ namespace KAOSFormalTools.Parsing.Tests
             });
         }
 
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id goal
                         assignedto agent
                     end")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id goal
-                        assignedto begin agent
+                        assignedto declare agent
                                      id agent
                                    end
                     end")]
@@ -160,21 +160,21 @@ namespace KAOSFormalTools.Parsing.Tests
                 .ShallBeSuchThat (x => x.Identifier == "agent");
         }
 
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id goal
                         assignedto agent1, agent2
                     end")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id goal
-                        assignedto begin agent
+                        assignedto declare agent
                                      id agent1
                                    end, agent2
                     end")]
-        [TestCase(@"begin goal
+        [TestCase(@"declare goal
                         id goal
-                        assignedto begin agent
+                        assignedto declare agent
                                      id agent1
-                                   end, begin agent
+                                   end, declare agent
                                      id agent2
                                    end
                     end")]

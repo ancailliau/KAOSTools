@@ -12,35 +12,35 @@ namespace KAOSFormalTools.Parsing.Tests
     {
         private static Parser parser = new Parser ();
         
-        [TestCase(@"begin domainhypothesis
+        [TestCase(@"declare domainhypothesis
                         id test
                     end", "test")]
-        [TestCase(@"begin domainhypothesis
+        [TestCase(@"declare domainhypothesis
                         id _test
                     end", "_test")]
-        [TestCase(@"begin domainhypothesis
+        [TestCase(@"declare domainhypothesis
                         id -test
                     end", "-test")]
-        [TestCase(@"begin domainhypothesis
+        [TestCase(@"declare domainhypothesis
                         id $test
                     end", "$test")]
-        [TestCase(@"begin domainhypothesis
+        [TestCase(@"declare domainhypothesis
                         id test_long_identifier
                     end", "test_long_identifier")]
-        [TestCase(@"begin domainhypothesis
+        [TestCase(@"declare domainhypothesis
                         id test-long-identifier
                     end", "test-long-identifier")]
-        [TestCase(@"begin domainhypothesis
+        [TestCase(@"declare domainhypothesis
                         id test12
                     end", "test12")]
-        [TestCase(@"begin domainhypothesis
+        [TestCase(@"declare domainhypothesis
                         id 0
                     end", "0")]
-        [TestCase(@"begin domainhypothesis
+        [TestCase(@"declare domainhypothesis
                         id test2
                         id test
                     end", "test")]
-        [TestCase(@"begin domainhypothesis
+        [TestCase(@"declare domainhypothesis
                         id test
                         id test
                     end", "test")]
@@ -50,10 +50,10 @@ namespace KAOSFormalTools.Parsing.Tests
             model.GoalModel.DomainHypotheses.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
         }
         
-        [TestCase(@"begin domainhypothesis id   end")]
-        [TestCase(@"begin domainhypothesis id - end")]
-        [TestCase(@"begin domainhypothesis id _ end")]
-        [TestCase(@"begin domainhypothesis id $ end")]
+        [TestCase(@"declare domainhypothesis id   end")]
+        [TestCase(@"declare domainhypothesis id - end")]
+        [TestCase(@"declare domainhypothesis id _ end")]
+        [TestCase(@"declare domainhypothesis id $ end")]
         public void TestInvalidIdentifier (string input)
         {
             Assert.Throws<ParsingException> (() => {
@@ -61,13 +61,13 @@ namespace KAOSFormalTools.Parsing.Tests
             });
         }
         
-        [TestCase(@"begin domainhypothesis
+        [TestCase(@"declare domainhypothesis
                         name ""test""
                     end", "test")]
-        [TestCase(@"begin domainhypothesis
+        [TestCase(@"declare domainhypothesis
                         name ""Long name with spaces and numbers 123""
                     end", "Long name with spaces and numbers 123")]
-        [TestCase(@"begin domainhypothesis
+        [TestCase(@"declare domainhypothesis
                         name ""[-_-]""
                     end", "[-_-]")]
         public void TestName (string input, string expectedName)
@@ -78,10 +78,10 @@ namespace KAOSFormalTools.Parsing.Tests
                     .ShallBeSingle ();
         }
         
-        [TestCase(@"begin domainhypothesis
+        [TestCase(@"declare domainhypothesis
                         name """"
                     end")]
-        [TestCase(@"begin domainhypothesis
+        [TestCase(@"declare domainhypothesis
                         name """"""
                     end")]
         public void TestInvalidName (string input)
@@ -91,22 +91,22 @@ namespace KAOSFormalTools.Parsing.Tests
             });
         }        
             
-        [TestCase(@"begin domhyp
+        [TestCase(@"declare domhyp
                         id test
                         name ""old name""
                         definition ""old definition""
                     end
 
-                    begin domhyp
+                    declare domhyp
                         id test
                         name ""new name""
                         definition ""new definition""
                     end")]
-        [TestCase(@"begin domhyp
+        [TestCase(@"declare domhyp
                         id test
                     end
 
-                    begin domhyp
+                    declare domhyp
                         id test
                         name ""old name""
                         definition ""old definition""
@@ -120,10 +120,10 @@ namespace KAOSFormalTools.Parsing.Tests
             domhyp.Definition.ShallEqual ("old definition");
         }
         
-        [TestCase(@"begin domainhypothesis id test  end
-                    begin domainhypothesis id test2 end")]
-        [TestCase(@"begin domhyp id test  end
-                    begin domhyp id test2 end")]
+        [TestCase(@"declare domainhypothesis id test  end
+                    declare domainhypothesis id test2 end")]
+        [TestCase(@"declare domhyp id test  end
+                    declare domhyp id test2 end")]
         public void TestMultiple (string input)
         {
             var model = parser.Parse (input);
@@ -131,9 +131,9 @@ namespace KAOSFormalTools.Parsing.Tests
             model.GoalModel.DomainHypotheses.ShallContain (x => x.Identifier == "test2");
         }
 
-        [TestCase(@"begin goal id g refinedby test end
-                    begin domhyp id test end")]
-        [TestCase(@"begin goal id g refinedby begin domhyp id test end end")]
+        [TestCase(@"declare goal id g refinedby test end
+                    declare domhyp id test end")]
+        [TestCase(@"declare goal id g refinedby declare domhyp id test end end")]
         public void TestRefinementWithDomainHypothesis (string input)
         {
             var model = parser.Parse (input);

@@ -16,31 +16,31 @@ Import :=
     `value = Import(results[2].Text);`
     
 Predicate := 
-    'begin' S 'predicate' S (PredicateAttribute S)* 'end' 
+    'declare' S 'predicate' S (PredicateAttribute S)* 'end' 
     `value = BuildPredicate(results);`
 
 Alternative := 
-    'begin' S 'alternative' S (AlternativeAttribute S)* 'end' 
+    'declare' S 'alternative' S (AlternativeAttribute S)* 'end' 
     `value = BuildAlternative(results);`
     
 Goal := 
-    ( 'begin' / 'override' ) S 'goal' S (GoalAttribute S)* 'end'
+    ( 'declare' / 'override' ) S 'goal' S (GoalAttribute S)* 'end'
     `value = BuildGoal(results);`
     
 DomProp := 
-    'begin' S ('domainproperty' / 'domprop' ) S (DomPropAttribute S)* 'end'
+    'declare' S ('domainproperty' / 'domprop' ) S (DomPropAttribute S)* 'end'
     `value = BuildDomainProperty(results);`
     
 Obstacle := 
-    'begin' S 'obstacle' S (ObstacleAttribute S)* 'end'
+    'declare' S 'obstacle' S (ObstacleAttribute S)* 'end'
     `value = BuildObstacle(results);`
 
 Agent := 
-    'begin' S (('software' / 'environment') S)? 'agent' S (AgentAttribute S)* 'end'
+    'declare' S (('software' / 'environment') S)? 'agent' S (AgentAttribute S)* 'end'
     `value = BuildAgent(results);`
 
 DomHyp := 
-    'begin' S ('domainhypothesis' / 'domhyp' ) S (DomHypAttribute S)* 'end'
+    'declare' S ('domainhypothesis' / 'domhyp' ) S (DomHypAttribute S)* 'end'
     `value = BuildDomainHypothesis(results);`
 
 
