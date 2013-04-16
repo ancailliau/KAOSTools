@@ -52,6 +52,8 @@ namespace KAOSFormalTools.Executable
             }
 
             model = BuildModel ();
+            var h = new AlternativeHelpers();
+            h.ComputeInAlternatives (model);
         }
         
         protected static GoalModel BuildModel ()

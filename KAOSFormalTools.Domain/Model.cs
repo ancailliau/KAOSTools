@@ -17,7 +17,9 @@ namespace KAOSFormalTools.Domain
 
         public ISet<GoalRefinement>   Refinements     { get; set; }
         public ISet<Obstacle>         Obstruction     { get; set; }
-        public ISet<AgentAssignment>            AssignedAgents  { get; set; }
+        public ISet<AgentAssignment>  AssignedAgents  { get; set; }
+
+        public ISet<System>      InSystems  { get; set; }
 
         public Goal ()
         {
@@ -81,6 +83,7 @@ namespace KAOSFormalTools.Domain
         public string    Name         { get; set; }
         public string    Description  { get; set; }
         public AgentType Type         { get; set; }
+        public ISet<System>     InSystems             { get; set; }
 
         public Agent ()
         {
@@ -99,26 +102,38 @@ namespace KAOSFormalTools.Domain
 
     public class AgentAssignment
     {
-        public Alternative           AlternativeIdentifier { get; set; }
-        public IList<Agent>          Agents                { get; set; }
+        public System           AlternativeIdentifier { get; set; }
+        public IList<Agent>     Agents                { get; set; }
+        public ISet<System>     InSystems             { get; set; }
 
         public AgentAssignment ()
+            : this (new Agent[] {})
+        {
+        }
+
+        public AgentAssignment (Agent a)
+            : this (new Agent[] { a })
+        {
+        }
+
+        public AgentAssignment (params Agent[] a) 
         {
             AlternativeIdentifier = null;
-            Agents = new List<Agent> ();   
+            Agents = new List<Agent> (a);
         }
     }
 
     public class GoalRefinement
     {
-        public Alternative             AlternativeIdentifier { get; set; }
+        public System                  SystemIdentifier  { get; set; }
         public IList<Goal>             Children          { get; set; }
         public IList<DomainProperty>   DomainProperties  { get; set; }
         public IList<DomainHypothesis> DomainHypotheses  { get; set; }
+        public ISet<System>            InSystems         { get; set; }
 
         public GoalRefinement ()
         {
-            AlternativeIdentifier = null;
+            SystemIdentifier = null;
             Children = new List<Goal> ();
             DomainProperties = new List<DomainProperty> ();
             DomainHypotheses = new List<DomainHypothesis> ();
@@ -159,10 +174,38 @@ namespace KAOSFormalTools.Domain
         }
     }
 
-    public class Alternative 
+    public class System 
     {
         public string Identifier  { get; set; }
         public string Name        { get; set; }
         public string Description { get; set; }
+        public ISet<System> Alternatives  { get; set; }
+        
+        public System ()
+        {
+            Identifier   = Guid.NewGuid ().ToString ();
+            Alternatives = new HashSet<System> ();
+        }
+
+        public override bool Equals (object obj)
+        {
+            if (obj == null)
+                return false;
+            if (ReferenceEquals (this, obj))
+                return true;
+            if (obj.GetType () != typeof(System))
+                return false;
+            System other = (System)obj;
+            return Identifier == other.Identifier;
+        }
+        
+
+        public override int GetHashCode ()
+        {
+            unchecked {
+                return (Identifier != null ? Identifier.GetHashCode () : 0);
+            }
+        }
+        
     }
 }

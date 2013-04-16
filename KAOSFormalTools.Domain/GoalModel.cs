@@ -14,7 +14,7 @@ namespace KAOSFormalTools.Domain
         public IList<Obstacle>         Obstacles         { get; set; }
         public IList<Agent>            Agents            { get; set; }
 
-        public IList<Alternative>      Alternatives      { get; set; }
+        public IList<System>      Systems      { get; set; }
 
         public IList<Goal>           RootGoals { 
             get {
@@ -27,6 +27,17 @@ namespace KAOSFormalTools.Domain
                     foreach (var resolution in obstacle.Resolutions)
                         goals.Remove (resolution);
                 return goals;
+            }
+        }
+
+        public IList<System>           RootSystems { 
+            get {
+                var systems = new List<System> (Systems);
+                foreach (var system in Systems)
+                    foreach (var alternative in system.Alternatives) 
+                        systems.Remove (alternative);
+
+                return systems;
             }
         }
 
@@ -49,7 +60,22 @@ namespace KAOSFormalTools.Domain
             DomainHypotheses  = new List<DomainHypothesis> ();
             Obstacles         = new List<Obstacle> ();
             Agents            = new List<Agent> ();
-            Alternatives      = new List<Alternative> ();
+            Systems      = new List<System> ();
+        }
+
+        public System GetSystemByIdentifier (string identifier)
+        {
+            return Systems.Where (x => x.Identifier == identifier).SingleOrDefault ();
+        }
+        
+        public IEnumerable<System> GetSystemsByName (string name)
+        {
+            return Systems.Where (x => x.Name == name);
+        }
+
+        public bool SystemExists (string identifier)
+        {
+            return Systems.Where (x => x.Identifier == identifier).Count () > 0;
         }
 
         public Goal GetGoalByIdentifier (string identifier)

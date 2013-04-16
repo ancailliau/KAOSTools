@@ -5,7 +5,7 @@ debug =
 Start := S Elements S;
 
 Elements := 
-    ( ( Alternative / Predicate / Goal / DomProp / Obstacle / Agent / Import / DomHyp ) S )*
+    ( ( System / Predicate / Goal / DomProp / Obstacle / Agent / Import / DomHyp ) S )*
     `value = BuildElements (results);`
 
 
@@ -19,9 +19,9 @@ Predicate :=
     'declare' S 'predicate' S (PredicateAttribute S)* 'end' 
     `value = BuildPredicate(results);`
 
-Alternative := 
-    'declare' S 'alternative' S (AlternativeAttribute S)* 'end' 
-    `value = BuildAlternative(results);`
+System := 
+    ( 'declare' / 'override' ) S 'system' S (SystemAttribute S)* 'end' 
+    `value = BuildSystem(results);`
     
 Goal := 
     ( 'declare' / 'override' ) S 'goal' S (GoalAttribute S)* 'end'
@@ -70,8 +70,8 @@ PredicateAttribute :=
     ( Name / Definition / Signature / StringFormalSpec ) 
     `value = results[0].Value;`
 
-AlternativeAttribute := 
-    ( Id / Name / Description ) 
+SystemAttribute := 
+    ( Id / Name / Description / Alternative ) 
     `value = results[0].Value;`
 
 # 
@@ -118,6 +118,8 @@ AssignedTo := 'assignedto' ('[' S IdOrName S ']')?  S IdOrNameOrAgent (S ',' S I
 ResolvedBy := 'resolvedby' S IdOrNameOrGoal (S ',' S IdOrNameOrGoal)*
     `value = BuildResolvedBy(results);`
         
+Alternative := 'alternative' S IdOrNameOrSystem (S ',' S IdOrNameOrSystem)*
+    `value = BuildAlternative(results);`
                                                                                                                                                                                                                                                                               
 # Expressions                                
 
@@ -128,6 +130,9 @@ IdOrNameOrGoal := ( Goal / DomProp / DomHyp / IdOrName )
     `value = results[0].Value;` `expected = "id or name"`
     
 IdOrNameOrAgent := ( Agent / IdOrName )
+    `value = results[0].Value;` `expected = "id or name"`
+
+IdOrNameOrSystem := ( System / IdOrName ) 
     `value = results[0].Value;` `expected = "id or name"`
 
 IdOrName := ( '"' String '"' / Identifier )

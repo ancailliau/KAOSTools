@@ -49,7 +49,7 @@
     <Compile Include="TestParsingAgent.cs" />
     <Compile Include="TestParsingDomainHypothesis.cs" />
     <Compile Include="TestParsingPredicate.cs" />
-    <Compile Include="TestParsingAlternatives.cs" />
+    <Compile Include="TestParsingSystem.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

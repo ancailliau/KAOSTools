@@ -63,8 +63,8 @@ namespace KAOSFormalTools.Parsing
                 } else if (element is Predicate) {
                     BuildPredicate (element as Predicate);
 
-                } else if (element is Alternative) {
-                    BuildAlternative (element as Alternative);
+                } else if (element is System) {
+                    BuildSystem (element as System);
                     
                 } else {
                     throw new NotImplementedException (string.Format("'{0}' not yet implemented", element.GetType ().Name));
@@ -79,15 +79,19 @@ namespace KAOSFormalTools.Parsing
 
                 } else if (element is Goal) {
                     BuildGoalRelations (element as Goal);
+
+                } else if (element is System) {
+                    BuildSystemRelations (element as System);
+
                 }
             }
         }
         
         #region Build helpers for first pass
 
-        private KAOSFormalTools.Domain.Alternative BuildAlternative (Alternative parsedAlternative) 
+        private KAOSFormalTools.Domain.System BuildSystem (System parsedAlternative) 
         {
-            var alternative = new KAOSFormalTools.Domain.Alternative ();
+            var alternative = new KAOSFormalTools.Domain.System ();
             Identifier identifierAttribute = null;
             
             foreach (var attribute in parsedAlternative.Attributes) {
@@ -104,7 +108,27 @@ namespace KAOSFormalTools.Parsing
                 }
             }
 
-            model.GoalModel.Alternatives.Add (alternative);
+            if (model.GoalModel.SystemExists (alternative.Identifier)) {
+                if (parsedAlternative.Override) {
+                    var s2 = model.GoalModel.GetSystemByIdentifier (alternative.Identifier);
+                    s2.Merge (alternative);
+                    return s2;
+                } else {
+                    throw new ParsingException (string.Format ("System '{0}' is declared multiple times", alternative.Identifier));
+                }
+            }
+            
+            if (identifierAttribute == null && model.GoalModel.GetSystemsByName (alternative.Name).Count() == 1) {
+                if (parsedAlternative.Override) {
+                    var s2 = model.GoalModel.GetSystemsByName (alternative.Name).Single ();
+                    s2.Merge (alternative);
+                    return s2;
+                } else {
+                    throw new ParsingException (string.Format ("System '{0}' is declared multiple times", alternative.Identifier));
+                }
+            }
+
+            model.GoalModel.Systems.Add (alternative);
 
             return alternative;
         }
@@ -470,8 +494,8 @@ namespace KAOSFormalTools.Parsing
                     var children = attribute as RefinedByList;
                     var refinement = new GoalRefinement ();
 
-                    if (children.AlternativeIdentifier != null)
-                        refinement.AlternativeIdentifier = GetOrCreateAlternative (children.AlternativeIdentifier, true);
+                    if (children.SystemIdentifier != null)
+                        refinement.SystemIdentifier = GetOrCreateAlternative (children.SystemIdentifier, true);
 
                     foreach (var child in children.Values) {
                         if (child is IdentifierOrName) {
@@ -528,8 +552,8 @@ namespace KAOSFormalTools.Parsing
                 } else if (attribute is AssignedToList) {
                     var assignment = new AgentAssignment();
 
-                    if ((attribute as AssignedToList).AlternativeIdentifier != null)
-                        assignment.AlternativeIdentifier = GetOrCreateAlternative ((attribute as AssignedToList).AlternativeIdentifier);
+                    if ((attribute as AssignedToList).SystemIdentifier != null)
+                        assignment.AlternativeIdentifier = GetOrCreateAlternative ((attribute as AssignedToList).SystemIdentifier);
 
                     foreach (var assignedto in (attribute as AssignedToList).Values) {
                         if (assignedto is IdentifierOrName) {
@@ -575,6 +599,60 @@ namespace KAOSFormalTools.Parsing
                 goal.Refinements = refinements;
                 goal.Obstruction = obstruction;
                 goal.AssignedAgents = assignedAgents;
+            }
+        }
+
+        private void BuildSystemRelations (System parsedSystem)
+        {
+            string identifier    = "";
+            string name          = "";
+            var    alternatives  = new HashSet<Domain.System> ();
+
+            foreach (var attribute in parsedSystem.Attributes) {
+                if (attribute is Identifier) {
+                    identifier = (attribute as Identifier).Value;
+                    
+                } else if (attribute is Name) {
+                    name = (attribute as Name).Value;
+                    
+                } else if (attribute is AlternativeList) {
+                    foreach (var child in (attribute as AlternativeList).Values) {
+                        if (child is IdentifierOrName) {
+                            var candidate = GetOrCreateAlternative (child as IdentifierOrName, true);
+                            if (candidate != null)
+                                alternatives.Add (candidate);
+                        } else if (child is System) {
+                            var s = BuildSystem (child as System);
+                            alternatives.Add (s);
+                            BuildSystemRelations (child as System);
+                        }
+                    }
+                }
+            }
+            
+            KAOSFormalTools.Domain.System system = null;
+            if (string.IsNullOrEmpty (identifier)) {
+                var goals = model.GoalModel.GetSystemsByName (name);
+                if (goals.Count() > 1)
+                    throw new ParsingException (string.Format ("System '{0}' is ambiguous", name));
+                else if (goals.Count() == 0)
+                    throw new ParsingException (string.Format ("System '{0}' not found", name));
+                else 
+                    system = goals.Single ();
+                
+            } else {
+                system = model.GoalModel.GetSystemByIdentifier (identifier);
+                
+                if (system == null)
+                    throw new ParsingException (string.Format ("Sytem '{0}' not found", identifier));
+            }
+            
+            if (!parsedSystem.Override) {
+                foreach (var r in alternatives)
+                    system.Alternatives.Add (r);
+
+            } else {
+                system.Alternatives = alternatives;
             }
         }
     
@@ -755,20 +833,20 @@ namespace KAOSFormalTools.Parsing
             return candidate;
         }
 
-        private KAOSFormalTools.Domain.Alternative GetOrCreateAlternative (IdentifierOrName attribute, bool create = true)
+        private KAOSFormalTools.Domain.System GetOrCreateAlternative (IdentifierOrName attribute, bool create = true)
         {
-            KAOSFormalTools.Domain.Alternative candidate = null;
+            KAOSFormalTools.Domain.System candidate = null;
             
             if (attribute is Name) {
                 var name = (attribute as Name).Value;
-                var candidates = model.GoalModel.Alternatives.Where (a => a.Name == name);
+                var candidates = model.GoalModel.Systems.Where (a => a.Name == name);
                 
                 if (candidates.Count() == 0) {
                     if (create) {
-                        candidate = new KAOSFormalTools.Domain.Alternative() { 
+                        candidate = new KAOSFormalTools.Domain.System() { 
                             Name = (attribute as Name).Value
                         };
-                        model.GoalModel.Alternatives.Add (candidate);
+                        model.GoalModel.Systems.Add (candidate);
                     } else {
                         throw new ParsingException (string.Format ("Alternative '{0}' could not be found", (attribute as Name).Value));
                     }
@@ -781,14 +859,15 @@ namespace KAOSFormalTools.Parsing
                 }
                 
             } else if (attribute is Identifier) {
-                candidate = model.GoalModel.Alternatives.Where (a => a.Identifier == ((attribute as Identifier).Value)).SingleOrDefault ();
+                candidate = model.GoalModel.Systems.Where (a => a.Identifier == ((attribute as Identifier).Value)).SingleOrDefault ();
                 
                 if (candidate == null) {
                     if (create) {
-                        candidate = new KAOSFormalTools.Domain.Alternative() { 
+                        candidate = new KAOSFormalTools.Domain.System() { 
                             Identifier = (attribute as Identifier).Value
                         };
-                        model.GoalModel.Alternatives.Add (candidate);
+                        model.GoalModel.Systems.Add (candidate);
+
                     } else {
                         throw new ParsingException (string.Format ("Alternative '{0}' could not be found", (attribute as Identifier).Value));
                     }

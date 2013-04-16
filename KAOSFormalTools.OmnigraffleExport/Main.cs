@@ -65,6 +65,7 @@ namespace KAOSFormalTools.OmnigraffleExport
 
         private static void ExportAlternativeResponsibilities (Omnigraffle.Sheet canvas, ResponsibilityNode r, Graphic parent) 
         {
+            /*
             var @group = new Omnigraffle.Group (NextId);
 
             var background = new Omnigraffle.ShapedGraphic (NextId, Shape.Rectangle, 0, 0, 300, 300);
@@ -81,7 +82,8 @@ namespace KAOSFormalTools.OmnigraffleExport
                 foreach (var goal in kv.Value) {
                     var goalGraphic = RenderGoal (goal);
                     @group.Graphics.Add (goalGraphic);
-                    AddResponsibility (@group.Graphics, ag, goalGraphic);
+                    var circle = AddResponsibility (@group.Graphics, ag, goalGraphic);
+                    AddLine (canvas, ag, circle);
                 }
 
             }
@@ -97,6 +99,7 @@ namespace KAOSFormalTools.OmnigraffleExport
             foreach (var child in r.children) {
                 ExportAlternativeResponsibilities (canvas, child, background);
             }
+            */
         }
 
         static void ExportResponsibilities (GoalModel model, KAOSFormalTools.OmnigraffleExport.Omnigraffle.Document document)
@@ -109,9 +112,29 @@ namespace KAOSFormalTools.OmnigraffleExport
                 mapping.Add (agentCanvas, new Dictionary<string, KAOSFormalTools.OmnigraffleExport.Omnigraffle.ShapedGraphic> ());
 
                 var agentGraphic = AddAgent (agentCanvas, agent);
-                foreach (var goal in model.Goals.Where (g => g.AssignedAgents.SelectMany(x => x.Agents).Contains (agent))) {
+
+                var assignmentsToAgent =
+                    from g in model.Goals 
+                        from a in g.AssignedAgents
+                        where a.Agents.Contains (agent)
+                        select a;
+
+                foreach (var assignment in assignmentsToAgent) { // model.Goals.Where (g => g.AssignedAgents.SelectMany(x => x.Agents).Contains (agent))) {
+                    var goal = model.Goals.Where (g => g.AssignedAgents.Contains (assignment)).Single ();
                     var goalGraphic = AddGoal (agentCanvas, goal);
-                    AddResponsibility (agentCanvas.GraphicsList, agentGraphic, goalGraphic);
+
+                    string text = "";
+                    var responsibilitiesInSystem = assignment.InSystems;
+
+                    if (responsibilitiesInSystem.Count() == 0) {
+                        text = "No compatible alternative found";
+                    
+                    } else if (!responsibilitiesInSystem.SetEquals (model.RootSystems)) {
+                        text = string.Join (", ", responsibilitiesInSystem.Select (x => string.IsNullOrEmpty(x.Name) ? x.Identifier : x.Name));
+                    }
+
+                    var circle = AddResponsibility (agentCanvas.GraphicsList, agentGraphic, goalGraphic, text);
+                    AddLine (agentCanvas.GraphicsList, agentGraphic, circle);
                 }
                 document.Canvas.Add (agentCanvas);
             }
@@ -187,8 +210,8 @@ namespace KAOSFormalTools.OmnigraffleExport
                 // We add the arrow to the canvas after the label, so that label is above the arrow
                 var topArrow = AddFilledArrow (canvas.GraphicsList, circle, parentGraphic, false);
 
-                if (refinement.AlternativeIdentifier != null) {
-                    var text = string.IsNullOrEmpty (refinement.AlternativeIdentifier.Name) ? refinement.AlternativeIdentifier.Identifier : refinement.AlternativeIdentifier.Name;
+                if (refinement.SystemIdentifier != null) {
+                    var text = string.IsNullOrEmpty (refinement.SystemIdentifier.Name) ? refinement.SystemIdentifier.Identifier : refinement.SystemIdentifier.Name;
 
                     var alternativeText = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Rectangle, 50, 50, 100, 100);
                     alternativeText.Text = new Omnigraffle.TextInfo (text) {
@@ -298,12 +321,31 @@ namespace KAOSFormalTools.OmnigraffleExport
 
         #endregion
 
-        static Omnigraffle.ShapedGraphic AddResponsibility (List<Graphic> canvas, Omnigraffle.ShapedGraphic agentGraphic, Omnigraffle.ShapedGraphic goalGraphic)
+        static Omnigraffle.ShapedGraphic AddResponsibility (List<Graphic> canvas, Omnigraffle.ShapedGraphic agentGraphic, Omnigraffle.ShapedGraphic goalGraphic, string text)
         {
             var circle = AddCircle (canvas);
-
-            AddFilledArrow (canvas, circle, goalGraphic);
-            AddLine (canvas, agentGraphic, circle);
+            
+            // We add the arrow to the canvas after the label, so that label is above the arrow
+            var topArrow = AddFilledArrow (canvas, circle, goalGraphic, false);
+            
+            if (!string.IsNullOrWhiteSpace (text)) {
+                var alternativeText = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Rectangle, 50, 50, 100, 100);
+                alternativeText.Text = new Omnigraffle.TextInfo (text) {
+                    Alignement = KAOSFormalTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
+                    SideMargin = 0, TopBottomMargin = 0
+                };
+                alternativeText.FontInfo.Size = 10;
+                alternativeText.Style.Shadow.Draws = false;
+                alternativeText.FitText = KAOSFormalTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
+                alternativeText.Flow = KAOSFormalTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
+                alternativeText.Style.Fill.Color = new KAOSFormalTools.OmnigraffleExport.Omnigraffle.Color (1, 1, 1);
+                alternativeText.Style.Stroke.Draws = false;
+                alternativeText.Line = new LineInfo (topArrow.ID);
+                canvas.Add (alternativeText);
+            }
+            
+            // Ad the arrow
+            canvas.Add (topArrow);
 
             return circle;
         }

@@ -76,15 +76,17 @@ internal sealed partial class GoalModelParser
         return domhyp;
     }
     
-    private KAOSFormalTools.Parsing.Element BuildAlternative (List<Result> results)
+    private KAOSFormalTools.Parsing.Element BuildSystem (List<Result> results)
     {
-        var alternative = new KAOSFormalTools.Parsing.Alternative ();
-        
+        var system = new KAOSFormalTools.Parsing.System ();
+        if (results[0].Text == "override")
+            system.Override = true;
+
         for (int i = 1; i < results.Count; i++) {
-            alternative.Attributes.Add (results[i].Value as KAOSFormalTools.Parsing.Attribute);
+            system.Attributes.Add (results[i].Value as KAOSFormalTools.Parsing.Attribute);
         }
         
-        return alternative;
+        return system;
     }
 
     private KAOSFormalTools.Parsing.Element BuildObstacle (List<Result> results)
@@ -124,7 +126,7 @@ internal sealed partial class GoalModelParser
         var list = new RefinedByList ();
 
         if (results[1].Text == "[") {
-            list.AlternativeIdentifier = results[2].Value as IdentifierOrName;
+            list.SystemIdentifier = results[2].Value as IdentifierOrName;
             for (int i = 4; i < results.Count; i = i + 2) {
                 list.Values.Add (results[i].Value);
             }
@@ -138,6 +140,15 @@ internal sealed partial class GoalModelParser
         return list;
     }
 
+    private KAOSFormalTools.Parsing.Element BuildAlternative (List<Result> results)
+    {
+        var list = new AlternativeList ();
+        for (int i = 1; i < results.Count; i = i + 2) {
+            list.Values.Add (results[i].Value);
+        }
+        
+        return list;
+    }
     
     private KAOSFormalTools.Parsing.Element BuildResolvedBy (List<Result> results)
     {
@@ -164,7 +175,7 @@ internal sealed partial class GoalModelParser
     {
         var list = new AssignedToList ();
         if (results[1].Text == "[") {
-            list.AlternativeIdentifier = (results[2].Value as IdentifierOrName);
+            list.SystemIdentifier = (results[2].Value as IdentifierOrName);
             for (int i = 4; i < results.Count; i = i + 2) {
                 list.Values.Add (results[i].Value);
             }

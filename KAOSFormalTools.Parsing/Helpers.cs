@@ -4,6 +4,22 @@ namespace KAOSFormalTools.Parsing
 {
     public static class Helpers
     {
+        public static void Merge (this KAOSFormalTools.Domain.System o1, KAOSFormalTools.Domain.System o2)
+        {
+            if (string.IsNullOrEmpty (o1.Identifier))
+                o1.Identifier = o2.Identifier;
+            
+            if (string.IsNullOrEmpty (o1.Name))
+                o1.Name = o2.Name;
+            
+            if (string.IsNullOrEmpty (o1.Description))
+                o1.Description= o2.Description;
+
+            foreach (var r in o2.Alternatives)
+                if (!o1.Alternatives.Contains (r))
+                    o1.Alternatives.Add (r);
+        }
+
         public static void Merge (this KAOSFormalTools.Domain.Obstacle o1, KAOSFormalTools.Domain.Obstacle o2)
         {
             if (string.IsNullOrEmpty (o1.Identifier))

@@ -19,10 +19,11 @@ namespace KAOSFormalTools.Parsing
         public Predicate () { Attributes = new List<Attribute>(); }
     }
     
-    public class Alternative : Element
+    public class System : Element
     {
+        public bool Override { get; set; }
         public List<Attribute> Attributes { get; set; }
-        public Alternative () { Attributes = new List<Attribute>(); }
+        public System () { Attributes = new List<Attribute>(); Override = false; }
     }
 
     public class Goal : Element
@@ -80,12 +81,12 @@ namespace KAOSFormalTools.Parsing
 
     public class RefinedByList : Attribute
     {
-        public IdentifierOrName AlternativeIdentifier { get; set; }
+        public IdentifierOrName SystemIdentifier { get; set; }
         public List<Element> Values    { get; set; }
 
         public RefinedByList ()
         {
-            AlternativeIdentifier = null;
+            SystemIdentifier = null;
             Values = new List<Element> ();
         }
     }
@@ -99,15 +100,25 @@ namespace KAOSFormalTools.Parsing
             Values = new List<Element> ();
         }
     }
+    
+    public class AlternativeList : Attribute
+    {
+        public List<Element> Values    { get; set; }
+        
+        public AlternativeList ()
+        {
+            Values = new List<Element> ();
+        }
+    }
 
     public class AssignedToList : Attribute
     {
-        public IdentifierOrName AlternativeIdentifier { get; set; }
+        public IdentifierOrName SystemIdentifier { get; set; }
         public List<Element> Values    { get; set; }
 
         public AssignedToList ()
         {
-            AlternativeIdentifier = null;
+            SystemIdentifier = null;
             Values = new List<Element> ();
         }
     }
