@@ -75,6 +75,17 @@ internal sealed partial class GoalModelParser
         
         return domhyp;
     }
+    
+    private KAOSFormalTools.Parsing.Element BuildAlternative (List<Result> results)
+    {
+        var alternative = new KAOSFormalTools.Parsing.Alternative ();
+        
+        for (int i = 1; i < results.Count; i++) {
+            alternative.Attributes.Add (results[i].Value as KAOSFormalTools.Parsing.Attribute);
+        }
+        
+        return alternative;
+    }
 
     private KAOSFormalTools.Parsing.Element BuildObstacle (List<Result> results)
     {
@@ -113,8 +124,8 @@ internal sealed partial class GoalModelParser
         var list = new RefinedByList ();
 
         if (results[1].Text == "[") {
-            list.AlternativeIdentifier = results[3].Text;
-            for (int i = 6; i < results.Count; i = i + 2) {
+            list.AlternativeIdentifier = results[2].Value as IdentifierOrName;
+            for (int i = 4; i < results.Count; i = i + 2) {
                 list.Values.Add (results[i].Value);
             }
 
@@ -153,8 +164,8 @@ internal sealed partial class GoalModelParser
     {
         var list = new AssignedToList ();
         if (results[1].Text == "[") {
-            list.AlternativeIdentifier = results[3].Text;
-            for (int i = 6; i < results.Count; i = i + 2) {
+            list.AlternativeIdentifier = (results[2].Value as IdentifierOrName);
+            for (int i = 4; i < results.Count; i = i + 2) {
                 list.Values.Add (results[i].Value);
             }
             

@@ -2,57 +2,149 @@ start = Start
 value = KAOSFormalTools.Parsing.Element
 debug = 
 
+Start := S Elements S;
 
-Start              := S Elements S;
-Elements           := ( ( Predicate / Goal / DomProp / Obstacle / Agent / Import / DomHyp ) S )*                     `value = BuildElements (results);`
+Elements := 
+    ( ( Alternative / Predicate / Goal / DomProp / Obstacle / Agent / Import / DomHyp ) S )*
+    `value = BuildElements (results);`
 
-Import             := 'import' S '"' String '"' `value = Import(results[2].Text);`
-Predicate := 'begin' S 'predicate' S (PredicateAttribute S)* 'end' `value = BuildPredicate(results);`
-                                                                         
-Goal               := ( 'begin' / 'override' ) S 'goal'                   S (GoalAttribute S)*      'end'   `value = BuildGoal(results);`
-DomProp            := 'begin' S ('domainproperty' / 'domprop' )         S (DomPropAttribute S)*   'end'   `value = BuildDomainProperty(results);`
-Obstacle           := 'begin' S 'obstacle'               S (ObstacleAttribute S)*  'end'   `value = BuildObstacle(results);`
-Agent              := 'begin' S (('software' / 'environment') S)? 'agent'  S (AgentAttribute S)*     'end'   `value = BuildAgent(results);`
-DomHyp             := 'begin' S ('domainhypothesis' / 'domhyp' )         S (DomHypAttribute S)*   'end'   `value = BuildDomainHypothesis(results);`
-                                                                         
-GoalAttribute      := ( Id / Name / Definition / FormalSpec / RefinedByGoal            
-                        / ObstructedBy / AssignedTo / RDS )                     `value = results[0].Value;`
-DomPropAttribute   := ( Id / Name / Definition / FormalSpec / Probability )                          `value = results[0].Value;`
-DomHypAttribute    := ( Id / Name / Definition )                          `value = results[0].Value;`
-ObstacleAttribute  := ( Id / Name / Definition / FormalSpec / RefinedByObstacle / ResolvedBy / Probability )              `value = results[0].Value;`
-AgentAttribute     := ( Id / Name / Description )                                       `value = results[0].Value;`
-                                                                         
-PredicateAttribute := ( Name / Definition / Signature / StringFormalSpec ) `value = results[0].Value;`
 
-Id                 := 'id'         S Identifier                           `value = BuildId(results);`
-Name               := 'name'       S '"' String '"'                       `value = BuildName(results);`
-Signature          := 'signature'  S '"' String '"'                       `value = BuildSignature(results);`
-StringFormalSpec   := 'formalspec' S '"' String '"'                       `value = BuildStringFormalSpec(results);`
-FormalSpec         := 'formalspec' S '"' String '"'                       `value = BuildFormalSpec(results);`
-Definition         := 'definition' S '"' String '"'                       `value = BuildDefinition(results);`
-Description        := ('definition' / 'description') S ('"' String '"' / '"' '"')          `value = BuildDescription(results);`
-RDS                := 'rds' S Float                                       `value = BuildRDS(results);`
-Probability        := ('probability' / 'eps') S Float                               `value = BuildProbability(results);`
+# 
+
+Import := 
+    'import' S '"' String '"' 
+    `value = Import(results[2].Text);`
+    
+Predicate := 
+    'begin' S 'predicate' S (PredicateAttribute S)* 'end' 
+    `value = BuildPredicate(results);`
+
+Alternative := 
+    'begin' S 'alternative' S (AlternativeAttribute S)* 'end' 
+    `value = BuildAlternative(results);`
+    
+Goal := 
+    ( 'begin' / 'override' ) S 'goal' S (GoalAttribute S)* 'end'
+    `value = BuildGoal(results);`
+    
+DomProp := 
+    'begin' S ('domainproperty' / 'domprop' ) S (DomPropAttribute S)* 'end'
+    `value = BuildDomainProperty(results);`
+    
+Obstacle := 
+    'begin' S 'obstacle' S (ObstacleAttribute S)* 'end'
+    `value = BuildObstacle(results);`
+
+Agent := 
+    'begin' S (('software' / 'environment') S)? 'agent' S (AgentAttribute S)* 'end'
+    `value = BuildAgent(results);`
+
+DomHyp := 
+    'begin' S ('domainhypothesis' / 'domhyp' ) S (DomHypAttribute S)* 'end'
+    `value = BuildDomainHypothesis(results);`
+
+
+#
+                                                                                                                                                                                                         
+GoalAttribute := 
+    ( Id / Name / Definition / FormalSpec / RefinedByGoal / ObstructedBy / AssignedTo / RDS )
+    `value = results[0].Value;`
+    
+DomPropAttribute := 
+    ( Id / Name / Definition / FormalSpec / Probability )
+    `value = results[0].Value;`
+    
+DomHypAttribute := 
+    ( Id / Name / Definition )
+    `value = results[0].Value;`
+
+ObstacleAttribute := 
+    ( Id / Name / Definition / FormalSpec / RefinedByObstacle / ResolvedBy / Probability )
+    `value = results[0].Value;`
+
+AgentAttribute := 
+    ( Id / Name / Description )
+    `value = results[0].Value;`
                                                                          
-RefinedByObstacle  := 'refinedby'    S IdOrNameOrObstacle (S ',' S IdOrNameOrObstacle)*       `value = BuildRefinedBy(results);`
-RefinedByGoal      := 'refinedby' ('[' S '"' String '"' S ']')?    S IdOrNameOrGoal (S ',' S IdOrNameOrGoal)*       `value = BuildRefinedBy(results);`
-ObstructedBy       := 'obstructedby' S IdOrNameOrObstacle (S ',' S IdOrNameOrObstacle)*       `value = BuildObstructedBy(results);`
-AssignedTo         := 'assignedto' ('[' S '"' String '"' S ']')?  S IdOrNameOrAgent (S ',' S IdOrNameOrAgent)*       `value = BuildAssignedTo(results);`
-ResolvedBy         := 'resolvedby'   S IdOrNameOrGoal (S ',' S IdOrNameOrGoal)*       `value = BuildResolvedBy(results);`
-                                                                                                                                           
+PredicateAttribute := 
+    ( Name / Definition / Signature / StringFormalSpec ) 
+    `value = results[0].Value;`
+
+AlternativeAttribute := 
+    ( Id / Name / Description ) 
+    `value = results[0].Value;`
+
+# 
+
+Id := 'id' S Identifier
+    `value = BuildId(results);`
+
+Name := 'name' S '"' String '"'
+    `value = BuildName(results);`
+    
+Signature := 'signature'  S '"' String '"'
+    `value = BuildSignature(results);`
+    
+StringFormalSpec := 'formalspec' S '"' String '"' 
+    `value = BuildStringFormalSpec(results);`
+
+FormalSpec := 'formalspec' S '"' String '"' 
+    `value = BuildFormalSpec(results);`
+    
+Definition := 'definition' S '"' String '"' 
+    `value = BuildDefinition(results);`
+
+Description := ('definition' / 'description') S ('"' String '"' / '"' '"')
+    `value = BuildDescription(results);`
+    
+RDS := 'rds' S Float 
+    `value = BuildRDS(results);`
+
+Probability := ('probability' / 'eps') S Float 
+    `value = BuildProbability(results);`
+                                                                         
+RefinedByObstacle := 'refinedby' S IdOrNameOrObstacle (S ',' S IdOrNameOrObstacle)*
+    `value = BuildRefinedBy(results);`
+    
+RefinedByGoal := 'refinedby' ('[' S IdOrName S ']')? S IdOrNameOrGoal (S ',' S IdOrNameOrGoal)*
+    `value = BuildRefinedBy(results);`
+    
+ObstructedBy := 'obstructedby' S IdOrNameOrObstacle (S ',' S IdOrNameOrObstacle)*
+    `value = BuildObstructedBy(results);`
+    
+AssignedTo := 'assignedto' ('[' S IdOrName S ']')?  S IdOrNameOrAgent (S ',' S IdOrNameOrAgent)*
+    `value = BuildAssignedTo(results);`
+    
+ResolvedBy := 'resolvedby' S IdOrNameOrGoal (S ',' S IdOrNameOrGoal)*
+    `value = BuildResolvedBy(results);`
+        
+                                                                                                                                                                                                                                                                              
 # Expressions                                
 
-IdOrNameOrObstacle := ( Obstacle / IdOrName )                            `value = results[0].Value;` `expected = "id or name"`
-IdOrNameOrGoal     := ( Goal / DomProp / DomHyp / IdOrName ) `value = results[0].Value;` `expected = "id or name"`
-IdOrNameOrAgent    := ( Agent / IdOrName )                               `value = results[0].Value;` `expected = "id or name"`
+IdOrNameOrObstacle := ( Obstacle / IdOrName )
+    `value = results[0].Value;` `expected = "id or name"`
+    
+IdOrNameOrGoal := ( Goal / DomProp / DomHyp / IdOrName ) 
+    `value = results[0].Value;` `expected = "id or name"`
+    
+IdOrNameOrAgent := ( Agent / IdOrName )
+    `value = results[0].Value;` `expected = "id or name"`
 
-IdOrName           := ( '"' String '"' / Identifier )                    `value = BuildIdOrName(results);` `expected = "id or name"`
-Identifier         := ([$_-])? ([a-zA-Z0-9] [a-zA-Z0-9$_-]*)                        `value = null` `expected = "identifier"`
-String             := [^"]+                                              `value = null` `expected = "string"`
-Float              := ('.' [0-9]+) / ( [0-9]+ ('.' [0-9]+)? )                               `value = null` `expected = "float"`
+IdOrName := ( '"' String '"' / Identifier )
+    `value = BuildIdOrName(results);` `expected = "id or name"`
+    
+Identifier := ([$_-])? ([a-zA-Z0-9] [a-zA-Z0-9$_-]*)
+    `value = null` `expected = "identifier"`
+    
+String := [^"]+
+    `value = null` `expected = "string"`
+    
+Float := ('.' [0-9]+) / ( [0-9]+ ('.' [0-9]+)? )
+    `value = null` `expected = "float"`
 
-# Scaffolding
 
-S                  := (Space* Comment+ Space*)+ / Space*                                   `text = null`
-Space              := [ \t\r\n]                                           `;` `expected = "whitespace"`
-Comment            := '#' [^\r\n]*                                         `text = null`
+# Spaces and comments
+
+S := (Space* Comment+ Space*)+ / Space* `text = null`
+Space := [ \t\r\n] `;` `expected = "whitespace"`
+Comment := '#' [^\r\n]* `text = null`

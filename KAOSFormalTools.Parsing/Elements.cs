@@ -18,6 +18,12 @@ namespace KAOSFormalTools.Parsing
         public List<Attribute> Attributes { get; set; }
         public Predicate () { Attributes = new List<Attribute>(); }
     }
+    
+    public class Alternative : Element
+    {
+        public List<Attribute> Attributes { get; set; }
+        public Alternative () { Attributes = new List<Attribute>(); }
+    }
 
     public class Goal : Element
     {
@@ -74,12 +80,12 @@ namespace KAOSFormalTools.Parsing
 
     public class RefinedByList : Attribute
     {
-        public string AlternativeIdentifier { get; set; }
+        public IdentifierOrName AlternativeIdentifier { get; set; }
         public List<Element> Values    { get; set; }
 
         public RefinedByList ()
         {
-            AlternativeIdentifier = "";
+            AlternativeIdentifier = null;
             Values = new List<Element> ();
         }
     }
@@ -96,12 +102,12 @@ namespace KAOSFormalTools.Parsing
 
     public class AssignedToList : Attribute
     {
-        public string AlternativeIdentifier { get; set; }
+        public IdentifierOrName AlternativeIdentifier { get; set; }
         public List<Element> Values    { get; set; }
 
         public AssignedToList ()
         {
-            AlternativeIdentifier = "";
+            AlternativeIdentifier = null;
             Values = new List<Element> ();
         }
     }

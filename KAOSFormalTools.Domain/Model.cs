@@ -99,26 +99,26 @@ namespace KAOSFormalTools.Domain
 
     public class AgentAssignment
     {
-        public string                AlternativeIdentifier { get; set; }
+        public Alternative           AlternativeIdentifier { get; set; }
         public IList<Agent>          Agents                { get; set; }
 
         public AgentAssignment ()
         {
-            AlternativeIdentifier = "";
+            AlternativeIdentifier = null;
             Agents = new List<Agent> ();   
         }
     }
 
     public class GoalRefinement
     {
-        public string                AlternativeIdentifier { get; set; }
-        public IList<Goal>           Children          { get; set; }
-        public IList<DomainProperty> DomainProperties  { get; set; }
+        public Alternative             AlternativeIdentifier { get; set; }
+        public IList<Goal>             Children          { get; set; }
+        public IList<DomainProperty>   DomainProperties  { get; set; }
         public IList<DomainHypothesis> DomainHypotheses  { get; set; }
 
         public GoalRefinement ()
         {
-            AlternativeIdentifier = "";
+            AlternativeIdentifier = null;
             Children = new List<Goal> ();
             DomainProperties = new List<DomainProperty> ();
             DomainHypotheses = new List<DomainHypothesis> ();
@@ -157,5 +157,12 @@ namespace KAOSFormalTools.Domain
             foreach (var obstacle in obstacles)
                 Children.Add (obstacle);
         }
+    }
+
+    public class Alternative 
+    {
+        public string Identifier  { get; set; }
+        public string Name        { get; set; }
+        public string Description { get; set; }
     }
 }

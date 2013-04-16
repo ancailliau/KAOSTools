@@ -62,7 +62,12 @@ namespace KAOSFormalTools.Parsing
 
                 } else if (element is Predicate) {
                     BuildPredicate (element as Predicate);
+
+                } else if (element is Alternative) {
+                    BuildAlternative (element as Alternative);
                     
+                } else {
+                    throw new NotImplementedException (string.Format("'{0}' not yet implemented", element.GetType ().Name));
                 }
             }
         }
@@ -79,7 +84,31 @@ namespace KAOSFormalTools.Parsing
         }
         
         #region Build helpers for first pass
-        
+
+        private KAOSFormalTools.Domain.Alternative BuildAlternative (Alternative parsedAlternative) 
+        {
+            var alternative = new KAOSFormalTools.Domain.Alternative ();
+            Identifier identifierAttribute = null;
+            
+            foreach (var attribute in parsedAlternative.Attributes) {
+                if (attribute is Identifier) {
+                    alternative.Identifier = (attribute as Identifier).Value;
+                    identifierAttribute = (attribute as Identifier);
+                    
+                } else if (attribute is Name) {
+                    alternative.Name = (attribute as Name).Value;
+                    
+                } else if (attribute is Description) {
+                    alternative.Description = (attribute as Description).Value;
+                    
+                }
+            }
+
+            model.GoalModel.Alternatives.Add (alternative);
+
+            return alternative;
+        }
+
         private KAOSFormalTools.Domain.Goal BuildGoal (Goal parsedGoal)
         {
             var goal = new KAOSFormalTools.Domain.Goal ();
@@ -313,8 +342,8 @@ namespace KAOSFormalTools.Parsing
             foreach (var attr in parsedPredicate.Attributes) {
                 if (attr is Name) {
                     predicate.Name = (attr as Name).Value;
-                } else if (attr is Description) {
-                    predicate.Definition = (attr as Description).Value;
+                } else if (attr is Definition) {
+                    predicate.Definition = (attr as Definition).Value;
                 } else if (attr is StringFormalSpec) {
                     predicate.FormalSpec = (attr as StringFormalSpec).Value;
                 } else if (attr is Signature) {
@@ -441,7 +470,8 @@ namespace KAOSFormalTools.Parsing
                     var children = attribute as RefinedByList;
                     var refinement = new GoalRefinement ();
 
-                    refinement.AlternativeIdentifier = children.AlternativeIdentifier;
+                    if (children.AlternativeIdentifier != null)
+                        refinement.AlternativeIdentifier = GetOrCreateAlternative (children.AlternativeIdentifier, true);
 
                     foreach (var child in children.Values) {
                         if (child is IdentifierOrName) {
@@ -497,7 +527,10 @@ namespace KAOSFormalTools.Parsing
                 
                 } else if (attribute is AssignedToList) {
                     var assignment = new AgentAssignment();
-                    assignment.AlternativeIdentifier = (attribute as AssignedToList).AlternativeIdentifier;
+
+                    if ((attribute as AssignedToList).AlternativeIdentifier != null)
+                        assignment.AlternativeIdentifier = GetOrCreateAlternative ((attribute as AssignedToList).AlternativeIdentifier);
+
                     foreach (var assignedto in (attribute as AssignedToList).Values) {
                         if (assignedto is IdentifierOrName) {
                             var candidate = GetOrCreateAgent (assignedto as IdentifierOrName, true);
@@ -719,6 +752,49 @@ namespace KAOSFormalTools.Parsing
                 }
             }
 
+            return candidate;
+        }
+
+        private KAOSFormalTools.Domain.Alternative GetOrCreateAlternative (IdentifierOrName attribute, bool create = true)
+        {
+            KAOSFormalTools.Domain.Alternative candidate = null;
+            
+            if (attribute is Name) {
+                var name = (attribute as Name).Value;
+                var candidates = model.GoalModel.Alternatives.Where (a => a.Name == name);
+                
+                if (candidates.Count() == 0) {
+                    if (create) {
+                        candidate = new KAOSFormalTools.Domain.Alternative() { 
+                            Name = (attribute as Name).Value
+                        };
+                        model.GoalModel.Alternatives.Add (candidate);
+                    } else {
+                        throw new ParsingException (string.Format ("Alternative '{0}' could not be found", (attribute as Name).Value));
+                    }
+                    
+                } else if (candidates.Count() > 1) {
+                    candidate = candidates.First ();
+                    
+                } else /* candidates.Count() == 1 */ {
+                    candidate = candidates.Single ();
+                }
+                
+            } else if (attribute is Identifier) {
+                candidate = model.GoalModel.Alternatives.Where (a => a.Identifier == ((attribute as Identifier).Value)).SingleOrDefault ();
+                
+                if (candidate == null) {
+                    if (create) {
+                        candidate = new KAOSFormalTools.Domain.Alternative() { 
+                            Identifier = (attribute as Identifier).Value
+                        };
+                        model.GoalModel.Alternatives.Add (candidate);
+                    } else {
+                        throw new ParsingException (string.Format ("Alternative '{0}' could not be found", (attribute as Identifier).Value));
+                    }
+                }
+            }
+            
             return candidate;
         }
 

@@ -187,9 +187,11 @@ namespace KAOSFormalTools.OmnigraffleExport
                 // We add the arrow to the canvas after the label, so that label is above the arrow
                 var topArrow = AddFilledArrow (canvas.GraphicsList, circle, parentGraphic, false);
 
-                if (!string.IsNullOrEmpty (refinement.AlternativeIdentifier)) {
+                if (refinement.AlternativeIdentifier != null) {
+                    var text = string.IsNullOrEmpty (refinement.AlternativeIdentifier.Name) ? refinement.AlternativeIdentifier.Identifier : refinement.AlternativeIdentifier.Name;
+
                     var alternativeText = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Rectangle, 50, 50, 100, 100);
-                    alternativeText.Text = new Omnigraffle.TextInfo (refinement.AlternativeIdentifier) {
+                    alternativeText.Text = new Omnigraffle.TextInfo (text) {
                         Alignement = KAOSFormalTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
                         SideMargin = 0, TopBottomMargin = 0
                     };
@@ -230,9 +232,10 @@ namespace KAOSFormalTools.OmnigraffleExport
                 // We add the arrow to the canvas after the label, so that label is above the arrow
                 var topArrow = AddFilledArrow (canvas.GraphicsList, circle, parentGraphic, false);
 
-                if (!string.IsNullOrEmpty (assignment.AlternativeIdentifier)) {
+                if (assignment.AlternativeIdentifier != null) {
+                    var text = string.IsNullOrEmpty (assignment.AlternativeIdentifier.Name) ? assignment.AlternativeIdentifier.Identifier : assignment.AlternativeIdentifier.Name;
                     var alternativeText = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Rectangle, 50, 50, 100, 100);
-                    alternativeText.Text = new Omnigraffle.TextInfo (assignment.AlternativeIdentifier) {
+                    alternativeText.Text = new Omnigraffle.TextInfo (text) {
                         Alignement = KAOSFormalTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
                         SideMargin = 0, TopBottomMargin = 0
                     };

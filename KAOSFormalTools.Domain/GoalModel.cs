@@ -14,6 +14,8 @@ namespace KAOSFormalTools.Domain
         public IList<Obstacle>         Obstacles         { get; set; }
         public IList<Agent>            Agents            { get; set; }
 
+        public IList<Alternative>      Alternatives      { get; set; }
+
         public IList<Goal>           RootGoals { 
             get {
                 var goals = new List<Goal> (Goals);
@@ -47,6 +49,7 @@ namespace KAOSFormalTools.Domain
             DomainHypotheses  = new List<DomainHypothesis> ();
             Obstacles         = new List<Obstacle> ();
             Agents            = new List<Agent> ();
+            Alternatives      = new List<Alternative> ();
         }
 
         public Goal GetGoalByIdentifier (string identifier)
