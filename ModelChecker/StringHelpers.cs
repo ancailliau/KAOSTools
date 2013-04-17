@@ -1,6 +1,6 @@
 using System;
 
-namespace KAOSFormalTools.ModelChecker
+namespace KAOSTools.ModelChecker
 {
     using System;
 

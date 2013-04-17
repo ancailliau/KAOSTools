@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6ABA53F3-9825-461F-9945-04735EFCEF14}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>KAOSFormalTools.ModelChecker</RootNamespace>
-    <AssemblyName>KAOSFormalTools.ModelChecker</AssemblyName>
+    <RootNamespace>KAOSTools.ModelChecker</RootNamespace>
+    <AssemblyName>KAOSTools.ModelChecker</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
