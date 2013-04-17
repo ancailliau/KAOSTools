@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using KAOSFormalTools.Parsing;
+using KAOSTools.Parsing;
 using KAOSTools.MetaModel;
 using System.IO;
 
@@ -9,7 +9,7 @@ internal sealed partial class GoalModelParser
 {   
     private List<string> files_imported = new List<string> ();
 
-    private KAOSFormalTools.Parsing.Element BuildElements (List<Result> results)
+    private KAOSTools.Parsing.Element BuildElements (List<Result> results)
     {
         var attrs = new Elements();
         foreach (var result in results) {
@@ -18,7 +18,7 @@ internal sealed partial class GoalModelParser
         return attrs;
     }
 
-    private KAOSFormalTools.Parsing.Element BuildElement (Elements attrs, Element value)
+    private KAOSTools.Parsing.Element BuildElement (Elements attrs, Element value)
     {
         if (value is Elements) {
             foreach (var result2 in ((Elements) value).Values) {
@@ -30,88 +30,88 @@ internal sealed partial class GoalModelParser
         return attrs;
     }
 
-    private KAOSFormalTools.Parsing.Predicate BuildPredicate (List<Result> results)
+    private KAOSTools.Parsing.Predicate BuildPredicate (List<Result> results)
     {
-        var predicate = new KAOSFormalTools.Parsing.Predicate ();
+        var predicate = new KAOSTools.Parsing.Predicate ();
 
         for (int i = 1; i < results.Count; i++) {
-            predicate.Attributes.Add (results[i].Value as KAOSFormalTools.Parsing.Attribute);
+            predicate.Attributes.Add (results[i].Value as KAOSTools.Parsing.Attribute);
         }
         
         return predicate;
     }
 
-    private KAOSFormalTools.Parsing.Element BuildGoal (List<Result> results)
+    private KAOSTools.Parsing.Element BuildGoal (List<Result> results)
     {
-        var goal = new KAOSFormalTools.Parsing.Goal ();
+        var goal = new KAOSTools.Parsing.Goal ();
         if (results[0].Text == "override")
             goal.Override = true;
 
         for (int i = 1; i < results.Count; i++) {
-            goal.Attributes.Add (results[i].Value as KAOSFormalTools.Parsing.Attribute);
+            goal.Attributes.Add (results[i].Value as KAOSTools.Parsing.Attribute);
         }
 
         return goal;
     }
 
-    private KAOSFormalTools.Parsing.Element BuildDomainProperty (List<Result> results)
+    private KAOSTools.Parsing.Element BuildDomainProperty (List<Result> results)
     {
-        var domprop = new KAOSFormalTools.Parsing.DomainProperty ();
+        var domprop = new KAOSTools.Parsing.DomainProperty ();
         if (results[0].Text == "override")
             domprop.Override = true;
 
 
         for (int i = 1; i < results.Count; i++) {
-            domprop.Attributes.Add (results[i].Value as KAOSFormalTools.Parsing.Attribute);
+            domprop.Attributes.Add (results[i].Value as KAOSTools.Parsing.Attribute);
         }
 
         return domprop;
     }
     
-    private KAOSFormalTools.Parsing.Element BuildDomainHypothesis (List<Result> results)
+    private KAOSTools.Parsing.Element BuildDomainHypothesis (List<Result> results)
     {
-        var domhyp = new KAOSFormalTools.Parsing.DomainHypothesis ();
+        var domhyp = new KAOSTools.Parsing.DomainHypothesis ();
         if (results[0].Text == "override")
             domhyp.Override = true;
 
         
         for (int i = 1; i < results.Count; i++) {
-            domhyp.Attributes.Add (results[i].Value as KAOSFormalTools.Parsing.Attribute);
+            domhyp.Attributes.Add (results[i].Value as KAOSTools.Parsing.Attribute);
         }
         
         return domhyp;
     }
     
-    private KAOSFormalTools.Parsing.Element BuildSystem (List<Result> results)
+    private KAOSTools.Parsing.Element BuildSystem (List<Result> results)
     {
-        var system = new KAOSFormalTools.Parsing.System ();
+        var system = new KAOSTools.Parsing.System ();
         if (results[0].Text == "override")
             system.Override = true;
 
         for (int i = 1; i < results.Count; i++) {
-            system.Attributes.Add (results[i].Value as KAOSFormalTools.Parsing.Attribute);
+            system.Attributes.Add (results[i].Value as KAOSTools.Parsing.Attribute);
         }
         
         return system;
     }
 
-    private KAOSFormalTools.Parsing.Element BuildObstacle (List<Result> results)
+    private KAOSTools.Parsing.Element BuildObstacle (List<Result> results)
     {
-        var obstacle = new KAOSFormalTools.Parsing.Obstacle ();
+        var obstacle = new KAOSTools.Parsing.Obstacle ();
         if (results[0].Text == "override")
             obstacle.Override = true;
 
 
         for (int i = 1; i < results.Count; i++) {
-            obstacle.Attributes.Add (results[i].Value as KAOSFormalTools.Parsing.Attribute);
+            obstacle.Attributes.Add (results[i].Value as KAOSTools.Parsing.Attribute);
         }
 
         return obstacle;
     }
     
-    private KAOSFormalTools.Parsing.Element BuildAgent (List<Result> results)
+    private KAOSTools.Parsing.Element BuildAgent (List<Result> results)
     {
-        var agent = new KAOSFormalTools.Parsing.Agent ();
+        var agent = new KAOSTools.Parsing.Agent ();
         if (results[0].Text == "override")
             agent.Override = true;
 
@@ -119,20 +119,20 @@ internal sealed partial class GoalModelParser
         if (results[1].Text != "agent") {
             start = 2;
             if (results[1].Text == "software")
-                agent.Type = KAOSFormalTools.Parsing.AgentType.Software;
+                agent.Type = KAOSTools.Parsing.AgentType.Software;
             else if (results[1].Text == "environment") 
-                agent.Type = KAOSFormalTools.Parsing.AgentType.Environment;
+                agent.Type = KAOSTools.Parsing.AgentType.Environment;
         }
 
         for (int i = start; i < results.Count; i++) {
-            agent.Attributes.Add (results[i].Value as KAOSFormalTools.Parsing.Attribute);
+            agent.Attributes.Add (results[i].Value as KAOSTools.Parsing.Attribute);
         }
 
         return agent;
     }
 
 
-    private KAOSFormalTools.Parsing.Element BuildRefinedBy (List<Result> results)
+    private KAOSTools.Parsing.Element BuildRefinedBy (List<Result> results)
     {
         var list = new RefinedByList ();
 
@@ -151,7 +151,7 @@ internal sealed partial class GoalModelParser
         return list;
     }
 
-    private KAOSFormalTools.Parsing.Element BuildAlternative (List<Result> results)
+    private KAOSTools.Parsing.Element BuildAlternative (List<Result> results)
     {
         var list = new AlternativeList ();
         for (int i = 1; i < results.Count; i = i + 2) {
@@ -161,7 +161,7 @@ internal sealed partial class GoalModelParser
         return list;
     }
     
-    private KAOSFormalTools.Parsing.Element BuildResolvedBy (List<Result> results)
+    private KAOSTools.Parsing.Element BuildResolvedBy (List<Result> results)
     {
         var list = new ResolvedByList ();
         for (int i = 1; i < results.Count; i = i + 2) {
@@ -171,7 +171,7 @@ internal sealed partial class GoalModelParser
         return list;
     }
 
-    private KAOSFormalTools.Parsing.Element BuildObstructedBy (List<Result> results)
+    private KAOSTools.Parsing.Element BuildObstructedBy (List<Result> results)
     {
         var list = new ObstructedByList ();
         for (int i = 1; i < results.Count; i = i + 2) {
@@ -182,7 +182,7 @@ internal sealed partial class GoalModelParser
         return list;
     }
 
-    private KAOSFormalTools.Parsing.Element BuildAssignedTo (List<Result> results)
+    private KAOSTools.Parsing.Element BuildAssignedTo (List<Result> results)
     {
         var list = new AssignedToList ();
         if (results[1].Text == "[") {
@@ -200,27 +200,27 @@ internal sealed partial class GoalModelParser
         return list;
     }
 
-    private KAOSFormalTools.Parsing.Element BuildId (List<Result> results)
+    private KAOSTools.Parsing.Element BuildId (List<Result> results)
     {
-        return new KAOSFormalTools.Parsing.Identifier(results[1].Text);
+        return new KAOSTools.Parsing.Identifier(results[1].Text);
     }
 
-    private KAOSFormalTools.Parsing.Element BuildName (List<Result> results)
+    private KAOSTools.Parsing.Element BuildName (List<Result> results)
     {
-        return new KAOSFormalTools.Parsing.Name(results[2].Text);
+        return new KAOSTools.Parsing.Name(results[2].Text);
     }
 
-    private KAOSFormalTools.Parsing.Element BuildStringFormalSpec (List<Result> results)
+    private KAOSTools.Parsing.Element BuildStringFormalSpec (List<Result> results)
     {
-        return new KAOSFormalTools.Parsing.StringFormalSpec(results[2].Text);
+        return new KAOSTools.Parsing.StringFormalSpec(results[2].Text);
     }
 
-    private KAOSFormalTools.Parsing.Element BuildSignature (List<Result> results)
+    private KAOSTools.Parsing.Element BuildSignature (List<Result> results)
     {
-        return new KAOSFormalTools.Parsing.Signature(results[2].Text);
+        return new KAOSTools.Parsing.Signature(results[2].Text);
     }
 
-    private KAOSFormalTools.Parsing.Element BuildFormalSpec (List<Result> results)
+    private KAOSTools.Parsing.Element BuildFormalSpec (List<Result> results)
     {
         var formalSpec = new FormalSpec (results [2].Text);
         if (formalSpec.Value == null)
@@ -229,30 +229,30 @@ internal sealed partial class GoalModelParser
         return formalSpec;
     }
     
-    private KAOSFormalTools.Parsing.Element BuildDefinition (List<Result> results)
+    private KAOSTools.Parsing.Element BuildDefinition (List<Result> results)
     {
-        return new KAOSFormalTools.Parsing.Definition (results [2].Text);
+        return new KAOSTools.Parsing.Definition (results [2].Text);
     }
         
-    private KAOSFormalTools.Parsing.Element BuildDescription (List<Result> results)
+    private KAOSTools.Parsing.Element BuildDescription (List<Result> results)
     {
         if (results.Count == 4)
-            return new KAOSFormalTools.Parsing.Description (results [2].Text);
+            return new KAOSTools.Parsing.Description (results [2].Text);
         else 
-            return new KAOSFormalTools.Parsing.Description ("");
+            return new KAOSTools.Parsing.Description ("");
     }
     
-    private KAOSFormalTools.Parsing.Element BuildRDS (List<Result> results)
+    private KAOSTools.Parsing.Element BuildRDS (List<Result> results)
     {
-        return new KAOSFormalTools.Parsing.RDS (double.Parse (results [1].Text));
+        return new KAOSTools.Parsing.RDS (double.Parse (results [1].Text));
     }
     
-    private KAOSFormalTools.Parsing.Element BuildProbability (List<Result> results)
+    private KAOSTools.Parsing.Element BuildProbability (List<Result> results)
     {
-        return new KAOSFormalTools.Parsing.Probability (double.Parse (results [1].Text));
+        return new KAOSTools.Parsing.Probability (double.Parse (results [1].Text));
     }
 
-    private KAOSFormalTools.Parsing.Element BuildIdOrName (List<Result> results)
+    private KAOSTools.Parsing.Element BuildIdOrName (List<Result> results)
     {
         if (results.Count == 3) {
             return new Name (results[1].Text);
@@ -262,7 +262,7 @@ internal sealed partial class GoalModelParser
         return null;
     }
     
-    private KAOSFormalTools.Parsing.Element Import (string file)
+    private KAOSTools.Parsing.Element Import (string file)
     {
         var filename = Path.Combine (Path.GetDirectoryName (m_file), file);
         if (files_imported.Contains (Path.GetFullPath (filename))) {

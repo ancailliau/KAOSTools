@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.IO;
-using KAOSFormalTools.Parsing;
+using KAOSTools.Parsing;
 using KAOSTools.MetaModel;
 using NDesk.Options;
 using System.Collections.Generic;

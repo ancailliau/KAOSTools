@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using LtlSharp;
 
-namespace KAOSFormalTools.Parsing
+namespace KAOSTools.Parsing
 {
     public interface Element {}
     

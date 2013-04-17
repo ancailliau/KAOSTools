@@ -181,7 +181,7 @@ namespace KAOSFormalTools.ModelChecker
 
         static GoalModel BuildModel (string filename)
         {
-            var parser = new KAOSFormalTools.Parsing.Parser ();
+            var parser = new KAOSTools.Parsing.Parser ();
             return parser.Parse (File.ReadAllText (filename)).GoalModel;
         }
 

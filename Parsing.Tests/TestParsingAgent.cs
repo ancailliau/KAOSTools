@@ -3,7 +3,7 @@ using System.Linq;
 using NUnit.Framework;
 using ShallTests;
 
-namespace KAOSFormalTools.Parsing.Tests
+namespace KAOSTools.Parsing.Tests
 {
     [TestFixture()]
     public class TestParsingAgent

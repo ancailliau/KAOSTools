@@ -2,13 +2,13 @@ using System;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
-using KAOSFormalTools.Parsing;
+using KAOSTools.Parsing;
 using LtlSharp;
 using System.Net;
 using System.IO;
 using ShallTests;
 
-namespace KAOSFormalTools.Parsing.Tests
+namespace KAOSTools.Parsing.Tests
 {
     [TestFixture()]
     public class TestParsingExamples

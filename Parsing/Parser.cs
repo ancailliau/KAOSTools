@@ -1,10 +1,10 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using KAOSFormalTools.Parsing;
+using KAOSTools.Parsing;
 using KAOSTools.MetaModel;
 
-namespace KAOSFormalTools.Parsing
+namespace KAOSTools.Parsing
 {
     public class Parser
     {

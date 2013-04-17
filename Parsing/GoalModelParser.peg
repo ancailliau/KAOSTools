@@ -1,5 +1,5 @@
 start = Start
-value = KAOSFormalTools.Parsing.Element
+value = KAOSTools.Parsing.Element
 debug = 
 
 Start := S Elements S;

@@ -5,9 +5,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.RefinementC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaModel", "MetaModel\MetaModel.csproj", "{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.Parsing", "KAOSFormalTools.Parsing\KAOSFormalTools.Parsing.csproj", "{52C948A2-30AD-40A7-89A3-9D66B2FCDD9F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parsing", "Parsing\Parsing.csproj", "{52C948A2-30AD-40A7-89A3-9D66B2FCDD9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.Parsing.Tests", "KAOSFormalTools.Parsing.Tests\KAOSFormalTools.Parsing.Tests.csproj", "{283D3679-A09D-4FDC-AB94-2B55A0C4493A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parsing.Tests", "Parsing.Tests\Parsing.Tests.csproj", "{283D3679-A09D-4FDC-AB94-2B55A0C4493A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.ModelChecker", "KAOSFormalTools.ModelChecker\KAOSFormalTools.ModelChecker.csproj", "{6ABA53F3-9825-461F-9945-04735EFCEF14}"
 EndProject

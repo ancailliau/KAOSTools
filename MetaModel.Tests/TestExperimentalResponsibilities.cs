@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using KAOSFormalTools.Parsing;
+using KAOSTools.Parsing;
 
 namespace KAOSTools.MetaModel.Tests
 {

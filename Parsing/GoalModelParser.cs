@@ -85,13 +85,13 @@ internal sealed partial class GoalModelParser
 		OnCtorEpilog();
 	}
 	
-	public KAOSFormalTools.Parsing.Element Parse(string input)
+	public KAOSTools.Parsing.Element Parse(string input)
 	{
 		return DoParseFile(input, null);
 	}
 	
 	// File is used for error reporting.
-	public KAOSFormalTools.Parsing.Element Parse(string input, string file)
+	public KAOSTools.Parsing.Element Parse(string input, string file)
 	{
 		return DoParseFile(input, file);
 	}
@@ -110,7 +110,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
 		
@@ -138,7 +138,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildElements (results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -161,7 +161,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = Import(results[2].Text);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -190,7 +190,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildPredicate(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -219,7 +219,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildSystem(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -248,7 +248,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildGoal(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -279,7 +279,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildDomainProperty(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -308,7 +308,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildObstacle(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -343,7 +343,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildAgent(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -374,7 +374,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildDomainHypothesis(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -400,7 +400,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = results[0].Value;
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -423,7 +423,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = results[0].Value;
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -444,7 +444,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = results[0].Value;
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -469,7 +469,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = results[0].Value;
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -490,7 +490,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = results[0].Value;
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -512,7 +512,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = results[0].Value;
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -534,7 +534,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = results[0].Value;
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -555,7 +555,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildId(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -578,7 +578,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildName(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -601,7 +601,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildSignature(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -624,7 +624,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildStringFormalSpec(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -647,7 +647,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildFormalSpec(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -670,7 +670,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildDefinition(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -700,7 +700,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildDescription(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -721,7 +721,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildRDS(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -744,7 +744,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildProbability(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -771,7 +771,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildRefinedBy(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -805,7 +805,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildRefinedBy(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -832,7 +832,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildObstructedBy(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -866,7 +866,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildAssignedTo(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -893,7 +893,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildResolvedBy(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -920,7 +920,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildAlternative(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -940,7 +940,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = results[0].Value;
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -969,7 +969,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = results[0].Value;
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -996,7 +996,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = results[0].Value;
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -1023,7 +1023,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = results[0].Value;
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -1053,7 +1053,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = BuildIdOrName(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -1084,7 +1084,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = null;
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -1110,7 +1110,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = null;
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -1147,7 +1147,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			value = null;
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
@@ -1182,7 +1182,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			string text = m_input.Substring(_start.Index, _state.Index - _start.Index);
 			text = null;
 			if (text != null)
@@ -1202,7 +1202,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
 		else
@@ -1229,7 +1229,7 @@ internal sealed partial class GoalModelParser
 		
 		if (_state.Parsed)
 		{
-			KAOSFormalTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Element);
 			string text = m_input.Substring(_start.Index, _state.Index - _start.Index);
 			text = null;
 			if (text != null)
@@ -1245,7 +1245,7 @@ internal sealed partial class GoalModelParser
 	partial void OnParseProlog();
 	partial void OnParseEpilog(State state);
 	
-	private KAOSFormalTools.Parsing.Element DoParseFile(string input, string file)
+	private KAOSTools.Parsing.Element DoParseFile(string input, string file)
 	{
 		m_file = file;
 		m_input = m_file;				// we need to ensure that m_file is used or we will (in some cases) get a compiler warning
@@ -1365,7 +1365,7 @@ internal sealed partial class GoalModelParser
 		
 		int k = j + literal.Length;
 		
-		results.Add(new Result(this, j, literal.Length, m_input, default(KAOSFormalTools.Parsing.Element)));
+		results.Add(new Result(this, j, literal.Length, m_input, default(KAOSTools.Parsing.Element)));
 		state = new State(k, true, state.Errors);
 		
 		return state;
@@ -1385,7 +1385,7 @@ internal sealed partial class GoalModelParser
 			state = DoChoice(state, results, methods);
 			
 			bool hasResult = state.Parsed && results.Count > oldCount;
-			KAOSFormalTools.Parsing.Element value = hasResult ? results[results.Count - 1].Value : default(KAOSFormalTools.Parsing.Element);
+			KAOSTools.Parsing.Element value = hasResult ? results[results.Count - 1].Value : default(KAOSTools.Parsing.Element);
 			cache = new CacheValue(state, value, hasResult);
 			m_cache.Add(key, cache);
 		}
@@ -1489,7 +1489,7 @@ internal sealed partial class GoalModelParser
 		
 		if (matched)
 		{
-			results.Add(new Result(this, state.Index, 1, m_input, default(KAOSFormalTools.Parsing.Element)));
+			results.Add(new Result(this, state.Index, 1, m_input, default(KAOSTools.Parsing.Element)));
 			return new State(state.Index + 1, true, state.Errors);
 		}
 		
@@ -1558,7 +1558,7 @@ internal sealed partial class GoalModelParser
 	
 	private struct CacheValue
 	{
-		public CacheValue(State state, KAOSFormalTools.Parsing.Element value, bool hasResult)
+		public CacheValue(State state, KAOSTools.Parsing.Element value, bool hasResult)
 		{
 			State = state;
 			Value = value;
@@ -1567,7 +1567,7 @@ internal sealed partial class GoalModelParser
 		
 		public State State;
 		
-		public KAOSFormalTools.Parsing.Element Value;
+		public KAOSTools.Parsing.Element Value;
 		
 		public bool HasResult;
 	}
@@ -1660,7 +1660,7 @@ internal sealed partial class GoalModelParser
 	// The result of parsing a literal or non-terminal.
 	private struct Result
 	{
-		public Result(GoalModelParser parser, int index, int length, string input, KAOSFormalTools.Parsing.Element value)
+		public Result(GoalModelParser parser, int index, int length, string input, KAOSTools.Parsing.Element value)
 		{
 			m_parser = parser;
 			m_index = index;
@@ -1680,7 +1680,7 @@ internal sealed partial class GoalModelParser
 		
 		// For non-terminals this will be the result of the semantic action, 
 		// otherwise it will be the default value.
-		public KAOSFormalTools.Parsing.Element Value;
+		public KAOSTools.Parsing.Element Value;
 		
 		private GoalModelParser m_parser;
 		private int m_index;

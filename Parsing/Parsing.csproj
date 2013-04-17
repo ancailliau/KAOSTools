@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{283D3679-A09D-4FDC-AB94-2B55A0C4493A}</ProjectGuid>
+    <ProjectGuid>{52C948A2-30AD-40A7-89A3-9D66B2FCDD9F}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>KAOSFormalTools.Parsing.Tests</RootNamespace>
-    <AssemblyName>KAOSFormalTools.Parsing.Tests</AssemblyName>
+    <RootNamespace>KAOSTools.Parsing</RootNamespace>
+    <AssemblyName>KAOSTools.Parsing</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -30,33 +30,25 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="nunit.framework">
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="LtlSharp">
       <HintPath>..\Libraries\LtlSharp.dll</HintPath>
     </Reference>
-    <Reference Include="ShallTests">
-      <HintPath>..\Libraries\ShallTests.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TestParsingGoal.cs" />
-    <Compile Include="TestParsingDomainProperty.cs" />
-    <Compile Include="TestParsingObstacles.cs" />
-    <Compile Include="TestParsingExamples.cs" />
-    <Compile Include="TestParsingAgent.cs" />
-    <Compile Include="TestParsingDomainHypothesis.cs" />
-    <Compile Include="TestParsingPredicate.cs" />
-    <Compile Include="TestParsingSystem.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="GoalModelParser.cs" />
+    <Compile Include="Elements.cs" />
+    <Compile Include="Parser.cs" />
+    <Compile Include="ParsingException.cs" />
+    <Compile Include="GoalModelParserExtension.cs" />
+    <Compile Include="Helpers.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\KAOSFormalTools.Parsing\KAOSFormalTools.Parsing.csproj">
-      <Project>{52C948A2-30AD-40A7-89A3-9D66B2FCDD9F}</Project>
-      <Name>KAOSFormalTools.Parsing</Name>
-    </ProjectReference>
+    <None Include="GoalModelParser.peg" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\MetaModel\MetaModel.csproj">
       <Project>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</Project>
       <Name>MetaModel</Name>

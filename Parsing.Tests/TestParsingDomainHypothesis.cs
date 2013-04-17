@@ -1,11 +1,11 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using KAOSFormalTools.Parsing;
+using KAOSTools.Parsing;
 using LtlSharp;
 using ShallTests;
 
-namespace KAOSFormalTools.Parsing.Tests
+namespace KAOSTools.Parsing.Tests
 {
     [TestFixture()]
     public class TestParsingDomainHypothesis

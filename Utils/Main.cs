@@ -58,7 +58,7 @@ namespace KAOSTools.Utils
         
         protected static GoalModel BuildModel ()
         {
-            var parser = new KAOSFormalTools.Parsing.Parser ();
+            var parser = new KAOSTools.Parsing.Parser ();
             return parser.Parse (input, filename).GoalModel;
         }
         

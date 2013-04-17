@@ -1,6 +1,6 @@
 using System;
 
-namespace KAOSFormalTools.Parsing
+namespace KAOSTools.Parsing
 {
     public class ParsingException : Exception
     {

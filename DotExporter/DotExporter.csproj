@@ -42,10 +42,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\KAOSFormalTools.Parsing\KAOSFormalTools.Parsing.csproj">
-      <Project>{52C948A2-30AD-40A7-89A3-9D66B2FCDD9F}</Project>
-      <Name>KAOSFormalTools.Parsing</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MetaModel\MetaModel.csproj">
       <Project>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</Project>
       <Name>MetaModel</Name>
@@ -53,6 +49,10 @@
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{C96BDFB0-950D-4DF0-9BFB-27EA7C8CABD3}</Project>
       <Name>Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KAOSFormalTools.Parsing\Parsing.csproj">
+      <Project>{52C948A2-30AD-40A7-89A3-9D66B2FCDD9F}</Project>
+      <Name>Parsing</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>
