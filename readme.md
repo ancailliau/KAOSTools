@@ -1,6 +1,6 @@
-# KAOSFormalTools
+# KAOS Tools Suite
 
-KAOSFormalTools is a set of executable targeted at modeling and analyzing KAOS models.
+KAOSTools is a set of executables and libraries targeted at building, analyzing, checking, manipulating, exporting KAOS models.
 
 You can find more documentation here : https://github.com/ancailliau/KAOSFormalTools/wiki
 
@@ -12,7 +12,7 @@ If you have any question regarding this software, do not hesitate to contact the
 
 ## Licence
 
-The KAOSFormalTools software has been developed by Antoine Cailliau (Institute of 
+The KAOSTools software has been developed by Antoine Cailliau (Institute of 
 Information and Communication Technologies, Electronics and Applied Mathematics 
 – ICTEAM, UCL) under an open-source MIT license. For any question about 
 licensing or usage in commercial or academic products, you can contact the Louvain 
