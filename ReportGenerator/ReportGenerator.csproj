@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C1574D44-EB4F-4C2B-9F83-4DDC25AEC275}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>KAOSFormalTools.LatexExporter</RootNamespace>
-    <AssemblyName>KAOSFormalTools.LatexExporter</AssemblyName>
+    <RootNamespace>KAOSTools.ReportGenerator</RootNamespace>
+    <AssemblyName>KAOSTools.ReportGenerator</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>

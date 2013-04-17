@@ -8,7 +8,7 @@ using KAOSTools.MetaModel;
 using System.Collections;
 using LtlSharp.Utils;
     
-namespace KAOSFormalTools.LatexExporter
+namespace KAOSTools.ReportGenerator
 {
     class MainClass
     {

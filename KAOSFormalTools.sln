@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotExporter", "DotExporter\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmnigraffleExport", "OmnigraffleExport\OmnigraffleExport.csproj", "{DFAE4D76-E744-4F28-BFE6-7525C52AC6C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.LatexExporter", "KAOSFormalTools.LatexExporter\KAOSFormalTools.LatexExporter.csproj", "{C1574D44-EB4F-4C2B-9F83-4DDC25AEC275}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReportGenerator", "ReportGenerator\ReportGenerator.csproj", "{C1574D44-EB4F-4C2B-9F83-4DDC25AEC275}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "Utils\Utils.csproj", "{C96BDFB0-950D-4DF0-9BFB-27EA7C8CABD3}"
 EndProject
