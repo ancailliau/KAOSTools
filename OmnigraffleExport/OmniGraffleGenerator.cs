@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 
-namespace KAOSFormalTools.OmnigraffleExport
+namespace KAOSTools.OmnigraffleExport
 {
     public class OmniGraffleGenerator
     {
@@ -262,7 +262,7 @@ namespace KAOSFormalTools.OmnigraffleExport
             return root;
         }
 
-        private static IPListElement ExportLayer (KAOSFormalTools.OmnigraffleExport.Omnigraffle.Layer layer)
+        private static IPListElement ExportLayer (KAOSTools.OmnigraffleExport.Omnigraffle.Layer layer)
         {
             var layer_dict = new PListDict ();
             layer_dict.Add ("Name", new PListString (layer.Name));
@@ -437,16 +437,16 @@ namespace KAOSFormalTools.OmnigraffleExport
 
         static IPListElement ExportArrow (Omnigraffle.Arrow tailArrow)
         {
-            if (tailArrow == KAOSFormalTools.OmnigraffleExport.Omnigraffle.Arrow.None)
+            if (tailArrow == KAOSTools.OmnigraffleExport.Omnigraffle.Arrow.None)
                 return new PListString ("0");
 
-            if (tailArrow == KAOSFormalTools.OmnigraffleExport.Omnigraffle.Arrow.FilledArrow)
+            if (tailArrow == KAOSTools.OmnigraffleExport.Omnigraffle.Arrow.FilledArrow)
                 return new PListString ("FilledArrow");
 
-            if (tailArrow == KAOSFormalTools.OmnigraffleExport.Omnigraffle.Arrow.SharpBackCross)
+            if (tailArrow == KAOSTools.OmnigraffleExport.Omnigraffle.Arrow.SharpBackCross)
                 return new PListString ("SharpBackCross");
             
-            if (tailArrow == KAOSFormalTools.OmnigraffleExport.Omnigraffle.Arrow.Arrow)
+            if (tailArrow == KAOSTools.OmnigraffleExport.Omnigraffle.Arrow.Arrow)
                 return new PListString ("Arrow");
 
             throw new NotImplementedException ();

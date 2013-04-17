@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.ModelChecke
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotExporter", "DotExporter\DotExporter.csproj", "{B868C8DA-65E4-4BF2-BAFA-3EEF9C84227F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.OmnigraffleExport", "KAOSFormalTools.OmnigraffleExport\KAOSFormalTools.OmnigraffleExport.csproj", "{DFAE4D76-E744-4F28-BFE6-7525C52AC6C2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmnigraffleExport", "OmnigraffleExport\OmnigraffleExport.csproj", "{DFAE4D76-E744-4F28-BFE6-7525C52AC6C2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.LatexExporter", "KAOSFormalTools.LatexExporter\KAOSFormalTools.LatexExporter.csproj", "{C1574D44-EB4F-4C2B-9F83-4DDC25AEC275}"
 EndProject
@@ -136,7 +136,7 @@ Global
 		{20921B4C-B76A-4236-89B1-F5FFD025000B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = KAOSFormalTools.RefinementChecker\RefinementChecker.csproj
+		StartupItem = RefinementChecker\RefinementChecker.csproj
 		Policies = $0
 		$0.TextStylePolicy = $1
 		$1.FileWidth = 120

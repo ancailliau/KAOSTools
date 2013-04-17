@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace KAOSFormalTools.OmnigraffleExport.Omnigraffle
+namespace KAOSTools.OmnigraffleExport.Omnigraffle
 {
     public class ApplicationVersion 
     {
@@ -417,7 +417,7 @@ namespace KAOSFormalTools.OmnigraffleExport.Omnigraffle
         public DateTime           CreationDate         = DateTime.Now;
         public DateTime           ModificationDate     = DateTime.Now;
 
-        public string             Creator              = "KAOSFormalTools.OmnigraffleExport";
+        public string             Creator              = "KAOSTools.OmnigraffleExport";
         public int                GraphDocumentVersion = 8;
 
         public bool GuidesLocked = false;

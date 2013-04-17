@@ -1,6 +1,6 @@
 using System;
 
-namespace KAOSFormalTools.OmnigraffleExport
+namespace KAOSTools.OmnigraffleExport
 {
     public class ExportOptions
     {

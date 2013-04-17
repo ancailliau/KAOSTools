@@ -64,7 +64,7 @@ namespace KAOSTools.Utils
         
         protected static void ShowHelp (OptionSet p)
         {
-            Console.WriteLine ("Usage: KAOSFormalTools.OmnigraffleExport model");
+            Console.WriteLine ("Usage: KAOSTools.OmnigraffleExport model");
             Console.WriteLine ();
             Console.WriteLine ("Options:");
             p.WriteOptionDescriptions (Console.Out);
@@ -73,9 +73,9 @@ namespace KAOSTools.Utils
         protected static void PrintError (string error)
         {  
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.Error.Write ("KAOSFormalTools.OmnigraffleExport: ");
+            Console.Error.Write ("KAOSTools.OmnigraffleExport: ");
             Console.Error.WriteLine (error);
-            Console.Error.WriteLine ("Try `KAOSFormalTools.OmnigraffleExport --help' for more information.");
+            Console.Error.WriteLine ("Try `KAOSTools.OmnigraffleExport --help' for more information.");
             Console.ResetColor ();
         }
     }
