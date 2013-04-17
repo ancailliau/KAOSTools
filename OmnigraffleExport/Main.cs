@@ -10,7 +10,7 @@ using KAOSTools.OmnigraffleExport.Omnigraffle;
 
 namespace KAOSTools.OmnigraffleExport
 {
-    class MainClass : KAOSFormalToolsCLI
+    class MainClass : KAOSToolCLI
     {
         static Dictionary<Omnigraffle.Sheet, Dictionary<string, Omnigraffle.ShapedGraphic>> mapping;
         static ExportOptions exportOptions;

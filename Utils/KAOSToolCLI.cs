@@ -6,7 +6,7 @@ using System.IO;
 
 namespace KAOSTools.Utils
 {
-    public abstract class KAOSFormalToolsCLI
+    public abstract class KAOSToolCLI
     {
         protected static OptionSet options = new OptionSet ();
         protected static string input;

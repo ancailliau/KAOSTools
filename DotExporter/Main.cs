@@ -9,7 +9,7 @@ using KAOSTools.Utils;
 
 namespace KAOSTools.DotExporter
 {
-    class MainClass : KAOSFormalToolsCLI
+    class MainClass : KAOSToolCLI
     {
         public static void Main (string[] args)
         {

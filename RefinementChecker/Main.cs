@@ -11,7 +11,7 @@ using KAOSTools.Utils;
 
 namespace KAOSTools.RefinementChecker
 {
-    class MainClass : KAOSFormalToolsCLI
+    class MainClass : KAOSToolCLI
     {
         public static void Main (string[] args)
         {
