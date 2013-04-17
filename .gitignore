@@ -4,3 +4,4 @@ bin/
 obj/
 test-results/
 TestResult.html
+.DS_Store
