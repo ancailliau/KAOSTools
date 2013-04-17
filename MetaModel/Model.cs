@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
-namespace KAOSFormalTools.Domain
+namespace KAOSTools.MetaModel
 {
     public class Goal
     {

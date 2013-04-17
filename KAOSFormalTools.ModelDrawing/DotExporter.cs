@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using KAOSFormalTools.Domain;
+using KAOSTools.MetaModel;
 using System.IO;
 using System.Text;
 

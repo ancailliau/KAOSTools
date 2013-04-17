@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace KAOSFormalTools.Domain
+namespace KAOSTools.MetaModel
 {
     public class KAOSModel
     {

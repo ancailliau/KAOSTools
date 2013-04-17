@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra.Double;
 using LtlSharp;
 
-namespace KAOSFormalTools.Domain
+namespace KAOSTools.MetaModel
 {
 
     public class Transition {

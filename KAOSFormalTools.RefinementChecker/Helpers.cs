@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using LtlSharp.Utils;
-using KAOSFormalTools.Domain;
+using KAOSTools.MetaModel;
 using LtlSharp;
 
 namespace KAOSFormalTools.RefinementChecker

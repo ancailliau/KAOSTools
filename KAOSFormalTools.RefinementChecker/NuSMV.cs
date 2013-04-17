@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using KAOSFormalTools.Domain;
+using KAOSTools.MetaModel;
 using System.Text.RegularExpressions;
 
 namespace KAOSFormalTools.RefinementChecker

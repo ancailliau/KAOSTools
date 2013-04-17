@@ -4,7 +4,7 @@ namespace KAOSFormalTools.Parsing
 {
     public static class Helpers
     {
-        public static void Merge (this KAOSFormalTools.Domain.System o1, KAOSFormalTools.Domain.System o2)
+        public static void Merge (this KAOSTools.MetaModel.System o1, KAOSTools.MetaModel.System o2)
         {
             if (string.IsNullOrEmpty (o1.Identifier))
                 o1.Identifier = o2.Identifier;
@@ -20,7 +20,7 @@ namespace KAOSFormalTools.Parsing
                     o1.Alternatives.Add (r);
         }
 
-        public static void Merge (this KAOSFormalTools.Domain.Obstacle o1, KAOSFormalTools.Domain.Obstacle o2)
+        public static void Merge (this KAOSTools.MetaModel.Obstacle o1, KAOSTools.MetaModel.Obstacle o2)
         {
             if (string.IsNullOrEmpty (o1.Identifier))
                 o1.Identifier = o2.Identifier;
@@ -43,7 +43,7 @@ namespace KAOSFormalTools.Parsing
                     o1.Resolutions.Add (r);
         }
 
-        public static void Merge (this KAOSFormalTools.Domain.Goal g1, KAOSFormalTools.Domain.Goal g2)
+        public static void Merge (this KAOSTools.MetaModel.Goal g1, KAOSTools.MetaModel.Goal g2)
         {
             if (string.IsNullOrEmpty (g1.Identifier))
                 g1.Identifier = g2.Identifier;
@@ -70,7 +70,7 @@ namespace KAOSFormalTools.Parsing
                     g1.Obstruction.Add (r);
         }
 
-        public static void Merge (this KAOSFormalTools.Domain.DomainProperty d1, KAOSFormalTools.Domain.DomainProperty d2)
+        public static void Merge (this KAOSTools.MetaModel.DomainProperty d1, KAOSTools.MetaModel.DomainProperty d2)
         {
             if (string.IsNullOrEmpty (d1.Identifier))
                 d1.Identifier = d2.Identifier;
@@ -85,7 +85,7 @@ namespace KAOSFormalTools.Parsing
                 d1.FormalSpec = d2.FormalSpec;
         }
         
-        public static void Merge (this KAOSFormalTools.Domain.DomainHypothesis d1, KAOSFormalTools.Domain.DomainHypothesis d2)
+        public static void Merge (this KAOSTools.MetaModel.DomainHypothesis d1, KAOSTools.MetaModel.DomainHypothesis d2)
         {
             if (string.IsNullOrEmpty (d1.Identifier))
                 d1.Identifier = d2.Identifier;
@@ -97,7 +97,7 @@ namespace KAOSFormalTools.Parsing
                 d1.Definition= d2.Definition;
         }
         
-        public static void Merge (this KAOSFormalTools.Domain.Agent a1, KAOSFormalTools.Domain.Agent a2)
+        public static void Merge (this KAOSTools.MetaModel.Agent a1, KAOSTools.MetaModel.Agent a2)
         {
             if (string.IsNullOrEmpty (a1.Identifier))
                 a1.Identifier = a2.Identifier;

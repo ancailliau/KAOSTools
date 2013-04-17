@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using KAOSFormalTools.Parsing;
-using KAOSFormalTools.Domain;
+using KAOSTools.MetaModel;
 using System.IO;
 
 internal sealed partial class GoalModelParser

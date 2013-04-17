@@ -1,4 +1,4 @@
-using KAOSFormalTools.Domain;
+using KAOSTools.MetaModel;
 using LtlSharp;
 using System;
 using System.Collections.Generic;

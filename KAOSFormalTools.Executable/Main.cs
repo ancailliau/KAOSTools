@@ -1,6 +1,6 @@
 using System;
 using NDesk.Options;
-using KAOSFormalTools.Domain;
+using KAOSTools.MetaModel;
 using System.Collections.Generic;
 using System.IO;
 

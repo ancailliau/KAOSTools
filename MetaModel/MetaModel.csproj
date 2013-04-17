@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{785D5DDF-8D86-485E-84C6-E429FC6CADE1}</ProjectGuid>
+    <ProjectGuid>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>KAOSFormalTools.Domain.Tests</RootNamespace>
-    <AssemblyName>KAOSFormalTools.Domain.Tests</AssemblyName>
+    <RootNamespace>KAOSTools.MetaModel</RootNamespace>
+    <AssemblyName>KAOSTools.MetaModel</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -30,37 +30,31 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="nunit.framework">
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System.Core" />
-    <Reference Include="ShallTests">
-      <HintPath>..\Libraries\ShallTests.dll</HintPath>
-    </Reference>
-    <Reference Include="MathNet.Numerics">
-      <HintPath>..\Libraries\MathNet.Numerics.dll</HintPath>
+    <Reference Include="Antlr3.Runtime">
+      <HintPath>..\Libraries\Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="LtlSharp">
       <HintPath>..\Libraries\LtlSharp.dll</HintPath>
     </Reference>
+    <Reference Include="MathNet.Numerics.IO">
+      <HintPath>..\Libraries\MathNet.Numerics.IO.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>..\Libraries\MathNet.Numerics.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TestExperimentalResponsibilities.cs" />
-    <Compile Include="BehaviorHelpers.cs" />
-    <Compile Include="TestAlternativePropagation.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="GoalModel.cs" />
+    <Compile Include="Model.cs" />
+    <Compile Include="ResponsibilityHelpers.cs" />
+    <Compile Include="BehaviorModel.cs" />
+    <Compile Include="KAOSModel.cs" />
+    <Compile Include="AlternativeHelpers.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\KAOSFormalTools.Domain\KAOSFormalTools.Domain.csproj">
-      <Project>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</Project>
-      <Name>KAOSFormalTools.Domain</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\KAOSFormalTools.Parsing\KAOSFormalTools.Parsing.csproj">
-      <Project>{52C948A2-30AD-40A7-89A3-9D66B2FCDD9F}</Project>
-      <Name>KAOSFormalTools.Parsing</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="TestBehaviorModel.cs" />
+    <None Include="Backup.cs" />
   </ItemGroup>
 </Project>

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using LtlSharp.Utils;
 
-namespace KAOSFormalTools.Domain
+namespace KAOSTools.MetaModel
 {
     public class GoalModel
     {

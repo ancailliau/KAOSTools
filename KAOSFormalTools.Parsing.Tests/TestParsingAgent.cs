@@ -12,11 +12,11 @@ namespace KAOSFormalTools.Parsing.Tests
 
         [TestCase(@"declare software agent
                         id test
-                    end", KAOSFormalTools.Domain.AgentType.Software)]
+                    end", KAOSTools.MetaModel.AgentType.Software)]
         [TestCase(@"declare environment agent
                         id test
-                    end", KAOSFormalTools.Domain.AgentType.Environment)]
-        public void TestTypeOfAgent (string input, KAOSFormalTools.Domain.AgentType type)
+                    end", KAOSTools.MetaModel.AgentType.Environment)]
+        public void TestTypeOfAgent (string input, KAOSTools.MetaModel.AgentType type)
         {
             var model = parser.Parse (input);
             model.GoalModel.Agents

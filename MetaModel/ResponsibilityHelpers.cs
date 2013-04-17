@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace KAOSFormalTools.Domain
+namespace KAOSTools.MetaModel
 {
     public static class ResponsibilityHelpers {
         

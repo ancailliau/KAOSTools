@@ -4,7 +4,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using NDesk.Options;
-using KAOSFormalTools.Domain;
+using KAOSTools.MetaModel;
 using LtlSharp;
 using KAOSFormalTools.RefinementChecker;
 

@@ -4,7 +4,7 @@ using ShallTests;
 using NUnit.Framework;
 using LtlSharp;
 
-namespace KAOSFormalTools.Domain.Tests
+namespace KAOSTools.MetaModel.Tests
 {
 
     [TestFixture()]

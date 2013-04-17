@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using KAOSFormalTools.Parsing;
-using KAOSFormalTools.Domain;
+using KAOSTools.MetaModel;
 
 namespace KAOSFormalTools.Parsing
 {
@@ -89,9 +89,9 @@ namespace KAOSFormalTools.Parsing
         
         #region Build helpers for first pass
 
-        private KAOSFormalTools.Domain.System BuildSystem (System parsedAlternative) 
+        private KAOSTools.MetaModel.System BuildSystem (System parsedAlternative) 
         {
-            var alternative = new KAOSFormalTools.Domain.System ();
+            var alternative = new KAOSTools.MetaModel.System ();
             Identifier identifierAttribute = null;
             
             foreach (var attribute in parsedAlternative.Attributes) {
@@ -133,9 +133,9 @@ namespace KAOSFormalTools.Parsing
             return alternative;
         }
 
-        private KAOSFormalTools.Domain.Goal BuildGoal (Goal parsedGoal)
+        private KAOSTools.MetaModel.Goal BuildGoal (Goal parsedGoal)
         {
-            var goal = new KAOSFormalTools.Domain.Goal ();
+            var goal = new KAOSTools.MetaModel.Goal ();
             Identifier identifierAttribute = null;
 
             foreach (var attribute in parsedGoal.Attributes) {
@@ -187,9 +187,9 @@ namespace KAOSFormalTools.Parsing
             return goal;
         }
 
-        private KAOSFormalTools.Domain.DomainProperty BuildDomainProperty (DomainProperty parsedDomProp)
+        private KAOSTools.MetaModel.DomainProperty BuildDomainProperty (DomainProperty parsedDomProp)
         {
-            var domprop = new KAOSFormalTools.Domain.DomainProperty();
+            var domprop = new KAOSTools.MetaModel.DomainProperty();
             Identifier identifierAttribute = null;
 
             foreach (var attr in parsedDomProp.Attributes) {
@@ -241,9 +241,9 @@ namespace KAOSFormalTools.Parsing
             return domprop;
         }
 
-        private KAOSFormalTools.Domain.DomainHypothesis BuildDomainHypothesis (DomainHypothesis parsedDomHyp)
+        private KAOSTools.MetaModel.DomainHypothesis BuildDomainHypothesis (DomainHypothesis parsedDomHyp)
         {
-            var domHyp = new KAOSFormalTools.Domain.DomainHypothesis();
+            var domHyp = new KAOSTools.MetaModel.DomainHypothesis();
             Identifier identifierAttribute = null;
             
             foreach (var attr in parsedDomHyp.Attributes) {
@@ -290,9 +290,9 @@ namespace KAOSFormalTools.Parsing
             return domHyp;
         }
 
-        private KAOSFormalTools.Domain.Obstacle BuildObstacle (Obstacle parsedObstacle)
+        private KAOSTools.MetaModel.Obstacle BuildObstacle (Obstacle parsedObstacle)
         {
-            var obstacle = new KAOSFormalTools.Domain.Obstacle();
+            var obstacle = new KAOSTools.MetaModel.Obstacle();
             Identifier identifierAttribute = null;
 
             foreach (var attr in parsedObstacle.Attributes) {
@@ -344,15 +344,15 @@ namespace KAOSFormalTools.Parsing
             return obstacle;
         }
 
-        private KAOSFormalTools.Domain.Agent BuildAgent (Agent parsedAgent)
+        private KAOSTools.MetaModel.Agent BuildAgent (Agent parsedAgent)
         {
-            var agent = new KAOSFormalTools.Domain.Agent ();
+            var agent = new KAOSTools.MetaModel.Agent ();
 
             Identifier identifierAttribute = null;
             if (parsedAgent.Type == AgentType.Environment)
-                agent.Type = KAOSFormalTools.Domain.AgentType.Environment;
+                agent.Type = KAOSTools.MetaModel.AgentType.Environment;
             else if (parsedAgent.Type == AgentType.Software)
-                agent.Type = KAOSFormalTools.Domain.AgentType.Software;
+                agent.Type = KAOSTools.MetaModel.AgentType.Software;
 
             foreach (var attr in parsedAgent.Attributes) {
                 if (attr is Identifier) {
@@ -396,9 +396,9 @@ namespace KAOSFormalTools.Parsing
             return agent;
         }
 
-        private KAOSFormalTools.Domain.Predicate BuildPredicate (Predicate parsedPredicate)
+        private KAOSTools.MetaModel.Predicate BuildPredicate (Predicate parsedPredicate)
         {
-            var predicate = new KAOSFormalTools.Domain.Predicate ();
+            var predicate = new KAOSTools.MetaModel.Predicate ();
             
             Identifier identifierAttribute = null;
 
@@ -438,7 +438,7 @@ namespace KAOSFormalTools.Parsing
             string name       = "";
 
             var refinements   = new List<ObstacleRefinement> ();
-            var resolutions   = new List<KAOSFormalTools.Domain.Goal> ();
+            var resolutions   = new List<KAOSTools.MetaModel.Goal> ();
 
             foreach (var attribute in parsedObstacle.Attributes) {
                 if (attribute is Identifier) {
@@ -493,7 +493,7 @@ namespace KAOSFormalTools.Parsing
                 }
             }
 
-            KAOSFormalTools.Domain.Obstacle obstacle = null;
+            KAOSTools.MetaModel.Obstacle obstacle = null;
             if (string.IsNullOrEmpty (identifier)) {
                 var obstacles = model.GoalModel.GetObstaclesByName (name);
                 if (obstacles.Count() > 1)
@@ -522,8 +522,8 @@ namespace KAOSFormalTools.Parsing
             string identifier    = "";
             string name          = "";
             var    refinements   = new HashSet<GoalRefinement> ();
-            var    obstruction   = new HashSet<KAOSFormalTools.Domain.Obstacle> ();
-            var    assignedAgents = new HashSet<KAOSFormalTools.Domain.AgentAssignment> ();
+            var    obstruction   = new HashSet<KAOSTools.MetaModel.Obstacle> ();
+            var    assignedAgents = new HashSet<KAOSTools.MetaModel.AgentAssignment> ();
 
             foreach (var attribute in parsedGoal.Attributes) {
                 if (attribute is Identifier) {
@@ -611,7 +611,7 @@ namespace KAOSFormalTools.Parsing
                 }
             }
 
-            KAOSFormalTools.Domain.Goal goal = null;
+            KAOSTools.MetaModel.Goal goal = null;
             if (string.IsNullOrEmpty (identifier)) {
                 var goals = model.GoalModel.GetGoalsByName (name);
                 if (goals.Count() > 1)
@@ -648,7 +648,7 @@ namespace KAOSFormalTools.Parsing
         {
             string identifier    = "";
             string name          = "";
-            var    alternatives  = new HashSet<Domain.System> ();
+            var    alternatives  = new HashSet<KAOSTools.MetaModel.System> ();
 
             foreach (var attribute in parsedSystem.Attributes) {
                 if (attribute is Identifier) {
@@ -672,7 +672,7 @@ namespace KAOSFormalTools.Parsing
                 }
             }
             
-            KAOSFormalTools.Domain.System system = null;
+            KAOSTools.MetaModel.System system = null;
             if (string.IsNullOrEmpty (identifier)) {
                 var goals = model.GoalModel.GetSystemsByName (name);
                 if (goals.Count() > 1)
@@ -702,9 +702,9 @@ namespace KAOSFormalTools.Parsing
 
         #region Get or create helpers
 
-        private KAOSFormalTools.Domain.Obstacle GetOrCreateObstacle (IdentifierOrName attribute, bool create = true)
+        private KAOSTools.MetaModel.Obstacle GetOrCreateObstacle (IdentifierOrName attribute, bool create = true)
         {
-            KAOSFormalTools.Domain.Obstacle candidate = null;
+            KAOSTools.MetaModel.Obstacle candidate = null;
 
             if (attribute is Name) {
                 var name = (attribute as Name).Value;
@@ -712,7 +712,7 @@ namespace KAOSFormalTools.Parsing
 
                 if (candidates.Count() == 0) {
                     if (create) {
-                        candidate = new KAOSFormalTools.Domain.Obstacle() { 
+                        candidate = new KAOSTools.MetaModel.Obstacle() { 
                             Name = (attribute as Name).Value
                         };
                         model.GoalModel.Obstacles.Add (candidate);
@@ -732,7 +732,7 @@ namespace KAOSFormalTools.Parsing
 
                 if (candidate == null) {
                     if (create) {
-                        candidate = new KAOSFormalTools.Domain.Obstacle() { 
+                        candidate = new KAOSTools.MetaModel.Obstacle() { 
                             Identifier = (attribute as Identifier).Value
                         };
                         model.GoalModel.Obstacles.Add (candidate);
@@ -745,7 +745,7 @@ namespace KAOSFormalTools.Parsing
             return candidate;
         }
 
-        private KAOSFormalTools.Domain.DomainProperty GetDomainProperty (IdentifierOrName attribute)
+        private KAOSTools.MetaModel.DomainProperty GetDomainProperty (IdentifierOrName attribute)
         {
             
             if (attribute is Name) {
@@ -767,7 +767,7 @@ namespace KAOSFormalTools.Parsing
             return null;
         }
 
-        private KAOSFormalTools.Domain.DomainHypothesis GetDomainHypothesis (IdentifierOrName attribute)
+        private KAOSTools.MetaModel.DomainHypothesis GetDomainHypothesis (IdentifierOrName attribute)
         {
             
             if (attribute is Name) {
@@ -789,9 +789,9 @@ namespace KAOSFormalTools.Parsing
             return null;
         }
 
-        private KAOSFormalTools.Domain.Goal GetOrCreateGoal (IdentifierOrName attribute, bool create = true)
+        private KAOSTools.MetaModel.Goal GetOrCreateGoal (IdentifierOrName attribute, bool create = true)
         {
-            KAOSFormalTools.Domain.Goal candidate = null;
+            KAOSTools.MetaModel.Goal candidate = null;
 
             if (attribute is Name) {
                 var name = (attribute as Name).Value;
@@ -799,7 +799,7 @@ namespace KAOSFormalTools.Parsing
 
                 if (candidates.Count() == 0) {
                         if (create) {
-                            candidate = new KAOSFormalTools.Domain.Goal() { 
+                            candidate = new KAOSTools.MetaModel.Goal() { 
                                 Name = (attribute as Name).Value
                             };
                             model.GoalModel.Goals.Add (candidate);
@@ -819,7 +819,7 @@ namespace KAOSFormalTools.Parsing
 
                 if (candidate == null) {
                     if (create) {
-                        candidate = new KAOSFormalTools.Domain.Goal() { 
+                        candidate = new KAOSTools.MetaModel.Goal() { 
                             Identifier = (attribute as Identifier).Value
                         };
                         model.GoalModel.Goals.Add (candidate);
@@ -832,9 +832,9 @@ namespace KAOSFormalTools.Parsing
             return candidate;
         }
 
-        private KAOSFormalTools.Domain.Agent GetOrCreateAgent (IdentifierOrName attribute, bool create = true)
+        private KAOSTools.MetaModel.Agent GetOrCreateAgent (IdentifierOrName attribute, bool create = true)
         {
-            KAOSFormalTools.Domain.Agent candidate = null;
+            KAOSTools.MetaModel.Agent candidate = null;
 
             if (attribute is Name) {
                 var name = (attribute as Name).Value;
@@ -842,7 +842,7 @@ namespace KAOSFormalTools.Parsing
 
                 if (candidates.Count() == 0) {
                     if (create) {
-                        candidate = new KAOSFormalTools.Domain.Agent() { 
+                        candidate = new KAOSTools.MetaModel.Agent() { 
                             Name = (attribute as Name).Value
                         };
                         model.GoalModel.Agents.Add (candidate);
@@ -862,7 +862,7 @@ namespace KAOSFormalTools.Parsing
 
                 if (candidate == null) {
                     if (create) {
-                        candidate = new KAOSFormalTools.Domain.Agent () { 
+                        candidate = new KAOSTools.MetaModel.Agent () { 
                             Identifier = (attribute as Identifier).Value
                         };
                         model.GoalModel.Agents.Add (candidate);
@@ -875,9 +875,9 @@ namespace KAOSFormalTools.Parsing
             return candidate;
         }
 
-        private KAOSFormalTools.Domain.System GetOrCreateAlternative (IdentifierOrName attribute, bool create = true)
+        private KAOSTools.MetaModel.System GetOrCreateAlternative (IdentifierOrName attribute, bool create = true)
         {
-            KAOSFormalTools.Domain.System candidate = null;
+            KAOSTools.MetaModel.System candidate = null;
             
             if (attribute is Name) {
                 var name = (attribute as Name).Value;
@@ -885,7 +885,7 @@ namespace KAOSFormalTools.Parsing
                 
                 if (candidates.Count() == 0) {
                     if (create) {
-                        candidate = new KAOSFormalTools.Domain.System() { 
+                        candidate = new KAOSTools.MetaModel.System() { 
                             Name = (attribute as Name).Value
                         };
                         model.GoalModel.Systems.Add (candidate);
@@ -905,7 +905,7 @@ namespace KAOSFormalTools.Parsing
                 
                 if (candidate == null) {
                     if (create) {
-                        candidate = new KAOSFormalTools.Domain.System() { 
+                        candidate = new KAOSTools.MetaModel.System() { 
                             Identifier = (attribute as Identifier).Value
                         };
                         model.GoalModel.Systems.Add (candidate);
