@@ -16,13 +16,14 @@ namespace KAOSFormalTools.Parsing
     public class Predicate : Element
     {
         public List<Attribute> Attributes { get; set; }
-        public Predicate () { Attributes = new List<Attribute>(); }
+        public bool Override { get; set; }
+        public Predicate () { Attributes = new List<Attribute>(); Override = false; }
     }
     
     public class System : Element
     {
-        public bool Override { get; set; }
         public List<Attribute> Attributes { get; set; }
+        public bool Override { get; set; }
         public System () { Attributes = new List<Attribute>(); Override = false; }
     }
 
@@ -36,26 +37,30 @@ namespace KAOSFormalTools.Parsing
     public class DomainProperty : Element
     {
         public List<Attribute> Attributes { get; set; }
-        public DomainProperty () { Attributes = new List<Attribute>(); }
+        public bool Override { get; set; }
+        public DomainProperty () { Attributes = new List<Attribute>(); Override = false; }
     }
 
     public class DomainHypothesis : Element
     {
         public List<Attribute> Attributes { get; set; }
-        public DomainHypothesis () { Attributes = new List<Attribute>(); }
+        public bool Override { get; set; }
+        public DomainHypothesis () { Attributes = new List<Attribute>(); Override = false; }
     }
 
     public class Obstacle : Element
     {
         public List<Attribute> Attributes { get; set; }
-        public Obstacle () { Attributes = new List<Attribute>(); }
+        public bool Override { get; set; }
+        public Obstacle () { Attributes = new List<Attribute>(); Override = false; }
     }
 
     public class Agent : Element
     {
         public List<Attribute> Attributes { get; set; }
         public AgentType       Type       { get; set; }
-        public Agent () { Attributes = new List<Attribute>();  Type = AgentType.None; }
+        public bool Override { get; set; }
+        public Agent () { Attributes = new List<Attribute>();  Type = AgentType.None; Override = false; }
     }
 
     public enum AgentType { None, Software, Environment }

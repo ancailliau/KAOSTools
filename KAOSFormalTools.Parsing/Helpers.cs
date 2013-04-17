@@ -96,7 +96,18 @@ namespace KAOSFormalTools.Parsing
             if (string.IsNullOrEmpty (d1.Definition))
                 d1.Definition= d2.Definition;
         }
-
+        
+        public static void Merge (this KAOSFormalTools.Domain.Agent a1, KAOSFormalTools.Domain.Agent a2)
+        {
+            if (string.IsNullOrEmpty (a1.Identifier))
+                a1.Identifier = a2.Identifier;
+            
+            if (string.IsNullOrEmpty (a1.Name))
+                a1.Name = a2.Name;
+            
+            if (string.IsNullOrEmpty (a1.Description))
+                a1.Description = a2.Description;
+        }
     }
 }
 

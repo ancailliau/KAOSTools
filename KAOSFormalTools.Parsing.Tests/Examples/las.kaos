@@ -140,7 +140,7 @@ end
 # Resolutions
 #
 
-declare obstacle
+override obstacle
   id          ambulance_not_in_familiar_area
   resolvedby  avoid_ambulance_not_in_familiar_area
 end

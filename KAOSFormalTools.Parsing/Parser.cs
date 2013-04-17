@@ -159,23 +159,21 @@ namespace KAOSFormalTools.Parsing
 
             if (model.GoalModel.GoalExists (goal.Identifier)) {
                 var g2 = model.GoalModel.GetGoalByIdentifier (goal.Identifier);
-                if (!parsedGoal.Override) {
+                if (parsedGoal.Override) {
                     g2.Merge (goal);
                     return g2;
                 } else {
-                    model.GoalModel.ReplaceGoal (g2, goal);
-                    return goal;
+                    throw new ParsingException (string.Format ("Goal '{0}' is declared multiple times", goal.Identifier));
                 }
             }
             
             if (identifierAttribute == null && model.GoalModel.GetGoalsByName (goal.Name).Count() == 1) {
                 var g2 = model.GoalModel.GetGoalsByName (goal.Name).Single ();
-                if (!parsedGoal.Override) {
+                if (parsedGoal.Override) {
                     g2.Merge (goal);
                     return g2;
                 } else {
-                    model.GoalModel.ReplaceGoal (g2, goal);
-                    return goal;
+                    throw new ParsingException (string.Format ("Goal '{0}' is declared multiple times", goal.Name));
                 }
             }
 
@@ -214,15 +212,23 @@ namespace KAOSFormalTools.Parsing
             }
 
             if (model.GoalModel.DomainPropertyExists (domprop.Identifier)) {
-                var d2 = model.GoalModel.GetDomainPropertyByIdentifier (domprop.Identifier);
-                d2.Merge (domprop);
-                return d2;
+                if (parsedDomProp.Override) {
+                    var d2 = model.GoalModel.GetDomainPropertyByIdentifier (domprop.Identifier);
+                    d2.Merge (domprop);
+                    return d2;
+                } else {
+                    throw new ParsingException (string.Format ("Domain property '{0}' is declared multiple times", domprop.Identifier));
+                }
             }
             
             if (identifierAttribute == null && model.GoalModel.GetDomainPropertiesByName (domprop.Name).Count() == 1) {
-                var d2 = model.GoalModel.GetDomainPropertiesByName (domprop.Name).Single ();
-                d2.Merge (domprop);
-                return d2;
+                if (parsedDomProp.Override) {
+                    var d2 = model.GoalModel.GetDomainPropertiesByName (domprop.Name).Single ();
+                    d2.Merge (domprop);
+                    return d2;
+                } else {
+                    throw new ParsingException (string.Format ("Domain property '{0}' is declared multiple times", domprop.Name));
+                }
             }
 
             // Ensure that parsed domprop has the same identifer than the new one
@@ -255,15 +261,23 @@ namespace KAOSFormalTools.Parsing
             }
             
             if (model.GoalModel.DomainHypothesisExists (domHyp.Identifier)) {
-                var d2 = model.GoalModel.GetDomainHypothesisByIdentifier (domHyp.Identifier);
-                d2.Merge (domHyp);
-                return d2;
+                if (parsedDomHyp.Override) {
+                    var d2 = model.GoalModel.GetDomainHypothesisByIdentifier (domHyp.Identifier);
+                    d2.Merge (domHyp);
+                    return d2;
+                } else {
+                    throw new ParsingException (string.Format ("Domain hypothesis '{0}' is declared multiple times", domHyp.Identifier));
+                }
             }
             
             if (identifierAttribute == null && model.GoalModel.GetDomainHypothesesByName (domHyp.Name).Count() == 1) {
-                var d2 = model.GoalModel.GetDomainHypothesesByName (domHyp.Name).Single ();
-                d2.Merge (domHyp);
-                return d2;
+                if (parsedDomHyp.Override) {
+                    var d2 = model.GoalModel.GetDomainHypothesesByName (domHyp.Name).Single ();
+                    d2.Merge (domHyp);
+                    return d2;
+                } else {
+                    throw new ParsingException (string.Format ("Domain hypothesis '{0}' is declared multiple times", domHyp.Name));
+                }
             }
             
             // Ensure that parsed domhyp has the same identifer than the new one
@@ -301,15 +315,23 @@ namespace KAOSFormalTools.Parsing
             }
 
             if (model.GoalModel.ObstacleExists (obstacle.Identifier)) {
-                var o2 = model.GoalModel.GetObstacleByIdentifier (obstacle.Identifier);
-                o2.Merge (obstacle);
-                return o2;
+                if (parsedObstacle.Override) {
+                    var o2 = model.GoalModel.GetObstacleByIdentifier (obstacle.Identifier);
+                    o2.Merge (obstacle);
+                    return o2;
+                } else {
+                    throw new ParsingException (string.Format ("Obstacle '{0}' is declared multiple times", obstacle.Identifier));
+                }
             }
 
             if (identifierAttribute == null && model.GoalModel.GetObstaclesByName (obstacle.Name).Count() == 1) {
-                var o2 = model.GoalModel.GetObstaclesByName (obstacle.Name).Single ();
-                o2.Merge (obstacle);
-                return o2;
+                if (parsedObstacle.Override) {
+                    var o2 = model.GoalModel.GetObstaclesByName (obstacle.Name).Single ();
+                    o2.Merge (obstacle);
+                    return o2;
+                } else {
+                    throw new ParsingException (string.Format ("Obstacle '{0}' is declared multiple times", obstacle.Name));
+                }
             }
 
             // Ensure that parsed obstacle has the same identifer than the new one
@@ -344,8 +366,25 @@ namespace KAOSFormalTools.Parsing
                 }
             }
 
-            if (model.GoalModel.AgentExists (agent.Identifier))
-                throw new ParsingException (string.Format ("Identifier '{0}' is not unique", agent.Identifier));
+            if (model.GoalModel.AgentExists (agent.Identifier)) {
+                if (parsedAgent.Override) {
+                    var o2 = model.GoalModel.GetAgentByIdentifier (agent.Identifier);
+                    o2.Merge (agent);
+                    return o2;
+                } else {
+                    throw new ParsingException (string.Format ("Agent '{0}' is declared multiple times", agent.Identifier));
+                }
+            }
+            
+            if (identifierAttribute == null && model.GoalModel.GetAgentsByName (agent.Name).Count() == 1) {
+                if (parsedAgent.Override) {
+                    var o2 = model.GoalModel.GetAgentsByName (agent.Name).Single ();
+                    o2.Merge (agent);
+                    return o2;
+                } else {
+                    throw new ParsingException (string.Format ("Obstacle '{0}' is declared multiple times", agent.Name));
+                }
+            }   
             
             // Ensure that parsed agent has the same identifer than the new one
             // This is required for second pass, otherwise, entity could not be found
@@ -380,7 +419,10 @@ namespace KAOSFormalTools.Parsing
 
             if (model.Predicates.ContainsKey (predicate.Name))
                 throw new ParsingException (string.Format ("Predicate '{0}' is not unique", predicate.Name));
-            
+
+            if (parsedPredicate.Override)
+                throw new NotImplementedException ();
+
             model.Predicates.Add (predicate.Name, predicate);
             
             return predicate;
@@ -586,7 +628,7 @@ namespace KAOSFormalTools.Parsing
                     throw new ParsingException (string.Format ("Goal '{0}' not found", identifier));
             }
 
-            if (!parsedGoal.Override) {
+            if (parsedGoal.Override) {
                 foreach (var r in refinements)
                     goal.Refinements.Add (r);
                 foreach (var r in obstruction)

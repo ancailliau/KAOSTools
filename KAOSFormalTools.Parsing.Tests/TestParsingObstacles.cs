@@ -270,7 +270,7 @@ namespace KAOSFormalTools.Parsing.Tests
                             resolvedby old_goal
                         end
 
-                        declare obstacle
+                        override obstacle
                             id test
                             name ""new name""
                             definition ""new definition""

@@ -57,6 +57,9 @@ internal sealed partial class GoalModelParser
     private KAOSFormalTools.Parsing.Element BuildDomainProperty (List<Result> results)
     {
         var domprop = new KAOSFormalTools.Parsing.DomainProperty ();
+        if (results[0].Text == "override")
+            domprop.Override = true;
+
 
         for (int i = 1; i < results.Count; i++) {
             domprop.Attributes.Add (results[i].Value as KAOSFormalTools.Parsing.Attribute);
@@ -68,6 +71,9 @@ internal sealed partial class GoalModelParser
     private KAOSFormalTools.Parsing.Element BuildDomainHypothesis (List<Result> results)
     {
         var domhyp = new KAOSFormalTools.Parsing.DomainHypothesis ();
+        if (results[0].Text == "override")
+            domhyp.Override = true;
+
         
         for (int i = 1; i < results.Count; i++) {
             domhyp.Attributes.Add (results[i].Value as KAOSFormalTools.Parsing.Attribute);
@@ -92,6 +98,9 @@ internal sealed partial class GoalModelParser
     private KAOSFormalTools.Parsing.Element BuildObstacle (List<Result> results)
     {
         var obstacle = new KAOSFormalTools.Parsing.Obstacle ();
+        if (results[0].Text == "override")
+            obstacle.Override = true;
+
 
         for (int i = 1; i < results.Count; i++) {
             obstacle.Attributes.Add (results[i].Value as KAOSFormalTools.Parsing.Attribute);
@@ -103,6 +112,8 @@ internal sealed partial class GoalModelParser
     private KAOSFormalTools.Parsing.Element BuildAgent (List<Result> results)
     {
         var agent = new KAOSFormalTools.Parsing.Agent ();
+        if (results[0].Text == "override")
+            agent.Override = true;
 
         int start = 1;
         if (results[1].Text != "agent") {

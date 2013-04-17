@@ -97,7 +97,7 @@ namespace KAOSFormalTools.Parsing.Tests
                         definition ""old definition""
                     end
 
-                    declare domhyp
+                    override domhyp
                         id test
                         name ""new name""
                         definition ""new definition""
@@ -106,7 +106,7 @@ namespace KAOSFormalTools.Parsing.Tests
                         id test
                     end
 
-                    declare domhyp
+                    override domhyp
                         id test
                         name ""old name""
                         definition ""old definition""

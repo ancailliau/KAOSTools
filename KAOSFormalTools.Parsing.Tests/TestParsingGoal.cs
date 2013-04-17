@@ -123,49 +123,6 @@ namespace KAOSFormalTools.Parsing.Tests
             });
         }
 
-        [Test()]
-        public void TestOverride ()
-        {
-            var input = @"declare goal
-                            id test
-                            name ""old name""
-                            definition ""old definition""
-                            formalspec ""old""
-                            refinedby old_child1, old_child2
-                            obstructedby old_obstacle
-                            assignedto old_agent
-                        end
-
-                        override goal
-                            id test
-                            name ""new name""
-                            definition ""new definition""
-                            formalspec ""new""
-                            refinedby new_child1, new_child2
-                            obstructedby new_obstacle
-                            assignedto new_agent
-                        end";
-            
-            var model = parser.Parse (input);
-
-            var goal = model.GoalModel.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
-            goal.Name.ShallEqual ("new name");
-            goal.Definition.ShallEqual ("new definition");
-            goal.FormalSpec.ShallBeSuchThat (x => (x as LtlSharp.Proposition).Name == "new");
-            goal.Refinements.ShallBeSingle ()
-                .Children.Select (x => x.Identifier)
-                .ShallOnlyContain (new string[] { "new_child1", "new_child2" });
-
-            goal.Obstruction
-                .Select (x => x.Identifier)
-                .ShallOnlyContain (new string[] { "new_obstacle" });
-            
-            goal.AssignedAgents
-                .SelectMany (x => x.Agents)
-                .Select (x => x.Identifier)
-                .ShallOnlyContain (new string[] { "new_agent" });
-        }
-
         [TestCase(@"declare goal
                         id test
                         name ""old name""
@@ -176,7 +133,7 @@ namespace KAOSFormalTools.Parsing.Tests
                         assignedto old_agent
                     end
 
-                    declare goal
+                    override goal
                         id test
                         name ""new name""
                         definition ""new definition""
@@ -189,7 +146,7 @@ namespace KAOSFormalTools.Parsing.Tests
                         id test
                     end
 
-                    declare goal 
+                    override goal 
                         id test
                         name ""old name""
                         definition ""old definition""
@@ -199,7 +156,7 @@ namespace KAOSFormalTools.Parsing.Tests
                         assignedto old_agent
                     end
 
-                    declare goal
+                    override goal
                         id test
                         name ""new name""
                         definition ""new definition""
@@ -216,6 +173,10 @@ namespace KAOSFormalTools.Parsing.Tests
             goal.Name.ShallEqual ("old name");
             goal.Definition.ShallEqual ("old definition");
             goal.FormalSpec.ShallBeSuchThat (x => (x as LtlSharp.Proposition).Name == "old");
+
+            foreach (var r in goal.Refinements) {
+                Console.WriteLine (string.Join (",", r.Children.Select (x => x.Identifier)));
+            }
 
             goal.Refinements.ShallContain (y => y.Children.Select (x => x.Identifier)
                 .OnlyContains (new string[] { "old_child1", "old_child2" }));

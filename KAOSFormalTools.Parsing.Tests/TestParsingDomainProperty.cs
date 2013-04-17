@@ -111,7 +111,7 @@ namespace KAOSFormalTools.Parsing.Tests
                         formalspec ""old""
                     end
 
-                    declare domprop
+                    override domprop
                         id test
                         name ""new name""
                         definition ""new definition""
@@ -121,7 +121,7 @@ namespace KAOSFormalTools.Parsing.Tests
                         id test
                     end
 
-                    declare domprop
+                    override domprop
                         id test
                         name ""old name""
                         definition ""old definition""
