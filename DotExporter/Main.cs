@@ -5,10 +5,11 @@ using KAOSFormalTools.Parsing;
 using KAOSTools.MetaModel;
 using NDesk.Options;
 using System.Collections.Generic;
+using KAOSTools.Utils;
 
-namespace KAOSFormalTools.ModelDrawing
+namespace KAOSTools.DotExporter
 {
-    class MainClass
+    class MainClass : KAOSFormalToolsCLI
     {
         public static void Main (string[] args)
         {
@@ -22,44 +23,25 @@ namespace KAOSFormalTools.ModelDrawing
             bool   exportModel       = false;
             bool   show_help         = false;
             
-            var p = new OptionSet () {
-                { "o|output=", "File to use to store dot model",
-                    v => modelFilename = v },
-                { "all", "Export all model (override refinements, obstructions, responsibilities)",
-                    v => exportModel = true },
-                { "refinements=", "Refinements to output, give name or identifier for parent goal.",
-                    v => refinements = v },
-                { "obstructions=", "Obstruction trees to output, give name or identifier for obstructed goal.",
-                    v => obstructions = v },
-                { "responsibilities=", "Responsibilities to output, give name or identifier for goal.",
-                    v => responsibility = v },
-                { "resolutions=", "Resolutions to output, give name or identifier for obstacle.",
-                    v => resolutions = v },
-                { "h|help",  "show this message and exit", 
-                    v => show_help = true },
-            };
+            options.Add ("o|output=", "File to use to store dot model",
+                         v => modelFilename = v );
+            options.Add ("all", "Export all model (override refinements, obstructions, responsibilities)",
+                         v => exportModel = true  );
+            options.Add ("refinements=", "Refinements to output, give name or identifier for parent goal.",
+                         v => refinements = v  );
+            options.Add ("obstructions=", "Obstruction trees to output, give name or identifier for obstructed goal.",
+                         v => obstructions = v  );
+            options.Add ("responsibilities=", "Responsibilities to output, give name or identifier for goal.",
+                         v => responsibility = v  );
+            options.Add ("resolutions=", "Resolutions to output, give name or identifier for obstacle.",
+                         v => resolutions = v  );
+            options.Add ("h|help",  "show this message and exit", 
+                         v => show_help = true  );
 
-            List<string> r;
-            try {
-                r = p.Parse (args);
-                
-            } catch (OptionException e) {
-                PrintError (e.Message);
-                return;
-            }
 
-            if (show_help) {
-                ShowHelp (p);
-                return;
-            }
+            Init (args);
 
-            if (r.Count == 0 || string.IsNullOrEmpty (r[0]) || !File.Exists (r[0])) {
-                ShowHelp (p);
-                return;
-            }
-
-            var model = BuildModel (r[0]);
-            var exporter = new DotExporter (model, !string.IsNullOrEmpty (modelFilename) ? new StreamWriter (modelFilename) : Console.Out);
+            var exporter = new DotExport (model, !string.IsNullOrEmpty (modelFilename) ? new StreamWriter (modelFilename) : Console.Out);
 
             if (exportModel) {
                 exporter.ExportModel ();
@@ -164,29 +146,6 @@ namespace KAOSFormalTools.ModelDrawing
             }
 
             exporter.Close ();
-        }
-
-        static GoalModel BuildModel (string filename)
-        {
-            var parser = new KAOSFormalTools.Parsing.Parser ();
-            return parser.Parse (File.ReadAllText (filename)).GoalModel;
-        }
-
-        static void ShowHelp (OptionSet p)
-        {
-            Console.WriteLine ("Usage: KAOSFormalTools.ModelDrawing MODEL");
-            Console.WriteLine ();
-            Console.WriteLine ("Options:");
-            p.WriteOptionDescriptions (Console.Out);
-        }
-        
-        static void PrintError (string error)
-        {  
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Error.Write ("ltlsharp: ");
-            Console.Error.WriteLine (error);
-            Console.Error.WriteLine ("Try `KAOSFormalTools.ModelDrawing --help' for more information.");
-            Console.ResetColor ();
         }
     }
 }

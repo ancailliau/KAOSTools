@@ -4,14 +4,14 @@ using KAOSTools.MetaModel;
 using System.IO;
 using System.Text;
 
-namespace KAOSFormalTools.ModelDrawing
+namespace KAOSTools.DotExporter
 {
-    public class DotExporter
+    public class DotExport
     {
         private readonly GoalModel model;
         private readonly TextWriter writer;
 
-        public DotExporter (GoalModel model, TextWriter writer)
+        public DotExport (GoalModel model, TextWriter writer)
         {
             this.model = model;
             this.writer = writer;

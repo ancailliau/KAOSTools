@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{B868C8DA-65E4-4BF2-BAFA-3EEF9C84227F}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>KAOSFormalTools.ModelDrawing</RootNamespace>
-    <AssemblyName>KAOSFormalTools.ModelDrawing</AssemblyName>
+    <RootNamespace>KAOSTools.DotExporter</RootNamespace>
+    <AssemblyName>KAOSTools.DotExporter</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -38,7 +38,7 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="DotExporter.cs" />
+    <Compile Include="DotExport.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -49,6 +49,10 @@
     <ProjectReference Include="..\MetaModel\MetaModel.csproj">
       <Project>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</Project>
       <Name>MetaModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utils\Utils.csproj">
+      <Project>{C96BDFB0-950D-4DF0-9BFB-27EA7C8CABD3}</Project>
+      <Name>Utils</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>
