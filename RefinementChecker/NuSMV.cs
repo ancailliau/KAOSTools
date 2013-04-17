@@ -3,7 +3,7 @@ using System.IO;
 using KAOSTools.MetaModel;
 using System.Text.RegularExpressions;
 
-namespace KAOSFormalTools.RefinementChecker
+namespace KAOSTools.RefinementChecker
 {
     public static class NuSMVExtensions
     {

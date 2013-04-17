@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LtlSharp.Utils;
 
-namespace KAOSFormalTools.RefinementChecker
+namespace KAOSTools.RefinementChecker
 {
     public class ProofObligation
     {

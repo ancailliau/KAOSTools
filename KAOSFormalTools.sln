@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.RefinementChecker", "KAOSFormalTools.RefinementChecker\KAOSFormalTools.RefinementChecker.csproj", "{81A27423-89EF-44D7-AB41-988C75E084D9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RefinementChecker", "RefinementChecker\RefinementChecker.csproj", "{81A27423-89EF-44D7-AB41-988C75E084D9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaModel", "MetaModel\MetaModel.csproj", "{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}"
 EndProject
@@ -136,7 +136,7 @@ Global
 		{20921B4C-B76A-4236-89B1-F5FFD025000B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = KAOSFormalTools.RefinementChecker\KAOSFormalTools.RefinementChecker.csproj
+		StartupItem = KAOSFormalTools.RefinementChecker\RefinementChecker.csproj
 		Policies = $0
 		$0.TextStylePolicy = $1
 		$1.FileWidth = 120

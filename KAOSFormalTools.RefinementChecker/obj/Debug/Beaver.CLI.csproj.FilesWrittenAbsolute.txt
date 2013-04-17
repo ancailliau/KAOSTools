@@ -1,4 +1,0 @@
-/Users/acailliau/Projects/Beaver/Beaver.CLI/bin/Debug/Beaver.CLI.exe.mdb
-/Users/acailliau/Projects/Beaver/Beaver.CLI/bin/Debug/Beaver.CLI.exe
-/Users/acailliau/Projects/Beaver/Beaver.CLI/obj/Debug/Beaver.CLI.exe
-/Users/acailliau/Projects/Beaver/Beaver.CLI/obj/Debug/Beaver.CLI.exe.mdb

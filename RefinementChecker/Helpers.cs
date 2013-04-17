@@ -5,7 +5,7 @@ using LtlSharp.Utils;
 using KAOSTools.MetaModel;
 using LtlSharp;
 
-namespace KAOSFormalTools.RefinementChecker
+namespace KAOSTools.RefinementChecker
 {
     public static class Helpers
     {
