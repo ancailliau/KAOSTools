@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.TextExporte
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.LatexExporter", "KAOSFormalTools.LatexExporter\KAOSFormalTools.LatexExporter.csproj", "{C1574D44-EB4F-4C2B-9F83-4DDC25AEC275}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSFormalTools.Executable", "KAOSFormalTools.Executable\KAOSFormalTools.Executable.csproj", "{C96BDFB0-950D-4DF0-9BFB-27EA7C8CABD3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "Utils\Utils.csproj", "{C96BDFB0-950D-4DF0-9BFB-27EA7C8CABD3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaModel.Tests", "MetaModel.Tests\MetaModel.Tests.csproj", "{785D5DDF-8D86-485E-84C6-E429FC6CADE1}"
 EndProject

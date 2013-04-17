@@ -4,7 +4,7 @@ using KAOSTools.MetaModel;
 using System.Collections.Generic;
 using System.IO;
 
-namespace KAOSFormalTools.Executable
+namespace KAOSTools.Utils
 {
     public abstract class KAOSFormalToolsCLI
     {

@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using NDesk.Options;
 using KAOSTools.MetaModel;
-using KAOSFormalTools.Executable;
+using KAOSTools.Utils;
 using KAOSFormalTools.OmnigraffleExport.Omnigraffle;
 
 namespace KAOSFormalTools.OmnigraffleExport

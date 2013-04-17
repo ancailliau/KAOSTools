@@ -49,7 +49,7 @@
     <None Include="GoalModelParser.peg" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\KAOSFormalTools.Domain\MetaModel.csproj">
+    <ProjectReference Include="..\MetaModel\MetaModel.csproj">
       <Project>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</Project>
       <Name>MetaModel</Name>
     </ProjectReference>
