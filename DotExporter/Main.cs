@@ -41,7 +41,7 @@ namespace KAOSTools.DotExporter
 
             Init (args);
 
-            var exporter = new DotExport (model, !string.IsNullOrEmpty (modelFilename) ? new StreamWriter (modelFilename) : Console.Out);
+            var exporter = new DotExport (model.GoalModel, !string.IsNullOrEmpty (modelFilename) ? new StreamWriter (modelFilename) : Console.Out);
 
             if (exportModel) {
                 exporter.ExportModel ();
@@ -53,10 +53,10 @@ namespace KAOSTools.DotExporter
                 var fds = refinements.Split (',');
                 foreach (var gname in fds) {
                     var name = gname.Trim ();
-                    var goals = model.Goals.Where (g => g.Identifier == name);
+                    var goals = model.GoalModel.Goals.Where (g => g.Identifier == name);
 
                     if (goals.Count () == 0) {
-                        goals = model.Goals.Where (g => g.Name == name);
+                        goals = model.GoalModel.Goals.Where (g => g.Name == name);
 
                         if (goals.Count () == 0) {
                             PrintError (string.Format ("Could not find goal '{0}'", refinements));
@@ -85,7 +85,7 @@ namespace KAOSTools.DotExporter
                 var resolvedObstacles = resolutions.Split (',');
                 foreach (var obstacleName in resolvedObstacles) {
                     var name = obstacleName.Trim ();
-                    var obstacles = model.Obstacles.Where (g => g.Name == name);
+                    var obstacles = model.GoalModel.Obstacles.Where (g => g.Name == name);
                     
                     if (obstacles.Count () == 0) {
                         PrintError (string.Format ("Could not find obstacle '{0}'", obstacleName));
@@ -106,7 +106,7 @@ namespace KAOSTools.DotExporter
                 var fds = obstructions.Split (',');
                 foreach (var gname in fds) {
                     var name = gname.Trim ();
-                    var goals = model.Goals.Where (g => g.Name == name);
+                    var goals = model.GoalModel.Goals.Where (g => g.Name == name);
 
                     if (goals.Count () == 0) {
                         PrintError (string.Format ("Could not find goal '{0}'", refinements));
@@ -127,7 +127,7 @@ namespace KAOSTools.DotExporter
                 var fds = responsibility.Split (',');
                 foreach (var gname in fds) {
                     var name = gname.Trim ();
-                    var goals = model.Goals.Where (g => g.Name == name);
+                    var goals = model.GoalModel.Goals.Where (g => g.Name == name);
 
                     if (goals.Count () == 0) {
                         PrintError (string.Format ("Could not find goal '{0}'", refinements));

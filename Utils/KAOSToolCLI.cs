@@ -11,7 +11,7 @@ namespace KAOSTools.Utils
         protected static OptionSet options = new OptionSet ();
         protected static string input;
         protected static string filename;
-        protected static GoalModel model;
+        protected static KAOSModel model;
 
         protected static void Init (string[] args)
         {
@@ -52,14 +52,15 @@ namespace KAOSTools.Utils
             }
 
             model = BuildModel ();
+
             var h = new AlternativeHelpers();
-            h.ComputeInAlternatives (model);
+            h.ComputeInAlternatives (model.GoalModel);
         }
         
-        protected static GoalModel BuildModel ()
+        protected static KAOSModel BuildModel ()
         {
             var parser = new KAOSTools.Parsing.Parser ();
-            return parser.Parse (input, filename).GoalModel;
+            return parser.Parse (input, filename);
         }
         
         protected static void ShowHelp (OptionSet p)

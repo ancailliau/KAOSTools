@@ -39,13 +39,13 @@ namespace KAOSTools.OmnigraffleExport
 
             var document   = new Omnigraffle.Document ();
 
-            ExportIdealGoalModel (model, document);
-            ExportObstacles (model, document);
-            ExportResolutionsGoalModel (model, document);
-            ExportResponsibilities (model, document);
+            ExportIdealGoalModel (model.GoalModel, document);
+            ExportObstacles (model.GoalModel, document);
+            ExportResolutionsGoalModel (model.GoalModel, document);
+            ExportResponsibilities (model.GoalModel, document);
 
             if (experimental)
-                ExportExperimentalDiagrams (model, document);
+                ExportExperimentalDiagrams (model.GoalModel, document);
 
             if (string.IsNullOrEmpty (filename)) 
                 OmniGraffleGenerator.Export (document, Console.Out);

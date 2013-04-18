@@ -41,20 +41,20 @@ namespace KAOSTools.RefinementChecker
                     var obstructedGoalNames = obstacles.Split (',');
                     foreach (var untrimmedName in obstructedGoalNames) {
                         var name = untrimmedName.Trim ();
-                        var goals = model.Goals.Where (x => x.Name == name);
+                        var goals = model.GoalModel.Goals.Where (x => x.Name == name);
                         g.AddRange (goals);
                     }
 
-                    generator = new ProofObligationGenerator (model, null, g);
+                    generator = new ProofObligationGenerator (model.GoalModel, null, g);
                 } else {
-                    generator = new ProofObligationGenerator (model);
+                    generator = new ProofObligationGenerator (model.GoalModel);
                 }
 
                 if (!string.IsNullOrEmpty (nusmvModel)) {
-                    model.InterpretNuSMVOutput (nusmvModel, generator, verbose);
+                    model.GoalModel.InterpretNuSMVOutput (nusmvModel, generator, verbose);
 
                 } else {
-                    model.WriteNuSMVModel (nusmvOutput, generator);
+                    model.GoalModel.WriteNuSMVModel (nusmvOutput, generator);
                 }
             } catch (Exception e) {
                 PrintError (e.Message);
