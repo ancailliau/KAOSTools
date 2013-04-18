@@ -105,7 +105,7 @@ namespace KAOSTools.OmnigraffleExport
         static void ExportResponsibilities (GoalModel model, KAOSTools.OmnigraffleExport.Omnigraffle.Document document)
         {
             foreach (var agent in model.Agents) {
-                var agentCanvas = new Omnigraffle.Sheet (1, string.Format ("Responsibilities for {0}", agent.Name));
+                var agentCanvas = new Omnigraffle.Sheet (1, string.Format ("{0} responsibilities", agent.Name));
                 agentCanvas.LayoutInfo.LayoutEngine = KAOSTools.OmnigraffleExport.Omnigraffle.LayoutEngine.Twopi;
                 agentCanvas.LayoutInfo.TwopiOverlap = true;
                 agentCanvas.LayoutInfo.TwopiRankSep = 100;
