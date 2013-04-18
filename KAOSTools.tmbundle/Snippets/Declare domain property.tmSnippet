@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>content</key>
+	<string>declare domprop
+	$1
+end</string>
+	<key>name</key>
+	<string>Declare domain property</string>
+	<key>tabTrigger</key>
+	<string>ddom</string>
+	<key>uuid</key>
+	<string>FB119045-DC4F-49EE-BAEF-CCAE313D1F3E</string>
+</dict>
+</plist>
