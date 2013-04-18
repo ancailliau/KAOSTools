@@ -16,13 +16,13 @@
 	<array>
 		<dict>
 			<key>match</key>
-			<string>\b(declare|end)\b</string>
+			<string>\b(declare|override|end)\b</string>
 			<key>name</key>
 			<string>keyword.control.kaos</string>
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>\b(refinedby|definition|name|import|id|assignedto)\b</string>
+			<string>\b(refinedby|definition|name|import|id|assignedto|formalspec)\b</string>
 			<key>name</key>
 			<string>constant.other.kaos</string>
 		</dict>
