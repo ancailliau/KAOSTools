@@ -22,7 +22,7 @@
 		</dict>
 		<dict>
 			<key>match</key>
-			<string>\b(refinedby|definition|name|import|id|assignedto|formalspec)\b</string>
+			<string>\b(refinedby|definition|name|import|id|assignedto|formalspec|signature)\b</string>
 			<key>name</key>
 			<string>constant.other.kaos</string>
 		</dict>
