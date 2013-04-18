@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using NDesk.Options;
 using KAOSTools.MetaModel;
 
-namespace KAOSTools.ModelChecker
+namespace KAOSTools.ModelAnalyzer
 {
     class MainClass
     {
@@ -187,7 +187,7 @@ namespace KAOSTools.ModelChecker
 
         static void ShowHelp (OptionSet p)
         {
-            Console.WriteLine ("Usage: KAOSTools.ModelChecker model");
+            Console.WriteLine ("Usage: KAOSTools.ModelAnalyzer model");
             Console.WriteLine ();
             Console.WriteLine ("Options:");
             p.WriteOptionDescriptions (Console.Out);
@@ -196,9 +196,9 @@ namespace KAOSTools.ModelChecker
         static void PrintError (string error)
         {  
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.Error.Write ("KAOSTools.ModelChecker: ");
+            Console.Error.Write ("KAOSTools.ModelAnalyzer: ");
             Console.Error.WriteLine (error);
-            Console.Error.WriteLine ("Try `KAOSTools.ModelChecker --help' for more information.");
+            Console.Error.WriteLine ("Try `KAOSTools.ModelAnalyzer --help' for more information.");
             Console.ResetColor ();
         }
     }

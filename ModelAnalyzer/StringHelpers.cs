@@ -1,6 +1,6 @@
 using System;
 
-namespace KAOSTools.ModelChecker
+namespace KAOSTools.ModelAnalyzer
 {
     using System;
 

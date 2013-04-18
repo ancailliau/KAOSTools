@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parsing", "Parsing\Parsing.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parsing.Tests", "Parsing.Tests\Parsing.Tests.csproj", "{283D3679-A09D-4FDC-AB94-2B55A0C4493A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelChecker", "ModelChecker\ModelChecker.csproj", "{6ABA53F3-9825-461F-9945-04735EFCEF14}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelAnalyzer", "ModelAnalyzer\ModelAnalyzer.csproj", "{6ABA53F3-9825-461F-9945-04735EFCEF14}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotExporter", "DotExporter\DotExporter.csproj", "{B868C8DA-65E4-4BF2-BAFA-3EEF9C84227F}"
 EndProject
