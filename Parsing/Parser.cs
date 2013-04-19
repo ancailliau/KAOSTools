@@ -775,6 +775,8 @@ namespace KAOSTools.Parsing
                             Name = (attribute as Name).Value
                         };
                         model.GoalModel.Obstacles.Add (candidate);
+                        Declarations.Add (candidate, new List<Declaration> { new Declaration (attribute.Line, attribute.Col, attribute.Filename) });
+
                     } else {
                         throw new ParsingException (string.Format ("Obstacle '{0}' could not be found", (attribute as Name).Value));
                     }
@@ -795,6 +797,7 @@ namespace KAOSTools.Parsing
                             Identifier = (attribute as Identifier).Value
                         };
                         model.GoalModel.Obstacles.Add (candidate);
+                        Declarations.Add (candidate, new List<Declaration> { new Declaration (attribute.Line, attribute.Col, attribute.Filename) });
                     } else {
                         throw new ParsingException (string.Format ("Obstacle '{0}' could not be found", (attribute as Identifier).Value));
                     }
@@ -820,7 +823,8 @@ namespace KAOSTools.Parsing
 
             } else if (attribute is Identifier) {
                 var identifier = (attribute as Identifier).Value;
-                return model.GoalModel.GetDomainPropertyByIdentifier (identifier);
+                var candidate = model.GoalModel.GetDomainPropertyByIdentifier (identifier);
+                return candidate;
             }
 
             return null;
@@ -862,6 +866,8 @@ namespace KAOSTools.Parsing
                                 Name = (attribute as Name).Value
                             };
                             model.GoalModel.Goals.Add (candidate);
+                            Declarations.Add (candidate, new List<Declaration> { new Declaration (attribute.Line, attribute.Col, attribute.Filename) });
+
                         } else {
                             throw new ParsingException (string.Format ("Goal '{0}' could not be found", (attribute as Name).Value));
                         }
@@ -882,6 +888,8 @@ namespace KAOSTools.Parsing
                             Identifier = (attribute as Identifier).Value
                         };
                         model.GoalModel.Goals.Add (candidate);
+                        Declarations.Add (candidate, new List<Declaration> { new Declaration (attribute.Line, attribute.Col, attribute.Filename) });
+
                     } else {
                         throw new ParsingException (string.Format ("Goal '{0}' could not be found", (attribute as Identifier).Value));
                     }
@@ -905,6 +913,8 @@ namespace KAOSTools.Parsing
                             Name = (attribute as Name).Value
                         };
                         model.GoalModel.Agents.Add (candidate);
+                        Declarations.Add (candidate, new List<Declaration> { new Declaration (attribute.Line, attribute.Col, attribute.Filename) });
+
                     } else {
                         throw new ParsingException (string.Format ("Agent '{0}' could not be found", (attribute as Name).Value));
                     }
@@ -925,6 +935,8 @@ namespace KAOSTools.Parsing
                             Identifier = (attribute as Identifier).Value
                         };
                         model.GoalModel.Agents.Add (candidate);
+                        Declarations.Add (candidate, new List<Declaration> { new Declaration (attribute.Line, attribute.Col, attribute.Filename) });
+
                     } else {
                         throw new ParsingException (string.Format ("Agent '{0}' could not be found", (attribute as Identifier).Value));
                     }
@@ -948,6 +960,8 @@ namespace KAOSTools.Parsing
                             Name = (attribute as Name).Value
                         };
                         model.GoalModel.Systems.Add (candidate);
+                        Declarations.Add (candidate, new List<Declaration> { new Declaration (attribute.Line, attribute.Col, attribute.Filename) });
+
                     } else {
                         throw new ParsingException (string.Format ("Alternative '{0}' could not be found", (attribute as Name).Value));
                     }
@@ -968,6 +982,7 @@ namespace KAOSTools.Parsing
                             Identifier = (attribute as Identifier).Value
                         };
                         model.GoalModel.Systems.Add (candidate);
+                        Declarations.Add (candidate, new List<Declaration> { new Declaration (attribute.Line, attribute.Col, attribute.Filename) });
 
                     } else {
                         throw new ParsingException (string.Format ("Alternative '{0}' could not be found", (attribute as Identifier).Value));
