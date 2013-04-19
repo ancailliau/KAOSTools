@@ -27,7 +27,17 @@ namespace KAOSTools.ReportGenerator
             Console.WriteLine ("<body>");
 
             Console.WriteLine ("<div class=\"container\">");
-            Console.WriteLine ("<h1>Predicates definitions</h1>");
+
+            Console.WriteLine ("<h2>Goals definitions</h2>");
+            
+            foreach (var goal in model.GoalModel.Goals.OrderBy (x => x.Name)) {
+                Console.WriteLine ("<dt>{0} (<code>{1}</code>)</dt>", goal.Name, goal.Identifier);
+                Console.WriteLine ("<dd>");
+                Console.WriteLine ("<p><strong>Definition</strong> {0}<p>", goal.Definition);
+                Console.WriteLine ("</dd>");
+            }
+
+            Console.WriteLine ("<h2>Predicates definitions</h2>");
 
             foreach (var predicate in model.Predicates.Values.OrderBy (x => x.Name)) {
                 Console.WriteLine ("<dt>{0} (<code>{1}</code>)</dt>", predicate.Name, predicate.Signature);
