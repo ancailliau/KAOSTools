@@ -213,6 +213,8 @@ namespace KAOSTools.MetaModel
 
     public class Predicate : KAOSMetaModelElement
     {
+        public string Identifier  { get; set; }
+
         public string Name {
             get;
             set;
@@ -231,6 +233,11 @@ namespace KAOSTools.MetaModel
         public string FormalSpec {
             get;
             set;
+        }
+
+        public Predicate ()
+        {
+            Identifier   = Guid.NewGuid ().ToString ();
         }
     }
 }
