@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using KAOSTools.Parsing;
 using KAOSTools.MetaModel;
+using System.Text.RegularExpressions;
 
 namespace KAOSTools.Parsing
 {
@@ -116,7 +117,8 @@ namespace KAOSTools.Parsing
                     alternative.Name = (attribute as Name).Value;
                     
                 } else if (attribute is Description) {
-                    alternative.Description = (attribute as Description).Value;
+                    alternative.Description = Regex.Replace((attribute as Description).Value,
+                                                            @"\s+", " ", RegexOptions.Multiline).Trim ();
                     
                 }
             }
@@ -163,7 +165,8 @@ namespace KAOSTools.Parsing
                     goal.FormalSpec = (attribute as FormalSpec).Value;
                 
                 } else if (attribute is Definition) {
-                    goal.Definition = (attribute as Definition).Value;
+                    goal.Definition = Regex.Replace((attribute as Definition).Value,
+                                                    @"\s+", " ", RegexOptions.Multiline).Trim ();
 
                 } else if (attribute is RDS) {
                     goal.RDS = (attribute as RDS).Value;
@@ -226,7 +229,8 @@ namespace KAOSTools.Parsing
                     domprop.FormalSpec = (attr as FormalSpec).Value;
 
                 } else if (attr is Definition) {
-                    domprop.Definition = (attr as Definition).Value;
+                    domprop.Definition = Regex.Replace((attr as Definition).Value,
+                                                       @"\s+", " ", RegexOptions.Multiline).Trim ();
 
                 } else if (attr is Probability) {
                     domprop.EPS = (attr as Probability).Value;
@@ -286,7 +290,8 @@ namespace KAOSTools.Parsing
                     domHyp.Name = (attr as Name).Value;
 
                 } else if (attr is Definition) {
-                    domHyp.Definition = (attr as Definition).Value;
+                    domHyp.Definition = Regex.Replace((attr as Definition).Value,
+                                                      @"\s+", " ", RegexOptions.Multiline).Trim ();
 
                 }
             }
@@ -347,7 +352,8 @@ namespace KAOSTools.Parsing
                     obstacle.FormalSpec = (attr as FormalSpec).Value;
 
                 } else if (attr is Definition) {
-                    obstacle.Definition = (attr as Definition).Value;
+                    obstacle.Definition = Regex.Replace((attr as Definition).Value,
+                                                        @"\s+", " ", RegexOptions.Multiline).Trim ();
 
                 } else if (attr is Probability) {
                     obstacle.EPS = (attr as Probability).Value;
@@ -411,7 +417,8 @@ namespace KAOSTools.Parsing
                 } else if (attr is Name) {
                     agent.Name = (attr as Name).Value;
                 } else if (attr is Description) {
-                    agent.Description = (attr as Description).Value;
+                    agent.Description = Regex.Replace((attr as Description).Value,
+                                                      @"\s+", " ", RegexOptions.Multiline).Trim ();
                 }
             }
 
@@ -464,7 +471,8 @@ namespace KAOSTools.Parsing
                 if (attr is Name) {
                     predicate.Name = (attr as Name).Value;
                 } else if (attr is Definition) {
-                    predicate.Definition = (attr as Definition).Value;
+                    predicate.Definition = Regex.Replace((attr as Definition).Value,
+                                                         @"\s+", " ", RegexOptions.Multiline).Trim ();
                 } else if (attr is StringFormalSpec) {
                     predicate.FormalSpec = (attr as StringFormalSpec).Value;
                 } else if (attr is Signature) {
