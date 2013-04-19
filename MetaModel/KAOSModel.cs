@@ -28,29 +28,5 @@ namespace KAOSTools.MetaModel
             this.Predicates = new Dictionary<string, Predicate> ();
         }
     }
-
-    public class Predicate
-    {
-        public string Name {
-            get;
-            set;
-        }
-
-        public string Definition {
-            get;
-            set;
-        }
-        
-        public string Signature {
-            get;
-            set;
-        }
-
-        public string FormalSpec {
-            get;
-            set;
-        }
-    }
-
 }
 

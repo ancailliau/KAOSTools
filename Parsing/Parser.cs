@@ -6,16 +6,29 @@ using KAOSTools.MetaModel;
 
 namespace KAOSTools.Parsing
 {
+    public class Declaration
+    {
+        public int    Line     { get; set; }
+        public int    Col      { get; set; }
+        public string Filename { get; set; }
+        public Declaration (int line, int col, string filename)
+        {
+            this.Line = line; this.Col = col; this.Filename = filename;   
+        }
+    }
+
     public class Parser
     {
         private GoalModelParser _parser = new GoalModelParser ();
         private KAOSModel model;
+        public IDictionary<KAOSMetaModelElement, IList<Declaration>> Declarations;
 
         public Parser (){}
 
         public KAOSModel Parse (string input, string filename, KAOSModel model)
         {
             Elements elements = null;
+            Declarations = new Dictionary<KAOSMetaModelElement, IList<Declaration>> ();
 
             try {
                 elements = _parser.Parse (input, filename) as Elements;    
@@ -160,20 +173,28 @@ namespace KAOSTools.Parsing
             if (model.GoalModel.GoalExists (goal.Identifier)) {
                 var g2 = model.GoalModel.GetGoalByIdentifier (goal.Identifier);
                 if (parsedGoal.Override) {
+                    Declarations[g2].Add (new Declaration (parsedGoal.Line, parsedGoal.Col, parsedGoal.Filename));
                     g2.Merge (goal);
                     return g2;
                 } else {
-                    throw new ParsingException (string.Format ("Goal '{0}' is declared multiple times", goal.Identifier));
+                    var declaration = Declarations [g2].First ();
+                    throw new DuplicateDeclarationException (string.Format ("Goal '{0}'", goal.Identifier),
+                                                             declaration.Filename, declaration.Line, declaration.Col,
+                                                             parsedGoal.Filename, parsedGoal.Line, parsedGoal.Col);
                 }
             }
             
             if (identifierAttribute == null && model.GoalModel.GetGoalsByName (goal.Name).Count() == 1) {
                 var g2 = model.GoalModel.GetGoalsByName (goal.Name).Single ();
                 if (parsedGoal.Override) {
+                    Declarations[g2].Add (new Declaration (parsedGoal.Line, parsedGoal.Col, parsedGoal.Filename));
                     g2.Merge (goal);
                     return g2;
                 } else {
-                    throw new ParsingException (string.Format ("Goal '{0}' is declared multiple times", goal.Name));
+                    var declaration = Declarations [g2].First ();
+                    throw new DuplicateDeclarationException (string.Format ("Goal '{0}'", goal.Name),
+                                                               declaration.Filename, declaration.Line, declaration.Col,
+                                                               parsedGoal.Filename, parsedGoal.Line, parsedGoal.Col);
                 }
             }
 
@@ -183,6 +204,7 @@ namespace KAOSTools.Parsing
                 parsedGoal.Attributes.Add (new Identifier (goal.Identifier));
 
             model.GoalModel.Goals.Add (goal);
+            Declarations.Add (goal, new List<Declaration> { new Declaration (parsedGoal.Line, parsedGoal.Col, parsedGoal.Filename) });
 
             return goal;
         }
@@ -212,22 +234,30 @@ namespace KAOSTools.Parsing
             }
 
             if (model.GoalModel.DomainPropertyExists (domprop.Identifier)) {
+                var d2 = model.GoalModel.GetDomainPropertyByIdentifier (domprop.Identifier);
                 if (parsedDomProp.Override) {
-                    var d2 = model.GoalModel.GetDomainPropertyByIdentifier (domprop.Identifier);
+                    Declarations[d2].Add (new Declaration (parsedDomProp.Line, parsedDomProp.Col, parsedDomProp.Filename));
                     d2.Merge (domprop);
                     return d2;
                 } else {
-                    throw new ParsingException (string.Format ("Domain property '{0}' is declared multiple times", domprop.Identifier));
+                    var declaration = Declarations [d2].First ();
+                    throw new DuplicateDeclarationException (string.Format ("Domain property '{0}'", domprop.Identifier),
+                                                             declaration.Filename, declaration.Line, declaration.Col,
+                                                             parsedDomProp.Filename, parsedDomProp.Line, parsedDomProp.Col);
                 }
             }
             
             if (identifierAttribute == null && model.GoalModel.GetDomainPropertiesByName (domprop.Name).Count() == 1) {
+                var d2 = model.GoalModel.GetDomainPropertiesByName (domprop.Name).Single ();
                 if (parsedDomProp.Override) {
-                    var d2 = model.GoalModel.GetDomainPropertiesByName (domprop.Name).Single ();
+                    Declarations[d2].Add (new Declaration (parsedDomProp.Line, parsedDomProp.Col, parsedDomProp.Filename));
                     d2.Merge (domprop);
                     return d2;
                 } else {
-                    throw new ParsingException (string.Format ("Domain property '{0}' is declared multiple times", domprop.Name));
+                    var declaration = Declarations [d2].First ();
+                    throw new DuplicateDeclarationException (string.Format ("Domain property '{0}'", domprop.Name),
+                                                             declaration.Filename, declaration.Line, declaration.Col,
+                                                             parsedDomProp.Filename, parsedDomProp.Line, parsedDomProp.Col);
                 }
             }
 
@@ -237,6 +267,7 @@ namespace KAOSTools.Parsing
                 parsedDomProp.Attributes.Add (new Identifier (domprop.Identifier));
 
             model.GoalModel.DomainProperties.Add (domprop);
+            Declarations.Add (domprop, new List<Declaration> { new Declaration (parsedDomProp.Line, parsedDomProp.Col, parsedDomProp.Filename) });
 
             return domprop;
         }
@@ -261,22 +292,30 @@ namespace KAOSTools.Parsing
             }
             
             if (model.GoalModel.DomainHypothesisExists (domHyp.Identifier)) {
+                var d2 = model.GoalModel.GetDomainHypothesisByIdentifier (domHyp.Identifier);
                 if (parsedDomHyp.Override) {
-                    var d2 = model.GoalModel.GetDomainHypothesisByIdentifier (domHyp.Identifier);
+                    Declarations[d2].Add (new Declaration (parsedDomHyp.Line, parsedDomHyp.Col, parsedDomHyp.Filename));
                     d2.Merge (domHyp);
                     return d2;
                 } else {
-                    throw new ParsingException (string.Format ("Domain hypothesis '{0}' is declared multiple times", domHyp.Identifier));
+                    var declaration = Declarations [d2].First ();
+                    throw new DuplicateDeclarationException (string.Format ("Domain hypothesis '{0}'", domHyp.Identifier),
+                                                             declaration.Filename, declaration.Line, declaration.Col,
+                                                             parsedDomHyp.Filename, parsedDomHyp.Line, parsedDomHyp.Col);
                 }
             }
             
             if (identifierAttribute == null && model.GoalModel.GetDomainHypothesesByName (domHyp.Name).Count() == 1) {
+                var d2 = model.GoalModel.GetDomainHypothesesByName (domHyp.Name).Single ();
                 if (parsedDomHyp.Override) {
-                    var d2 = model.GoalModel.GetDomainHypothesesByName (domHyp.Name).Single ();
+                    Declarations[d2].Add (new Declaration (parsedDomHyp.Line, parsedDomHyp.Col, parsedDomHyp.Filename));
                     d2.Merge (domHyp);
                     return d2;
                 } else {
-                    throw new ParsingException (string.Format ("Domain hypothesis '{0}' is declared multiple times", domHyp.Name));
+                    var declaration = Declarations [d2].First ();
+                    throw new DuplicateDeclarationException (string.Format ("Domain hypothesis '{0}'", domHyp.Name),
+                                                             declaration.Filename, declaration.Line, declaration.Col,
+                                                             parsedDomHyp.Filename, parsedDomHyp.Line, parsedDomHyp.Col);
                 }
             }
             
@@ -286,7 +325,8 @@ namespace KAOSTools.Parsing
                 parsedDomHyp.Attributes.Add (new Identifier (domHyp.Identifier));
             
             model.GoalModel.DomainHypotheses.Add (domHyp);
-            
+            Declarations.Add (domHyp, new List<Declaration> { new Declaration (parsedDomHyp.Line, parsedDomHyp.Col, parsedDomHyp.Filename) });
+
             return domHyp;
         }
 
@@ -315,22 +355,30 @@ namespace KAOSTools.Parsing
             }
 
             if (model.GoalModel.ObstacleExists (obstacle.Identifier)) {
+                var o2 = model.GoalModel.GetObstacleByIdentifier (obstacle.Identifier);
                 if (parsedObstacle.Override) {
-                    var o2 = model.GoalModel.GetObstacleByIdentifier (obstacle.Identifier);
+                    Declarations[o2].Add (new Declaration (parsedObstacle.Line, parsedObstacle.Col, parsedObstacle.Filename));
                     o2.Merge (obstacle);
                     return o2;
                 } else {
-                    throw new ParsingException (string.Format ("Obstacle '{0}' is declared multiple times", obstacle.Identifier));
+                    var declaration = Declarations [o2].First ();
+                    throw new DuplicateDeclarationException (string.Format ("Obstacle '{0}'", obstacle.Identifier),
+                                                             declaration.Filename, declaration.Line, declaration.Col,
+                                                             parsedObstacle.Filename, parsedObstacle.Line, parsedObstacle.Col);
                 }
             }
 
             if (identifierAttribute == null && model.GoalModel.GetObstaclesByName (obstacle.Name).Count() == 1) {
+                var o2 = model.GoalModel.GetObstaclesByName (obstacle.Name).Single ();
                 if (parsedObstacle.Override) {
-                    var o2 = model.GoalModel.GetObstaclesByName (obstacle.Name).Single ();
+                    Declarations[o2].Add (new Declaration (parsedObstacle.Line, parsedObstacle.Col, parsedObstacle.Filename));
                     o2.Merge (obstacle);
                     return o2;
                 } else {
-                    throw new ParsingException (string.Format ("Obstacle '{0}' is declared multiple times", obstacle.Name));
+                    var declaration = Declarations [o2].First ();
+                    throw new DuplicateDeclarationException (string.Format ("Obstacle '{0}'", obstacle.Name),
+                                                             declaration.Filename, declaration.Line, declaration.Col,
+                                                             parsedObstacle.Filename, parsedObstacle.Line, parsedObstacle.Col);
                 }
             }
 
@@ -340,6 +388,7 @@ namespace KAOSTools.Parsing
                 parsedObstacle.Attributes.Add (new Identifier (obstacle.Identifier));
 
             model.GoalModel.Obstacles.Add (obstacle);
+            Declarations.Add (obstacle, new List<Declaration> { new Declaration (parsedObstacle.Line, parsedObstacle.Col, parsedObstacle.Filename) });
 
             return obstacle;
         }
@@ -367,22 +416,30 @@ namespace KAOSTools.Parsing
             }
 
             if (model.GoalModel.AgentExists (agent.Identifier)) {
+                var o2 = model.GoalModel.GetAgentByIdentifier (agent.Identifier);
                 if (parsedAgent.Override) {
-                    var o2 = model.GoalModel.GetAgentByIdentifier (agent.Identifier);
+                    Declarations[o2].Add (new Declaration (parsedAgent.Line, parsedAgent.Col, parsedAgent.Filename));
                     o2.Merge (agent);
                     return o2;
                 } else {
-                    throw new ParsingException (string.Format ("Agent '{0}' is declared multiple times", agent.Identifier));
+                    var declaration = Declarations [o2].First ();
+                    throw new DuplicateDeclarationException (string.Format ("Agent '{0}'", agent.Identifier),
+                                                             declaration.Filename, declaration.Line, declaration.Col,
+                                                             parsedAgent.Filename, parsedAgent.Line, parsedAgent.Col);
                 }
             }
             
             if (identifierAttribute == null && model.GoalModel.GetAgentsByName (agent.Name).Count() == 1) {
+                var o2 = model.GoalModel.GetAgentsByName (agent.Name).Single ();
                 if (parsedAgent.Override) {
-                    var o2 = model.GoalModel.GetAgentsByName (agent.Name).Single ();
+                    Declarations[o2].Add (new Declaration (parsedAgent.Line, parsedAgent.Col, parsedAgent.Filename));
                     o2.Merge (agent);
                     return o2;
                 } else {
-                    throw new ParsingException (string.Format ("Obstacle '{0}' is declared multiple times", agent.Name));
+                    var declaration = Declarations [o2].First ();
+                    throw new DuplicateDeclarationException (string.Format ("Agent '{0}'", agent.Name),
+                                                             declaration.Filename, declaration.Line, declaration.Col,
+                                                             parsedAgent.Filename, parsedAgent.Line, parsedAgent.Col);
                 }
             }   
             
@@ -392,6 +449,7 @@ namespace KAOSTools.Parsing
                 parsedAgent.Attributes.Add (new Identifier (agent.Identifier));
 
             model.GoalModel.Agents.Add (agent);
+            Declarations.Add (agent, new List<Declaration> { new Declaration (parsedAgent.Line, parsedAgent.Col, parsedAgent.Filename) });
 
             return agent;
         }
@@ -424,7 +482,8 @@ namespace KAOSTools.Parsing
                 throw new NotImplementedException ();
 
             model.Predicates.Add (predicate.Name, predicate);
-            
+            Declarations.Add (predicate, new List<Declaration> { new Declaration (parsedPredicate.Line, parsedPredicate.Col, parsedPredicate.Filename) });
+
             return predicate;
         }
 

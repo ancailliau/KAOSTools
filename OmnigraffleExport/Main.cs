@@ -34,6 +34,8 @@ namespace KAOSTools.OmnigraffleExport
             options.Add ("i|identifier", "Display identifier in diagrams", v => exportOptions.DisplayIdentifiers = true);
 
             Init (args);
+            if (model == null) 
+                return;
 
             mapping = new Dictionary<Omnigraffle.Sheet, Dictionary<string, Omnigraffle.ShapedGraphic>> ();
 

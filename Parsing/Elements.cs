@@ -4,7 +4,11 @@ using LtlSharp;
 
 namespace KAOSTools.Parsing
 {
-    public interface Element {}
+    public class Element {
+        public int Line { get; set; }
+        public int Col { get; set; }
+        public string Filename { get; set; }
+    }
     
     public class Elements : Element {
         public List<Element> Values     { get; set; }
@@ -65,7 +69,7 @@ namespace KAOSTools.Parsing
 
     public enum AgentType { None, Software, Environment }
 
-    public interface Attribute : Element {}
+    public class Attribute : Element {}
 
     public class Attributes : Element {
         public List<Attribute> Values     { get; set; }

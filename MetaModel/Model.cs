@@ -5,7 +5,9 @@ using System;
 
 namespace KAOSTools.MetaModel
 {
-    public class Goal
+    public class KAOSMetaModelElement {}
+
+    public class Goal : KAOSMetaModelElement
     {
         public string                 Identifier      { get; set; }
         public string                 Name            { get; set; }
@@ -30,7 +32,7 @@ namespace KAOSTools.MetaModel
         }
     }
 
-    public class Obstacle
+    public class Obstacle : KAOSMetaModelElement
     {
         public string                           Identifier   { get; set; }
         public string                           Name         { get; set; }
@@ -51,7 +53,7 @@ namespace KAOSTools.MetaModel
         }
     }
 
-    public class DomainHypothesis
+    public class DomainHypothesis : KAOSMetaModelElement
     {   
         public string      Identifier  { get; set; }
         public string      Name        { get; set; }
@@ -63,7 +65,7 @@ namespace KAOSTools.MetaModel
         }
     }
 
-    public class DomainProperty
+    public class DomainProperty : KAOSMetaModelElement
     {   
         public string      Identifier  { get; set; }
         public string      Name        { get; set; }
@@ -77,7 +79,7 @@ namespace KAOSTools.MetaModel
         }
     }
 
-    public class Agent
+    public class Agent : KAOSMetaModelElement
     {
         public string    Identifier   { get; set; }
         public string    Name         { get; set; }
@@ -100,7 +102,7 @@ namespace KAOSTools.MetaModel
 
     public enum AgentType { None, Software, Environment }
 
-    public class AgentAssignment
+    public class AgentAssignment : KAOSMetaModelElement
     {
         public System           AlternativeIdentifier { get; set; }
         public IList<Agent>     Agents                { get; set; }
@@ -123,7 +125,7 @@ namespace KAOSTools.MetaModel
         }
     }
 
-    public class GoalRefinement
+    public class GoalRefinement : KAOSMetaModelElement
     {
         public System                  SystemIdentifier  { get; set; }
         public IList<Goal>             Children          { get; set; }
@@ -151,7 +153,7 @@ namespace KAOSTools.MetaModel
         }
     }
 
-    public class ObstacleRefinement
+    public class ObstacleRefinement : KAOSMetaModelElement
     {
         public IList<Obstacle>       Children          { get; set; }
         public IList<DomainProperty> DomainProperties  { get; set; }
@@ -174,7 +176,7 @@ namespace KAOSTools.MetaModel
         }
     }
 
-    public class System 
+    public class System : KAOSMetaModelElement
     {
         public string Identifier  { get; set; }
         public string Name        { get; set; }
@@ -207,5 +209,28 @@ namespace KAOSTools.MetaModel
             }
         }
         
+    }
+
+    public class Predicate : KAOSMetaModelElement
+    {
+        public string Name {
+            get;
+            set;
+        }
+        
+        public string Definition {
+            get;
+            set;
+        }
+        
+        public string Signature {
+            get;
+            set;
+        }
+        
+        public string FormalSpec {
+            get;
+            set;
+        }
     }
 }

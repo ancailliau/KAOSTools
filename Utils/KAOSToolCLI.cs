@@ -3,6 +3,7 @@ using NDesk.Options;
 using KAOSTools.MetaModel;
 using System.Collections.Generic;
 using System.IO;
+using KAOSTools.Parsing;
 
 namespace KAOSTools.Utils
 {
@@ -12,6 +13,7 @@ namespace KAOSTools.Utils
         protected static string input;
         protected static string filename;
         protected static KAOSModel model;
+        protected static IDictionary<KAOSMetaModelElement, IList<Declaration>> declarations;
 
         protected static void Init (string[] args)
         {
@@ -53,14 +55,24 @@ namespace KAOSTools.Utils
 
             model = BuildModel ();
 
-            var h = new AlternativeHelpers();
-            h.ComputeInAlternatives (model.GoalModel);
+            if (model != null) {
+                var h = new AlternativeHelpers();
+                h.ComputeInAlternatives (model.GoalModel);
+            }
         }
         
         protected static KAOSModel BuildModel ()
         {
-            var parser = new KAOSTools.Parsing.Parser ();
-            return parser.Parse (input, filename);
+            try {
+                var parser = new KAOSTools.Parsing.Parser ();
+                var m = parser.Parse (input, filename);
+                declarations = parser.Declarations;
+                return m;
+
+            } catch (Exception e) {
+                Console.WriteLine (e.Message);
+                return null;
+            }
         }
         
         protected static void ShowHelp (OptionSet p)
