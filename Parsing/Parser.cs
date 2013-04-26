@@ -114,11 +114,10 @@ namespace KAOSTools.Parsing
                     identifierAttribute = (attribute as Identifier);
                     
                 } else if (attribute is Name) {
-                    alternative.Name = (attribute as Name).Value;
+                    alternative.Name = Sanitize((attribute as Name).Value);
                     
                 } else if (attribute is Description) {
-                    alternative.Description = Regex.Replace((attribute as Description).Value,
-                                                            @"\s+", " ", RegexOptions.Multiline).Trim ();
+                    alternative.Description = Sanitize((attribute as Description).Value);
                     
                 }
             }
@@ -159,14 +158,13 @@ namespace KAOSTools.Parsing
                     identifierAttribute = (attribute as Identifier);
 
                 } else if (attribute is Name) {
-                    goal.Name = (attribute as Name).Value;
+                    goal.Name = Sanitize((attribute as Name).Value);
 
                 } else if (attribute is FormalSpec) {
                     goal.FormalSpec = (attribute as FormalSpec).Value;
                 
                 } else if (attribute is Definition) {
-                    goal.Definition = Regex.Replace((attribute as Definition).Value,
-                                                    @"\s+", " ", RegexOptions.Multiline).Trim ();
+                    goal.Definition = Sanitize((attribute as Definition).Value);
 
                 } else if (attribute is RDS) {
                     goal.RDS = (attribute as RDS).Value;
@@ -223,14 +221,13 @@ namespace KAOSTools.Parsing
                     identifierAttribute = (attr as Identifier);
 
                 } else if (attr is Name) {
-                    domprop.Name = (attr as Name).Value;
+                    domprop.Name = Sanitize((attr as Name).Value);
 
                 } else if (attr is FormalSpec) {
                     domprop.FormalSpec = (attr as FormalSpec).Value;
 
                 } else if (attr is Definition) {
-                    domprop.Definition = Regex.Replace((attr as Definition).Value,
-                                                       @"\s+", " ", RegexOptions.Multiline).Trim ();
+                    domprop.Definition = Sanitize((attr as Definition).Value);
 
                 } else if (attr is Probability) {
                     domprop.EPS = (attr as Probability).Value;
@@ -287,11 +284,10 @@ namespace KAOSTools.Parsing
                     identifierAttribute = (attr as Identifier);
                     
                 } else if (attr is Name) {
-                    domHyp.Name = (attr as Name).Value;
+                    domHyp.Name = Sanitize((attr as Name).Value);
 
                 } else if (attr is Definition) {
-                    domHyp.Definition = Regex.Replace((attr as Definition).Value,
-                                                      @"\s+", " ", RegexOptions.Multiline).Trim ();
+                    domHyp.Definition = Sanitize((attr as Definition).Value);
 
                 }
             }
@@ -346,14 +342,13 @@ namespace KAOSTools.Parsing
                     identifierAttribute = (attr as Identifier);
 
                 } else if (attr is Name) {
-                    obstacle.Name = (attr as Name).Value;
+                    obstacle.Name = Sanitize((attr as Name).Value);
 
                 } else if (attr is FormalSpec) {
                     obstacle.FormalSpec = (attr as FormalSpec).Value;
 
                 } else if (attr is Definition) {
-                    obstacle.Definition = Regex.Replace((attr as Definition).Value,
-                                                        @"\s+", " ", RegexOptions.Multiline).Trim ();
+                    obstacle.Definition = Sanitize((attr as Definition).Value);
 
                 } else if (attr is Probability) {
                     obstacle.EPS = (attr as Probability).Value;
@@ -415,10 +410,9 @@ namespace KAOSTools.Parsing
                     identifierAttribute = (attr as Identifier);
 
                 } else if (attr is Name) {
-                    agent.Name = (attr as Name).Value;
+                    agent.Name = Sanitize((attr as Name).Value);
                 } else if (attr is Description) {
-                    agent.Description = Regex.Replace((attr as Description).Value,
-                                                      @"\s+", " ", RegexOptions.Multiline).Trim ();
+                    agent.Description = Sanitize((attr as Description).Value);
                 }
             }
 
@@ -469,10 +463,9 @@ namespace KAOSTools.Parsing
 
             foreach (var attr in parsedPredicate.Attributes) {
                 if (attr is Name) {
-                    predicate.Name = (attr as Name).Value;
+                    predicate.Name = Sanitize((attr as Name).Value);
                 } else if (attr is Definition) {
-                    predicate.Definition = Regex.Replace((attr as Definition).Value,
-                                                         @"\s+", " ", RegexOptions.Multiline).Trim ();
+                    predicate.Definition = Sanitize((attr as Definition).Value);
                 } else if (attr is StringFormalSpec) {
                     predicate.FormalSpec = (attr as StringFormalSpec).Value;
                 } else if (attr is Signature) {
@@ -1002,6 +995,13 @@ namespace KAOSTools.Parsing
         }
 
         #endregion
+
+        private string Sanitize (string text) 
+        {
+            return Regex.Replace(text, @"\s+", " ", RegexOptions.Multiline).Trim ();
+        }
     }
+
+
 }
 
