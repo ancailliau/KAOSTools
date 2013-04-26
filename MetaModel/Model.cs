@@ -5,120 +5,150 @@ using System;
 
 namespace KAOSTools.MetaModel
 {
-    public class KAOSMetaModelElement {}
+    public class KAOSMetaModelElement
+    {
+    }
 
     public class Goal : KAOSMetaModelElement
     {
-        public string                 Identifier      { get; set; }
-        public string                 Name            { get; set; }
-        public string                 Definition      { get; set; }
-        public LTLFormula             FormalSpec      { get; set; }
+        public string Identifier { get; set; }
 
-        public double                 CPS             { get; set; }
-        public double                 RDS             { get; set; }
+        public string Name { get; set; }
 
-        public ISet<GoalRefinement>   Refinements     { get; set; }
-        public ISet<Obstacle>         Obstruction     { get; set; }
-        public ISet<AgentAssignment>  AssignedAgents  { get; set; }
+        public string Definition { get; set; }
 
-        public ISet<System>      InSystems  { get; set; }
+        public LTLFormula FormalSpec { get; set; }
+
+        public double CPS { get; set; }
+
+        public double RDS { get; set; }
+
+        public ISet<GoalRefinement> Refinements { get; set; }
+
+        public ISet<Obstacle> Obstruction { get; set; }
+
+        public ISet<AgentAssignment> AssignedAgents { get; set; }
+
+        public ISet<System> InSystems { get; set; }
 
         public Goal ()
         {
-            Identifier     = Guid.NewGuid ().ToString ();
-            Refinements    = new HashSet<GoalRefinement> ();
-            Obstruction    = new HashSet<Obstacle> ();
+            Identifier = Guid.NewGuid ().ToString ();
+            Refinements = new HashSet<GoalRefinement> ();
+            Obstruction = new HashSet<Obstacle> ();
             AssignedAgents = new HashSet<AgentAssignment> ();
         }
     }
 
     public class Obstacle : KAOSMetaModelElement
     {
-        public string                           Identifier   { get; set; }
-        public string                           Name         { get; set; }
-        public string                           Definition   { get; set; }
-        public LTLFormula                       FormalSpec   { get; set; }
+        public string Identifier { get; set; }
 
-        public double                           EPS          { get; set; }
-        public double                           CPS          { get; set; }
+        public string Name { get; set; }
 
-        public IList<ObstacleRefinement>        Refinements  { get; set; }
-        public IList<Goal>                      Resolutions  { get; set; }
+        public string Definition { get; set; }
+
+        public LTLFormula FormalSpec { get; set; }
+
+        public double EPS { get; set; }
+
+        public double CPS { get; set; }
+
+        public IList<ObstacleRefinement> Refinements { get; set; }
+
+        public IList<Goal> Resolutions { get; set; }
 
         public Obstacle ()
         {
-            Identifier  = Guid.NewGuid ().ToString ();
+            Identifier = Guid.NewGuid ().ToString ();
             Refinements = new List<ObstacleRefinement> ();
             Resolutions = new List<Goal> ();
         }
     }
 
     public class DomainHypothesis : KAOSMetaModelElement
-    {   
-        public string      Identifier  { get; set; }
-        public string      Name        { get; set; }
-        public string      Definition  { get; set; }
-        
+    { 
+        public string Identifier { get; set; }
+
+        public string Name { get; set; }
+
+        public string Definition { get; set; }
+ 
         public DomainHypothesis ()
         {
-            Identifier  = Guid.NewGuid ().ToString ();
+            Identifier = Guid.NewGuid ().ToString ();
         }
     }
 
     public class DomainProperty : KAOSMetaModelElement
-    {   
-        public string      Identifier  { get; set; }
-        public string      Name        { get; set; }
-        public string      Definition  { get; set; }
-        public LTLFormula  FormalSpec  { get; set; }
-        public double       EPS         { get; set; }
+    { 
+        public string Identifier { get; set; }
+
+        public string Name { get; set; }
+
+        public string Definition { get; set; }
+
+        public LTLFormula FormalSpec { get; set; }
+
+        public double EPS { get; set; }
 
         public DomainProperty ()
         {
-            Identifier  = Guid.NewGuid ().ToString ();
+            Identifier = Guid.NewGuid ().ToString ();
         }
     }
 
     public class Agent : KAOSMetaModelElement
     {
-        public string    Identifier   { get; set; }
-        public string    Name         { get; set; }
-        public string    Description  { get; set; }
-        public AgentType Type         { get; set; }
-        public ISet<System>     InSystems             { get; set; }
+        public string Identifier { get; set; }
+
+        public string Name { get; set; }
+
+        public string Description { get; set; }
+
+        public AgentType Type { get; set; }
+
+        public ISet<System> InSystems { get; set; }
 
         public Agent ()
         {
-            Identifier  = Guid.NewGuid ().ToString ();
-            Type        = AgentType.None;
+            Identifier = Guid.NewGuid ().ToString ();
+            Type = AgentType.None;
         }
 
         public override string ToString ()
         {
             return string.Format ("[Agent: Identifier={0}, Name={1}, Description={2}, Type={3}]", Identifier, Name, Description, Type);
         }
-        
+ 
     }
 
-    public enum AgentType { None, Software, Environment }
+    public enum AgentType
+    {
+        None,
+        Software,
+        Environment
+    }
 
     public class AgentAssignment : KAOSMetaModelElement
     {
-        public System           AlternativeIdentifier { get; set; }
-        public IList<Agent>     Agents                { get; set; }
-        public ISet<System>     InSystems             { get; set; }
+        public System AlternativeIdentifier { get; set; }
+
+        public IList<Agent> Agents { get; set; }
+
+        public ISet<System> InSystems { get; set; }
 
         public AgentAssignment ()
-            : this (new Agent[] {})
+ : this (new Agent[] {})
         {
         }
 
         public AgentAssignment (Agent a)
-            : this (new Agent[] { a })
+ : this (new Agent[] { a })
         {
         }
 
-        public AgentAssignment (params Agent[] a) 
+        public AgentAssignment (params Agent[] a)
         {
             AlternativeIdentifier = null;
             Agents = new List<Agent> (a);
@@ -127,11 +157,15 @@ namespace KAOSTools.MetaModel
 
     public class GoalRefinement : KAOSMetaModelElement
     {
-        public System                  SystemIdentifier  { get; set; }
-        public IList<Goal>             Children          { get; set; }
-        public IList<DomainProperty>   DomainProperties  { get; set; }
-        public IList<DomainHypothesis> DomainHypotheses  { get; set; }
-        public ISet<System>            InSystems         { get; set; }
+        public System SystemIdentifier { get; set; }
+
+        public IList<Goal> Children { get; set; }
+
+        public IList<DomainProperty> DomainProperties { get; set; }
+
+        public IList<DomainHypothesis> DomainHypotheses { get; set; }
+
+        public ISet<System> InSystems { get; set; }
 
         public GoalRefinement ()
         {
@@ -155,8 +189,9 @@ namespace KAOSTools.MetaModel
 
     public class ObstacleRefinement : KAOSMetaModelElement
     {
-        public IList<Obstacle>       Children          { get; set; }
-        public IList<DomainProperty> DomainProperties  { get; set; }
+        public IList<Obstacle> Children { get; set; }
+
+        public IList<DomainProperty> DomainProperties { get; set; }
 
         public ObstacleRefinement ()
         {
@@ -178,14 +213,17 @@ namespace KAOSTools.MetaModel
 
     public class System : KAOSMetaModelElement
     {
-        public string Identifier  { get; set; }
-        public string Name        { get; set; }
+        public string Identifier { get; set; }
+
+        public string Name { get; set; }
+
         public string Description { get; set; }
-        public ISet<System> Alternatives  { get; set; }
-        
+
+        public ISet<System> Alternatives { get; set; }
+ 
         public System ()
         {
-            Identifier   = Guid.NewGuid ().ToString ();
+            Identifier = Guid.NewGuid ().ToString ();
             Alternatives = new HashSet<System> ();
         }
 
@@ -200,7 +238,6 @@ namespace KAOSTools.MetaModel
             System other = (System)obj;
             return Identifier == other.Identifier;
         }
-        
 
         public override int GetHashCode ()
         {
@@ -208,28 +245,28 @@ namespace KAOSTools.MetaModel
                 return (Identifier != null ? Identifier.GetHashCode () : 0);
             }
         }
-        
+ 
     }
 
     public class Predicate : KAOSMetaModelElement
     {
-        public string Identifier  { get; set; }
+        public string Identifier { get; set; }
 
         public string Name {
             get;
             set;
         }
-        
+ 
         public string Definition {
             get;
             set;
         }
-        
+ 
         public string Signature {
             get;
             set;
         }
-        
+ 
         public string FormalSpec {
             get;
             set;
@@ -237,7 +274,7 @@ namespace KAOSTools.MetaModel
 
         public Predicate ()
         {
-            Identifier   = Guid.NewGuid ().ToString ();
+            Identifier = Guid.NewGuid ().ToString ();
         }
     }
 }
