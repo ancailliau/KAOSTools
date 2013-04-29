@@ -37,6 +37,7 @@ namespace KAOSTools.MetaModel
             Refinements = new HashSet<GoalRefinement> ();
             Obstruction = new HashSet<Obstacle> ();
             AssignedAgents = new HashSet<AgentAssignment> ();
+            InSystems = new HashSet<System>();
         }
     }
 
