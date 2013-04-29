@@ -132,6 +132,8 @@ namespace KAOSTools.MetaModel
 
     public class AgentAssignment : KAOSMetaModelElement
     {
+        public string Identifier  { get; set; }
+
         public System AlternativeIdentifier { get; set; }
 
         public IList<Agent> Agents { get; set; }
@@ -150,6 +152,7 @@ namespace KAOSTools.MetaModel
 
         public AgentAssignment (params Agent[] a)
         {
+            Identifier = Guid.NewGuid ().ToString ();
             AlternativeIdentifier = null;
             Agents = new List<Agent> (a);
         }
@@ -157,6 +160,8 @@ namespace KAOSTools.MetaModel
 
     public class GoalRefinement : KAOSMetaModelElement
     {
+        public string Identifier  { get; set; }
+
         public System SystemIdentifier { get; set; }
 
         public IList<Goal> Children { get; set; }
@@ -169,6 +174,7 @@ namespace KAOSTools.MetaModel
 
         public GoalRefinement ()
         {
+            Identifier = Guid.NewGuid ().ToString ();
             SystemIdentifier = null;
             Children = new List<Goal> ();
             DomainProperties = new List<DomainProperty> ();
