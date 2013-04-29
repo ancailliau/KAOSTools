@@ -998,7 +998,9 @@ namespace KAOSTools.Parsing
 
         private string Sanitize (string text) 
         {
-            return Regex.Replace(text, @"\s+", " ", RegexOptions.Multiline).Trim ();
+            var t = Regex.Replace(text, @"\s+", " ", RegexOptions.Multiline).Trim ();
+            t = Regex.Replace (t, "\"\"", "\"", RegexOptions.Multiline);
+            return t;
         }
     }
 

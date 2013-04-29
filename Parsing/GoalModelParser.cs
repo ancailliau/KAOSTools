@@ -1099,14 +1099,16 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// String := [^\"]+
+	// String := ('""' / [^\"])+
 	private State DoParseStringRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
 		
 		_state = DoRepetition(_state, results, 1, 2147483647,
-			delegate (State s, List<Result> r) {return DoParseRange(s, r, true, "\"", string.Empty, null, "[^\"]");});
+			delegate (State s, List<Result> r) {return DoChoice(s, r,
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "\"\"");},
+				delegate (State s2, List<Result> r2) {return DoParseRange(s2, r2, true, "\"", string.Empty, null, "[^\"]");});});
 		
 		if (_state.Parsed)
 		{
