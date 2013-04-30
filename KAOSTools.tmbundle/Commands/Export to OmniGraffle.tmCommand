@@ -7,7 +7,7 @@
 	<key>command</key>
 	<string>#!/bin/sh
 rm -rf "/tmp/output.graffle"
-mono $KAOS_FORMAL_TOOLS/OmnigraffleExport/bin/Debug/KAOSTools.OmnigraffleExport.exe -o "/tmp/output.graffle" "$TM_FILEPATH"
+mono $KAOS_OMNIGRAFFLE_EXPORT -o "/tmp/output.graffle" "$TM_FILEPATH"
 open "/tmp/output.graffle"
 </string>
 	<key>input</key>
