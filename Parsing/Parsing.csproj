@@ -8,25 +8,33 @@
     <ProjectGuid>{52C948A2-30AD-40A7-89A3-9D66B2FCDD9F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>KAOSTools.Parsing</RootNamespace>
-    <AssemblyName>KAOSTools.Parsing</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>False</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
+    <OutputPath>..\bin\Parsing\Debug</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
+    <AssemblyName>KAOSTools.Parsing</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>True</Optimize>
-    <OutputPath>bin\Release</OutputPath>
+    <OutputPath>..\bin\Parsing\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
+    <AssemblyName>KAOSTools.Parsing</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'CLI|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\Parsing\CLI</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <AssemblyName>Parsing</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

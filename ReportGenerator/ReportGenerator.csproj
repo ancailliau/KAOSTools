@@ -8,25 +8,33 @@
     <ProjectGuid>{C1574D44-EB4F-4C2B-9F83-4DDC25AEC275}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>KAOSTools.ReportGenerator</RootNamespace>
-    <AssemblyName>KAOSTools.ReportGenerator</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>False</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
+    <OutputPath>..\bin\ReportGenerator\Debug</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>True</Externalconsole>
+    <AssemblyName>KAOSTools.ReportGenerator</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>True</Optimize>
-    <OutputPath>bin\Release</OutputPath>
+    <OutputPath>..\bin\ReportGenerator\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>True</Externalconsole>
+    <AssemblyName>KAOSTools.ReportGenerator</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'CLI|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\ReportGenerator\CLI</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <AssemblyName>ReportGenerator</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
