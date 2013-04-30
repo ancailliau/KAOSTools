@@ -62,6 +62,12 @@ namespace KAOSTools.ReportGenerator
                                        definition = o.Definition },
 
               //
+              resolutions = from o in model.GoalModel.Obstacles.OrderBy (x => x.Name)
+                              from g in o.Resolutions.OrderBy (x => x.Name)
+                                select new { obstacle = o.Identifier,
+                                                 goal = g.Identifier },
+
+              //
               predicates = from p in model.Predicates.Values.OrderBy (x => x.Name)
                            select new { id = p.Identifier,
                                         name = p.Name,
@@ -73,7 +79,7 @@ namespace KAOSTools.ReportGenerator
                               from r in g.Refinements
                                 from c in r.Subgoals
                                   select new {          id = r.Identifier,
-                                                    /*sysref = HandleIdentifier(r.SystemReference),*/
+                                                    sysref = HandleIdentifier(r.SystemReference),
                                                     parent = g.Identifier,
                                                      child = c.Identifier },
 
@@ -84,7 +90,7 @@ namespace KAOSTools.ReportGenerator
                                   select new {     id = aa.Identifier,
                                                  goal = g.Identifier,
                                                 agent = a.Identifier,
-                                               /*sysref = HandleIdentifier(aa.SystemReference)*/ },
+                                               sysref = HandleIdentifier(aa.SystemReference) },
 
               //
               insystem = from g in model.GoalModel.Goals.OrderBy (x => x.Name)
@@ -93,12 +99,11 @@ namespace KAOSTools.ReportGenerator
                                           system = s.Identifier },
 
               //
-/*              locations = from pair in declarations
+              locations = from pair in declarations
                           where HasIdentifier(pair.Key)
                           select new { object_id = HandleIdentifier(pair.Key),
                                        locations = HandleLocations(pair.Value) }
 
-*/
             };
 
             var json = new JavaScriptSerializer().Serialize(dbvalue);
