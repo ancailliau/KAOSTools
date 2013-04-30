@@ -71,20 +71,20 @@ namespace KAOSTools.ReportGenerator
               //
               refinements = from g in model.GoalModel.Goals
                               from r in g.Refinements
-                                from c in r.Children
+                                from c in r.Subgoals
                                   select new {          id = r.Identifier,
-                                                    sysref = HandleIdentifier(r.SystemIdentifier),
+                                                    sysref = HandleIdentifier(r.SystemReference),
                                                     parent = g.Identifier,
                                                      child = c.Identifier },
 
               //
               assignments = from g in model.GoalModel.Goals
-                              from aa in g.AssignedAgents
+                              from aa in g.AgentAssignments
                                 from a in aa.Agents
                                   select new {     id = aa.Identifier,
                                                  goal = g.Identifier,
                                                 agent = a.Identifier,
-                                               sysref = HandleIdentifier(aa.AlternativeIdentifier) },
+                                               sysref = HandleIdentifier(aa.SystemReference) },
 
               //
               insystem = from g in model.GoalModel.Goals.OrderBy (x => x.Name)
