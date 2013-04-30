@@ -7,8 +7,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A8967A56-9443-476E-B914-98A4BD9FAADF}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>RelationalGenerator</RootNamespace>
-    <AssemblyName>RelationalGenerator</AssemblyName>
+    <RootNamespace>KAOSTools.RelationalGenerator</RootNamespace>
+    <AssemblyName>KAOSTools.RelationalGenerator</AssemblyName>
     <StartupObject>KAOSTools.ReportGenerator.MainClass</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
