@@ -56,7 +56,7 @@ namespace KAOSTools.Parsing.Tests
 
             model.GoalModel.RootGoals
                 .SelectMany (x => x.Refinements)
-                .SelectMany (r => r.Children)
+                .SelectMany (r => r.Subgoals)
                 .Select (d => d.Identifier)
                 .ShallContain ("achieve_destination_reached_if_gps_support");
         }

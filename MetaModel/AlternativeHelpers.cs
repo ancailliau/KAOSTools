@@ -20,7 +20,7 @@ namespace KAOSTools.MetaModel
             }
 
             foreach (var g in model.Goals) {
-                foreach (var a in g.AssignedAgents) {
+                foreach (var a in g.AgentAssignments) {
                     DownPropagate (g, a);
                 }
             }
@@ -33,12 +33,12 @@ namespace KAOSTools.MetaModel
             g.InSystems = Simplify (g.InSystems);
             foreach (var refinement in g.Refinements) {
                 refinement.InSystems = Simplify(refinement.InSystems);
-                foreach (var child in refinement.Children) {
+                foreach (var child in refinement.Subgoals) {
                     Simplify (child);
                 }
             }
 
-            foreach (var assignement in g.AssignedAgents) {
+            foreach (var assignement in g.AgentAssignments) {
                 assignement.InSystems = Simplify (assignement.InSystems);
                 foreach (var agent in assignement.Agents) {
                     agent.InSystems = Simplify (agent.InSystems);
@@ -88,8 +88,8 @@ namespace KAOSTools.MetaModel
                 assignment.InSystems = new HashSet<System> ();
 
             IEnumerable<System> systems_to_add;
-            if (assignment.AlternativeIdentifier != null) {
-                systems_to_add = parent.InSystems.Where (a => a.Equals(assignment.AlternativeIdentifier));
+            if (assignment.SystemReference != null) {
+                systems_to_add = parent.InSystems.Where (a => a.Equals(assignment.SystemReference));
             } else {
                 systems_to_add = parent.InSystems;
             }
@@ -111,8 +111,8 @@ namespace KAOSTools.MetaModel
         private void DownPropagate (Goal parent, GoalRefinement refinement)
         {
             IList<System> alternatives_to_add;
-            if (refinement.SystemIdentifier != null) {
-                var alternatives_to_filter_on = GetAllSubsystems(new HashSet<System> (), refinement.SystemIdentifier);
+            if (refinement.SystemReference != null) {
+                var alternatives_to_filter_on = GetAllSubsystems(new HashSet<System> (), refinement.SystemReference);
                 alternatives_to_add = new List<System> (parent.InSystems.Where(r => alternatives_to_filter_on.Contains(r)));
             
             } else {
@@ -126,7 +126,7 @@ namespace KAOSTools.MetaModel
                 refinement.InSystems.Add (a);
             }
 
-            foreach (var child in refinement.Children) {
+            foreach (var child in refinement.Subgoals) {
                 if (child.InSystems == null)
                     child.InSystems = new HashSet<System> ();
 

@@ -13,11 +13,11 @@ open "/tmp/output.graffle"
 	<key>input</key>
 	<string>document</string>
 	<key>keyEquivalent</key>
-	<string>@g</string>
+	<string>@G</string>
 	<key>name</key>
 	<string>Export to OmniGraffle</string>
 	<key>output</key>
-	<string>discard</string>
+	<string>showAsTooltip</string>
 	<key>uuid</key>
 	<string>DDBF472C-BCB1-48E8-98AF-2C59A6898C9F</string>
 </dict>

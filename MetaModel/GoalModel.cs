@@ -21,7 +21,7 @@ namespace KAOSTools.MetaModel
                 var goals = new List<Goal> (Goals);
                 foreach (var goal in Goals)
                     foreach (var refinement in goal.Refinements) 
-                        foreach (var child in refinement.Children)
+                        foreach (var child in refinement.Subgoals)
                             goals.Remove (child);
                 foreach (var obstacle in Obstacles)
                     foreach (var resolution in obstacle.Resolutions)
@@ -43,7 +43,7 @@ namespace KAOSTools.MetaModel
 
         public IEnumerable<Goal>           ObstructedGoals {
             get {
-                return from g in Goals where g.Obstruction.Count > 0 select g;
+                return from g in Goals where g.Obstructions.Count > 0 select g;
             }
         }
 
@@ -98,9 +98,9 @@ namespace KAOSTools.MetaModel
             Goals.Remove (g1);
             Goals.Add (g2);
 
-            foreach (var refinement in Goals.SelectMany (g => g.Refinements).Where (r => r.Children.Contains (g1))) {
-                refinement.Children.Remove (g1);
-                refinement.Children.Add (g2);
+            foreach (var refinement in Goals.SelectMany (g => g.Refinements).Where (r => r.Subgoals.Contains (g1))) {
+                refinement.Subgoals.Remove (g1);
+                refinement.Subgoals.Add (g2);
             }
 
             foreach (var obstacle in Obstacles.Where (o => o.Resolutions.Contains (g1))) {

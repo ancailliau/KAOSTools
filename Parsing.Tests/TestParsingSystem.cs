@@ -177,14 +177,14 @@ namespace KAOSTools.Parsing.Tests
                 .ShallContain (x => x.Identifier == "test")
                     .ShallBeSingle ();
             
-            goalTest.Refinements.Select (x => x.SystemIdentifier).Select (x => x.Name)
+            goalTest.Refinements.Select (x => x.SystemReference).Select (x => x.Name)
                 .ShallOnlyContain (new string[] { "system 1" , "system 2" });
             
             var goalTest2 = model.GoalModel.Goals
                 .ShallContain (x => x.Identifier == "test2")
                     .ShallBeSingle ();
             
-            goalTest2.Refinements.Select (x => x.SystemIdentifier).Select (x => x.Name)
+            goalTest2.Refinements.Select (x => x.SystemReference).Select (x => x.Name)
                 .ShallOnlyContain (new string[] { "system 3" });
         }
 
@@ -209,14 +209,14 @@ namespace KAOSTools.Parsing.Tests
                 .ShallContain (x => x.Identifier == "test")
                     .ShallBeSingle ();
             
-            goalTest.Refinements.Select (x => x.SystemIdentifier).Select (x => x.Identifier)
+            goalTest.Refinements.Select (x => x.SystemReference).Select (x => x.Identifier)
                 .ShallOnlyContain (new string[] { "alt1" , "alt2" });
             
             var goalTest2 = model.GoalModel.Goals
                 .ShallContain (x => x.Identifier == "test2")
                     .ShallBeSingle ();
             
-            goalTest2.Refinements.Select (x => x.SystemIdentifier).Select (x => x.Identifier)
+            goalTest2.Refinements.Select (x => x.SystemReference).Select (x => x.Identifier)
                 .ShallOnlyContain (new string[] { "alt3" });
         }
 

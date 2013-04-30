@@ -32,18 +32,18 @@ namespace KAOSTools.MetaModel.Tests
             model.Goals.Add (G3);
             model.Goals.Add (G4);
 
-            G1.AssignedAgents.Add (new AgentAssignment (ag1));
-            G2.AssignedAgents.Add (new AgentAssignment (ag2));
-            G3.AssignedAgents.Add (new AgentAssignment (ag3));
-            G4.AssignedAgents.Add (new AgentAssignment (ag4));
+            G1.AgentAssignments.Add (new AgentAssignment (ag1));
+            G2.AgentAssignments.Add (new AgentAssignment (ag2));
+            G3.AgentAssignments.Add (new AgentAssignment (ag3));
+            G4.AgentAssignments.Add (new AgentAssignment (ag4));
 
             var alt1 = new System () { Name = "Alt1" };
             var alt2 = new System () { Name = "Alt2" };
             model.Systems.Add (alt1);
             model.Systems.Add (alt2);
 
-            rootG.Refinements.Add (new GoalRefinement (G1, G2, G3) { SystemIdentifier = alt1 });
-            rootG.Refinements.Add (new GoalRefinement (G3, G4) { SystemIdentifier = alt2 });
+            rootG.Refinements.Add (new GoalRefinement (G1, G2, G3) { SystemReference = alt1 });
+            rootG.Refinements.Add (new GoalRefinement (G3, G4) { SystemReference = alt2 });
 
             var h = new AlternativeHelpers(); h.ComputeInAlternatives (model);
 

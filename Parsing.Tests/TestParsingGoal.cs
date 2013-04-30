@@ -175,20 +175,20 @@ namespace KAOSTools.Parsing.Tests
             goal.FormalSpec.ShallBeSuchThat (x => (x as LtlSharp.Proposition).Name == "old");
 
             foreach (var r in goal.Refinements) {
-                Console.WriteLine (string.Join (",", r.Children.Select (x => x.Identifier)));
+                Console.WriteLine (string.Join (",", r.Subgoals.Select (x => x.Identifier)));
             }
 
-            goal.Refinements.ShallContain (y => y.Children.Select (x => x.Identifier)
+            goal.Refinements.ShallContain (y => y.Subgoals.Select (x => x.Identifier)
                 .OnlyContains (new string[] { "old_child1", "old_child2" }));
 
-            goal.Refinements.ShallContain (y => y.Children.Select (x => x.Identifier)
+            goal.Refinements.ShallContain (y => y.Subgoals.Select (x => x.Identifier)
                 .OnlyContains (new string[] { "new_child1", "new_child2" }));
 
-            goal.Obstruction
+            goal.Obstructions
                 .Select (x => x.Identifier)
                 .ShallOnlyContain (new string[] { "new_obstacle", "old_obstacle" });
             
-            goal.AssignedAgents
+            goal.AgentAssignments
                 .SelectMany (x => x.Agents)
                 .Select (x => x.Identifier)
                 .ShallOnlyContain (new string[] { "new_agent", "old_agent" });
@@ -241,7 +241,7 @@ namespace KAOSTools.Parsing.Tests
                 .ShallBeSingle ();
 
             goal.Refinements
-                .ShallContain (x => x.Children.Select(y => y.Identifier)
+                .ShallContain (x => x.Subgoals.Select(y => y.Identifier)
                                               .OnlyContains ( new string [] { "child1" , "child2" }));
         }
 
@@ -267,7 +267,7 @@ namespace KAOSTools.Parsing.Tests
                 .ShallBeSingle ();
             
             test.Refinements
-                .ShallContain (x => x.Children.Select(y => y.Identifier)
+                .ShallContain (x => x.Subgoals.Select(y => y.Identifier)
                                               .OnlyContains ( new string [] { "child1" , "child2" }));
 
             var child1 = model.GoalModel.Goals
@@ -275,7 +275,7 @@ namespace KAOSTools.Parsing.Tests
                 .ShallBeSingle ();
             
             child1.Refinements
-                .ShallContain (x => x.Children.Select(y => y.Identifier)
+                .ShallContain (x => x.Subgoals.Select(y => y.Identifier)
                                               .OnlyContains ( new string [] { "child3" , "child4" }));
         }
 
@@ -323,7 +323,7 @@ namespace KAOSTools.Parsing.Tests
                     .ShallBeSingle ();
             
             goal.Refinements
-                .ShallContain (x => x.Children.Select(y => y.Name)
+                .ShallContain (x => x.Subgoals.Select(y => y.Name)
                                .OnlyContains ( new string [] { "child1" , "child2" }));
         }
 

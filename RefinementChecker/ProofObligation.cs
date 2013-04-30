@@ -77,8 +77,8 @@ namespace KAOSTools.RefinementChecker
 
         private void AddCompletenessProofObligation (Goal parent, GoalRefinement refinement)
         {
-            var specifications = from child in refinement.Children select child.FormalSpec;
-            var names = from child in refinement.Children select child.Name;
+            var specifications = from child in refinement.Subgoals select child.FormalSpec;
+            var names = from child in refinement.Subgoals select child.Name;
 
             list.Add (new ProofObligation () {
                 Formula        = PrefixWithDomainProperties (new LtlSharp.Implication (new LtlSharp.Conjunction (specifications.ToArray ()), parent.FormalSpec)),
@@ -90,13 +90,13 @@ namespace KAOSTools.RefinementChecker
         
         private void AddMinimalityProofObligation (Goal parent, GoalRefinement refinement)
         {
-            var names = from child in refinement.Children select child.Name;
-            if (refinement.Children.Count == 1)
+            var names = from child in refinement.Subgoals select child.Name;
+            if (refinement.Subgoals.Count == 1)
                 return;
 
-            foreach (var child in refinement.Children) {
+            foreach (var child in refinement.Subgoals) {
                 var conjunction = new LtlSharp.Conjunction ();
-                foreach (var otherChild in refinement.Children.Where(c => c != child)) {
+                foreach (var otherChild in refinement.Subgoals.Where(c => c != child)) {
                     conjunction.Push (otherChild.FormalSpec);
                 }
 
@@ -112,8 +112,8 @@ namespace KAOSTools.RefinementChecker
         
         private void AddConsistencyProofObligation (Goal parent, GoalRefinement refinement)
         {
-            var specifications = from child in refinement.Children select child.FormalSpec;
-            var names = from child in refinement.Children select child.Name;
+            var specifications = from child in refinement.Subgoals select child.FormalSpec;
+            var names = from child in refinement.Subgoals select child.Name;
 
             list.Add (new ProofObligation () {
                 Formula        = PrefixWithDomainProperties (new LtlSharp.Negation (new LtlSharp.Conjunction (specifications.ToArray ()))),
@@ -129,8 +129,8 @@ namespace KAOSTools.RefinementChecker
 
         private void AddCompletenessProofObligation (Obstacle parent, ObstacleRefinement refinement)
         {
-            var specifications = from child in refinement.Children select child.FormalSpec;
-            var names = from child in refinement.Children select child.Name;
+            var specifications = from child in refinement.Subobstacles select child.FormalSpec;
+            var names = from child in refinement.Subobstacles select child.Name;
 
             list.Add (new ProofObligation () {
                 Formula        = PrefixWithDomainProperties (new LtlSharp.Implication (new LtlSharp.Conjunction (specifications.ToArray ()), parent.FormalSpec)),
@@ -142,13 +142,13 @@ namespace KAOSTools.RefinementChecker
         
         private void AddMinimalityProofObligation (Obstacle parent, ObstacleRefinement refinement)
         {
-            var names = from child in refinement.Children select child.Name;
-            if (refinement.Children.Count == 1)
+            var names = from child in refinement.Subobstacles select child.Name;
+            if (refinement.Subobstacles.Count == 1)
                 return;
 
-            foreach (var child in refinement.Children) {
+            foreach (var child in refinement.Subobstacles) {
                 var conjunction = new LtlSharp.Conjunction ();
-                foreach (var otherChild in refinement.Children.Where(c => c != child)) {
+                foreach (var otherChild in refinement.Subobstacles.Where(c => c != child)) {
                     conjunction.Push (otherChild.FormalSpec);
                 }
 
@@ -164,8 +164,8 @@ namespace KAOSTools.RefinementChecker
         
         private void AddConsistencyProofObligation (Obstacle parent, ObstacleRefinement refinement)
         {
-            var specifications = from child in refinement.Children select child.FormalSpec;
-            var names = from child in refinement.Children select child.Name;
+            var specifications = from child in refinement.Subobstacles select child.FormalSpec;
+            var names = from child in refinement.Subobstacles select child.Name;
 
             list.Add (new ProofObligation () {
                 Formula        = PrefixWithDomainProperties (new LtlSharp.Negation (new LtlSharp.Conjunction (specifications.ToArray ()))),
@@ -184,7 +184,7 @@ namespace KAOSTools.RefinementChecker
                 AddMinimalityProofObligation   (goal, refinement);
                 AddConsistencyProofObligation  (goal, refinement);
 
-                foreach (var child in refinement.Children)
+                foreach (var child in refinement.Subgoals)
                     AddProofObligationsForGoal (child);
             }
         }
@@ -194,7 +194,7 @@ namespace KAOSTools.RefinementChecker
             if (obstacle.FormalSpec == null)
                 Console.WriteLine ("Missing formal spec for '{0}'", obstacle.Name);
 
-            var specifications = (from r in obstacle.Refinements from c in r.Children select new LtlSharp.Negation(c.FormalSpec));
+            var specifications = (from r in obstacle.Refinements from c in r.Subobstacles select new LtlSharp.Negation(c.FormalSpec));
 
             if (specifications.Count () > 0) {
                 list.Add (new ProofObligation () {
@@ -211,7 +211,7 @@ namespace KAOSTools.RefinementChecker
                 AddMinimalityProofObligation   (obstacle, refinement);
                 AddConsistencyProofObligation  (obstacle, refinement);
 
-                foreach (var child in refinement.Children)
+                foreach (var child in refinement.Subobstacles)
                     AddProofObligationsForObstacle (child);
             }
         }
@@ -219,7 +219,7 @@ namespace KAOSTools.RefinementChecker
 
         private void AddProofObligationsForObstructedGoal (Goal goal)
         {
-            foreach (var obstacle in goal.Obstruction) {
+            foreach (var obstacle in goal.Obstructions) {
                 if (obstacle.FormalSpec != null) {
                     list.Add (new ProofObligation () {
                         Formula        = PrefixWithDomainProperties (new LtlSharp.Implication (obstacle.FormalSpec, new LtlSharp.Negation(goal.FormalSpec))),

@@ -524,18 +524,18 @@ namespace KAOSTools.Parsing
                             } else {
                                 var candidate = GetOrCreateObstacle (child as IdentifierOrName, true);
                                 if (candidate != null)
-                                    refinement.Children.Add (candidate);
+                                    refinement.Subobstacles.Add (candidate);
                             }
 
                         } else if (child is Obstacle) {
                             var o = BuildObstacle (child as Obstacle);
-                            refinement.Children.Add (o);
+                            refinement.Subobstacles.Add (o);
                             
                             BuildObstacleRelations (child as Obstacle);
                         }
                     }
 
-                    if (refinement.Children.Count > 0)
+                    if (refinement.Subobstacles.Count > 0)
                         refinements.Add (refinement);
 
                 } else if (attribute is ResolvedByList) {
@@ -601,7 +601,7 @@ namespace KAOSTools.Parsing
                     var refinement = new GoalRefinement ();
 
                     if (children.SystemIdentifier != null)
-                        refinement.SystemIdentifier = GetOrCreateAlternative (children.SystemIdentifier, true);
+                        refinement.SystemReference = GetOrCreateAlternative (children.SystemIdentifier, true);
 
                     foreach (var child in children.Values) {
                         if (child is IdentifierOrName) {
@@ -616,12 +616,12 @@ namespace KAOSTools.Parsing
                             } else {
                                 var candidate = GetOrCreateGoal (child as IdentifierOrName, true);
                                 if (candidate != null)
-                                    refinement.Children.Add (candidate);
+                                    refinement.Subgoals.Add (candidate);
                             }
 
                         } else if (child is Goal) {
                             var g = BuildGoal (child as Goal);
-                            refinement.Children.Add (g);
+                            refinement.Subgoals.Add (g);
                             
                             BuildGoalRelations (child as Goal);
 
@@ -636,7 +636,7 @@ namespace KAOSTools.Parsing
                         }
                     }
 
-                    if ((refinement.Children.Count + refinement.DomainHypotheses.Count + refinement.DomainProperties.Count) > 0)
+                    if ((refinement.Subgoals.Count + refinement.DomainHypotheses.Count + refinement.DomainProperties.Count) > 0)
                         refinements.Add (refinement);
 
                 } else if (attribute is ObstructedByList) {
@@ -659,7 +659,7 @@ namespace KAOSTools.Parsing
                     var assignment = new AgentAssignment();
 
                     if ((attribute as AssignedToList).SystemIdentifier != null)
-                        assignment.AlternativeIdentifier = GetOrCreateAlternative ((attribute as AssignedToList).SystemIdentifier);
+                        assignment.SystemReference = GetOrCreateAlternative ((attribute as AssignedToList).SystemIdentifier);
 
                     foreach (var assignedto in (attribute as AssignedToList).Values) {
                         if (assignedto is IdentifierOrName) {
@@ -696,15 +696,15 @@ namespace KAOSTools.Parsing
                 foreach (var r in refinements)
                     goal.Refinements.Add (r);
                 foreach (var r in obstruction)
-                    goal.Obstruction.Add (r);                
+                    goal.Obstructions.Add (r);                
                 foreach (var r in assignedAgents) {
-                    goal.AssignedAgents.Add (r);
+                    goal.AgentAssignments.Add (r);
                 }
 
             } else {
                 goal.Refinements = refinements;
-                goal.Obstruction = obstruction;
-                goal.AssignedAgents = assignedAgents;
+                goal.Obstructions = obstruction;
+                goal.AgentAssignments = assignedAgents;
             }
         }
 
@@ -777,7 +777,8 @@ namespace KAOSTools.Parsing
                 if (candidates.Count() == 0) {
                     if (create) {
                         candidate = new KAOSTools.MetaModel.Obstacle() { 
-                            Name = (attribute as Name).Value
+                            Name = (attribute as Name).Value,
+                            Implicit = true
                         };
                         model.GoalModel.Obstacles.Add (candidate);
                         Declarations.Add (candidate, new List<Declaration> { new Declaration (attribute.Line, attribute.Col, attribute.Filename) });
@@ -799,7 +800,8 @@ namespace KAOSTools.Parsing
                 if (candidate == null) {
                     if (create) {
                         candidate = new KAOSTools.MetaModel.Obstacle() { 
-                            Identifier = (attribute as Identifier).Value
+                            Identifier = (attribute as Identifier).Value,
+                            Implicit = true
                         };
                         model.GoalModel.Obstacles.Add (candidate);
                         Declarations.Add (candidate, new List<Declaration> { new Declaration (attribute.Line, attribute.Col, attribute.Filename) });
@@ -868,7 +870,8 @@ namespace KAOSTools.Parsing
                 if (candidates.Count() == 0) {
                         if (create) {
                             candidate = new KAOSTools.MetaModel.Goal() { 
-                                Name = (attribute as Name).Value
+                                Name = (attribute as Name).Value,
+                                Implicit = true
                             };
                             model.GoalModel.Goals.Add (candidate);
                             Declarations.Add (candidate, new List<Declaration> { new Declaration (attribute.Line, attribute.Col, attribute.Filename) });
@@ -890,7 +893,8 @@ namespace KAOSTools.Parsing
                 if (candidate == null) {
                     if (create) {
                         candidate = new KAOSTools.MetaModel.Goal() { 
-                            Identifier = (attribute as Identifier).Value
+                            Identifier = (attribute as Identifier).Value,
+                            Implicit = true
                         };
                         model.GoalModel.Goals.Add (candidate);
                         Declarations.Add (candidate, new List<Declaration> { new Declaration (attribute.Line, attribute.Col, attribute.Filename) });
@@ -915,7 +919,8 @@ namespace KAOSTools.Parsing
                 if (candidates.Count() == 0) {
                     if (create) {
                         candidate = new KAOSTools.MetaModel.Agent() { 
-                            Name = (attribute as Name).Value
+                            Name = (attribute as Name).Value,
+                            Implicit = true
                         };
                         model.GoalModel.Agents.Add (candidate);
                         Declarations.Add (candidate, new List<Declaration> { new Declaration (attribute.Line, attribute.Col, attribute.Filename) });
@@ -937,7 +942,8 @@ namespace KAOSTools.Parsing
                 if (candidate == null) {
                     if (create) {
                         candidate = new KAOSTools.MetaModel.Agent () { 
-                            Identifier = (attribute as Identifier).Value
+                            Identifier = (attribute as Identifier).Value,
+                            Implicit = true
                         };
                         model.GoalModel.Agents.Add (candidate);
                         Declarations.Add (candidate, new List<Declaration> { new Declaration (attribute.Line, attribute.Col, attribute.Filename) });
@@ -962,7 +968,8 @@ namespace KAOSTools.Parsing
                 if (candidates.Count() == 0) {
                     if (create) {
                         candidate = new KAOSTools.MetaModel.System() { 
-                            Name = (attribute as Name).Value
+                            Name = (attribute as Name).Value,
+                            Implicit = true
                         };
                         model.GoalModel.Systems.Add (candidate);
                         Declarations.Add (candidate, new List<Declaration> { new Declaration (attribute.Line, attribute.Col, attribute.Filename) });
@@ -984,7 +991,8 @@ namespace KAOSTools.Parsing
                 if (candidate == null) {
                     if (create) {
                         candidate = new KAOSTools.MetaModel.System() { 
-                            Identifier = (attribute as Identifier).Value
+                            Identifier = (attribute as Identifier).Value,
+                            Implicit = true
                         };
                         model.GoalModel.Systems.Add (candidate);
                         Declarations.Add (candidate, new List<Declaration> { new Declaration (attribute.Line, attribute.Col, attribute.Filename) });

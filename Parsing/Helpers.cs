@@ -61,13 +61,13 @@ namespace KAOSTools.Parsing
                 if (!g1.Refinements.Contains (r))
                     g1.Refinements.Add (r);
 
-            foreach (var r in g2.AssignedAgents)
-                if (!g1.AssignedAgents.Contains (r))
-                    g1.AssignedAgents.Add (r);
+            foreach (var r in g2.AgentAssignments)
+                if (!g1.AgentAssignments.Contains (r))
+                    g1.AgentAssignments.Add (r);
             
-            foreach (var r in g2.Obstruction)
-                if (!g1.Obstruction.Contains (r))
-                    g1.Obstruction.Add (r);
+            foreach (var r in g2.Obstructions)
+                if (!g1.Obstructions.Contains (r))
+                    g1.Obstructions.Add (r);
         }
 
         public static void Merge (this KAOSTools.MetaModel.DomainProperty d1, KAOSTools.MetaModel.DomainProperty d2)

@@ -117,12 +117,12 @@ namespace KAOSTools.OmnigraffleExport
 
                 var assignmentsToAgent =
                     from g in model.Goals 
-                        from a in g.AssignedAgents
+                        from a in g.AgentAssignments
                         where a.Agents.Contains (agent)
                         select a;
 
                 foreach (var assignment in assignmentsToAgent) { // model.Goals.Where (g => g.AssignedAgents.SelectMany(x => x.Agents).Contains (agent))) {
-                    var goal = model.Goals.Where (g => g.AssignedAgents.Contains (assignment)).Single ();
+                    var goal = model.Goals.Where (g => g.AgentAssignments.Contains (assignment)).Single ();
                     var goalGraphic = AddGoal (agentCanvas, goal);
 
                     string text = "";
@@ -150,7 +150,7 @@ namespace KAOSTools.OmnigraffleExport
                 mapping.Add (obstacleCanvas, new Dictionary<string, KAOSTools.OmnigraffleExport.Omnigraffle.ShapedGraphic> ());
 
                 var goalGraphic = AddGoal (obstacleCanvas, obstructedGoal);
-                foreach (var obstacle in obstructedGoal.Obstruction) {
+                foreach (var obstacle in obstructedGoal.Obstructions) {
                     RecursiveExportObstacle (obstacleCanvas, obstacle, true);
                     AddSharpBackCrossArrow (obstacleCanvas.GraphicsList, mapping [obstacleCanvas] [obstacle.Identifier], goalGraphic);
                 }
@@ -169,7 +169,7 @@ namespace KAOSTools.OmnigraffleExport
             }
 
             foreach (var goal in model.ObstructedGoals) {
-                foreach (var obstacle in goal.Obstruction) {
+                foreach (var obstacle in goal.Obstructions) {
                     AddObstacle (goalCanvas, obstacle);
                     AddSharpBackCrossArrow (goalCanvas.GraphicsList, mapping [goalCanvas] [obstacle.Identifier], mapping [goalCanvas] [goal.Identifier]);
                 }
@@ -212,8 +212,8 @@ namespace KAOSTools.OmnigraffleExport
                 // We add the arrow to the canvas after the label, so that label is above the arrow
                 var topArrow = AddFilledArrow (canvas.GraphicsList, circle, parentGraphic, false);
 
-                if (refinement.SystemIdentifier != null) {
-                    var text = string.IsNullOrEmpty (refinement.SystemIdentifier.Name) ? refinement.SystemIdentifier.Identifier : refinement.SystemIdentifier.Name;
+                if (refinement.SystemReference != null) {
+                    var text = string.IsNullOrEmpty (refinement.SystemReference.Name) ? refinement.SystemReference.Identifier : refinement.SystemReference.Name;
 
                     var alternativeText = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Rectangle, 50, 50, 100, 100);
                     alternativeText.Text = new Omnigraffle.TextInfo (text) {
@@ -233,7 +233,7 @@ namespace KAOSTools.OmnigraffleExport
                 // Ad the arrow
                 canvas.GraphicsList.Add (topArrow);
 
-                foreach (var child in refinement.Children.Reverse ()) {
+                foreach (var child in refinement.Subgoals.Reverse ()) {
                     RecursiveExportGoal (canvas, child);
                     var childGraphic = mapping[canvas][child.Identifier];
                     AddLine (canvas.GraphicsList, childGraphic, circle);
@@ -250,15 +250,15 @@ namespace KAOSTools.OmnigraffleExport
                 }
             }
             
-            foreach (var assignment in goal.AssignedAgents) {
+            foreach (var assignment in goal.AgentAssignments) {
 
                 var circle = AddCircle (canvas.GraphicsList);
                 
                 // We add the arrow to the canvas after the label, so that label is above the arrow
                 var topArrow = AddFilledArrow (canvas.GraphicsList, circle, parentGraphic, false);
 
-                if (assignment.AlternativeIdentifier != null) {
-                    var text = string.IsNullOrEmpty (assignment.AlternativeIdentifier.Name) ? assignment.AlternativeIdentifier.Identifier : assignment.AlternativeIdentifier.Name;
+                if (assignment.SystemReference != null) {
+                    var text = string.IsNullOrEmpty (assignment.SystemReference.Name) ? assignment.SystemReference.Identifier : assignment.SystemReference.Name;
                     var alternativeText = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Rectangle, 50, 50, 100, 100);
                     alternativeText.Text = new Omnigraffle.TextInfo (text) {
                         Alignement = KAOSTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
@@ -297,7 +297,7 @@ namespace KAOSTools.OmnigraffleExport
                 
                 AddFilledArrow (canvas.GraphicsList, circle, parentGraphic);
                 
-                foreach (var child in refinement.Children) {
+                foreach (var child in refinement.Subobstacles) {
                     RecursiveExportObstacle (canvas, child, export_resolution);
                     var childGraphic = mapping[canvas][child.Identifier];
                     
@@ -590,7 +590,7 @@ namespace KAOSTools.OmnigraffleExport
             graphic.Flow = KAOSTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
 
             bool assignedToEnvAgents = (
-                from a in goal.AssignedAgents.SelectMany (x => x.Agents)
+                from a in goal.AgentAssignments.SelectMany (x => x.Agents)
                 where a.Type != AgentType.Software select a).Count () > 0;
 
             if (assignedToEnvAgents)
@@ -598,7 +598,7 @@ namespace KAOSTools.OmnigraffleExport
             else
                 graphic.Style.Fill.Color = new KAOSTools.OmnigraffleExport.Omnigraffle.Color (0.810871, 0.896814, 1);
 
-            if (goal.AssignedAgents.Count > 0)
+            if (goal.AgentAssignments.Count > 0)
                 graphic.Style.Stroke.Width = 2;
 
             return graphic;

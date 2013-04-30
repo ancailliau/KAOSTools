@@ -24,13 +24,13 @@ namespace KAOSTools.DotExporter
 
         public void ExportGoal (Goal g)
         {
-            bool assignedToSoftwareAgents = (from a in g.AssignedAgents.SelectMany (x => x.Agents) select a.Type == AgentType.Software ).Count () > 0;
+            bool assignedToSoftwareAgents = (from a in g.AgentAssignments.SelectMany (x => x.Agents) select a.Type == AgentType.Software ).Count () > 0;
             var name = new StringBuilder (g.Name);
             if (name.Length > 30) {
                 var midspace = g.Name.IndexOf (' ', (g.Name.Length / 2) - 1);
                 name.Replace (" ", @"\n", midspace, 1);
             }
-            writer.WriteLine (@"""{0}"" [shape=polygon,skew=.1,label=""{1}"",style=filled,fillcolor=""{2}"",penwidth={3},fontname=""Arial"",fontsize=10,margin=""-.2,0""];", string.IsNullOrEmpty (g.Identifier) ? g.Name : g.Identifier, name, assignedToSoftwareAgents ? "#fff9c1" : "#d8ebfd", g.AssignedAgents.Count > 0 ? 2 : 1);
+            writer.WriteLine (@"""{0}"" [shape=polygon,skew=.1,label=""{1}"",style=filled,fillcolor=""{2}"",penwidth={3},fontname=""Arial"",fontsize=10,margin=""-.2,0""];", string.IsNullOrEmpty (g.Identifier) ? g.Name : g.Identifier, name, assignedToSoftwareAgents ? "#fff9c1" : "#d8ebfd", g.AgentAssignments.Count > 0 ? 2 : 1);
         }
         
         public void ExportDomainProperty (DomainProperty domprop)
@@ -81,7 +81,7 @@ namespace KAOSTools.DotExporter
                               string.IsNullOrEmpty (parent.Identifier) ? parent.Name : parent.Identifier,
                               tempGUID);
 
-            foreach (var child in refinement.Children) {
+            foreach (var child in refinement.Subgoals) {
                 writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=none];", 
                                   tempGUID, 
                                   string.IsNullOrEmpty (child.Identifier) ? child.Name : child.Identifier);
@@ -101,7 +101,7 @@ namespace KAOSTools.DotExporter
                               string.IsNullOrEmpty (parent.Identifier) ? parent.Name : parent.Identifier,
                               tempGUID);
 
-            foreach (var child in refinement.Children) {
+            foreach (var child in refinement.Subobstacles) {
                 writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=none];", 
                                   tempGUID, 
                                   string.IsNullOrEmpty (child.Identifier) ? child.Name : child.Identifier);
@@ -121,7 +121,7 @@ namespace KAOSTools.DotExporter
             foreach (var r in o.Refinements) {
                 ExportRefinement (o, r);
                 
-                foreach (var child in r.Children) {
+                foreach (var child in r.Subobstacles) {
                     ExportRefinementRecursively (child, exportObstacle);
                 }
             }
@@ -138,7 +138,7 @@ namespace KAOSTools.DotExporter
             foreach (var r in g.Refinements) {
                 ExportRefinement (g, r);
                 
-                foreach (var child in r.Children) {
+                foreach (var child in r.Subgoals) {
                     ExportRefinementRecursively (child);
                 }
             }
@@ -177,8 +177,8 @@ namespace KAOSTools.DotExporter
             writer.WriteLine ();
 
             foreach (var g in model.Goals) {
-                if (g.AssignedAgents.Count > 0) {
-                    foreach (var assignment in g.AssignedAgents) {
+                if (g.AgentAssignments.Count > 0) {
+                    foreach (var assignment in g.AgentAssignments) {
                         foreach (var agent in assignment.Agents) {
                             ExportResponsibility (agent, g);
                         }
@@ -199,7 +199,7 @@ namespace KAOSTools.DotExporter
             writer.WriteLine ("## OBSTRUCTIONS");
 
             foreach (var g in model.ObstructedGoals) {
-                foreach (var o in g.Obstruction) {
+                foreach (var o in g.Obstructions) {
                     ExportObstruction (g, o);
                 }
             }
@@ -209,7 +209,7 @@ namespace KAOSTools.DotExporter
             writer.WriteLine ("## OBSTACLE REFINEMENTS");
 
             foreach (var g in model.ObstructedGoals) {
-                foreach (var o in g.Obstruction) {
+                foreach (var o in g.Obstructions) {
                     ExportRefinementRecursively (o);
                 }
             }

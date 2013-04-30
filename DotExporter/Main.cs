@@ -68,9 +68,9 @@ namespace KAOSTools.DotExporter
                         exporter.ExportGoal (g);
                         foreach (var refinement in g.Refinements) {
                             exporter.ExportRefinement (g, refinement);
-                            foreach (var child in refinement.Children) {
+                            foreach (var child in refinement.Subgoals) {
                                 exporter.ExportGoal (child);
-                                foreach (var assignment in child.AssignedAgents) {
+                                foreach (var assignment in child.AgentAssignments) {
                                     foreach (var agent in assignment.Agents) {
                                         exporter.ExportResponsibility (agent, child);
                                     }
@@ -115,7 +115,7 @@ namespace KAOSTools.DotExporter
 
                     foreach (var g in goals) {
                         exporter.ExportGoal (g);
-                        foreach (var obstruction in g.Obstruction) {
+                        foreach (var obstruction in g.Obstructions) {
                             exporter.ExportObstruction (g, obstruction);
                             exporter.ExportRefinementRecursively (obstruction, true);
                         }
@@ -136,7 +136,7 @@ namespace KAOSTools.DotExporter
 
                     foreach (var g in goals) {
                         exporter.ExportGoal (g);
-                        foreach (var assignment in g.AssignedAgents) {
+                        foreach (var assignment in g.AgentAssignments) {
                             foreach (var agent in assignment.Agents) {
                                 exporter.ExportResponsibility (agent, g);
                             }
