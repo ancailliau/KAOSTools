@@ -141,8 +141,6 @@ IdOrName := ( '"' String '"' / Identifier )
 Identifier := ([$_-])? ([a-zA-Z0-9] [a-zA-Z0-9$_-]*)
     `value = null` `expected = "identifier"`
 
-# [^"]+
-# ( '\' '.' / [^\\"] )*
 String := ( ( '""' / [^"] )+ )
     `value = null` `expected = "string"`
     

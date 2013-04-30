@@ -4,17 +4,20 @@ using System.Collections.Generic;
 using KAOSTools.Parsing;
 using KAOSTools.MetaModel;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace KAOSTools.Parsing
 {
     public class Declaration
     {
+        public static Uri RelativePath { get; set; }
         public int    Line     { get; set; }
         public int    Col      { get; set; }
         public string Filename { get; set; }
         public Declaration (int line, int col, string filename)
         {
-            this.Line = line; this.Col = col; this.Filename = filename;   
+            this.Line = line; this.Col = col; 
+            this.Filename = RelativePath.MakeRelativeUri (new Uri(Path.GetFullPath (filename))).ToString ();
         }
     }
 
@@ -30,6 +33,7 @@ namespace KAOSTools.Parsing
         {
             Elements elements = null;
             Declarations = new Dictionary<KAOSMetaModelElement, IList<Declaration>> ();
+            Declaration.RelativePath = new Uri(Path.GetFullPath (filename));
 
             try {
                 elements = _parser.Parse (input, filename) as Elements;    
