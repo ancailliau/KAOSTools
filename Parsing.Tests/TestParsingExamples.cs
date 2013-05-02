@@ -13,13 +13,13 @@ namespace KAOSTools.Parsing.Tests
     [TestFixture()]
     public class TestParsingExamples
     {
-        private static Parser parser = new Parser ();
+        private static ModelBuilder parser = new ModelBuilder ();
         
         [Test()]
         public void TestLAS ()
         {
-            string input = File.ReadAllText ("../../Examples/las.kaos");
-            var model = parser.Parse (input, "../../Examples/las.kaos");
+            string input = File.ReadAllText ("./Examples/las.kaos");
+            var model = parser.Parse (input, "./Examples/las.kaos");
 
             Assert.IsNotNull (model);
         }
@@ -27,8 +27,8 @@ namespace KAOSTools.Parsing.Tests
         [Test()]
         public void TestInclude ()
         {
-            string input = File.ReadAllText ("../../Examples/include.kaos");
-            var model = parser.Parse (input, "../../Examples/include.kaos");
+            string input = File.ReadAllText ("./Examples/include.kaos");
+            var model = parser.Parse (input, "./Examples/include.kaos");
             
             Assert.IsNotNull (model);
             Assert.IsNotEmpty (model.GoalModel.Goals.First ().Name);
@@ -38,8 +38,8 @@ namespace KAOSTools.Parsing.Tests
         [Test()]
         public void TestIssue7 ()
         {
-            string input = File.ReadAllText ("../../Examples/issue7.kaos");
-            var model = parser.Parse (input);
+            string input = File.ReadAllText ("./Examples/issue7.kaos");
+            var model = parser.Parse (input, "./Examples/issue7.kaos");
             
             Assert.IsNotNull (model);
 

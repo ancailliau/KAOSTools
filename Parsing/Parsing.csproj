@@ -42,15 +42,21 @@
     <Reference Include="LtlSharp">
       <HintPath>..\Libraries\LtlSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="GoalModelParser.cs" />
-    <Compile Include="Elements.cs" />
-    <Compile Include="Parser.cs" />
-    <Compile Include="ParsingException.cs" />
     <Compile Include="GoalModelParserExtension.cs" />
     <Compile Include="Helpers.cs" />
+    <Compile Include="Declaration.cs" />
+    <Compile Include="ModelBuilder.cs" />
+    <Compile Include="CompilationException.cs" />
+    <Compile Include="FirstStageBuilder.cs" />
+    <Compile Include="Builder.cs" />
+    <Compile Include="FormulaBuilder.cs" />
+    <Compile Include="SecondStageBuilder.cs" />
+    <Compile Include="ParsedAssignedToAttribute.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

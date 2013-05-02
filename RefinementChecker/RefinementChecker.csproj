@@ -47,8 +47,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Main.cs" />
     <Compile Include="ProofObligation.cs" />
     <Compile Include="NuSMV.cs" />
     <Compile Include="Helpers.cs" />

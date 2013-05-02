@@ -1,11 +1,12 @@
 start = Start
-value = KAOSTools.Parsing.Element
+value = KAOSTools.Parsing.ParsedElement
 debug = 
 
 Start := S Elements S;
 
 Elements := 
-    ( ( System / Predicate / Goal / DomProp / Obstacle / Agent / Import / DomHyp ) S )*
+    ( ( System / Predicate / Goal / DomProp / Obstacle / Agent / Import / DomHyp 
+        / Entity / Type / Association ) S )*
     `value = BuildElements (results);`
 
 
@@ -36,59 +37,79 @@ Obstacle :=
     `value = BuildObstacle(results);`
 
 Agent := 
-    ( 'declare' / 'override' ) S (('software' / 'environment') S)? 'agent' S (AgentAttribute S)* 'end'
+    ( 'declare' / 'override' ) S 'agent' S (AgentAttribute S)* 'end'
     `value = BuildAgent(results);`
 
 DomHyp := 
     ( 'declare' / 'override' ) S ('domainhypothesis' / 'domhyp' ) S (DomHypAttribute S)* 'end'
     `value = BuildDomainHypothesis(results);`
 
+Entity := 
+    ( 'declare' / 'override' ) S (('software' / 'environment' / 'shared') S)? ('entity' / 'object' ) S (EntityAttribute S)* 'end'
+    `value = BuildEntity(results);`
 
+Type := 
+    ( 'declare' / 'override' ) S 'type' S (TypeAttribute S)* 'end'
+    `value = BuildType(results);`
+
+Association := 
+    ( 'declare' / 'override' ) S ( 'association' / 'relation' ) S (AssociationAttribute S)* 'end'
+    `value = BuildAssociation(results);`
+    
 #
                                                                                                                                                                                                          
 GoalAttribute := 
-    ( Id / Name / Definition / FormalSpec / RefinedByGoal / ObstructedBy / AssignedTo / RDS )
+    ( IdAttribute / NameAttribute / Definition / FormalSpec / RefinedByGoal / ObstructedBy / AssignedTo / RDS )
     `value = results[0].Value;`
     
 DomPropAttribute := 
-    ( Id / Name / Definition / FormalSpec / Probability )
+    ( IdAttribute / NameAttribute / Definition / FormalSpec / Probability )
     `value = results[0].Value;`
     
 DomHypAttribute := 
-    ( Id / Name / Definition )
+    ( IdAttribute / NameAttribute / Definition )
     `value = results[0].Value;`
 
 ObstacleAttribute := 
-    ( Id / Name / Definition / FormalSpec / RefinedByObstacle / ResolvedBy / Probability )
+    ( IdAttribute / NameAttribute / Definition / FormalSpec / RefinedByObstacle / ResolvedBy / Probability )
     `value = results[0].Value;`
 
 AgentAttribute := 
-    ( Id / Name / Description )
+    ( IdAttribute / NameAttribute / Description / AgentTypeAttribute )
     `value = results[0].Value;`
                                                                          
 PredicateAttribute := 
-    ( Name / Definition / Signature / StringFormalSpec ) 
+    ( IdAttribute / NameAttribute / Definition / Signature / Argument / FormalSpec ) 
     `value = results[0].Value;`
 
 SystemAttribute := 
-    ( Id / Name / Description / Alternative ) 
+    ( IdAttribute / NameAttribute / Description / Alternative ) 
     `value = results[0].Value;`
 
+EntityAttribute := 
+    ( IdAttribute / NameAttribute / Definition / Attribute / IsA ) 
+    `value = results[0].Value;`
+    
+TypeAttribute := 
+    ( IdAttribute / NameAttribute / Definition ) 
+    `value = results[0].Value;`
+    
+AssociationAttribute :=
+    ( IdAttribute / NameAttribute / Definition / Attribute / Link ) 
+    `value = results[0].Value;`
+    
 # 
 
-Id := 'id' S Identifier
-    `value = BuildId(results);`
+IdAttribute := 'id' S Identifier
+    `value = BuildIdentifierAttribute(results);`
 
-Name := 'name' S '"' String '"'
-    `value = BuildName(results);`
+NameAttribute := 'name' S '"' String '"'
+    `value = BuildNameAttribute(results);`
     
 Signature := 'signature'  S '"' String '"'
     `value = BuildSignature(results);`
     
-StringFormalSpec := 'formalspec' S '"' String '"' 
-    `value = BuildStringFormalSpec(results);`
-
-FormalSpec := 'formalspec' S '"' String '"' 
+FormalSpec := 'formalspec' S '"' Formula '"' 
     `value = BuildFormalSpec(results);`
     
 Definition := 'definition' S '"' String '"' 
@@ -96,6 +117,9 @@ Definition := 'definition' S '"' String '"'
 
 Description := ('definition' / 'description') S ('"' String '"' / '"' '"')
     `value = BuildDescription(results);`
+    
+AgentTypeAttribute := 'type' S ('software' / 'environment')
+    `value = BuildAgentTypeAttribute (results);`
     
 RDS := 'rds' S Float 
     `value = BuildRDS(results);`
@@ -109,19 +133,43 @@ RefinedByObstacle := 'refinedby' S IdOrNameOrObstacle (S ',' S IdOrNameOrObstacl
 RefinedByGoal := 'refinedby' ('[' S IdOrName S ']')? S IdOrNameOrGoal (S ',' S IdOrNameOrGoal)*
     `value = BuildRefinedBy(results);`
     
-ObstructedBy := 'obstructedby' S IdOrNameOrObstacle (S ',' S IdOrNameOrObstacle)*
+ObstructedBy := 'obstructedby' S IdOrNameOrObstacle
     `value = BuildObstructedBy(results);`
     
 AssignedTo := 'assignedto' ('[' S IdOrName S ']')?  S IdOrNameOrAgent (S ',' S IdOrNameOrAgent)*
     `value = BuildAssignedTo(results);`
     
-ResolvedBy := 'resolvedby' S IdOrNameOrGoal (S ',' S IdOrNameOrGoal)*
+ResolvedBy := 'resolvedby' S IdOrNameOrGoal
     `value = BuildResolvedBy(results);`
         
-Alternative := 'alternative' S IdOrNameOrSystem (S ',' S IdOrNameOrSystem)*
+Alternative := 'alternative' S IdOrNameOrSystem
     `value = BuildAlternative(results);`
-                                                                                                                                                                                                                                                                              
+
+Attribute := 'attribute' S Name S (':' S IdOrName)?
+    `value = BuildAttribute(results);`
+
+Argument := 'argument' S Name S (':' S IdOrName)?
+    `value = BuildArgument(results);`
+
+Link := 'link' S Multiplicity? S IdOrName
+    `value = BuildLink(results);`
+    
+IsA := 'is' S IdOrName
+    `value = BuildIsA(results);`
+    
 # Expressions                                
+
+Multiplicity :=
+    '(' S MultiplicityLowerBound S ('..' S MultiplicityUpperBound S )? ')'
+    `value = BuildMultiplicity(results);`
+
+MultiplicityLowerBound := 
+    ( [0-9] / 'M' / 'N' )
+    `value = results[0].Value;`
+
+MultiplicityUpperBound := 
+    ( [0-9] / 'M' / 'N' / '*' )
+    `value = results[0].Value;`
 
 IdOrNameOrObstacle := ( Obstacle / IdOrName )
     `value = results[0].Value;` `expected = "id or name"`
@@ -139,7 +187,10 @@ IdOrName := ( '"' String '"' / Identifier )
     `value = BuildIdOrName(results);` `expected = "id or name"`
     
 Identifier := ([$_-])? ([a-zA-Z0-9] [a-zA-Z0-9$_-]*)
-    `value = null` `expected = "identifier"`
+    `value = BuildIdentifier(results);` `expected = "identifier"`
+
+Name := '"' String '"' 
+    `value = BuildName(results);`
 
 String := ( ( '""' / [^"] )+ )
     `value = null` `expected = "string"`
@@ -147,7 +198,65 @@ String := ( ( '""' / [^"] )+ )
 Float := ('.' [0-9]+) / ( [0-9]+ ('.' [0-9]+)? )
     `value = null` `expected = "float"`
 
+# Formal specification
 
+Formula := 
+    'forall' S Identifier S ':' S Identifier ( ',' S Identifier S ':' S Identifier )* S '.' S Formula
+    / 'exists' S Identifier S ':' S Identifier ( ',' S Identifier S ':' S Identifier )* S '.' S Formula
+    / StrongBinary
+    `value = BuildFormula(results);`
+
+StrongBinary :=
+    'when' S Binary S 'then' S Formula
+    / Binary
+    `value = BuildStrongBinary(results);`
+
+Binary :=
+    'if' S TemporalBinary S 'then' S Formula
+    / TemporalBinary S 'iff' S Formula
+    / TemporalBinary
+    `value = BuildBinary(results);`
+
+TemporalBinary :=
+    And S 'until' S Formula
+    / And S 'release' S Formula
+    / And S 'unless' S Formula
+    / And
+    `value = BuildTemporalBinary(results);`
+
+And :=
+    Or S 'and' S Formula
+    / Or
+    `value = BuildAnd(results);`
+
+Or := 
+    Unary S 'or' S Formula
+    / Unary
+    `value = BuildOr(results);`
+
+Unary :=
+    'not' S Formula
+    / 'next' S Formula
+    / ('sooner-or-later' / 'eventually') S Formula
+    / ('always' / 'globally') S Formula
+    / Atom
+    `value = BuildUnary(results);`
+
+Atom :=
+    '(' S Identifier ( S ',' S Identifier )* S ')' S 'in' S Identifier
+    / Identifier ( S '(' S Identifier ( S ',' S Identifier )* S ')' )
+    / Identifier '.' Identifier ( S ( '==' / '!=' / '>=' / '<=' / '>' / '<' ) S ( Identifier '.' Identifier / '\'' SingleQuoteString '\'' / Number ) )?
+    / Identifier
+    / '(' S Formula S ')'
+    `value = BuildAtom(results);`
+
+SingleQuoteString := ( ( '\'\'' / [^'] )+ )
+    `value = null` `expected = "string"`
+
+Number := ( '.' [0-9]+ / [0-9]+ ( '.' [0-9]+ )? )
+    `value = null` `expected = "string"`
+
+#  ( ( '==' / '!=' / '>' / '<' / '>=' / '<=' ) ( Identifier '.' Identifier / '"' String '"' / [0-9]+ / Identifier ) )?
 # Spaces and comments
 
 S := (Space* Comment+ Space*)+ / Space* `text = null`

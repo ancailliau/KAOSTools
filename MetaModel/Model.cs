@@ -1,6 +1,5 @@
 using LtlSharp;
 using System.Collections.Generic;
-using System.Linq;
 using System;
 
 namespace KAOSTools.MetaModel
@@ -10,7 +9,7 @@ namespace KAOSTools.MetaModel
     /// </summary>
     public abstract class KAOSMetaModelElement
     {
-        private string _identifier = Guid.NewGuid ().ToString ();
+        string _identifier = Guid.NewGuid ().ToString ();
 
         /// <summary>
         /// Gets or sets the identifier of the element.
@@ -37,8 +36,41 @@ namespace KAOSTools.MetaModel
         /// Gets or sets the systems the element is in.
         /// </summary>
         /// <value>The systems the element is referenced in.</value>
-        public ISet<System> InSystems { get; set; }
+        public ISet<AlternativeSystem> InSystems { get; set; }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="KAOSTools.MetaModel.KAOSMetaModelElement"/>.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="KAOSTools.MetaModel.KAOSMetaModelElement"/>.</param>
+        /// <returns><c>true</c> if the specified <see cref="System.Object"/> is equal to the current
+        /// <see cref="KAOSTools.MetaModel.KAOSMetaModelElement"/>; otherwise, <c>false</c>.</returns>
+        public override bool Equals (object obj)
+        {
+            if (obj == null)
+                return false;
+            if (ReferenceEquals (this, obj))
+                return true;
+            if (obj.GetType () != typeof(KAOSMetaModelElement))
+                return false;
+            KAOSMetaModelElement other = (KAOSMetaModelElement)obj;
+            return _identifier == other._identifier;
+        }
+
+        /// <summary>
+        /// Serves as a hash function for a <see cref="KAOSTools.MetaModel.KAOSMetaModelElement"/> object.
+        /// </summary>
+        /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a
+        /// hash table.</returns>
+        public override int GetHashCode ()
+        {
+            unchecked {
+                return (_identifier != null ? _identifier.GetHashCode () : 0);
+            }
+        }
+        
     }
+
+    #region Goal Model
 
     /// <summary>
     /// Represents a goal
@@ -61,7 +93,7 @@ namespace KAOSTools.MetaModel
         /// Gets or sets the formal specification.
         /// </summary>
         /// <value>The formal specification of the goal.</value>
-        public LTLFormula FormalSpec { get; set; }
+        public Formula FormalSpec { get; set; }
 
         /// <summary>
         /// Gets or sets the computed probablity of satisfaction
@@ -101,7 +133,7 @@ namespace KAOSTools.MetaModel
             Refinements = new HashSet<GoalRefinement> ();
             Obstructions = new HashSet<Obstacle> ();
             AgentAssignments = new HashSet<AgentAssignment> ();
-            InSystems = new HashSet<System>();
+            InSystems = new HashSet<AlternativeSystem>();
         }
 
         /// <summary>
@@ -145,7 +177,7 @@ namespace KAOSTools.MetaModel
         /// Gets or sets the formal specification of the obstacle.
         /// </summary>
         /// <value>The formal specification.</value>
-        public LTLFormula FormalSpec { get; set; }
+        public Formula FormalSpec { get; set; }
 
         /// <summary>
         /// Gets or sets the estimated probability of satisfaction.
@@ -251,7 +283,7 @@ namespace KAOSTools.MetaModel
         /// Gets or sets the formal specification for the domain property.
         /// </summary>
         /// <value>The formal specification.</value>
-        public LTLFormula FormalSpec { get; set; }
+        public Formula FormalSpec { get; set; }
 
         /// <summary>
         /// Gets or sets the estimated probability of satisfaction.
@@ -286,7 +318,7 @@ namespace KAOSTools.MetaModel
         /// <value>The type.</value>
         public AgentType Type { get; set; }
 
-        public ISet<System> InSystems { get; set; }
+        public ISet<AlternativeSystem> InSystems { get; set; }
 
         /// <summary>
         /// Initializes a new agent
@@ -357,13 +389,23 @@ namespace KAOSTools.MetaModel
         /// alternative assignement.
         /// </summary>
         /// <value>The system.</value>
-        public System SystemReference { get; set; }
+        public AlternativeSystem SystemReference { get; set; }
 
         /// <summary>
         /// Gets or sets the agents involved with the assignements.
         /// </summary>
         /// <value>The agents.</value>
         public IList<Agent> Agents { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this assignement contains agents.
+        /// </summary>
+        /// <value><c>true</c> if this assignement is empty; otherwise, <c>false</c>.</value>
+        public bool IsEmpty {
+            get {
+                return Agents.Count == 0;
+            }
+        }
 
         /// <summary>
         /// Initializes a new assignment.
@@ -404,7 +446,7 @@ namespace KAOSTools.MetaModel
         /// alternative refinement.
         /// </summary>
         /// <value>The system reference.</value>
-        public System SystemReference { get; set; }
+        public AlternativeSystem SystemReference { get; set; }
 
         /// <summary>
         /// Gets or sets the sub-goals for the refinement.
@@ -423,6 +465,16 @@ namespace KAOSTools.MetaModel
         /// </summary>
         /// <value>The domain hypotheses.</value>
         public IList<DomainHypothesis> DomainHypotheses { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether this refinement contains sub-goals, domain properties or domain hypothesis.
+        /// </summary>
+        /// <value><c>true</c> if this refinement is empty; otherwise, <c>false</c>.</value>
+        public bool IsEmpty {
+            get {
+                return Subgoals.Count + DomainProperties.Count + DomainHypotheses.Count == 0;
+            }
+        }
 
         /// <summary>
         /// Initializes a new goal refinement.
@@ -477,7 +529,16 @@ namespace KAOSTools.MetaModel
         /// </summary>
         /// <value>The domain hypotheses.</value>
         public IList<DomainHypothesis> DomainHypotheses { get; set; }
-
+        
+        /// <summary>
+        /// Gets a value indicating whether this refinement contains sub-obstacles, domain properties or domain hypothesis.
+        /// </summary>
+        /// <value><c>true</c> if this refinement is empty; otherwise, <c>false</c>.</value>
+        public bool IsEmpty {
+            get {
+                return Subobstacles.Count + DomainProperties.Count + DomainHypotheses.Count == 0;
+            }
+        }
         /// <summary>
         /// Initializes a new obstacle refinement.
         /// </summary>
@@ -485,6 +546,7 @@ namespace KAOSTools.MetaModel
         {
             Subobstacles = new List<Obstacle> ();
             DomainProperties = new List<DomainProperty> ();
+            DomainHypotheses = new List<DomainHypothesis> ();
         }
 
         /// <summary>
@@ -507,10 +569,64 @@ namespace KAOSTools.MetaModel
         }
     }
 
+    #endregion
+
+    #region Object Model
+
+    public class Entity : KAOSMetaModelElement {
+        public string Name { get; set; }
+        public string Definition { get; set; }
+        public ISet<Attribute> Attributes { get; set; }
+        public EntityType Type { get; set; }
+        public ISet<Entity> Parents { get; set; }
+        public Entity ()
+        {
+            Attributes = new HashSet<Attribute> ();
+            Type = EntityType.None;
+            Parents = new HashSet<Entity> ();
+        }
+    }
+
+    public class Attribute : KAOSMetaModelElement {
+        public bool Derived { get; set; }
+        public string Name { get; set; }
+        public GivenType Type { get; set; }
+
+        public Attribute ()
+        {
+            Derived = false;
+        }
+    }
+
+    public class GivenType : KAOSMetaModelElement {
+        public string Name { get; set; }
+        public string Definition { get; set; }
+    }
+
+    public class Relation : Entity {
+        public ISet<Link> Links { get; set; } 
+        public Relation ()
+        {
+            Links = new HashSet<Link> ();
+        }
+    }
+
+    public class Link : KAOSMetaModelElement {
+        public Entity Target { get; set; }
+        public string Role { get; set; }
+        public string Multiplicity { get; set; }
+    }
+
+    public enum EntityType {
+        None, Software, Environment, Shared
+    }
+
+    #endregion
+
     /// <summary>
     /// Represents an alternative system.
     /// </summary>
-    public class System : KAOSMetaModelElement
+    public class AlternativeSystem : KAOSMetaModelElement
     {
         /// <summary>
         /// Gets or sets the name of the alternative system.
@@ -528,14 +644,19 @@ namespace KAOSTools.MetaModel
         /// Gets or sets the alternatives to the system.
         /// </summary>
         /// <value>The alternatives.</value>
-        public ISet<System> Alternatives { get; set; }
+        public ISet<AlternativeSystem> Alternatives { get; set; }
  
         /// <summary>
         /// Initializes a new system.
         /// </summary>
-        public System ()
+        public AlternativeSystem ()
         {
-            Alternatives = new HashSet<System> ();
+            Alternatives = new HashSet<AlternativeSystem> ();
+        }
+
+        public override string ToString ()
+        {
+            return string.Format ("[AlternativeSystem: Name={0}, Description={1}, Alternatives={2}]", Name, Description, Alternatives.Count);
         }
     }
 
@@ -550,6 +671,12 @@ namespace KAOSTools.MetaModel
         /// <value>The name.</value>
         public string Name { get; set; }
  
+        /// <summary>
+        /// Gets or sets the arguments of the predicate.
+        /// </summary>
+        /// <value>The arguments.</value>
+        public IList<PredicateArgument> Arguments { get; set; }
+
         /// <summary>
         /// Gets or sets the definition of the predicate.
         /// </summary>
@@ -566,6 +693,32 @@ namespace KAOSTools.MetaModel
         /// Gets or sets the formal specification of the predicate.
         /// </summary>
         /// <value>The formal specification.</value>
-        public string FormalSpec { get; set; }
+        public Formula FormalSpec { get; set; }
+
+        /// <summary>
+        /// Initializes a new predicate.
+        /// </summary>
+        public Predicate ()
+        {
+            Arguments = new List<PredicateArgument> ();
+        }
+    }
+
+    /// <summary>
+    /// Represents an argument of a predicate
+    /// </summary>
+    public class PredicateArgument {
+
+        /// <summary>
+        /// Gets or sets the name of the argument
+        /// </summary>
+        /// <value>The name.</value>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the type of the argument
+        /// </summary>
+        /// <value>The type.</value>
+        public Entity Type { get; set; }
     }
 }

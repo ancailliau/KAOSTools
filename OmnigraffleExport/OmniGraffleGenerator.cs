@@ -301,6 +301,18 @@ namespace KAOSTools.OmnigraffleExport
             }
 
             dict.Add ("Graphics", graphics_array);
+            
+            if (@group.Magnets.Count > 0) {
+                var d2 = new PListArray();
+                foreach (var m in @group.Magnets) {
+                    d2.Add(new PListString(string.Format("{{{0},{1}}}", m.X, m.Y)));
+                }
+                dict.Add ("Magnets", d2);
+            }
+
+            if (@group.GroupConnect) {
+                dict.Add ("GroupConnect", new PListString ("YES"));
+            }
 
             return dict;
         }
@@ -324,19 +336,26 @@ namespace KAOSTools.OmnigraffleExport
 
             dict.Add ("Shape", shape);
 
-                var fit_text = new PListString ();
-                if (graphic.FitText == Omnigraffle.FitText.Vertical)
-                    fit_text.Value = "Vertical";
-                if (graphic.FitText == Omnigraffle.FitText.Clip)
-                    fit_text.Value = "Clip";
-                dict.Add ("FitText", fit_text);
+            var fit_text = new PListString ();
+            if (graphic.FitText == Omnigraffle.FitText.Vertical)
+                fit_text.Value = "Vertical";
+            if (graphic.FitText == Omnigraffle.FitText.Clip)
+                fit_text.Value = "Clip";
+            if (graphic.FitText == Omnigraffle.FitText.Yes)
+                fit_text.Value = "Clip";
+            dict.Add ("FitText", fit_text);
 
-                var flow = new PListString ();
-                if (graphic.Flow == Omnigraffle.Flow.Resize)
-                    flow.Value = "Resize";
-                if (graphic.Flow == Omnigraffle.Flow.Clip)
-                    flow.Value = "Clip";
-                dict.Add ("Flow", flow);
+            var flow = new PListString ();
+            if (graphic.Flow == Omnigraffle.Flow.Resize)
+                flow.Value = "Resize";
+            if (graphic.Flow == Omnigraffle.Flow.Clip)
+                flow.Value = "Clip";
+            dict.Add ("Flow", flow);
+
+            var wrap = new PListString ();
+            if (!graphic.Wrap)
+                wrap.Value = "NO";
+            dict.Add ("Wrap", wrap);
 
             if (graphic.FontInfo != default (Omnigraffle.FontInfo)) {
                 dict.Add ("Font", ExportFont (graphic.FontInfo));
@@ -366,6 +385,14 @@ namespace KAOSTools.OmnigraffleExport
                 d2.Add ("Position", new PListReal(graphic.Line.Position));
                 d2.Add ("RotationType", new PListInteger(graphic.Line.RotationType == Omnigraffle.RotationType.Default ? 0 : 0));
                 dict.Add ("Line", d2);
+            }
+
+            if (graphic.Magnets.Count > 0) {
+                var d2 = new PListArray();
+                foreach (var m in graphic.Magnets) {
+                    d2.Add(new PListString(string.Format("{{{0},{1}}}", m.X, m.Y)));
+                }
+                dict.Add ("Magnets", d2);
             }
 
             return dict;
@@ -457,14 +484,29 @@ namespace KAOSTools.OmnigraffleExport
             var dict = new PListDict ();
 
             if (stroke.Draws) {
-            dict.Add ("HeadArrow", ExportArrow (stroke.HeadArrow));
-            dict.Add ("TailArrow", ExportArrow (stroke.TailArrow));
-            
-            dict.Add ("Legacy", new PListBool (stroke.Legacy));
+                dict.Add ("HeadArrow", ExportArrow (stroke.HeadArrow));
+                dict.Add ("TailArrow", ExportArrow (stroke.TailArrow));
+                
+                dict.Add ("Legacy", new PListBool (stroke.Legacy));
 
-            dict.Add ("Width", new PListReal (stroke.Width));
+                dict.Add ("Width", new PListReal (stroke.Width));
 
-            dict.Add ("CornerRadius", new PListReal (stroke.CornerRadius));
+                dict.Add ("CornerRadius", new PListReal (stroke.CornerRadius));
+
+                if (stroke.Pattern != KAOSTools.OmnigraffleExport.Omnigraffle.StrokePattern.None) {
+                    if (stroke.Pattern == KAOSTools.OmnigraffleExport.Omnigraffle.StrokePattern.Dashed) {
+                        dict.Add ("Pattern", new PListInteger (1));
+                    }
+                }
+
+                if (stroke.LineType == KAOSTools.OmnigraffleExport.Omnigraffle.LineType.Straight) {
+                    // dict.Add ("LineType", new PListInteger (0));
+                } else if (stroke.LineType == KAOSTools.OmnigraffleExport.Omnigraffle.LineType.Curved) {
+                    dict.Add ("LineType", new PListInteger (1));
+                } else if (stroke.LineType == KAOSTools.OmnigraffleExport.Omnigraffle.LineType.Orthogonal) {
+                    dict.Add ("LineType", new PListInteger (2));
+                }
+
             } else {
                 dict.Add ("Draws", new PListString (stroke.Draws ? "YES" : "NO"));
             }
@@ -529,7 +571,7 @@ namespace KAOSTools.OmnigraffleExport
 {{\colortbl;\red255\green255\blue255;}}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural{3}
 
-\f0\fs{2} \cf0 {0}}}", GetRtfUnicodeEscapedString (graphic.Text.Text), graphic.FontInfo.Font, graphic.FontInfo.Size * 2, alignement)));
+\f0\fs{2} \cf0 {0}}}", graphic.Text.Text, graphic.FontInfo.Font, graphic.FontInfo.Size * 2, alignement)));
 
             // if (graphic.Text.SideMargin > 0)
                 dict.Add ("Pad", new PListInteger (graphic.Text.SideMargin));
@@ -540,23 +582,7 @@ namespace KAOSTools.OmnigraffleExport
             return dict;
         }
 
-        private static string GetRtfUnicodeEscapedString(string s)
-        {
-            if (s == null)
-                return null;
 
-            var sb = new StringBuilder();
-            foreach (var c in s)
-            {
-                if(c == '\\' || c == '{' || c == '}')
-                    sb.Append(@"\" + c);
-                else if (c <= 0x7f)
-                    sb.Append(c);
-                else
-                    sb.Append("\\u" + Convert.ToUInt32(c) + "?");
-            }
-            return sb.ToString();
-        }
     }
 }
 

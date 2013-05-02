@@ -13,7 +13,7 @@ namespace KAOSTools.MetaModel
             this.model = model;
 
             foreach (var g in model.RootGoals) {
-                g.InSystems = new HashSet<System> (model.Systems);
+                g.InSystems = new HashSet<AlternativeSystem> (model.Systems);
                 foreach (var r in g.Refinements) {
                     DownPropagate (g, r);
                 }
@@ -46,9 +46,9 @@ namespace KAOSTools.MetaModel
             }
         }
 
-        private ISet<System> Simplify (ISet<System> systems)
+        private ISet<AlternativeSystem> Simplify (ISet<AlternativeSystem> systems)
         {
-            var result = new HashSet<System> (systems);
+            var result = new HashSet<AlternativeSystem> (systems);
             foreach (var s in model.Systems) {
                 bool contains_all = true;
                 foreach (var ss in s.Alternatives) {
@@ -73,7 +73,7 @@ namespace KAOSTools.MetaModel
             return result;
         }
 
-        private ISet<System> GetAllSubsystems (ISet<System> systems, System system)
+        private ISet<AlternativeSystem> GetAllSubsystems (ISet<AlternativeSystem> systems, AlternativeSystem system)
         {
             systems.Add (system);
             foreach (var s in system.Alternatives) {
@@ -85,9 +85,9 @@ namespace KAOSTools.MetaModel
         private void DownPropagate (Goal parent, AgentAssignment assignment)
         {
             if (assignment.InSystems == null)
-                assignment.InSystems = new HashSet<System> ();
+                assignment.InSystems = new HashSet<AlternativeSystem> ();
 
-            IEnumerable<System> systems_to_add;
+            IEnumerable<AlternativeSystem> systems_to_add;
             if (assignment.SystemReference != null) {
                 systems_to_add = parent.InSystems.Where (a => a.Equals(assignment.SystemReference));
             } else {
@@ -100,7 +100,7 @@ namespace KAOSTools.MetaModel
 
             foreach (var agent in assignment.Agents) {
                 if (agent.InSystems == null)
-                    agent.InSystems = new HashSet<System> ();
+                    agent.InSystems = new HashSet<AlternativeSystem> ();
                 
                 foreach (var a in systems_to_add) {
                     agent.InSystems.Add (a);
@@ -110,17 +110,17 @@ namespace KAOSTools.MetaModel
 
         private void DownPropagate (Goal parent, GoalRefinement refinement)
         {
-            IList<System> alternatives_to_add;
+            IList<AlternativeSystem> alternatives_to_add;
             if (refinement.SystemReference != null) {
-                var alternatives_to_filter_on = GetAllSubsystems(new HashSet<System> (), refinement.SystemReference);
-                alternatives_to_add = new List<System> (parent.InSystems.Where(r => alternatives_to_filter_on.Contains(r)));
+                var alternatives_to_filter_on = GetAllSubsystems(new HashSet<AlternativeSystem> (), refinement.SystemReference);
+                alternatives_to_add = new List<AlternativeSystem> (parent.InSystems.Where(r => alternatives_to_filter_on.Contains(r)));
             
             } else {
-                alternatives_to_add = new List<System> (parent.InSystems);
+                alternatives_to_add = new List<AlternativeSystem> (parent.InSystems);
             }
 
             if (refinement.InSystems == null)
-                refinement.InSystems = new HashSet<System> ();
+                refinement.InSystems = new HashSet<AlternativeSystem> ();
 
             foreach (var a in alternatives_to_add) {
                 refinement.InSystems.Add (a);
@@ -128,7 +128,7 @@ namespace KAOSTools.MetaModel
 
             foreach (var child in refinement.Subgoals) {
                 if (child.InSystems == null)
-                    child.InSystems = new HashSet<System> ();
+                    child.InSystems = new HashSet<AlternativeSystem> ();
 
                 foreach (var a in alternatives_to_add) {
                    child.InSystems.Add (a);

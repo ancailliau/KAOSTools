@@ -31,7 +31,7 @@ declare agent
     id myagent
 end
 ";
-            var parser = new Parser ();
+            var parser = new ModelBuilder ();
             var model = parser.Parse (input);
 
             var responsibilities = model.GoalModel.GetResponsibilities ();
@@ -67,7 +67,7 @@ declare agent
     id myagent
 end
 ";
-            var parser = new Parser ();
+            var parser = new ModelBuilder ();
             var model = parser.Parse (input);
 
             var responsibilities = model.GoalModel.GetResponsibilities ();
@@ -113,7 +113,7 @@ declare agent
     id myagent
 end
 ";
-            var parser = new Parser ();
+            var parser = new ModelBuilder ();
             var model = parser.Parse (input);
 
             var responsibilities = model.GoalModel.GetResponsibilities ();
@@ -159,7 +159,7 @@ declare agent
     id myagent
 end
 ";
-            var parser = new Parser ();
+            var parser = new ModelBuilder ();
             var model = parser.Parse (input);
 
             var responsibilities = model.GoalModel.GetResponsibilities ();
@@ -201,7 +201,7 @@ declare agent
     id myagent
 end
 ";
-            var parser = new Parser ();
+            var parser = new ModelBuilder ();
             var model = parser.Parse (input);
             
             var responsibilities = model.GoalModel.GetResponsibilities ();

@@ -48,6 +48,7 @@
       <HintPath>..\Libraries\CE.iPhone.PList.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />

@@ -50,14 +50,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TestParsingGoal.cs" />
-    <Compile Include="TestParsingDomainProperty.cs" />
-    <Compile Include="TestParsingObstacles.cs" />
     <Compile Include="TestParsingExamples.cs" />
     <Compile Include="TestParsingAgent.cs" />
     <Compile Include="TestParsingDomainHypothesis.cs" />
     <Compile Include="TestParsingPredicate.cs" />
     <Compile Include="TestParsingSystem.cs" />
+    <Compile Include="TestParsingGoal.cs" />
+    <Compile Include="TestParsingObstacles.cs" />
+    <Compile Include="TestParsingDomainProperty.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -69,5 +69,19 @@
       <Project>{52C948A2-30AD-40A7-89A3-9D66B2FCDD9F}</Project>
       <Name>Parsing</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Examples\include.kaos">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Examples\included.kaos">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Examples\issue7.kaos">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Examples\las.kaos">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

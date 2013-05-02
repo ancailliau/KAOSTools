@@ -58,6 +58,7 @@
     <Compile Include="BehaviorModel.cs" />
     <Compile Include="KAOSModel.cs" />
     <Compile Include="AlternativeHelpers.cs" />
+    <Compile Include="FormalSpec.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

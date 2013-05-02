@@ -14,11 +14,13 @@ namespace KAOSTools.ModelAnalyzer
         private static bool show_formal = false;
         private static bool verbose = false;
         private static int levensteinThreshold = 0;
+        private static string exportImplicit;
 
         public static void Main (string[] args)
         {
             options.Add ("f|formal",  "Check formal attributes", v => show_formal = true);
             options.Add ("v|verbose",  "Display more details about checks", v => verbose = true);
+            options.Add ("export-implicit=",  "XXX", v => exportImplicit = v);
             options.Add ("l|levenstein=",  "Set threshold for duplicate detection", 
                     v => { 
                         int.TryParse (v, out levensteinThreshold);
@@ -26,7 +28,7 @@ namespace KAOSTools.ModelAnalyzer
 
             Init (args);
 
-            CheckImplicit (model.GoalModel);
+            CheckImplicit (model);
             CheckUnassignedLeafGoals (model.GoalModel);
             CheckGoalWithSimilarNames (model.GoalModel, levensteinThreshold);
             CheckMissingDefinition (model.GoalModel);
@@ -36,11 +38,36 @@ namespace KAOSTools.ModelAnalyzer
                 DisplayMissingFormalSpec (model.GoalModel);
         }
 
-        private static void CheckImplicit (GoalModel model) 
+        private static void CheckImplicit (KAOSModel model) 
         {
-            foreach (var g in model.Goals) {
+            foreach (var g in model.GoalModel.Goals) {
                 if (g.Implicit) {
-                    WriteWarning (GetGoalReferenceString (g) + " is implicitely declared.");
+                    WriteWarning ("Goal " + (string.IsNullOrEmpty(g.Name) ? g.Identifier : g.Name) + " is implicitely declared.");
+                }
+            }
+
+            foreach (var a in model.GoalModel.Agents) {
+                if (a.Implicit) {
+                    WriteWarning ("Agent " + (string.IsNullOrEmpty(a.Name) ? a.Identifier : a.Name) + " is implicitely declared.");
+                }
+            }
+            
+            foreach (var p in model.Entities) {
+                if (p.Implicit) {
+                    if (p.GetType() == typeof (Relation)) {
+                        WriteWarning ("Relation " + (string.IsNullOrEmpty(p.Name) ? p.Identifier : p.Name) + " is implicitely declared.");
+                    } else {
+                        WriteWarning ("Entity " + (string.IsNullOrEmpty(p.Name) ? p.Identifier : p.Name) + " is implicitely declared.");
+                    }
+                }
+                foreach (var arg in p.Attributes.Where (x => x.Implicit == true)) {
+                    WriteWarning ("Attribute '" + arg.Name + "' in '" + (string.IsNullOrEmpty(p.Name) ? p.Identifier : p.Name) + "' is implicitely declared.");
+                }
+            }
+
+            foreach (var p in model.Predicates) {
+                if (p.Implicit) {
+                    WriteWarning ("Predicate " + (string.IsNullOrEmpty(p.Name) ? (string.IsNullOrEmpty(p.Signature) ? p.Identifier : p.Signature) : p.Name) + " is implicitely declared.");
                 }
             }
         }
@@ -49,14 +76,14 @@ namespace KAOSTools.ModelAnalyzer
         {
             foreach (var g in model.Goals) {
                 if (g.InSystems.Count() == 0) {
-                    WriteKO (GetGoalReferenceString(g) + " is no alternative system.");
+                    WriteKO (GetReferenceString("Goal", g) + " is no alternative system.");
                 }
             }
 
             foreach (var g in model.Goals.Where (x => x.AgentAssignments.Count() > 0)) {
                 foreach (var ag in g.AgentAssignments) {
                     if (ag.InSystems.Count() == 0) {
-                        WriteKO (GetGoalReferenceString(g) + " has a an incompatible agent assignment with '" + string.Join (",", ag.Agents.Select(x => x.Name)) + "'.");
+                        WriteKO (GetReferenceString("Goal", g) + " has a an incompatible agent assignment with '" + string.Join (",", ag.Agents.Select(x => x.Name)) + "'.");
                     }
                 }
             }
@@ -70,7 +97,7 @@ namespace KAOSTools.ModelAnalyzer
 
             } else {
                 foreach (var goal in goals) {
-                    WriteKO (GetGoalReferenceString(goal) + " is missing definition");
+                    WriteKO (GetReferenceString("Goal", goal) + " is missing definition");
                 }
             }
 
@@ -129,7 +156,7 @@ namespace KAOSTools.ModelAnalyzer
                 WriteKO ("Unassigned leaf goals");
                 
                 foreach (var item in unassignedLeafGoals) {
-                    Console.WriteLine ("       - {0}", GetGoalReferenceString(item));
+                    Console.WriteLine ("       - {0}", GetReferenceString("Goal", item));
                 }
             } else {
                 WriteOK ("All leaf goals are assigned");
@@ -209,18 +236,34 @@ namespace KAOSTools.ModelAnalyzer
             Console.ResetColor ();
         }
 
-        private static string GetGoalReferenceString (Goal goal) 
+        private static string GetReferenceString (string name, KAOSMetaModelElement pred) 
         {
-            var declaration = declarations[goal].First();
+            if (!declarations.ContainsKey(pred)) {
+                throw new Exception (pred.Identifier + ":" + pred.GetType() + " was not found in declarations. Please fill a bug with your model.");
+            }
+
+            var declaration = declarations[pred].First();
             var currentDirectory = new Uri(Directory.GetCurrentDirectory ()+"/");
             var uri = new Uri(Path.GetFullPath (Path.Combine (Path.GetDirectoryName (filename), declaration.Filename)));
 
-            return (string.Format ("Goal '{0}' ({1}:{2},{3})", 
-                                    string.IsNullOrEmpty(goal.Name) ? goal.Identifier : goal.Name, 
-                                    currentDirectory.MakeRelativeUri (uri), 
-                                    declaration.Line, 
-                                    declaration.Col));
+            return (string.Format (name + " '{0}' ({1}:{2},{3})", 
+                                   HasName(pred) && string.IsNullOrEmpty(GetName(pred)) ? pred.Identifier : GetName(pred), 
+                                   currentDirectory.MakeRelativeUri (uri), 
+                                   declaration.Line, 
+                                   declaration.Col));
         }
 
+        private static bool HasName (KAOSMetaModelElement elm)
+        {
+            return elm.GetType().GetProperty("Name") != null;
+        }
+        
+        private static string GetName (KAOSMetaModelElement elm)
+        {
+            if (elm == null)
+                return null;
+
+            return elm.GetType().GetProperty("Name").GetValue(elm, null) as String;
+        }
     }
 }

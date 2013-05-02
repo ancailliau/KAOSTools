@@ -4,13 +4,14 @@ using NUnit.Framework;
 using KAOSTools.Parsing;
 using LtlSharp;
 using ShallTests;
+using KAOSTools.MetaModel;
 
 namespace KAOSTools.Parsing.Tests
 {
     [TestFixture()]
     public class TestParsingDomainProperty
     {
-        private static Parser parser = new Parser ();
+        private static ModelBuilder parser = new ModelBuilder ();
         
         [TestCase(@"declare domainproperty
                         id test
@@ -36,14 +37,6 @@ namespace KAOSTools.Parsing.Tests
         [TestCase(@"declare domainproperty
                         id 0
                     end", "0")]
-        [TestCase(@"declare domainproperty
-                        id test2
-                        id test
-                    end", "test")]
-        [TestCase(@"declare domainproperty
-                        id test
-                        id test
-                    end", "test")]
         public void TestIdentifier (string input, string expectedIdentifier)
         {
             var model = parser.Parse (input);
@@ -56,7 +49,7 @@ namespace KAOSTools.Parsing.Tests
         [TestCase(@"declare domainproperty id $ end")]
         public void TestInvalidIdentifier (string input)
         {
-            Assert.Throws<ParsingException> (() => {
+            Assert.Throws<CompilationException> (() => {
                 parser.Parse (input);
             });
         }
@@ -86,7 +79,7 @@ namespace KAOSTools.Parsing.Tests
                     end")]
         public void TestInvalidName (string input)
         {
-            Assert.Throws<ParsingException> (() => {
+            Assert.Throws<CompilationException> (() => {
                 parser.Parse (input);
             });
         }        
@@ -108,7 +101,6 @@ namespace KAOSTools.Parsing.Tests
                         id test
                         name ""old name""
                         definition ""old definition""
-                        formalspec ""old""
                     end
 
                     override domprop
@@ -123,18 +115,18 @@ namespace KAOSTools.Parsing.Tests
 
                     override domprop
                         id test
-                        name ""old name""
-                        definition ""old definition""
-                        formalspec ""old""
+                        name ""new name""
+                        definition ""new definition""
+                        formalspec ""new""
                     end")]
         public void TestMerge (string input)
         {
             var model = parser.Parse (input);
             
             var domprop = model.GoalModel.DomainProperties.Where (x => x.Identifier == "test").ShallBeSingle ();
-            domprop.Name.ShallEqual ("old name");
-            domprop.Definition.ShallEqual ("old definition");
-            domprop.FormalSpec.ShallBeSuchThat (x => (x as LtlSharp.Proposition).Name == "old");
+            domprop.Name.ShallEqual ("new name");
+            domprop.Definition.ShallEqual ("new definition");
+            ((PredicateReference) domprop.FormalSpec).Predicate.Signature.ShallEqual ("new");
         }
         
         [TestCase(@"declare domainproperty id test  end

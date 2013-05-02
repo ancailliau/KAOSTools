@@ -63,16 +63,16 @@ namespace KAOSTools.Utils
         
         protected static KAOSModel BuildModel ()
         {
-            try {
-                var parser = new KAOSTools.Parsing.Parser ();
+            // try {
+                var parser = new KAOSTools.Parsing.ModelBuilder ();
                 var m = parser.Parse (input, filename);
                 declarations = parser.Declarations;
                 return m;
 
-            } catch (Exception e) {
-                Console.WriteLine (e.Message);
-                return null;
-            }
+            // } catch (Exception e) {
+            //    Console.WriteLine (e.Message);
+            //    return null;
+            // }
         }
         
         protected static void ShowHelp (OptionSet p)

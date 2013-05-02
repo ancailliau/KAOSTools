@@ -10,7 +10,7 @@ namespace KAOSTools.Parsing.Tests
     [TestFixture()]
     public class TestParsingDomainHypothesis
     {
-        private static Parser parser = new Parser ();
+        private static ModelBuilder parser = new ModelBuilder ();
         
         [TestCase(@"declare domainhypothesis
                         id test
@@ -36,14 +36,6 @@ namespace KAOSTools.Parsing.Tests
         [TestCase(@"declare domainhypothesis
                         id 0
                     end", "0")]
-        [TestCase(@"declare domainhypothesis
-                        id test2
-                        id test
-                    end", "test")]
-        [TestCase(@"declare domainhypothesis
-                        id test
-                        id test
-                    end", "test")]
         public void TestIdentifier (string input, string expectedIdentifier)
         {
             var model = parser.Parse (input);
@@ -56,7 +48,7 @@ namespace KAOSTools.Parsing.Tests
         [TestCase(@"declare domainhypothesis id $ end")]
         public void TestInvalidIdentifier (string input)
         {
-            Assert.Throws<ParsingException> (() => {
+            Assert.Throws<CompilationException> (() => {
                 parser.Parse (input);
             });
         }
@@ -86,7 +78,7 @@ namespace KAOSTools.Parsing.Tests
                     end")]
         public void TestInvalidName (string input)
         {
-            Assert.Throws<ParsingException> (() => {
+            Assert.Throws<CompilationException> (() => {
                 parser.Parse (input);
             });
         }        
@@ -108,16 +100,16 @@ namespace KAOSTools.Parsing.Tests
 
                     override domhyp
                         id test
-                        name ""old name""
-                        definition ""old definition""
+                        name ""new name""
+                        definition ""new definition""
                     end")]
         public void TestMerge (string input)
         {
             var model = parser.Parse (input);
             
             var domhyp = model.GoalModel.DomainHypotheses.Where (x => x.Identifier == "test").ShallBeSingle ();
-            domhyp.Name.ShallEqual ("old name");
-            domhyp.Definition.ShallEqual ("old definition");
+            domhyp.Name.ShallEqual ("new name");
+            domhyp.Definition.ShallEqual ("new definition");
         }
         
         [TestCase(@"declare domainhypothesis id test  end

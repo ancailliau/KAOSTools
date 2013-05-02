@@ -1,10 +1,100 @@
 using System;
+using KAOSTools.MetaModel;
 
 namespace KAOSTools.Parsing
 {
     public static class Helpers
     {
-        public static void Merge (this KAOSTools.MetaModel.System o1, KAOSTools.MetaModel.System o2)
+        public static KAOSMetaModelElement OverrideKeys (this KAOSMetaModelElement o1, KAOSMetaModelElement o2) {
+            if (string.IsNullOrEmpty (o1.Identifier))
+                o1.Identifier = o2.Identifier;
+
+            if (o1.GetType().GetProperty ("Name") != null 
+                && o2.GetType().GetProperty ("Name") != null
+                && string.IsNullOrEmpty (o1.GetType ().GetProperty ("Name").GetValue (o1, null) as String)) 
+                o1.GetType().GetProperty ("Name").SetValue (o1, o2.GetType().GetProperty ("Name").GetValue (o2, null), null);
+
+            if (o1.GetType().GetProperty ("Signature") != null 
+                && o2.GetType().GetProperty ("Signature") != null
+                && string.IsNullOrEmpty (o1.GetType ().GetProperty ("Signature").GetValue (o1, null) as String)) 
+                o1.GetType().GetProperty ("Signature").SetValue (o1, o2.GetType().GetProperty ("Signature").GetValue (o2, null), null);
+            
+            return o1;
+        }
+
+        public static void Merge (this KAOSTools.MetaModel.Predicate o1, KAOSTools.MetaModel.Predicate o2)
+        {
+            if (string.IsNullOrEmpty (o1.Identifier))
+                o1.Identifier = o2.Identifier;
+            
+            if (string.IsNullOrEmpty (o1.Name))
+                o1.Name = o2.Name;
+            
+            if (string.IsNullOrEmpty (o1.Definition))
+                o1.Definition = o2.Definition;
+            
+            if (o1.FormalSpec == null)
+                o1.FormalSpec = o2.FormalSpec;
+            
+            if (string.IsNullOrEmpty (o1.Signature))
+                o1.Signature = o2.Signature;
+        }
+
+        public static void Merge (this KAOSTools.MetaModel.GivenType o1, KAOSTools.MetaModel.GivenType o2)
+        {
+            if (string.IsNullOrEmpty (o1.Identifier))
+                o1.Identifier = o2.Identifier;
+            
+            if (string.IsNullOrEmpty (o1.Name))
+                o1.Name = o2.Name;
+            
+            if (string.IsNullOrEmpty (o1.Definition))
+                o1.Definition= o2.Definition;
+        }
+
+        public static KAOSTools.MetaModel.Entity Merge (this KAOSTools.MetaModel.Entity o1, KAOSTools.MetaModel.Entity o2)
+        {
+            if (string.IsNullOrEmpty (o1.Identifier))
+                o1.Identifier = o2.Identifier;
+            
+            if (string.IsNullOrEmpty (o1.Name))
+                o1.Name = o2.Name;
+            
+            if (string.IsNullOrEmpty (o1.Definition))
+                o1.Definition= o2.Definition;
+                        
+            foreach (var r in o2.Attributes)
+                if (!o1.Attributes.Contains (r))
+                    o1.Attributes.Add (r);
+            
+            foreach (var r in o2.Parents)
+                if (!o1.Parents.Contains (r))
+                    o1.Parents.Add (r);
+
+            return o1;
+        }
+
+        public static void Merge (this KAOSTools.MetaModel.Relation o1, KAOSTools.MetaModel.Relation o2)
+        {
+            if (string.IsNullOrEmpty (o1.Identifier))
+                o1.Identifier = o2.Identifier;
+            
+            if (string.IsNullOrEmpty (o1.Name))
+                o1.Name = o2.Name;
+            
+            if (string.IsNullOrEmpty (o1.Definition))
+                o1.Definition= o2.Definition;
+            
+            foreach (var r in o2.Attributes)
+                if (!o1.Attributes.Contains (r))
+                    o1.Attributes.Add (r);
+            
+            foreach (var r in o2.Links)
+                if (!o1.Links.Contains (r))
+                    o1.Links.Add (r);
+        }
+
+        public static void Merge (this KAOSTools.MetaModel.AlternativeSystem o1, KAOSTools.MetaModel.AlternativeSystem o2)
         {
             if (string.IsNullOrEmpty (o1.Identifier))
                 o1.Identifier = o2.Identifier;

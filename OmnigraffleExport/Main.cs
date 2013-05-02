@@ -7,6 +7,7 @@ using NDesk.Options;
 using KAOSTools.MetaModel;
 using KAOSTools.Utils;
 using KAOSTools.OmnigraffleExport.Omnigraffle;
+using System.Text;
 
 namespace KAOSTools.OmnigraffleExport
 {
@@ -45,6 +46,7 @@ namespace KAOSTools.OmnigraffleExport
             ExportObstacles (model.GoalModel, document);
             ExportResolutionsGoalModel (model.GoalModel, document);
             ExportResponsibilities (model.GoalModel, document);
+            ExportObjectModel (model, document);
 
             if (experimental)
                 ExportExperimentalDiagrams (model.GoalModel, document);
@@ -56,6 +58,72 @@ namespace KAOSTools.OmnigraffleExport
         }
 
         #region Export diagrams
+
+        static void ExportObjectModel (KAOSModel model, KAOSTools.OmnigraffleExport.Omnigraffle.Document document)
+        {
+            var canvas = new Omnigraffle.Sheet (1, string.Format ("Object Model"));
+            var objMapping = new Dictionary<string, Omnigraffle.Graphic> ();
+
+            foreach (var e in model.Entities.Where (x => x.GetType() != typeof(Relation))) {
+                var shape = RenderEntity (e) as Omnigraffle.Group;
+                canvas.GraphicsList.Add (shape);
+
+                shape.GroupConnect = true;
+                objMapping.Add (e.Identifier, shape);
+            }
+
+            foreach (var e in model.Entities.Where (x => x.GetType() != typeof(Relation))) {
+                foreach (var p in e.Parents) {
+                    var line = AddLine (canvas.GraphicsList, 
+                                        objMapping[e.Identifier], 
+                                        objMapping[p.Identifier]);
+                    line.Style.Stroke.HeadArrow = KAOSTools.OmnigraffleExport.Omnigraffle.Arrow.Arrow;
+                    line.Style.Stroke.LineType = LineType.Orthogonal;
+                }
+            }
+
+            foreach (var e in model.Entities.Where (x => x.GetType() == typeof(Relation)).Cast<Relation>()) {
+                if (e.Links.Count == 2) {
+                    var t = e.Links.ToList();
+                    var src = objMapping[t[0].Target.Identifier];
+                    var trg = objMapping[t[1].Target.Identifier];
+
+                    var line = AddLine (canvas.GraphicsList, src, trg, false);
+                    line.Style.Stroke.LineType = LineType.Orthogonal;
+
+                    var text = string.IsNullOrEmpty (e.Name) ? e.Identifier : e.Name;
+                    var alternativeText = AddLineLabel(canvas.GraphicsList, line, text);
+                    alternativeText.FontInfo.Size = 12;
+
+                    if (!string.IsNullOrEmpty(t[0].Multiplicity)) {
+                        var multiplicityA = AddLineLabel(canvas.GraphicsList, line, @"\i " + GetRtfUnicodeEscapedString(t[0].Multiplicity), 0.1f);
+                        multiplicityA.FontInfo.Size = 10;
+                        canvas.GraphicsList.Add (multiplicityA);
+                    }
+
+                    if (!string.IsNullOrEmpty(t[1].Multiplicity)) {
+                        var multiplicityB = AddLineLabel(canvas.GraphicsList, line, @"\i " + GetRtfUnicodeEscapedString(t[1].Multiplicity), 0.9f);
+                        multiplicityB.FontInfo.Size = 10;
+                        canvas.GraphicsList.Add (multiplicityB);
+                    }
+
+                    canvas.GraphicsList.Add (alternativeText);
+                    canvas.GraphicsList.Add (line);
+
+                    if (e.Attributes.Count > 0) {
+                        var attr = RenderAttributes (e);
+                        var attr_line = AddLine (canvas.GraphicsList, alternativeText, attr, true);
+                        attr_line.Style.Stroke.Pattern = StrokePattern.Dashed;
+                        attr_line.Style.Stroke.LineType = LineType.Orthogonal;
+                        canvas.GraphicsList.Add (attr);
+                    }
+
+                } else {
+                    Console.WriteLine ("Oh... " + e.Links.Count);
+                }
+            }
+            document.Canvas.Add (canvas);
+        }
 
         static void ExportExperimentalDiagrams (GoalModel model, KAOSTools.OmnigraffleExport.Omnigraffle.Document document)
         {
@@ -216,7 +284,7 @@ namespace KAOSTools.OmnigraffleExport
                     var text = string.IsNullOrEmpty (refinement.SystemReference.Name) ? refinement.SystemReference.Identifier : refinement.SystemReference.Name;
 
                     var alternativeText = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Rectangle, 50, 50, 100, 100);
-                    alternativeText.Text = new Omnigraffle.TextInfo (text) {
+                    alternativeText.Text = new Omnigraffle.TextInfo (GetRtfUnicodeEscapedString(text)) {
                         Alignement = KAOSTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
                         SideMargin = 0, TopBottomMargin = 0
                     };
@@ -260,7 +328,7 @@ namespace KAOSTools.OmnigraffleExport
                 if (assignment.SystemReference != null) {
                     var text = string.IsNullOrEmpty (assignment.SystemReference.Name) ? assignment.SystemReference.Identifier : assignment.SystemReference.Name;
                     var alternativeText = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Rectangle, 50, 50, 100, 100);
-                    alternativeText.Text = new Omnigraffle.TextInfo (text) {
+                    alternativeText.Text = new Omnigraffle.TextInfo (GetRtfUnicodeEscapedString(text)) {
                         Alignement = KAOSTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
                         SideMargin = 0, TopBottomMargin = 0
                     };
@@ -323,6 +391,25 @@ namespace KAOSTools.OmnigraffleExport
 
         #endregion
 
+        static Omnigraffle.ShapedGraphic AddLineLabel (List<Graphic> canvas, Omnigraffle.LineGraphic line, string text, float position = 0.5f)
+        {
+            var label = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Rectangle, 50, 50, 100, 100);
+            label.Text = new Omnigraffle.TextInfo (text) {
+                Alignement = KAOSTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
+                SideMargin = 0, TopBottomMargin = 0
+            };
+            label.FontInfo.Size = 10;
+            label.Style.Shadow.Draws = false;
+            label.FitText = KAOSTools.OmnigraffleExport.Omnigraffle.FitText.Yes;
+            label.Wrap = false;
+            label.Flow = KAOSTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
+            label.Style.Fill.Color = new KAOSTools.OmnigraffleExport.Omnigraffle.Color (1, 1, 1);
+            label.Style.Stroke.Draws = false;
+            label.Line = new LineInfo (line.ID) { Position = position };
+
+            return label;
+        }
+
         static Omnigraffle.ShapedGraphic AddResponsibility (List<Graphic> canvas, Omnigraffle.ShapedGraphic agentGraphic, Omnigraffle.ShapedGraphic goalGraphic, string text)
         {
             var circle = AddCircle (canvas);
@@ -332,7 +419,7 @@ namespace KAOSTools.OmnigraffleExport
             
             if (!string.IsNullOrWhiteSpace (text)) {
                 var alternativeText = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Rectangle, 50, 50, 100, 100);
-                alternativeText.Text = new Omnigraffle.TextInfo (text) {
+                alternativeText.Text = new Omnigraffle.TextInfo (GetRtfUnicodeEscapedString(text)) {
                     Alignement = KAOSTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
                     SideMargin = 0, TopBottomMargin = 0
                 };
@@ -373,10 +460,14 @@ namespace KAOSTools.OmnigraffleExport
 
             if (to is ShapedGraphic) {
                 line.Points.Add ((to as ShapedGraphic).Bounds.TopLeft);
+            } else if (to is Omnigraffle.Group) {
+                line.Points.Add (new Point(25,25));
             }
 
             if (@from is ShapedGraphic) {
                 line.Points.Add ((@from as ShapedGraphic).Bounds.BottomRight);
+            } else if (@from is Omnigraffle.Group) {
+                line.Points.Add (new Point(30,30));
             }
 
             line.Style.Shadow.Draws = false;
@@ -393,8 +484,7 @@ namespace KAOSTools.OmnigraffleExport
             line.Style.Stroke.HeadArrow = KAOSTools.OmnigraffleExport.Omnigraffle.Arrow.Arrow;
             return line;
         }
-
-
+       
         static Omnigraffle.LineGraphic AddFilledArrow (List<Graphic>  canvas, Omnigraffle.Graphic @from, Omnigraffle.Graphic to, bool add = true)
         {
             var line = AddLine (canvas, @from, to, add);
@@ -426,7 +516,7 @@ namespace KAOSTools.OmnigraffleExport
             graphic.ShapeData.UnitPoints.Add(new KAOSTools.OmnigraffleExport.Omnigraffle.Point(-0.45, 0.5));
             graphic.ShapeData.UnitPoints.Add(new KAOSTools.OmnigraffleExport.Omnigraffle.Point(-0.5, -0.5));
 
-            graphic.Text = new Omnigraffle.TextInfo (obstacle.Name) {
+            graphic.Text = new Omnigraffle.TextInfo (GetRtfUnicodeEscapedString(obstacle.Name)) {
                 Alignement = KAOSTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
                 SideMargin = 10, TopBottomMargin = 3
             };
@@ -462,7 +552,7 @@ namespace KAOSTools.OmnigraffleExport
             graphic.ShapeData.UnitPoints.Add(new KAOSTools.OmnigraffleExport.Omnigraffle.Point(-0.5, 0.5));
             graphic.ShapeData.UnitPoints.Add(new KAOSTools.OmnigraffleExport.Omnigraffle.Point(-0.45, -0.5));
             
-            graphic.Text = new Omnigraffle.TextInfo (domprop.Name) {
+            graphic.Text = new Omnigraffle.TextInfo (GetRtfUnicodeEscapedString(domprop.Name)) {
                 Alignement = KAOSTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
                 SideMargin = 10, TopBottomMargin = 3
             };
@@ -494,7 +584,7 @@ namespace KAOSTools.OmnigraffleExport
             graphic.ShapeData.UnitPoints.Add(new KAOSTools.OmnigraffleExport.Omnigraffle.Point(-0.5, 0.5));
             graphic.ShapeData.UnitPoints.Add(new KAOSTools.OmnigraffleExport.Omnigraffle.Point(-0.45, -0.5));
             
-            graphic.Text = new Omnigraffle.TextInfo (domhyp.Name) {
+            graphic.Text = new Omnigraffle.TextInfo (GetRtfUnicodeEscapedString(domhyp.Name)) {
                 Alignement = KAOSTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
                 SideMargin = 10, TopBottomMargin = 3
             };
@@ -531,7 +621,7 @@ namespace KAOSTools.OmnigraffleExport
             graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (-0.5, 0));
             graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (-0.5, 0));
             graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (-0.45, -0.5));
-            graphic.Text = new Omnigraffle.TextInfo ((string.IsNullOrEmpty (agent.Name) ? agent.Identifier : agent.Name)) {
+            graphic.Text = new Omnigraffle.TextInfo (GetRtfUnicodeEscapedString(string.IsNullOrEmpty (agent.Name) ? agent.Identifier : agent.Name)) {
                 Alignement = KAOSTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
                 SideMargin = 10, TopBottomMargin = 3
             };
@@ -580,7 +670,7 @@ namespace KAOSTools.OmnigraffleExport
                 }
             }
 
-            graphic.Text = new Omnigraffle.TextInfo (text) {
+            graphic.Text = new Omnigraffle.TextInfo (GetRtfUnicodeEscapedString(text)) {
                 Alignement = KAOSTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
                 SideMargin = 10,
                 TopBottomMargin = 3
@@ -612,6 +702,104 @@ namespace KAOSTools.OmnigraffleExport
             mapping[canvas].Add (goal.Identifier, graphic);
 
             return graphic;
+        }
+
+        static ShapedGraphic RenderAttributes (Entity entity) 
+        {
+            var graphic = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Rectangle, 50, 50, 175, 70);
+            
+            string text = @"";
+
+            text = string.Join (@"\par ", 
+                                entity.Attributes.Select(attr => 
+                                     GetRtfUnicodeEscapedString((attr.Derived ? "/" : "-") 
+                                       + " " + attr.Name 
+                                       + (attr.Type != null ? ": " + (!string.IsNullOrEmpty(attr.Type.Name) ? attr.Type.Name : attr.Type.Identifier) : ""))));
+
+            graphic.Text = new Omnigraffle.TextInfo (text) {
+                Alignement = KAOSTools.OmnigraffleExport.Omnigraffle.TextAlignement.Left,
+                SideMargin = 3,
+                TopBottomMargin = 3
+            };
+            graphic.Style.Shadow.Draws = false;
+            graphic.FitText = KAOSTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
+            graphic.Flow = KAOSTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
+
+            return graphic;
+        }
+    
+        static Graphic RenderEntity (Entity entity) 
+        {
+            var grp = new Omnigraffle.Group (NextId);
+
+            var header = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Rectangle, 50, 30, 175, 70);
+            
+            string text = @"\b\qc ";
+            if (string.IsNullOrEmpty (entity.Name)) {
+                text += GetRtfUnicodeEscapedString(entity.Identifier);
+            } else {
+                text += GetRtfUnicodeEscapedString(entity.Name);
+            }
+
+            header.Text = new Omnigraffle.TextInfo (text) {
+                Alignement = KAOSTools.OmnigraffleExport.Omnigraffle.TextAlignement.Left,
+                SideMargin = 3,
+                TopBottomMargin = 3
+            };
+            header.Style.Shadow.Draws = false;
+            header.FitText = KAOSTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
+            header.Flow = KAOSTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
+
+            if (entity.Type == EntityType.Environment)
+                header.Style.Fill.Color = new KAOSTools.OmnigraffleExport.Omnigraffle.Color (0.824276, 0.670259, 1);
+            else if (entity.Type == EntityType.Software)
+                header.Style.Fill.Color = new KAOSTools.OmnigraffleExport.Omnigraffle.Color (0.99607843137, 0.80392156862, 0.58039215686);
+            else if (entity.Type == EntityType.Shared)
+                header.Style.Fill.Color = new KAOSTools.OmnigraffleExport.Omnigraffle.Color (0.895214, 1, 0.72515);
+
+            grp.Graphics.Add (header);
+            grp.Graphics.Add (RenderAttributes (entity));
+
+            grp.Magnets.Add (new Point(1,.5));
+            grp.Magnets.Add (new Point(1,-.5));
+            
+            grp.Magnets.Add (new Point(0.5,1));
+            grp.Magnets.Add (new Point(0.5,.5));
+            grp.Magnets.Add (new Point(0.5,0));
+            grp.Magnets.Add (new Point(0.5,-.5));
+            grp.Magnets.Add (new Point(0.5,-1));
+            
+            grp.Magnets.Add (new Point(0,.5));
+            grp.Magnets.Add (new Point(0,-.5));
+            
+            grp.Magnets.Add (new Point(-0.5,1));
+            grp.Magnets.Add (new Point(-0.5,.5));
+            grp.Magnets.Add (new Point(-0.5,0));
+            grp.Magnets.Add (new Point(-0.5,-.5));
+            grp.Magnets.Add (new Point(-0.5,-1));
+            
+            grp.Magnets.Add (new Point(-1,.5));
+            grp.Magnets.Add (new Point(-1,-.5));
+
+            return grp;
+        }
+
+        private static string GetRtfUnicodeEscapedString(string s)
+        {
+            if (s == null)
+                return null;
+            
+            var sb = new StringBuilder();
+            foreach (var c in s)
+            {
+                if(c == '\\' || c == '{' || c == '}')
+                    sb.Append(@"\" + c);
+                else if (c <= 0x7f)
+                    sb.Append(c);
+                else
+                    sb.Append("\\u" + Convert.ToUInt32(c) + "?");
+            }
+            return sb.ToString();
         }
     }
 }

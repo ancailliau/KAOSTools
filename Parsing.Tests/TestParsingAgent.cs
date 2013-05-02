@@ -8,13 +8,15 @@ namespace KAOSTools.Parsing.Tests
     [TestFixture()]
     public class TestParsingAgent
     {
-        private static Parser parser = new Parser ();
+        private static ModelBuilder parser = new ModelBuilder ();
 
-        [TestCase(@"declare software agent
+        [TestCase(@"declare agent
                         id test
+                        type software
                     end", KAOSTools.MetaModel.AgentType.Software)]
-        [TestCase(@"declare environment agent
+        [TestCase(@"declare agent
                         id test
+                        type environment
                     end", KAOSTools.MetaModel.AgentType.Environment)]
         public void TestTypeOfAgent (string input, KAOSTools.MetaModel.AgentType type)
         {
@@ -70,7 +72,7 @@ namespace KAOSTools.Parsing.Tests
                     end")]
         public void TestInvalidIdentifier (string input)
         {
-            Assert.Throws<ParsingException> (() => {
+            Assert.Throws<CompilationException> (() => {
                 parser.Parse (input);
             });
         }
@@ -100,7 +102,7 @@ namespace KAOSTools.Parsing.Tests
                     end")]
         public void TestInvalidName (string input)
         {
-            Assert.Throws<ParsingException> (() => {
+            Assert.Throws<CompilationException> (() => {
                 parser.Parse (input);
             });
         }
@@ -134,7 +136,7 @@ namespace KAOSTools.Parsing.Tests
                     end")]
         public void TestInvalidDescription (string input)
         {
-            Assert.Throws<ParsingException> (() => {
+            Assert.Throws<CompilationException> (() => {
                 parser.Parse (input);
             });
         }

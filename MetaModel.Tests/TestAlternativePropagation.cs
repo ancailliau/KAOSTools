@@ -37,8 +37,8 @@ namespace KAOSTools.MetaModel.Tests
             G3.AgentAssignments.Add (new AgentAssignment (ag3));
             G4.AgentAssignments.Add (new AgentAssignment (ag4));
 
-            var alt1 = new System () { Name = "Alt1" };
-            var alt2 = new System () { Name = "Alt2" };
+            var alt1 = new AlternativeSystem () { Name = "Alt1" };
+            var alt2 = new AlternativeSystem () { Name = "Alt2" };
             model.Systems.Add (alt1);
             model.Systems.Add (alt2);
 
@@ -52,10 +52,10 @@ namespace KAOSTools.MetaModel.Tests
             Console.WriteLine ("G3: " + string.Join(", ", G3.InSystems.Select (x => x.Name)));
             Console.WriteLine ("G4: " + string.Join(", ", G4.InSystems.Select (x => x.Name)));
 
-            G1.InSystems.ShallOnlyContain (new System[] { alt1 });
-            G2.InSystems.ShallOnlyContain (new System[] { alt1 });
-            G3.InSystems.ShallOnlyContain (new System[] { alt1, alt2 });
-            G4.InSystems.ShallOnlyContain (new System[] { alt2 });
+            G1.InSystems.ShallOnlyContain (new AlternativeSystem[] { alt1 });
+            G2.InSystems.ShallOnlyContain (new AlternativeSystem[] { alt1 });
+            G3.InSystems.ShallOnlyContain (new AlternativeSystem[] { alt1, alt2 });
+            G4.InSystems.ShallOnlyContain (new AlternativeSystem[] { alt2 });
         }
 
     }

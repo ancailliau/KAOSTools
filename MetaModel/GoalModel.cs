@@ -8,17 +8,17 @@ namespace KAOSTools.MetaModel
 {
     public class GoalModel
     {
-        public IList<Goal>             Goals             { get; set; }
-        public IList<DomainProperty>   DomainProperties  { get; set; }
-        public IList<DomainHypothesis> DomainHypotheses  { get; set; }
-        public IList<Obstacle>         Obstacles         { get; set; }
-        public IList<Agent>            Agents            { get; set; }
+        public ISet<Goal>             Goals             { get; set; }
+        public ISet<DomainProperty>   DomainProperties  { get; set; }
+        public ISet<DomainHypothesis> DomainHypotheses  { get; set; }
+        public ISet<Obstacle>         Obstacles         { get; set; }
+        public ISet<Agent>            Agents            { get; set; }
 
-        public IList<System>      Systems      { get; set; }
+        public ISet<AlternativeSystem>      Systems      { get; set; }
 
-        public IList<Goal>           RootGoals { 
+        public ISet<Goal>           RootGoals { 
             get {
-                var goals = new List<Goal> (Goals);
+                var goals = new HashSet<Goal> (Goals);
                 foreach (var goal in Goals)
                     foreach (var refinement in goal.Refinements) 
                         foreach (var child in refinement.Subgoals)
@@ -30,9 +30,9 @@ namespace KAOSTools.MetaModel
             }
         }
 
-        public IList<System>           RootSystems { 
+        public ISet<AlternativeSystem>           RootSystems { 
             get {
-                var systems = new List<System> (Systems);
+                var systems = new HashSet<AlternativeSystem> (Systems);
                 foreach (var system in Systems)
                     foreach (var alternative in system.Alternatives) 
                         systems.Remove (alternative);
@@ -55,20 +55,20 @@ namespace KAOSTools.MetaModel
         
         public GoalModel ()
         {
-            Goals             = new List<Goal> ();
-            DomainProperties  = new List<DomainProperty> ();
-            DomainHypotheses  = new List<DomainHypothesis> ();
-            Obstacles         = new List<Obstacle> ();
-            Agents            = new List<Agent> ();
-            Systems      = new List<System> ();
+            Goals             = new HashSet<Goal> ();
+            DomainProperties  = new HashSet<DomainProperty> ();
+            DomainHypotheses  = new HashSet<DomainHypothesis> ();
+            Obstacles         = new HashSet<Obstacle> ();
+            Agents            = new HashSet<Agent> ();
+            Systems      = new HashSet<AlternativeSystem> ();
         }
 
-        public System GetSystemByIdentifier (string identifier)
+        public AlternativeSystem GetSystemByIdentifier (string identifier)
         {
             return Systems.Where (x => x.Identifier == identifier).SingleOrDefault ();
         }
         
-        public IEnumerable<System> GetSystemsByName (string name)
+        public IEnumerable<AlternativeSystem> GetSystemsByName (string name)
         {
             return Systems.Where (x => x.Name == name);
         }

@@ -5,13 +5,14 @@ using KAOSTools.Parsing;
 using LtlSharp;
 using System.Collections.Generic;
 using ShallTests;
+using KAOSTools.MetaModel;
 
 namespace KAOSTools.Parsing.Tests
 {
     [TestFixture()]
     public class TestParsingObstacle
     {
-        private static Parser parser = new Parser ();
+        private static ModelBuilder parser = new ModelBuilder ();
 
         [TestCase(@"declare obstacle
                         id test
@@ -37,14 +38,6 @@ namespace KAOSTools.Parsing.Tests
         [TestCase(@"declare obstacle
                         id 0
                     end", "0")]
-        [TestCase(@"declare obstacle
-                        id test2
-                        id test
-                    end", "test")]
-        [TestCase(@"declare obstacle
-                        id test
-                        id test
-                    end", "test")]
         public void TestIdentifier (string input, string expectedIdentifier)
         {
             var model = parser.Parse (input);
@@ -65,7 +58,7 @@ namespace KAOSTools.Parsing.Tests
                     end")]
         public void TestInvalidIdentifier (string input)
         {
-            Assert.Throws<ParsingException> (() => {
+            Assert.Throws<CompilationException> (() => {
                 parser.Parse (input);
             });
         }
@@ -95,7 +88,7 @@ namespace KAOSTools.Parsing.Tests
                     end")]
         public void TestInvalidName (string input)
         {
-            Assert.Throws<ParsingException> (() => {
+            Assert.Throws<CompilationException> (() => {
                 parser.Parse (input);
             });
         }
@@ -282,9 +275,9 @@ namespace KAOSTools.Parsing.Tests
             var model = parser.Parse (input);
             
             var obstacle = model.GoalModel.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
-            obstacle.Name.ShallEqual ("old name");
-            obstacle.Definition.ShallEqual ("old definition");
-            obstacle.FormalSpec.ShallBeSuchThat (x => (x as LtlSharp.Proposition).Name == "old");
+            obstacle.Name.ShallEqual ("new name");
+            obstacle.Definition.ShallEqual ("new definition");
+            ((PredicateReference) obstacle.FormalSpec).Predicate.Signature.ShallEqual ("new");
             
             obstacle.Refinements.ShallContain (y => y.Subobstacles.Select (x => x.Identifier)
                                            .OnlyContains (new string[] { "old_child1", "old_child2" }));
@@ -299,15 +292,13 @@ namespace KAOSTools.Parsing.Tests
 
         [TestCase(@"declare goal
                         id test
-                        obstructedby obstacle_1, obstacle_2
+                        obstructedby declare obstacle id obstacle_1 end
+                        obstructedby obstacle_2
                     end")]
         [TestCase(@"declare goal
                         id test
-                        obstructedby declare obstacle id obstacle_1 end, obstacle_2
-                    end")]
-        [TestCase(@"declare goal
-                        id test
-                        obstructedby declare obstacle id obstacle_1 end, declare obstacle id obstacle_2 end
+                        obstructedby declare obstacle id obstacle_1 end
+                        obstructedby declare obstacle id obstacle_2 end
                     end")]
         [TestCase(@"declare goal
                         id test
@@ -323,20 +314,18 @@ namespace KAOSTools.Parsing.Tests
         
         [TestCase(@"declare obstacle
                         id test
-                        resolvedby goal_1, goal_2
-                    end")]
-        [TestCase(@"declare obstacle
-                        id test
-                        resolvedby declare goal id goal_1 end, goal_2
-                    end")]
-        [TestCase(@"declare obstacle
-                        id test
-                        resolvedby declare goal id goal_1 end, declare goal id goal_2 end
-                    end")]
-        [TestCase(@"declare obstacle
-                        id test
                         resolvedby goal_1
                         resolvedby goal_2
+                    end")]
+        [TestCase(@"declare obstacle
+                        id test
+                        resolvedby declare goal id goal_1 end
+                        resolvedby goal_2
+                    end")]
+        [TestCase(@"declare obstacle
+                        id test
+                        resolvedby declare goal id goal_1 end
+                        resolvedby declare goal id goal_2 end
                     end")]
         public void TestResolution (string input)
         {

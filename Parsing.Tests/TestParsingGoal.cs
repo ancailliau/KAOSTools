@@ -10,7 +10,7 @@ namespace KAOSTools.Parsing.Tests
     [TestFixture()]
     public class TestParsingGoal
     {
-        private static Parser parser = new Parser ();
+        private static ModelBuilder parser = new ModelBuilder ();
        
         [TestCase(@"declare goal
                         # test
@@ -21,15 +21,6 @@ namespace KAOSTools.Parsing.Tests
                         id # test
                         test
                     end")]
-        [TestCase(@"declare goal
-                        # test
-                        # id test
-                    end")]
-        [TestCase(@"# declare goal
-                        # test
-                        # id test
-                        declare goal id test end #
-                    # end")]
         public void TestComment (string input)
         {
             var model = parser.Parse (input);
@@ -60,14 +51,6 @@ namespace KAOSTools.Parsing.Tests
         [TestCase(@"declare goal
                         id 0
                     end", "0")]
-        [TestCase(@"declare goal
-                        id test2
-                        id test
-                    end", "test")]
-        [TestCase(@"declare goal
-                        id test
-                        id test
-                    end", "test")]
         public void TestIdentifier (string input, string expectedIdentifier)
         {
             var model = parser.Parse (input);
@@ -88,7 +71,7 @@ namespace KAOSTools.Parsing.Tests
                     end")]
         public void TestInvalidIdentifier (string input)
         {
-            Assert.Throws<ParsingException> (() => {
+            Assert.Throws<CompilationException> (() => {
                 parser.Parse (input);
             });
         }
@@ -118,7 +101,7 @@ namespace KAOSTools.Parsing.Tests
                     end")]
         public void TestInvalidName (string input)
         {
-            Assert.Throws<ParsingException> (() => {
+            Assert.Throws<CompilationException> (() => {
                 parser.Parse (input);
             });
         }
@@ -170,13 +153,8 @@ namespace KAOSTools.Parsing.Tests
             var model = parser.Parse (input);
             
             var goal = model.GoalModel.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
-            goal.Name.ShallEqual ("old name");
-            goal.Definition.ShallEqual ("old definition");
-            goal.FormalSpec.ShallBeSuchThat (x => (x as LtlSharp.Proposition).Name == "old");
-
-            foreach (var r in goal.Refinements) {
-                Console.WriteLine (string.Join (",", r.Subgoals.Select (x => x.Identifier)));
-            }
+            goal.Name.ShallEqual ("new name");
+            goal.Definition.ShallEqual ("new definition");
 
             goal.Refinements.ShallContain (y => y.Subgoals.Select (x => x.Identifier)
                 .OnlyContains (new string[] { "old_child1", "old_child2" }));

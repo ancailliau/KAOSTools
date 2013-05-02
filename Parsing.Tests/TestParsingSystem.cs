@@ -10,7 +10,7 @@ namespace KAOSTools.Parsing.Tests
     [TestFixture()]
     public class TestParsingSystem
     {
-        private static Parser parser = new Parser ();
+        private static ModelBuilder parser = new ModelBuilder ();
         
         [TestCase(@"declare system
                         id test
@@ -36,14 +36,6 @@ namespace KAOSTools.Parsing.Tests
         [TestCase(@"declare system
                         id 0
                     end", "0")]
-        [TestCase(@"declare system
-                        id test2
-                        id test
-                    end", "test")]
-        [TestCase(@"declare system
-                        id test
-                        id test
-                    end", "test")]
         public void TestIdentifier (string input, string expectedIdentifier)
         {
             var model = parser.Parse (input);
@@ -56,7 +48,7 @@ namespace KAOSTools.Parsing.Tests
         [TestCase(@"declare system id $ end")]
         public void TestInvalidIdentifier (string input)
         {
-            Assert.Throws<ParsingException> (() => {
+            Assert.Throws<CompilationException> (() => {
                 parser.Parse (input);
             });
         }
@@ -86,7 +78,7 @@ namespace KAOSTools.Parsing.Tests
                     end")]
         public void TestInvalidName (string input)
         {
-            Assert.Throws<ParsingException> (() => {
+            Assert.Throws<CompilationException> (() => {
                 parser.Parse (input);
             });
         }
@@ -107,7 +99,7 @@ namespace KAOSTools.Parsing.Tests
                     end")]
         public void TestFailedOverride (string input)
         {
-            Assert.Throws<ParsingException> (() => {
+            Assert.Throws<CompilationException> (() => {
                 parser.Parse (input);
             });
         }

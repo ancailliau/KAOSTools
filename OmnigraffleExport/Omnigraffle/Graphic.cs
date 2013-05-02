@@ -189,11 +189,16 @@ namespace KAOSTools.OmnigraffleExport.Omnigraffle
     }
 
     public class Group : Graphic {
+        public bool GroupConnect { get; set; }
         public List<Graphic> Graphics { get; set; }
+        public List<Point> Magnets { get; set; }
+
         public Group (int id) : base (id)
         {
             Graphics = new List<Graphic>();
+            Magnets = new List<Point>();
             Class = "Group";
+            GroupConnect = true;
         }
     }
 
@@ -206,6 +211,7 @@ namespace KAOSTools.OmnigraffleExport.Omnigraffle
         public ShapeData ShapeData { get; set; }
         public StyleInfo Style     { get; set; }
         public TextInfo    Text      { get; set; }
+        public bool      Wrap      { get; set; }
 
         public bool VFlip { get; set; }
         public bool HFlip { get; set; }
@@ -214,6 +220,7 @@ namespace KAOSTools.OmnigraffleExport.Omnigraffle
 
         public LineInfo Line { get; set; } 
 
+        public List<Point> Magnets { get; set; }
 
         public ShapedGraphic (int id, Shape shape, double x1, double y1, double x2, double y2)
             : base (id)
@@ -231,6 +238,9 @@ namespace KAOSTools.OmnigraffleExport.Omnigraffle
             HFlip = false;
             AllowConnections = true;
             Line = null;
+            Wrap = true;
+
+            Magnets = new List<Point>();
         }
     }
 
@@ -273,6 +283,11 @@ namespace KAOSTools.OmnigraffleExport.Omnigraffle
 
         public StyleInfo Style { get; set; }
 
+        public bool OrthogonalBarAutomatic  { get; set; }
+        public Point OrthogonalBarPoint     { get; set; }
+        public double OrthogonalBarPosition { get; set; }
+
+
         public LineGraphic (int id)
             : base (id)
         {
@@ -297,7 +312,7 @@ namespace KAOSTools.OmnigraffleExport.Omnigraffle
     }
 
     public enum FitText {
-        Vertical, Clip
+        Vertical, Clip, Yes
     }
     
     public enum Flow {
@@ -374,6 +389,9 @@ namespace KAOSTools.OmnigraffleExport.Omnigraffle
         public bool Legacy { get; set; }
         public double Width { get; set; }
         public bool Draws { get; set; }
+        public StrokePattern Pattern { get; set; }
+
+        public LineType LineType { get; set; }
 
         public StrokeInfo ()
         {
@@ -385,6 +403,16 @@ namespace KAOSTools.OmnigraffleExport.Omnigraffle
             CornerRadius = 0;
             Draws = true;
         }
+    }
+
+    public enum LineType
+    {
+        Straight, Curved, Orthogonal
+    }
+
+    public enum StrokePattern
+    {
+        None, Dashed
     }
 
     public enum Arrow
