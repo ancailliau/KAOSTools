@@ -6,7 +6,7 @@ using NDesk.Options;
 using KAOSTools.MetaModel;
 using KAOSTools.Utils;
 using KAOSTools.Parsing;
-    
+
 namespace KAOSTools.ReportGenerator
 {
 
@@ -36,91 +36,103 @@ namespace KAOSTools.ReportGenerator
           return tuples;
         }
 
+        public static Object GoalRefinementChildren(){
+          var grgc = from g in model.GoalModel.Goals
+                       from r in g.Refinements
+                         from sg in r.Subgoals
+                           select new { refinement = r.Identifier,
+                                        child = sg.Identifier };
+          var grpc = from g in model.GoalModel.Goals
+                       from r in g.Refinements
+                         from d in r.DomainProperties
+                           select new { refinement = r.Identifier,
+                                        child = d.Identifier };
+          var grhc = from g in model.GoalModel.Goals
+                       from r in g.Refinements
+                         from d in r.DomainHypotheses
+                           select new { refinement = r.Identifier,
+                                        child = d.Identifier };
+          return grgc.Union(grpc).Union(grhc);
+        }
+
         public static void Main (string[] args)
         {
             Init (args);
 
             var dbvalue = new
             {
-              //
-              agents = from a in model.GoalModel.Agents.OrderBy (x => x.Name)
-                       select new { id = a.Identifier,
-                                    name = a.Name, 
-                                    description = a.Description,
-                                    type = Enum.GetName(typeof(MetaModel.AgentType), a.Type) },
-
-              //
+              // IDEAL GOAL MODEL
               goals = from g in model.GoalModel.Goals.OrderBy (x => x.Name)
                       select new { id = g.Identifier,
                                    name = g.Name,
                                    definition = g.Definition },
 
-              //
               domain_properties = from g in model.GoalModel.DomainProperties.OrderBy (x => x.Name)
                                   select new { id = g.Identifier,
                                                name = g.Name,
                                                definition = g.Definition },
 
-              //
               domain_hypotheses = from g in model.GoalModel.DomainHypotheses.OrderBy (x => x.Name)
                                   select new { id = g.Identifier,
                                                name = g.Name,
                                                definition = g.Definition },
 
-              //
+              refinements = from g in model.GoalModel.Goals
+                            from r in g.Refinements
+                                select new { id = r.Identifier,
+                                             parent = g.Identifier },
+
+              refinement_children = GoalRefinementChildren(),
+
+              // OBSTACLE ANALYSIS
+
               obstacles = from o in model.GoalModel.Obstacles.OrderBy (x => x.Name)
                           select new { id = o.Identifier,
                                        name = o.Name,
                                        definition = o.Definition },
+              obstructions = from g in model.GoalModel.Goals.OrderBy (x => x.Name)
+                             from o in g.Obstructions.OrderBy (x => x.Name)
+                               select new { goal     = g.Identifier,
+                                            obstacle = o.Identifier },
 
-              //
               resolutions = from o in model.GoalModel.Obstacles.OrderBy (x => x.Name)
                               from g in o.Resolutions.OrderBy (x => x.Name)
                                 select new { obstacle = o.Identifier,
                                                  goal = g.Identifier },
 
-              //
-              predicates = from p in model.Predicates.Values.OrderBy (x => x.Name)
-                           select new { id = p.Identifier,
-                                        name = p.Name,
-                                        signature = p.Signature,
-                                        definition = p.Definition },
+              // AGENT MODEL
 
-              //
-              refinements = from g in model.GoalModel.Goals
-                              from r in g.Refinements
-                                from c in r.Subgoals
-                                  select new {          id = r.Identifier,
-                                                    sysref = HandleIdentifier(r.SystemReference),
-                                                    parent = g.Identifier,
-                                                     child = c.Identifier },
+              agents = from a in model.GoalModel.Agents.OrderBy (x => x.Name)
+                       select new { id = a.Identifier,
+                                    name = a.Name,
+                                    description = a.Description,
+                                    type = Enum.GetName(typeof(MetaModel.AgentType), a.Type) },
 
-              //
               assignments = from g in model.GoalModel.Goals
                               from aa in g.AgentAssignments
                                 from a in aa.Agents
                                   select new {     id = aa.Identifier,
                                                  goal = g.Identifier,
-                                                agent = a.Identifier,
-                                               sysref = HandleIdentifier(aa.SystemReference) },
+                                                agent = a.Identifier },
 
-              //
-              insystem = from g in model.GoalModel.Goals.OrderBy (x => x.Name)
-                           from s in g.InSystems
-                             select new { goal   = g.Identifier,
-                                          system = s.Identifier },
+              // OTHER ORTHOGONAL FEATURES
 
-              //
               locations = from pair in declarations
                           where HasIdentifier(pair.Key)
                           select new { object_id = HandleIdentifier(pair.Key),
-                                       locations = HandleLocations(pair.Value) }
+                                       locations = HandleLocations(pair.Value) },
+
+              predicates = from p in model.Predicates.Values.OrderBy (x => x.Name)
+                           select new { id = p.Identifier,
+                                        name = p.Name,
+                                        signature = p.Signature,
+                                        definition = p.Definition }
 
             };
 
             var json = new JavaScriptSerializer().Serialize(dbvalue);
             Console.WriteLine(json);
-            
+
         }
     }
 }
