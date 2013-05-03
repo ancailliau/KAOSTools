@@ -56,6 +56,18 @@ namespace KAOSTools.ReportGenerator
                                    definition = g.Definition },
 
               //
+              domain_properties = from g in model.GoalModel.DomainProperties.OrderBy (x => x.Name)
+                                  select new { id = g.Identifier,
+                                               name = g.Name,
+                                               definition = g.Definition },
+
+              //
+              domain_hypotheses = from g in model.GoalModel.DomainHypotheses.OrderBy (x => x.Name)
+                                  select new { id = g.Identifier,
+                                               name = g.Name,
+                                               definition = g.Definition },
+
+              //
               obstacles = from o in model.GoalModel.Obstacles.OrderBy (x => x.Name)
                           select new { id = o.Identifier,
                                        name = o.Name,
