@@ -1181,7 +1181,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// Argument := 'argument' S Name S (':' S (Entity / Name / Identifier))?
+		// Argument := 'argument' S Identifier S (':' S (Entity / Name / Identifier))?
 		private State DoParseArgumentRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -1190,7 +1190,7 @@ namespace KAOSTools.Parsing
 			_state = DoSequence(_state, results,
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "argument");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Name");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Identifier");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 1,
 				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,

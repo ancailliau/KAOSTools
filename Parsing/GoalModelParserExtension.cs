@@ -294,7 +294,7 @@ namespace KAOSTools.Parsing {
         
         ParsedElement BuildArgument (List<Result> results)
         {
-            var name = results [1].Value as NameExpression;
+            var name = results [1].Value as IdentifierExpression;
             
             dynamic type = null;
             if (results.Count == 4) {

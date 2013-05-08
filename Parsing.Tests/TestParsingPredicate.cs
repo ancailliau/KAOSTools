@@ -128,11 +128,11 @@ namespace KAOSTools.Parsing.Tests
 
         [TestCase(@"declare predicate
                         name ""Test""
-                        argument ""c"": ""MyType""
+                        argument c: ""MyType""
                     end")]
         [TestCase(@"declare predicate
                         name ""Test""
-                        argument ""c"": mytype
+                        argument c: mytype
                     end
 
                     declare object
@@ -141,7 +141,7 @@ namespace KAOSTools.Parsing.Tests
                     end")]
         [TestCase(@"declare predicate
                         name ""Test""
-                        argument ""c"": declare object id myType name ""MyType"" end
+                        argument c: declare object id myType name ""MyType"" end
                     end")]
         public void TestArgument (string input)
         {
@@ -156,7 +156,7 @@ namespace KAOSTools.Parsing.Tests
         
         [TestCase(@"declare predicate
                         name ""Test""
-                        argument ""c"": ""MyType""
+                        argument c: ""MyType""
                         formalspec ""c.MyAttribute""
                     end")]
         public void TestFormalSpec (string input)

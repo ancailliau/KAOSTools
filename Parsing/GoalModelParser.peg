@@ -166,7 +166,7 @@ AssignedTo :=
 Attribute := 'attribute' S Name S (':' S ( Type / Name / Identifier ) )?
     `value = BuildAttribute(results);`
 
-Argument := 'argument' S Name S (':' S ( Entity / Name / Identifier ) )?
+Argument := 'argument' S Identifier S (':' S ( Entity / Name / Identifier ) )?
     `value = BuildArgument(results);`
 
 Link := 'link' S Multiplicity? S ( Entity / Name / Identifier )
