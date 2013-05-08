@@ -142,7 +142,7 @@ namespace KAOSTools.ReportGenerator
               agents = from a in model.GoalModel.Agents.OrderBy (x => x.Name)
                        select new { id = a.Identifier,
                                     name = a.Name,
-                                    description = a.Definition,
+                                    definition = a.Definition,
                                     type = Enum.GetName(typeof(MetaModel.AgentType), a.Type) },
 
               assignments = from g in model.GoalModel.Goals
