@@ -2,14 +2,13 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using KAOSTools.Parsing;
-using KAOSTools.MetaModel;
 using System.IO;
 
-internal sealed partial class GoalModelParser
+sealed partial class GoalModelParser
 {   
-    private List<string> files_imported = new List<string> ();
+    List<string> files_imported = new List<string> ();
 
-    private KAOSTools.Parsing.ParsedElement BuildElements (List<Result> results)
+    ParsedElement BuildElements (List<Result> results)
     {
         var attrs = new ParsedElements();
         foreach (var result in results) {
@@ -18,7 +17,7 @@ internal sealed partial class GoalModelParser
         return attrs;
     }
 
-    private KAOSTools.Parsing.ParsedElement BuildElement (ParsedElements attrs, ParsedElement value)
+    ParsedElement BuildElement (ParsedElements attrs, ParsedElement value)
     {
         if (value is ParsedElements) {
             foreach (var result2 in ((ParsedElements) value).Values) {
@@ -30,281 +29,229 @@ internal sealed partial class GoalModelParser
         return attrs;
     }
 
-    private ParsedElement BuildPredicate (List<Result> results)
+    ParsedElement Import (string file)
     {
-        var predicate = new ParsedPredicate () 
-            { Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-        
-        if (results[0].Text == "override")
-            predicate.Override = true;
-
-        for (int i = 2; i < results.Count - 1; i++) {
-            predicate.Attributes.Add (results[i].Value as KAOSTools.Parsing.ParsedAttribute);
+        var filename = Path.Combine (Path.GetDirectoryName (m_file), file);
+        if (files_imported.Contains (Path.GetFullPath (filename))) {
+            return new ParsedElements ();
         }
         
-        return predicate;
-    }
-
-    private KAOSTools.Parsing.ParsedElement BuildGoal (List<Result> results)
-    {
-        var goal = new KAOSTools.Parsing.ParsedGoal () 
-            { Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-
-        if (results[0].Text == "override")
-            goal.Override = true;
-        
-        for (int i = 2; i < results.Count - 1; i++) {
-            goal.Attributes.Add (results[i].Value as KAOSTools.Parsing.ParsedAttribute);
+        if (File.Exists (filename)) {
+            files_imported.Add (Path.GetFullPath (filename));
+            
+            string input = File.ReadAllText (filename);
+            var parser = new GoalModelParser ();
+            parser.files_imported = this.files_imported;
+            var m2 = parser.Parse (input, filename);
+            return m2;
         }
 
-        return goal;
+        throw new FileNotFoundException ("Included file `" + filename + "` not found", filename);
     }
 
-    private KAOSTools.Parsing.ParsedElement BuildDomainProperty (List<Result> results)
+    #region First-class declarations
+
+    ParsedElement BuildParsedElementWithAttributes<T> (List<Result> results)
+        where T: ParsedElementWithAttributes, new()
     {
-        var domprop = new KAOSTools.Parsing.ParsedDomainProperty () 
-            { Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-
-        if (results[0].Text == "override")
-            domprop.Override = true;
-
-        for (int i = 2; i < results.Count - 1; i++) {
-            domprop.Attributes.Add (results[i].Value as KAOSTools.Parsing.ParsedAttribute);
-        }
-
-        return domprop;
-    }
-    
-    private KAOSTools.Parsing.ParsedElement BuildDomainHypothesis (List<Result> results)
-    {
-        var domhyp = new KAOSTools.Parsing.ParsedDomainHypothesis () 
-            { Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-
-        if (results[0].Text == "override")
-            domhyp.Override = true;
-
-        for (int i = 2; i < results.Count - 1; i++) {
-            domhyp.Attributes.Add (results[i].Value as KAOSTools.Parsing.ParsedAttribute);
-        }
-        
-        return domhyp;
-    }
-    
-    private KAOSTools.Parsing.ParsedElement BuildType (List<Result> results)
-    {
-        var entity = new KAOSTools.Parsing.ParsedGivenType () 
-        { Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-        
-        if (results[0].Text == "override")
-            entity.Override = true;        
-        
-        for (int i = 2; i < results.Count - 1; i++) {
-            entity.Attributes.Add (results[i].Value as KAOSTools.Parsing.ParsedAttribute);
-        }
-        
-        return entity;
-    }
-
-    private KAOSTools.Parsing.ParsedElement BuildEntity (List<Result> results)
-    {
-        var entity = new KAOSTools.Parsing.ParsedEntity () 
-        { Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-        
-        if (results[0].Text == "override")
-            entity.Override = true;        
-
-        for (int i = 2; i < results.Count - 1; i++) {
-            entity.Attributes.Add (results[i].Value as KAOSTools.Parsing.ParsedAttribute);
-        }
-        
-        return entity;
-    }
-
-    private KAOSTools.Parsing.ParsedElement BuildAssociation (List<Result> results)
-    {
-        var association = new KAOSTools.Parsing.ParsedAssociation () 
-        { Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-        
-        if (results[0].Text == "override")
-            association.Override = true;        
-        
-        for (int i = 2; i < results.Count - 1; i++) {
-            association.Attributes.Add (results[i].Value as KAOSTools.Parsing.ParsedAttribute);
-        }
-        
-        return association;
-    }
-
-    private KAOSTools.Parsing.ParsedElement BuildAttribute (List<Result> results)
-    {
-        var name = results [1].Value as NameExpression;
-
-        dynamic type = null;
-        if (results.Count == 4) {
-            type = results [3].Value;
-        }
-        return new ParsedAttributeAttribute (name.Value, type);
-    }
-
-    private KAOSTools.Parsing.ParsedElement BuildArgument (List<Result> results)
-    {
-        var name = results [1].Value as NameExpression;
-        
-        dynamic type = null;
-        if (results.Count == 4) {
-            type = results [3].Value;
-        }
-        return new ParsedPredicateArgumentAttribute (name.Value, type);
-    }
-
-    private KAOSTools.Parsing.ParsedElement BuildLink (List<Result> results)
-    {
-        var link = new KAOSTools.Parsing.ParsedLinkAttribute () { 
+        var t = new T () { 
             Line = results[0].Line, 
             Col = results[0].Col, 
             Filename = m_file
         };
-
-        if (results.Count == 2) {
-            link.Target = results[1].Value;
-        } else if (results.Count == 3) {
-            link.Multiplicity = (results[1].Value as MultiplictyExpression).Value;
-            link.Target = results[2].Value;
+        
+        if (results[0].Text == "override")
+            t.Override = true;
+        
+        for (int i = 2; i < results.Count - 1; i++) {
+            t.Attributes.Add (results[i].Value as ParsedAttribute);
         }
+        
+        return t;
+    }
 
-        return link;
+    ParsedElement BuildPredicate (List<Result> results)
+    {
+        return BuildParsedElementWithAttributes<ParsedPredicate> (results);
+    }
+
+    ParsedElement BuildSystem (List<Result> results)
+    {
+        return BuildParsedElementWithAttributes<ParsedSystem> (results);
+    }
+
+    ParsedElement BuildGoal (List<Result> results)
+    {
+        return BuildParsedElementWithAttributes<ParsedGoal> (results);
     }
     
-    private KAOSTools.Parsing.ParsedElement BuildIsA (List<Result> results)
+    ParsedElement BuildDomainProperty (List<Result> results)
     {
-        return new KAOSTools.Parsing.ParsedIsAAttribute () { 
-            Value = results[1].Value,
+        return BuildParsedElementWithAttributes<ParsedDomainProperty> (results);
+    }
+    
+    ParsedElement BuildObstacle (List<Result> results)
+    {
+        return BuildParsedElementWithAttributes<ParsedObstacle> (results);
+    }
+    
+    ParsedElement BuildAgent (List<Result> results)
+    {
+        return BuildParsedElementWithAttributes<ParsedAgent> (results);
+    }
+    
+    ParsedElement BuildDomainHypothesis (List<Result> results)
+    {
+        return BuildParsedElementWithAttributes<ParsedDomainHypothesis> (results);
+    }
+    
+    ParsedElement BuildEntity (List<Result> results)
+    {
+        return BuildParsedElementWithAttributes<ParsedEntity> (results);
+    }
+    
+    ParsedElement BuildType (List<Result> results)
+    {
+        return BuildParsedElementWithAttributes<ParsedGivenType> (results);
+    }
+    
+    ParsedElement BuildAssociation (List<Result> results)
+    {
+        return BuildParsedElementWithAttributes<ParsedAssociation> (results);
+    }
+
+    #endregion
+
+    #region Attributes
+
+    ParsedElement BuildParsedAttributeWithValue<T1> (List<Result> results, string value)
+        where T1: ParsedAttributeWithValue<string>, new()
+    {
+        return BuildParsedAttributeWithValue<T1, string> (results, value);
+    }
+
+    ParsedElement BuildParsedAttributeWithValue<T1> (List<Result> results, double value)
+        where T1: ParsedAttributeWithValue<double>, new()
+    {
+        return BuildParsedAttributeWithValue<T1, double> (results, value);
+    }
+
+    ParsedElement BuildParsedAttributeWithValue<T1,T2> (List<Result> results, T2 value)
+        where T1: ParsedAttributeWithValue<T2>, new()
+    {
+        return new T1 { 
+            Value = value,
             Line = results[0].Line, 
             Col = results[0].Col, 
             Filename = m_file
         };
     }
 
-    private KAOSTools.Parsing.ParsedElement BuildMultiplicity (List<Result> results)
+    ParsedElement BuildParsedAttributeWithElementsAndSystemIdentifier<T> (List<Result> results)
+        where T: ParsedAttributeWithElementsAndSystemIdentifier, new()
     {
-        if (results.Count > 3) 
-            return new MultiplictyExpression { Value = results[1].Text + ".." + results[3].Text };
-        else
-            return new MultiplictyExpression { Value = results[1].Text };
-    }
-
-    private KAOSTools.Parsing.ParsedElement BuildSystem (List<Result> results)
-    {
-        var system = new KAOSTools.Parsing.ParsedSystem () 
-            { Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-
-        if (results[0].Text == "override")
-            system.Override = true;
-
-        for (int i = 2; i < results.Count - 1; i++) {
-            system.Attributes.Add (results[i].Value as KAOSTools.Parsing.ParsedAttribute);
-        }
+        var t = new T () { 
+            Line = results[0].Line, 
+            Col = results[0].Col, 
+            Filename = m_file
+        };
         
-        return system;
-    }
-
-    private KAOSTools.Parsing.ParsedElement BuildObstacle (List<Result> results)
-    {
-        var obstacle = new KAOSTools.Parsing.ParsedObstacle () 
-            { Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-
-        if (results[0].Text == "override")
-            obstacle.Override = true;
-
-        for (int i = 2; i < results.Count - 1; i++) {
-            obstacle.Attributes.Add (results[i].Value as KAOSTools.Parsing.ParsedAttribute);
-        }
-
-        return obstacle;
-    }
-    
-    private KAOSTools.Parsing.ParsedElement BuildAgent (List<Result> results)
-    {
-        var agent = new KAOSTools.Parsing.ParsedAgent () 
-            { Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-
-        if (results[0].Text == "override")
-            agent.Override = true;
-
-        for (int i = 2; i < results.Count - 1; i++) {
-            agent.Attributes.Add (results[i].Value as ParsedAttribute);
-        }
-
-        return agent;
-    }
-
-
-    private KAOSTools.Parsing.ParsedElement BuildRefinedBy (List<Result> results)
-    {
-        var list = new ParsedRefinedByAttribute () 
-            { Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-
         if (results[1].Text == "[") {
-            list.SystemIdentifier = results[2].Value;
+            t.SystemIdentifier = results[2].Value;
             for (int i = 4; i < results.Count; i = i + 2) {
-                list.Values.Add (results[i].Value);
-            }
-
-        } else {
-            for (int i = 1; i < results.Count; i = i + 2) {
-                list.Values.Add (results[i].Value);
-            }
-        }
-
-        return list;
-    }
-
-    private KAOSTools.Parsing.ParsedElement BuildAlternative (List<Result> results)
-    {
-        return new ParsedAlternativeAttribute () 
-            { Value = results[1].Value, Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-    }
-    
-    private KAOSTools.Parsing.ParsedElement BuildResolvedBy (List<Result> results)
-    {
-        return new ParsedResolvedByAttribute () 
-        { Value = results[1].Value, Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-    }
-
-    private KAOSTools.Parsing.ParsedElement BuildObstructedBy (List<Result> results)
-    {
-        return new ParsedObstructedByAttribute { Value = results[1].Value, Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-    }
-
-    private KAOSTools.Parsing.ParsedElement BuildAssignedTo (List<Result> results)
-    {
-        var list = new ParsedAssignedToAttribute () 
-            { Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-
-        if (results[1].Text == "[") {
-            list.SystemIdentifier = (results[2].Value as IdentifierOrNameExpression);
-            for (int i = 4; i < results.Count; i = i + 2) {
-                list.Values.Add (results[i].Value);
+                t.Values.Add (results[i].Value);
             }
             
         } else {
             for (int i = 1; i < results.Count; i = i + 2) {
-                list.Values.Add (results[i].Value);
+                t.Values.Add (results[i].Value);
             }
         }
-
-        return list;
+        
+        return t;
     }
 
-
-    private KAOSTools.Parsing.ParsedElement BuildAgentTypeAttribute (List<Result> results)
+    ParsedElement BuildIdentifierAttribute (List<Result> results)
     {
-        return new KAOSTools.Parsing.ParsedAgentTypeAttribute { 
-            Value = results[1].Text == "software" ? ParsedAgentType.Software : ParsedAgentType.Environment, 
-            Line = results[0].Line, Col = results[0].Col, Filename = m_file };
+        return BuildParsedAttributeWithValue<ParsedIdentifierAttribute> 
+            (results, results[1].Text);
     }
 
-    private KAOSTools.Parsing.ParsedElement BuildEntityTypeAttribute (List<Result> results)
+    ParsedElement BuildNameAttribute (List<Result> results)
+    {
+        return BuildParsedAttributeWithValue<ParsedNameAttribute> 
+            (results, results.Count == 3 ? "" : results[2].Text);
+    }
+
+    ParsedElement BuildSignatureAttribute (List<Result> results)
+    {
+        return BuildParsedAttributeWithValue<ParsedSignatureAttribute> 
+            (results, results.Count == 3 ? "" : results[2].Text);
+    }
+
+    ParsedElement BuildFormalSpecAttribute (List<Result> results)
+    {
+        return BuildParsedAttributeWithValue<ParsedFormalSpecAttribute, ParsedElement> 
+            (results, results.Count == 3 ? null : results[2].Value);
+    }
+
+    ParsedElement BuildDefinitionAttribute (List<Result> results)
+    {
+        return BuildParsedAttributeWithValue<ParsedDefinitionAttribute> 
+            (results, results.Count == 3 ? "" : results[2].Text);
+    }
+
+    ParsedElement BuildRDS (List<Result> results)
+    {
+        return BuildParsedAttributeWithValue<ParsedRDSAttribute> 
+            (results, double.Parse (results[1].Text));
+    }
+    
+    ParsedElement BuildProbability (List<Result> results)
+    {
+        return BuildParsedAttributeWithValue<ParsedProbabilityAttribute> 
+            (results, double.Parse (results[1].Text));
+    }
+
+    ParsedElement BuildObstructedBy (List<Result> results)
+    {
+        return BuildParsedAttributeWithValue<ParsedObstructedByAttribute, dynamic> 
+            (results, results[1].Value);
+    }
+
+    ParsedElement BuildResolvedBy (List<Result> results)
+    {
+        return BuildParsedAttributeWithValue<ParsedResolvedByAttribute, dynamic> 
+            (results, results[1].Value);
+    }
+
+    ParsedElement BuildAlternative (List<Result> results)
+    {
+        return BuildParsedAttributeWithValue<ParsedAlternativeAttribute, dynamic> 
+            (results, results[1].Value);
+    }
+
+    ParsedElement BuildIsA (List<Result> results)
+    {
+        return BuildParsedAttributeWithValue<ParsedIsAAttribute, dynamic> 
+            (results, results[1].Value);
+    }
+
+    ParsedElement BuildAgentTypeAttribute (List<Result> results)
+    {
+        ParsedAgentType type;
+        if (results[1].Text == "software") 
+            type = ParsedAgentType.Software;
+        else if (results[1].Text == "environment") 
+            type = ParsedAgentType.Environment;
+        else
+            type = ParsedAgentType.None;
+        
+        return BuildParsedAttributeWithValue<ParsedAgentTypeAttribute,ParsedAgentType> 
+            (results, type);
+    }
+    
+    ParsedElement BuildEntityTypeAttribute (List<Result> results)
     {
         ParsedEntityType type;
         if (results[1].Text == "software") 
@@ -315,110 +262,99 @@ internal sealed partial class GoalModelParser
             type = ParsedEntityType.Shared;
         else
             type = ParsedEntityType.None;
-
-        return new KAOSTools.Parsing.ParsedEntityTypeAttribute { 
-            Value = type, 
-            Line = results[0].Line, Col = results[0].Col, Filename = m_file };
+        
+        
+        return BuildParsedAttributeWithValue<ParsedEntityTypeAttribute,ParsedEntityType> 
+            (results, type);
     }
 
-
-    private KAOSTools.Parsing.ParsedElement BuildIdentifierAttribute (List<Result> results)
+    ParsedElement BuildRefinedBy (List<Result> results)
     {
-        return new KAOSTools.Parsing.ParsedIdentifierAttribute { 
-            Value = results[1].Text, 
-            Line = results[0].Line, Col = results[0].Col, Filename = m_file };
+        return BuildParsedAttributeWithElementsAndSystemIdentifier<ParsedRefinedByAttribute> 
+            (results);
     }
 
-    private KAOSTools.Parsing.ParsedElement BuildNameAttribute (List<Result> results)
+    ParsedElement BuildAssignedTo (List<Result> results)
     {
-        return new KAOSTools.Parsing.ParsedNameAttribute { 
-            Value = results.Count == 3 ? "" : results[2].Text,
-            Line = results[0].Line, Col = results[0].Col, Filename = m_file };
+        return BuildParsedAttributeWithElementsAndSystemIdentifier<ParsedAssignedToAttribute> 
+            (results);
     }
 
-    private KAOSTools.Parsing.ParsedElement BuildSignatureAttribute (List<Result> results)
+    ParsedElement BuildAttribute (List<Result> results)
     {
-        return new KAOSTools.Parsing.ParsedSignatureAttribute { Value = results[2].Text,
-            Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-    }
-
-    private KAOSTools.Parsing.ParsedElement BuildFormalSpecAttribute (List<Result> results)
-    {
-        return new ParsedFormalSpecAttribute () { Value = results[2].Value,
-            Line = results[0].Line, Col = results[0].Col, Filename = m_file };
+        var name = results [1].Value as NameExpression;
+        
+        dynamic type = null;
+        if (results.Count == 4) {
+            type = results [3].Value;
+        }
+        return new ParsedAttributeAttribute (name.Value, type);
     }
     
-    private KAOSTools.Parsing.ParsedElement BuildDefinitionAttribute (List<Result> results)
+    ParsedElement BuildArgument (List<Result> results)
     {
-        return new KAOSTools.Parsing.ParsedDefinitionAttribute { 
-            Value = results.Count == 3 ? "" : results [2].Text, 
-            Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-    }
-
-    private KAOSTools.Parsing.ParsedElement BuildRDS (List<Result> results)
-    {
-        return new KAOSTools.Parsing.ParsedRDSAttribute { Value = double.Parse (results [1].Text),
-             Line = results[0].Line, Col = results[0].Col, Filename = m_file };
+        var name = results [1].Value as NameExpression;
+        
+        dynamic type = null;
+        if (results.Count == 4) {
+            type = results [3].Value;
+        }
+        return new ParsedPredicateArgumentAttribute (name.Value, type);
     }
     
-    private KAOSTools.Parsing.ParsedElement BuildProbability (List<Result> results)
+    ParsedElement BuildLink (List<Result> results)
     {
-        return new KAOSTools.Parsing.ParsedProbabilityAttribute { Value = double.Parse (results [1].Text),
-             Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-    }
-
-    private KAOSTools.Parsing.ParsedElement BuildIdOrName (List<Result> results)
-    {
-        if (results.Count == 3) {
-            return new NameExpression (results[1].Text) 
-                { Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-
-        } else if (results.Count == 1) {
-            return new IdentifierExpression (results[0].Text) 
-                { Line = results[0].Line, Col = results[0].Col, Filename = m_file };
+        var link = new KAOSTools.Parsing.ParsedLinkAttribute () { 
+            Line = results[0].Line, 
+            Col = results[0].Col, 
+            Filename = m_file
+        };
+        
+        if (results.Count == 2) {
+            link.Target = results[1].Value;
+        } else if (results.Count == 3) {
+            link.Multiplicity = (results[1].Value as MultiplictyExpression).Value;
+            link.Target = results[2].Value;
         }
-        return null;
+        
+        return link;
     }
 
-    private KAOSTools.Parsing.ParsedElement BuildIdentifier (List<Result> results)
+    #endregion
+
+    #region Expressions
+    
+    ParsedElement BuildMultiplicity (List<Result> results)
     {
-        return new IdentifierExpression (string.Join ("", results.Select (x => x.Text))) 
-            { Line = results[0].Line, Col = results[0].Col, Filename = m_file };
+        if (results.Count > 3) 
+            return new MultiplictyExpression { Value = results[1].Text + ".." + results[3].Text };
+
+        return new MultiplictyExpression { Value = results[1].Text };
     }
 
-    private KAOSTools.Parsing.ParsedElement BuildName (List<Result> results)
+    ParsedElement BuildIdentifier (List<Result> results)
     {
-        if (results.Count == 3) {
-            return new NameExpression (results[1].Text) 
-                { Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-        }
-        return null;
+        return new IdentifierExpression (string.Join ("", results.Select (x => x.Text))) { 
+            Line = results[0].Line, 
+            Col = results[0].Col, 
+            Filename = m_file
+        };
     }
     
-    private KAOSTools.Parsing.ParsedElement Import (string file)
+    ParsedElement BuildName (List<Result> results)
     {
-        var filename = Path.Combine (Path.GetDirectoryName (m_file), file);
-        if (files_imported.Contains (Path.GetFullPath (filename))) {
-            return new ParsedElements ();
-        }
-
-        if (File.Exists (filename)) {
-            files_imported.Add (Path.GetFullPath (filename));
-
-            string input = File.ReadAllText (filename);
-            var parser = new GoalModelParser();
-            parser.files_imported = this.files_imported;
-            var m2 = parser.Parse (input, filename);
-            return m2;
-
-        } else {
-            throw new FileNotFoundException ("Included file `" + filename + "` not found", filename);
-        }
+        return new NameExpression (results[1].Text) { 
+            Line = results[0].Line, 
+            Col = results[0].Col, 
+            Filename = m_file
+        };
     }
+
+    #endregion
 
     #region Formal spec
 
-    private KAOSTools.Parsing.ParsedElement BuildFormula (List<Result> results)
+    ParsedElement BuildFormula (List<Result> results)
     {
         // 'forall' S Identifier S ':' S Identifier ( ',' S Identifier S ':' S Identifier )* S '.' S StrongBinary
         if (results[0].Text == "forall") {
@@ -447,52 +383,47 @@ internal sealed partial class GoalModelParser
         return null;
     }
 
-    private KAOSTools.Parsing.ParsedElement BuildStrongBinary (List<Result> results)
+    ParsedElement BuildStrongBinary (List<Result> results)
     {
         // Binary
         if (results.Count == 1) 
             return results[0].Value;
 
         // 'when' S Binary S 'then' S Formula
-        else {
-            return new ParsedStrongImplyExpression () { Left = results[1].Value, Right = results[3].Value };
-        }
+        return new ParsedStrongImplyExpression () { Left = results[1].Value, Right = results[3].Value };
     }
 
-    private KAOSTools.Parsing.ParsedElement BuildBinary (List<Result> results)
+    ParsedElement BuildBinary (List<Result> results)
     {
         // TemporalBinary
         if (results.Count == 1) 
             return results[0].Value;
 
         // 'if' S TemporalBinary S 'then' S Binary
-        else if (results.Count == 4)
+        if (results.Count == 4)
             return new ParsedImplyExpression () { Left = results[1].Value, Right = results[3].Value };
 
         // TemporalBinary S 'iff' S Binary
-        else
-            return new ParsedEquivalenceExpression () { Left = results[0].Value, Right = results[2].Value };
+        return new ParsedEquivalenceExpression () { Left = results[0].Value, Right = results[2].Value };
     }
     
-    private KAOSTools.Parsing.ParsedElement BuildTemporalBinary (List<Result> results)
+    ParsedElement BuildTemporalBinary (List<Result> results)
     {
         // And
         if (results.Count == 1) 
             return results[0].Value;
 
         // And S 'until' S TemporalBinary
-        else if (results[2].Text == "until")
+        if (results[2].Text == "until")
             return new ParsedUntilExpression () { Left = results[0].Value, Right = results[2].Value };
 
         // And S 'release' S TemporalBinary
-        else if (results[2].Text == "release")
+        if (results[2].Text == "release")
             return new ParsedReleaseExpression () { Left = results[0].Value, Right = results[2].Value };
 
         // And S 'unless' S TemporalBinary
-        else if (results[2].Text == "unless")
-            return new ParsedUnlessExpression () { Left = results[0].Value, Right = results[2].Value };
-
-        return null;
+        // if (results[2].Text == "unless")
+        return new ParsedUnlessExpression () { Left = results[0].Value, Right = results[2].Value };
     }
     
     private KAOSTools.Parsing.ParsedElement BuildAnd (List<Result> results)
@@ -502,8 +433,7 @@ internal sealed partial class GoalModelParser
             return results[0].Value;
         
         // Or S 'and' S And
-        else
-            return new ParsedAndExpression () { Left = results[0].Value, Right = results[2].Value };
+        return new ParsedAndExpression () { Left = results[0].Value, Right = results[2].Value };
     }
     
     private KAOSTools.Parsing.ParsedElement BuildOr (List<Result> results)
@@ -513,8 +443,7 @@ internal sealed partial class GoalModelParser
             return results[0].Value;
         
         // Unary S 'or' S Or
-        else
-            return new ParsedOrExpression () { Left = results[0].Value, Right = results[2].Value };
+        return new ParsedOrExpression () { Left = results[0].Value, Right = results[2].Value };
 
     }
     
@@ -525,23 +454,20 @@ internal sealed partial class GoalModelParser
             return results[0].Value;
 
         // 'not' S Unary
-        else if (results[0].Text == "not")
+        if (results[0].Text == "not")
             return new ParsedNotExpression () { Enclosed = results[1].Value };
 
         // 'next' S Unary
-        else if (results[0].Text == "next")
+        if (results[0].Text == "next")
             return new ParsedNextExpression () { Enclosed = results[1].Value };
         
         // ('sooner-or-later' / 'eventually') S Unary
-        else if (results[0].Text == "sooner-or-later" | results[0].Text == "eventually") {
+        if (results[0].Text == "sooner-or-later" | results[0].Text == "eventually")
             return new ParsedEventuallyExpression () { Enclosed = results[1].Value };
-        }
 
         // ('always' / 'globally') S Unary
-        else if (results[0].Text == "always" | results[0].Text == "globally")
-            return new ParsedGloballyExpression () { Enclosed = results[1].Value };
-
-        return null;
+        // if (results[0].Text == "always" | results[0].Text == "globally")
+        return new ParsedGloballyExpression () { Enclosed = results[1].Value };
     }
     
     private KAOSTools.Parsing.ParsedElement BuildAtom (List<Result> results)
@@ -619,14 +545,9 @@ internal sealed partial class GoalModelParser
         }
 
         // '(' S Formula S ')'
-        if (results[0].Text == "(") {
-            return results[1].Value;
-        }
-
-        throw new NotImplementedException ();
+        // if (results[0].Text == "(")
+        return results[1].Value;
     }
 
     #endregion
-
-
 }

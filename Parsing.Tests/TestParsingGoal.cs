@@ -82,10 +82,7 @@ namespace KAOSTools.Parsing.Tests
                 .Where (x => x.Name == expectedName)
                     .ShallBeSingle ();
         }
-        
-        [TestCase(@"declare goal
-                        name """"
-                    end")]
+
         [TestCase(@"declare goal
                         name """"""
                     end")]
@@ -293,12 +290,39 @@ namespace KAOSTools.Parsing.Tests
                         refinedby  test2, ""domprop""
                     end
                     declare domainproperty id domprop name ""domprop"" end")]
+        [TestCase(@"declare goal
+                        id         test
+                        refinedby  test2, declare domainproperty id domprop name ""domprop"" end
+                    end")]
         public void TestRefinementWithDomainProperty (string input)
         {
             var model = parser.Parse (input);
 
             var test = model.GoalModel.Goals.ShallContain (x => x.Identifier == "test").ShallBeSingle ();
             test.Refinements.ShallBeSingle ().DomainProperties.Select (x => x.Identifier).ShallOnlyContain (new string [] { "domprop" });
+        }
+
+        
+        [TestCase(@"declare goal
+                        id         test
+                        refinedby  test2, domhyp
+                    end
+                    declare domhyp id domhyp end")]
+        [TestCase(@"declare goal
+                        id         test
+                        refinedby  test2, ""domhyp""
+                    end
+                    declare domhyp id domhyp name ""domhyp"" end")]
+        [TestCase(@"declare goal
+                        id         test
+                        refinedby  test2, declare domhyp id domhyp name ""domhyp"" end
+                    end")]
+        public void TestRefinementWithDomainHypothesis (string input)
+        {
+            var model = parser.Parse (input);
+            
+            var test = model.GoalModel.Goals.ShallContain (x => x.Identifier == "test").ShallBeSingle ();
+            test.Refinements.ShallBeSingle ().DomainHypotheses.Select (x => x.Identifier).ShallOnlyContain (new string [] { "domhyp" });
         }
             
         [TestCase(@"declare goal 

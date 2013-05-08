@@ -93,10 +93,7 @@ namespace KAOSTools.Parsing.Tests
                 .Where (x => x.Name == expectedName)
                 .ShallBeSingle ();
         }
-        
-        [TestCase(@"declare agent
-                        name """"
-                    end")]
+
         [TestCase(@"declare agent
                         name """"""
                     end")]

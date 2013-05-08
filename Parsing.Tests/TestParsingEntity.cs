@@ -89,10 +89,7 @@ namespace KAOSTools.Parsing.Tests
                 .Where (x => x.Name == expectedName)
                 .ShallBeSingle ();
         }
-        
-        [TestCase(@"declare entity
-                        name """"
-                    end")]
+
         [TestCase(@"declare entity
                         name """"""
                     end")]

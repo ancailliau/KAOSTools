@@ -85,8 +85,27 @@ namespace KAOSTools.Parsing
         }
     }
 
-    public class ParsedRefinedByAttribute : ParsedAttributeWithElementsAndSystemIdentifier {}
+    public class ParsedRefinedByAttribute  : ParsedAttributeWithElementsAndSystemIdentifier {}
     public class ParsedAssignedToAttribute : ParsedAttributeWithElementsAndSystemIdentifier {}
+
+    public class ParsedIsAAttribute          : ParsedAttributeWithValue<dynamic> {}
+    public class ParsedObstructedByAttribute : ParsedAttributeWithValue<dynamic> {}
+    public class ParsedAlternativeAttribute  : ParsedAttributeWithValue<dynamic> {}
+    public class ParsedResolvedByAttribute   : ParsedAttributeWithValue<dynamic> {}
+
+    public class ParsedAgentTypeAttribute    : ParsedAttributeWithValue<ParsedAgentType>  {}
+    public class ParsedEntityTypeAttribute   : ParsedAttributeWithValue<ParsedEntityType> {}
+
+    public class ParsedNameAttribute         : ParsedAttributeWithValue<string> {}
+    public class ParsedIdentifierAttribute   : ParsedAttributeWithValue<string> {}
+    public class ParsedDefinitionAttribute   : ParsedAttributeWithValue<string> {}
+    public class ParsedSignatureAttribute    : ParsedAttributeWithValue<string> {}
+
+    public class ParsedProbabilityAttribute  : ParsedAttributeWithValue<double> {}
+    public class ParsedRDSAttribute          : ParsedAttributeWithValue<double> {}
+
+    public class ParsedFormalSpecAttribute   : ParsedAttributeWithValue<ParsedElement> {}
+
 
     public class ParsedLinkAttribute : ParsedAttribute
     {
@@ -94,28 +113,14 @@ namespace KAOSTools.Parsing
         public dynamic Target { get; set; }
     }
 
-    public class ParsedIsAAttribute : ParsedAttributeWithValue<dynamic> {}
-    public class ParsedObstructedByAttribute : ParsedAttributeWithValue<dynamic> {}
-    public class ParsedAlternativeAttribute : ParsedAttributeWithValue<dynamic> {}
-    public class ParsedResolvedByAttribute : ParsedAttributeWithValue<dynamic> {}
-
-    public class ParsedAgentTypeAttribute : ParsedAttributeWithValue<ParsedAgentType> {}
-    public class ParsedEntityTypeAttribute : ParsedAttributeWithValue<ParsedEntityType> {}
-    public class ParsedNameAttribute : ParsedAttributeWithValue<string> {}
-    public class ParsedIdentifierAttribute : ParsedAttributeWithValue<string> {}
-    public class ParsedDefinitionAttribute : ParsedAttributeWithValue<string> {}
-    public class ParsedProbabilityAttribute : ParsedAttributeWithValue<double> {}
-    public class ParsedRDSAttribute : ParsedAttributeWithValue<double> {}
-    public class ParsedFormalSpecAttribute : ParsedAttributeWithValue<ParsedElement> {}
-    public class ParsedSignatureAttribute : ParsedAttributeWithValue<string> {}
-
     public class ParsedPredicateArgumentAttribute : ParsedAttribute {
         public string Name { get; set; }
         public dynamic Type { get; set; }
         
         public ParsedPredicateArgumentAttribute (string name, dynamic type)
         {
-            Name = name; Type = type;
+            Name = name; 
+            Type = type;
         }
     }
 
@@ -125,7 +130,8 @@ namespace KAOSTools.Parsing
         
         public ParsedAttributeAttribute (string name, dynamic type)
         {
-            Name = name; Type = type;
+            Name = name; 
+            Type = type;
         }
     }
 

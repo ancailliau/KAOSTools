@@ -77,10 +77,7 @@ namespace KAOSTools.Parsing.Tests
                 .Where (x => x.Name == expectedName)
                 .ShallBeSingle ();
         }
-        
-        [TestCase(@"declare type
-                        name """"
-                    end")]
+
         [TestCase(@"declare type
                         name """"""
                     end")]

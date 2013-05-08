@@ -76,10 +76,7 @@ namespace KAOSTools.Parsing.Tests
             model.Predicates.Where (x => x.Name == expectedName)
                     .ShallBeSingle ();
         }
-        
-        [TestCase(@"declare predicate
-                        name """"
-                    end")]
+
         [TestCase(@"declare predicate
                         name """"""
                     end")]

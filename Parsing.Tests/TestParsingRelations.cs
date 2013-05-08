@@ -90,9 +90,6 @@ namespace KAOSTools.Parsing.Tests
         }
         
         [TestCase(@"declare relation
-                        name """"
-                    end")]
-        [TestCase(@"declare relation
                         name """"""
                     end")]
         public void TestInvalidName (string input)

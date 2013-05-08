@@ -69,10 +69,7 @@ namespace KAOSTools.Parsing.Tests
                 .Where (x => x.Name == expectedName)
                     .ShallBeSingle ();
         }
-        
-        [TestCase(@"declare domainhypothesis
-                        name """"
-                    end")]
+
         [TestCase(@"declare domainhypothesis
                         name """"""
                     end")]

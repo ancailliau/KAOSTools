@@ -70,10 +70,7 @@ namespace KAOSTools.Parsing.Tests
                 .Where (x => x.Name == expectedName)
                     .ShallBeSingle ();
         }
-        
-        [TestCase(@"declare domainproperty
-                        name """"
-                    end")]
+
         [TestCase(@"declare domainproperty
                         name """"""
                     end")]
