@@ -170,6 +170,17 @@ namespace KAOSTools.Parsing.Tests
             ((AttributeReference) predicate.FormalSpec).Entity.ShallEqual (entity);
             ((AttributeReference) predicate.FormalSpec).Attribute.ShallEqual (attribute);
         }
+
+        [TestCase(@"declare predicate
+                        id test
+                        signature ""mypredicate""
+                    end", "mypredicate")]
+        public void TestSignature (string input, string signature)
+        {
+            var model = parser.Parse (input);
+            var predicate = model.Predicates.Single (x => x.Identifier == "test");
+            predicate.Signature.ShallEqual (signature);
+        }
     }
 }
 

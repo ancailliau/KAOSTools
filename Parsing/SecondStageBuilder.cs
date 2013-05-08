@@ -424,6 +424,11 @@ namespace KAOSTools.Parsing
         {
             Handle (element, fb.BuildPredicateFormula (element, formalSpec.Value), "FormalSpec");
         }
+        
+        public void Handle (KAOSMetaModelElement element, ParsedSignatureAttribute attribute)
+        {
+            Handle (element, attribute.Value, "Signature");
+        }
 
         public void Handle<T> (KAOSMetaModelElement element, 
                                T value, 
