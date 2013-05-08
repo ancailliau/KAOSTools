@@ -36,6 +36,41 @@ namespace KAOSTools.ReportGenerator
           return tuples;
         }
 
+        public static Object ObstacleRefinements() {
+          var tuples = from g in model.GoalModel.Obstacles
+                         from r in g.Refinements
+                           select new { id = r.Identifier,
+                                        parent = g.Identifier };
+          return tuples;
+        }
+
+        public static Object ObstacleRefinementChildren(){
+          var grgc = from g in model.GoalModel.Obstacles
+                       from r in g.Refinements
+                         from sg in r.Subobstacles
+                           select new { refinement = r.Identifier,
+                                        child = sg.Identifier };
+          var grpc = from g in model.GoalModel.Obstacles
+                       from r in g.Refinements
+                         from d in r.DomainProperties
+                           select new { refinement = r.Identifier,
+                                        child = d.Identifier };
+          var grhc = from g in model.GoalModel.Obstacles
+                       from r in g.Refinements
+                         from d in r.DomainHypotheses
+                           select new { refinement = r.Identifier,
+                                        child = d.Identifier };
+          return grgc.Union(grpc).Union(grhc);
+        }
+
+        public static Object GoalRefinements() {
+          var tuples = from g in model.GoalModel.Goals
+                         from r in g.Refinements
+                           select new { id = r.Identifier,
+                                        parent = g.Identifier };
+          return tuples;
+        }
+
         public static Object GoalRefinementChildren(){
           var grgc = from g in model.GoalModel.Goals
                        from r in g.Refinements
@@ -77,12 +112,9 @@ namespace KAOSTools.ReportGenerator
                                                name = g.Name,
                                                definition = g.Definition },
 
-              refinements = from g in model.GoalModel.Goals
-                            from r in g.Refinements
-                                select new { id = r.Identifier,
-                                             parent = g.Identifier },
+              goal_refinements = GoalRefinements(),
 
-              refinement_children = GoalRefinementChildren(),
+              goal_refinement_children = GoalRefinementChildren(),
 
               // OBSTACLE ANALYSIS
 
@@ -90,6 +122,11 @@ namespace KAOSTools.ReportGenerator
                           select new { id = o.Identifier,
                                        name = o.Name,
                                        definition = o.Definition },
+
+              obstacle_refinements = ObstacleRefinements(),
+
+              obstacle_refinement_children = ObstacleRefinementChildren(),
+
               obstructions = from g in model.GoalModel.Goals.OrderBy (x => x.Name)
                              from o in g.Obstructions.OrderBy (x => x.Name)
                                select new { goal     = g.Identifier,
