@@ -139,23 +139,18 @@ namespace KAOSTools.Parsing
 
     #region Expressions
 
-    [Obsolete]
-    public class IdentifierOrNameExpression : ParsedAttribute {
-        public string Value { get; set; }
-    }
-    
-    public class IdentifierExpression : IdentifierOrNameExpression
+    public class IdentifierExpression : ParsedAttribute
     {
-        public IdentifierExpression (string value)
-        {
+        public string Value { get; set; }
+        public IdentifierExpression (string value) {
             Value = value;
         }
     }
     
-    public class NameExpression : IdentifierOrNameExpression
+    public class NameExpression : ParsedAttribute
     {
-        public NameExpression (string value)
-        {
+        public string Value { get; set; }
+        public NameExpression (string value) {
             Value = value;
         }
     }

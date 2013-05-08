@@ -1,5 +1,7 @@
 start = Start
 value = KAOSTools.Parsing.ParsedElement
+namespace = KAOSTools.Parsing
+visibility = public
 debug = 
 
 Start := S Elements S;

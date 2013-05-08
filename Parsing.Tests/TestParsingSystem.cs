@@ -48,7 +48,7 @@ namespace KAOSTools.Parsing.Tests
         [TestCase(@"declare system id $ end")]
         public void TestInvalidIdentifier (string input)
         {
-            Assert.Throws<CompilationException> (() => {
+            Assert.Throws<ParserException> (() => {
                 parser.Parse (input);
             });
         }
@@ -75,7 +75,7 @@ namespace KAOSTools.Parsing.Tests
                     end")]
         public void TestInvalidName (string input)
         {
-            Assert.Throws<CompilationException> (() => {
+            Assert.Throws<ParserException> (() => {
                 parser.Parse (input);
             });
         }
@@ -96,7 +96,7 @@ namespace KAOSTools.Parsing.Tests
                     end")]
         public void TestFailedOverride (string input)
         {
-            Assert.Throws<CompilationException> (() => {
+            Assert.Throws<BuilderException> (() => {
                 parser.Parse (input);
             });
         }
