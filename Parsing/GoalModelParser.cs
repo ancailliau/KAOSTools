@@ -69,7 +69,7 @@ internal sealed partial class GoalModelParser
 		m_nonterminals.Add("DefinitionAttribute", new ParseMethod[]{this.DoParseDefinitionAttributeRule});
 		m_nonterminals.Add("AgentTypeAttribute", new ParseMethod[]{this.DoParseAgentTypeAttributeRule});
 		m_nonterminals.Add("EntityTypeAttribute", new ParseMethod[]{this.DoParseEntityTypeAttributeRule});
-		m_nonterminals.Add("RDS", new ParseMethod[]{this.DoParseRDSRule});
+		m_nonterminals.Add("RDSAttribute", new ParseMethod[]{this.DoParseRDSAttributeRule});
 		m_nonterminals.Add("Probability", new ParseMethod[]{this.DoParseProbabilityRule});
 		m_nonterminals.Add("RefinedByObstacle", new ParseMethod[]{this.DoParseRefinedByObstacleRule});
 		m_nonterminals.Add("RefinedByGoal", new ParseMethod[]{this.DoParseRefinedByGoalRule});
@@ -494,7 +494,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// GoalAttribute := IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByGoal / ObstructedBy / AssignedTo / RDS
+	// GoalAttribute := IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByGoal / ObstructedBy / AssignedTo / RDSAttribute
 	private State DoParseGoalAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -508,7 +508,7 @@ internal sealed partial class GoalModelParser
 			delegate (State s, List<Result> r) {return DoParse(s, r, "RefinedByGoal");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "ObstructedBy");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "AssignedTo");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "RDS");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "RDSAttribute");});
 		
 		if (_state.Parsed)
 		{
@@ -862,7 +862,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// EntityTypeAttribute := 'type' S ('software' / 'environment')
+	// EntityTypeAttribute := 'type' S ('software' / 'environment' / 'shared')
 	private State DoParseEntityTypeAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -873,7 +873,8 @@ internal sealed partial class GoalModelParser
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoChoice(s, r,
 				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "software");},
-				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "environment");});});
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "environment");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "shared");});});
 		
 		if (_state.Parsed)
 		{
@@ -885,8 +886,8 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// RDS := 'rds' S Float
-	private State DoParseRDSRule(State _state, List<Result> _outResults)
+	// RDSAttribute := 'rds' S Float
+	private State DoParseRDSAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
@@ -1087,7 +1088,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Attribute := 'attribute' S Name S (':' S IdOrName)?
+	// Attribute := 'attribute' S Name S (':' S (Type / IdOrName))?
 	private State DoParseAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -1102,7 +1103,9 @@ internal sealed partial class GoalModelParser
 				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
 					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, ":");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "IdOrName");});});});
+					delegate (State s3, List<Result> r3) {return DoChoice(s3, r3,
+						delegate (State s4, List<Result> r4) {return DoParse(s4, r4, "Type");},
+						delegate (State s4, List<Result> r4) {return DoParse(s4, r4, "IdOrName");});});});});
 		
 		if (_state.Parsed)
 		{
@@ -1114,7 +1117,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Argument := 'argument' S Name S (':' S IdOrName)?
+	// Argument := 'argument' S Name S (':' S (Entity / IdOrName))?
 	private State DoParseArgumentRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -1129,7 +1132,9 @@ internal sealed partial class GoalModelParser
 				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
 					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, ":");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "IdOrName");});});});
+					delegate (State s3, List<Result> r3) {return DoChoice(s3, r3,
+						delegate (State s4, List<Result> r4) {return DoParse(s4, r4, "Entity");},
+						delegate (State s4, List<Result> r4) {return DoParse(s4, r4, "IdOrName");});});});});
 		
 		if (_state.Parsed)
 		{
@@ -1141,7 +1146,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Link := 'link' S Multiplicity? S IdOrName
+	// Link := 'link' S Multiplicity? S (Entity / IdOrName)
 	private State DoParseLinkRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -1153,7 +1158,9 @@ internal sealed partial class GoalModelParser
 			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 1,
 				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Multiplicity");});},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "IdOrName");});
+			delegate (State s, List<Result> r) {return DoChoice(s, r,
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Entity");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "IdOrName");});});
 		
 		if (_state.Parsed)
 		{
@@ -1165,7 +1172,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// IsA := 'is' S IdOrName
+	// IsA := 'is' S (Entity / IdOrName)
 	private State DoParseIsARule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -1174,7 +1181,9 @@ internal sealed partial class GoalModelParser
 		_state = DoSequence(_state, results,
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "is");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "IdOrName");});
+			delegate (State s, List<Result> r) {return DoChoice(s, r,
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Entity");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "IdOrName");});});
 		
 		if (_state.Parsed)
 		{

@@ -157,6 +157,10 @@ namespace KAOSTools.Parsing.Tests
                         attribute ""test""
                         attribute ""test""
                     end", new string[] { "test", "test" })]
+        [TestCase(@"declare entity
+                        id test
+                        attribute ""My attribute 1"" : declare type name ""MyType"" end
+                    end", new string[] { "My attribute 1" })]
         public void TestAttribute (string input, string[] attributes)
         {
             var model = parser.Parse (input);
@@ -195,6 +199,10 @@ namespace KAOSTools.Parsing.Tests
 
                     declare entity
                         id test2
+                    end", false)]
+        [TestCase(@"declare entity
+                        id test
+                        is declare entity id test2 end
                     end", false)]
         public void TestIsA (string input, bool implicitParent)
         {

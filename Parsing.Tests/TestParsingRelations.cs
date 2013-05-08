@@ -187,6 +187,11 @@ namespace KAOSTools.Parsing.Tests
 
                     declare entity name ""Entity 1"" id entity1 end
                     declare entity name ""Entity 2"" id entity2 end")]
+        [TestCase(@"declare relation
+                        id test
+                        link declare entity name ""Entity 1"" id entity1 end
+                        link declare entity name ""Entity 2"" id entity2 end
+                    end")]
         public void TestLink (string input)
         {
             var model = parser.Parse (input);

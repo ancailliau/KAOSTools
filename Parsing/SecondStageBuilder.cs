@@ -55,10 +55,24 @@ namespace KAOSTools.Parsing
 
         public void Handle (Predicate predicate, ParsedPredicateArgumentAttribute ppa)
         {
-            var arg_name = ppa.Name.Value;
+            var arg_name = ppa.Name;
             Entity arg_type = null;
-            if (ppa.Type != null && !Get<Entity>(ppa.Type, out arg_type))
-                arg_type = Create<Entity> (ppa.Type);
+            if (ppa.Type != null) {
+                if (ppa.Type is IdentifierExpression | ppa.Type is NameExpression) {
+                    if (!Get<Entity>(ppa.Type, out arg_type)) {
+                        arg_type = Create<Entity> (ppa.Type);
+                    }
+                } else if (ppa.Type is ParsedEntity) {
+                    arg_type = fsb.BuildElementWithKeys (ppa.Type);
+                    BuildElement (ppa.Type);
+                    
+                } else {
+                    throw new NotImplementedException (string.Format ("'{0}' is not supported in '{1}' on '{2}'", 
+                                                                      ppa.Type.GetType().Name,
+                                                                      ppa.GetType().Name,
+                                                                      predicate.GetType().Name));
+                }
+            }
 
             var currentPosition = 0;
             if (!predicateArgumentCurrentPosition.ContainsKey(predicate)) {
@@ -381,7 +395,7 @@ namespace KAOSTools.Parsing
                                                                   attribute.GetType().Name,
                                                                   element.GetType().Name));
             }
-            Console.WriteLine ("Add");
+
             element.Links.Add (new Link (entity, attribute.Multiplicity));
         }
 

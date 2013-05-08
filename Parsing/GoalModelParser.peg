@@ -58,7 +58,8 @@ Association :=
 #
                                                                                                                                                                                                          
 GoalAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByGoal / ObstructedBy / AssignedTo / RDS )
+    ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByGoal 
+      / ObstructedBy / AssignedTo / RDSAttribute )
     `value = results[0].Value;`
     
 DomPropAttribute := 
@@ -70,7 +71,8 @@ DomHypAttribute :=
     `value = results[0].Value;`
 
 ObstacleAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByObstacle / ResolvedBy / Probability )
+    ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByObstacle 
+      / ResolvedBy / Probability )
     `value = results[0].Value;`
 
 AgentAttribute := 
@@ -78,7 +80,8 @@ AgentAttribute :=
     `value = results[0].Value;`
                                                                          
 PredicateAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / SignatureAttribute / Argument / FormalSpecAttribute ) 
+    ( IdAttribute / NameAttribute / DefinitionAttribute / SignatureAttribute / Argument 
+      / FormalSpecAttribute ) 
     `value = results[0].Value;`
 
 SystemAttribute := 
@@ -120,7 +123,7 @@ AgentTypeAttribute := 'type' S ( 'software' / 'environment' )
 EntityTypeAttribute := 'type' S ( 'software' / 'environment' / 'shared' )
     `value = BuildEntityTypeAttribute (results);`
     
-RDS := 'rds' S Float 
+RDSAttribute := 'rds' S Float 
     `value = BuildRDS(results);`
 
 Probability := ('probability' / 'eps') S Float 
@@ -144,16 +147,16 @@ ResolvedBy := 'resolvedby' S IdOrNameOrGoal
 Alternative := 'alternative' S IdOrNameOrSystem
     `value = BuildAlternative(results);`
 
-Attribute := 'attribute' S Name S (':' S IdOrName)?
+Attribute := 'attribute' S Name S (':' S ( Type / IdOrName ) )?
     `value = BuildAttribute(results);`
 
-Argument := 'argument' S Name S (':' S IdOrName)?
+Argument := 'argument' S Name S (':' S ( Entity / IdOrName ) )?
     `value = BuildArgument(results);`
 
-Link := 'link' S Multiplicity? S IdOrName
+Link := 'link' S Multiplicity? S ( Entity / IdOrName )
     `value = BuildLink(results);`
     
-IsA := 'is' S IdOrName
+IsA := 'is' S ( Entity / IdOrName )
     `value = BuildIsA(results);`
     
 # Expressions                                

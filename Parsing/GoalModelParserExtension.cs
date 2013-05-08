@@ -148,13 +148,13 @@ internal sealed partial class GoalModelParser
 
     private KAOSTools.Parsing.ParsedElement BuildArgument (List<Result> results)
     {
-        var name = results [1].Value as KAOSTools.Parsing.ParsedAttribute;
+        var name = results [1].Value as NameExpression;
         
-        KAOSTools.Parsing.IdentifierOrNameExpression type = null;
+        dynamic type = null;
         if (results.Count == 4) {
-            type = results [3].Value as KAOSTools.Parsing.IdentifierOrNameExpression;
+            type = results [3].Value;
         }
-        return new ParsedPredicateArgumentAttribute (name as NameExpression, type);
+        return new ParsedPredicateArgumentAttribute (name.Value, type);
     }
 
     private KAOSTools.Parsing.ParsedElement BuildLink (List<Result> results)
@@ -166,10 +166,10 @@ internal sealed partial class GoalModelParser
         };
 
         if (results.Count == 2) {
-            link.Target = results[1].Value as IdentifierOrNameExpression;
+            link.Target = results[1].Value;
         } else if (results.Count == 3) {
             link.Multiplicity = (results[1].Value as MultiplictyExpression).Value;
-            link.Target = results[2].Value as IdentifierOrNameExpression;
+            link.Target = results[2].Value;
         }
 
         return link;

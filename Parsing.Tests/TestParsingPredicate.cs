@@ -142,6 +142,10 @@ namespace KAOSTools.Parsing.Tests
                         id mytype
                         name ""MyType""
                     end")]
+        [TestCase(@"declare predicate
+                        name ""Test""
+                        argument ""c"": declare object id myType name ""MyType"" end
+                    end")]
         public void TestArgument (string input)
         {
             var model = parser.Parse (input);

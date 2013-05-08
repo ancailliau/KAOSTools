@@ -110,10 +110,10 @@ namespace KAOSTools.Parsing
     public class ParsedSignatureAttribute : ParsedAttributeWithValue<string> {}
 
     public class ParsedPredicateArgumentAttribute : ParsedAttribute {
-        public NameExpression Name { get; set; }
+        public string Name { get; set; }
         public dynamic Type { get; set; }
         
-        public ParsedPredicateArgumentAttribute (NameExpression name, IdentifierOrNameExpression type)
+        public ParsedPredicateArgumentAttribute (string name, dynamic type)
         {
             Name = name; Type = type;
         }
