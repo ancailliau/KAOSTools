@@ -189,15 +189,12 @@ internal sealed partial class GoalModelParser
     
     private KAOSTools.Parsing.ParsedElement BuildIsA (List<Result> results)
     {
-        var link = new KAOSTools.Parsing.ParsedIsAAttribute () { 
+        return new KAOSTools.Parsing.ParsedIsAAttribute () { 
+            Value = results[1].Value,
             Line = results[0].Line, 
             Col = results[0].Col, 
             Filename = m_file
         };
-        
-        link.Target = results[1].Value as IdentifierOrNameExpression;
-
-        return link;
     }
 
     private KAOSTools.Parsing.ParsedElement BuildMultiplicity (List<Result> results)

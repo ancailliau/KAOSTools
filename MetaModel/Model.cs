@@ -621,6 +621,11 @@ namespace KAOSTools.MetaModel
         public Entity Target { get; set; }
         public string Role { get; set; }
         public string Multiplicity { get; set; }
+        public Link (Entity target, string multiplicty = null)
+        {
+            Target = target; 
+            Multiplicity = multiplicty;
+        }
     }
 
     public enum EntityType {

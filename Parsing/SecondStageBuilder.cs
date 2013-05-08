@@ -341,6 +341,49 @@ namespace KAOSTools.Parsing
             if (!refinement.IsEmpty)
                 element.Refinements.Add (refinement);
         }
+        
+        public void Handle (Entity element, ParsedIsAAttribute attribute)
+        {
+            if (attribute.Value is IdentifierExpression | attribute.Value is NameExpression) {
+                Entity entity;
+                if (!Get (attribute.Value, out entity)) {
+                    entity = Create<Entity> (attribute.Value);
+                }
+                element.Parents.Add (entity);
+                
+            } else if (attribute.Value is ParsedEntity) {
+                element.Parents.Add (fsb.BuildElementWithKeys (attribute.Value));
+                BuildElement (attribute.Value);
+                
+            } else {
+                throw new NotImplementedException (string.Format ("'{0}' is not supported in '{1}' on '{2}'", 
+                                                                  attribute.Value.GetType().Name,
+                                                                  attribute.GetType().Name,
+                                                                  element.GetType().Name));
+            }
+        }
+        
+        public void Handle (Relation element, ParsedLinkAttribute attribute)
+        {
+            Entity entity;
+            if (attribute.Target is IdentifierExpression | attribute.Target is NameExpression) {
+                if (!Get (attribute.Target, out entity)) {
+                    entity = Create<Entity> (attribute.Target);
+                }
+                
+            } else if (attribute.Target is ParsedEntity) {
+                entity = fsb.BuildElementWithKeys (attribute.Target);
+                BuildElement (attribute.Target);
+                
+            } else {
+                throw new NotImplementedException (string.Format ("'{0}' is not supported in '{1}' on '{2}'", 
+                                                                  attribute.Target.GetType().Name,
+                                                                  attribute.GetType().Name,
+                                                                  element.GetType().Name));
+            }
+            Console.WriteLine ("Add");
+            element.Links.Add (new Link (entity, attribute.Multiplicity));
+        }
 
         public void Handle (KAOSMetaModelElement element, ParsedAgentTypeAttribute attribute)
         {

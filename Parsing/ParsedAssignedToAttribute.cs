@@ -91,14 +91,10 @@ namespace KAOSTools.Parsing
     public class ParsedLinkAttribute : ParsedAttribute
     {
         public string Multiplicity { get; set; }
-        public IdentifierOrNameExpression Target { get; set; }
+        public dynamic Target { get; set; }
     }
 
-    public class ParsedIsAAttribute : ParsedAttribute
-    {
-        public IdentifierOrNameExpression Target { get; set; }
-    }
-
+    public class ParsedIsAAttribute : ParsedAttributeWithValue<dynamic> {}
     public class ParsedObstructedByAttribute : ParsedAttributeWithValue<dynamic> {}
     public class ParsedAlternativeAttribute : ParsedAttributeWithValue<dynamic> {}
     public class ParsedResolvedByAttribute : ParsedAttributeWithValue<dynamic> {}

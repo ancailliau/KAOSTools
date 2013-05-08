@@ -60,6 +60,7 @@
     <Compile Include="TestParsingDomainProperty.cs" />
     <Compile Include="TestParsingType.cs" />
     <Compile Include="TestParsingEntity.cs" />
+    <Compile Include="TestParsingRelations.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

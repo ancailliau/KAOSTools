@@ -246,7 +246,7 @@ namespace KAOSTools.Parsing
                 if (type == null) {
                     type = new KAOSTools.MetaModel.Relation() { Identifier = identifierOrName, Implicit = true };
                     foreach (var arg in rel.Variables) {
-                        type.Links.Add (new KAOSTools.MetaModel.Link() { Target = declarations[arg] });
+                        type.Links.Add (new KAOSTools.MetaModel.Link(declarations[arg]));
                     }
                     model.Entities.Add (type);
                 }
