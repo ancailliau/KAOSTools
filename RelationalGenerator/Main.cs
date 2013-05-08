@@ -143,7 +143,7 @@ namespace KAOSTools.ReportGenerator
                        select new { id = a.Identifier,
                                     name = a.Name,
                                     definition = a.Definition,
-                                    type = Enum.GetName(typeof(MetaModel.AgentType), a.Type) },
+                                    type = Enum.GetName(typeof(MetaModel.AgentType), a.Type).ToLower() },
 
               assignments = from g in model.GoalModel.Goals
                               from aa in g.AgentAssignments
