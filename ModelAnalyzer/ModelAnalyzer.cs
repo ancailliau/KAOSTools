@@ -119,7 +119,7 @@ namespace KAOSTools.ModelAnalyzer
                     WriteKO (string.Format ("Domain property '{0}' is missing definition", domprop.Name));
             }
 
-            var agents = model.Agents.Where (a => string.IsNullOrWhiteSpace (a.Description));
+            var agents = model.Agents.Where (a => string.IsNullOrWhiteSpace (a.Definition));
             if (agents.Count () == 0) {
                 WriteOK ("All agents have description");
                         

@@ -123,6 +123,30 @@ namespace KAOSTools.Parsing
             }
         }
 
+        public void Handle (Entity element, ParsedAttributeAttribute attribute)
+        {
+            GivenType givenType = null;
+            if (attribute.Type != null) {
+                if (attribute.Type is IdentifierExpression | attribute.Type is NameExpression) {
+                    if (!Get (attribute.Type, out givenType)) {
+                        givenType = Create<GivenType> (attribute.Type);
+                    }
+
+                } else if (attribute.Type is ParsedGivenType) {
+                    givenType = fsb.BuildElementWithKeys (attribute.Type);
+                    BuildElement (attribute.Type);
+                    
+                } else {
+                    throw new NotImplementedException (string.Format ("'{0}' is not supported in '{1}' on '{2}'", 
+                                                                      attribute.Type.GetType().Name,
+                                                                      attribute.GetType().Name,
+                                                                      element.GetType().Name));
+                }
+            }
+
+            element.Attributes.Add (new KAOSTools.MetaModel.Attribute (attribute.Name, givenType));
+        }
+
         public void Handle (Goal element, ParsedObstructedByAttribute obstructedBy)
         {
             if (obstructedBy.Value is IdentifierExpression | obstructedBy.Value is NameExpression) {
@@ -317,7 +341,7 @@ namespace KAOSTools.Parsing
             if (!refinement.IsEmpty)
                 element.Refinements.Add (refinement);
         }
-        
+
         public void Handle (KAOSMetaModelElement element, ParsedAgentTypeAttribute attribute)
         {
             Handle (element, attribute.Value == ParsedAgentType.Software ? AgentType.Software : AgentType.Environment, "Type");
@@ -335,17 +359,12 @@ namespace KAOSTools.Parsing
 
         public void Handle (KAOSMetaModelElement element, ParsedNameAttribute name)
         {
-            Handle (element, name.Value, "Name");
+            Handle (element, Sanitize (name.Value), "Name");
         }
 
         public void Handle (KAOSMetaModelElement element, ParsedDefinitionAttribute definition)
         {
-            Handle (element, definition.Value, "Definition");
-        }
-
-        public void Handle (KAOSMetaModelElement element, ParsedDescriptionAttribute description)
-        {
-            Handle (element, description.Value, "Description");
+            Handle (element, Sanitize (definition.Value), "Definition");
         }
 
         public void Handle (KAOSMetaModelElement element, ParsedIdentifierAttribute identifier)

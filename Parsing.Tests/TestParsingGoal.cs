@@ -13,21 +13,6 @@ namespace KAOSTools.Parsing.Tests
         private static ModelBuilder parser = new ModelBuilder ();
        
         [TestCase(@"declare goal
-                        # test
-                        id test
-                    end")]
-        [TestCase(@"declare goal
-                        # test
-                        id # test
-                        test
-                    end")]
-        public void TestComment (string input)
-        {
-            var model = parser.Parse (input);
-            model.GoalModel.Goals.ShallBeSingle ();
-        }
-
-        [TestCase(@"declare goal
                         id test
                     end", "test")]
         [TestCase(@"declare goal
@@ -85,6 +70,11 @@ namespace KAOSTools.Parsing.Tests
         [TestCase(@"declare goal
                         name ""[-_-]""
                     end", "[-_-]")]
+        [TestCase(@"declare goal
+                        name ""multi
+                               line""
+                    end", "multi line")]
+        [TestCase("declare goal name \"quoted \"\"name\"\"\" end", @"quoted ""name""")]
         public void TestName (string input, string expectedName)
         {
             var model = parser.Parse (input);
@@ -104,6 +94,27 @@ namespace KAOSTools.Parsing.Tests
             Assert.Throws<CompilationException> (() => {
                 parser.Parse (input);
             });
+        }
+
+        [TestCase(@"declare goal
+                        id test
+                        definition ""test""
+                    end", "test")]
+        [TestCase(@"declare goal
+                        id test
+                        definition """"
+                    end", "")]
+        [TestCase(@"declare goal
+                        id test
+                        definition ""on multiple
+                                     lines.""
+                    end", "on multiple lines.")]
+        [TestCase("declare goal id test definition \"with a \"\"quote\"\" !\" end", "with a \"quote\" !")]
+        public void TestDefinition (string input, string expectedDefinition)
+        {
+            var model = parser.Parse (input);
+            var g = model.GoalModel.Goals.Single (x => x.Identifier == "test");
+            g.Definition.ShallEqual (expectedDefinition);
         }
 
         [TestCase(@"declare goal
@@ -197,7 +208,22 @@ namespace KAOSTools.Parsing.Tests
             model.GoalModel.Goals.ShallContain (x => x.Identifier == "test");
             model.GoalModel.Goals.ShallContain (x => x.Identifier == "test2");
         }
-                
+            
+        [TestCase(@"declare goal 
+                        id test
+                        refinedby child1, child2
+                    end")]
+        public void TestImplicit (string input)
+        {
+            var model = parser.Parse (input);
+            
+            var goal = model.GoalModel.Goals.Single (x => x.Identifier == "test");
+            var refinement = goal.Refinements.Single ();
+            foreach (var item in refinement.Subgoals) {
+                item.Implicit.ShallBeTrue ();
+            }
+        }
+
         [TestCase(@"declare goal 
                         id test
                         refinedby child1, child2

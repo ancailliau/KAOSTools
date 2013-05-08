@@ -304,10 +304,10 @@ namespace KAOSTools.MetaModel
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the description of the agent.
+        /// Gets or sets the definition of the agent.
         /// </summary>
-        /// <value>The description.</value>
-        public string Description { get; set; }
+        /// <value>The definition.</value>
+        public string Definition { get; set; }
 
         /// <summary>
         /// Gets or sets the type of the agent. The type is either <c>None</c>, 
@@ -596,6 +596,12 @@ namespace KAOSTools.MetaModel
         {
             Derived = false;
         }
+
+        public Attribute (string name, GivenType type)
+        {
+            this.Name = name; 
+            this.Type = type;
+        }
     }
 
     public class GivenType : KAOSMetaModelElement {
@@ -635,10 +641,10 @@ namespace KAOSTools.MetaModel
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the description of the alternative system.
+        /// Gets or sets the definition of the alternative system.
         /// </summary>
         /// <value>The description.</value>
-        public string Description { get; set; }
+        public string Definition { get; set; }
 
         /// <summary>
         /// Gets or sets the alternatives to the system.
@@ -652,11 +658,6 @@ namespace KAOSTools.MetaModel
         public AlternativeSystem ()
         {
             Alternatives = new HashSet<AlternativeSystem> ();
-        }
-
-        public override string ToString ()
-        {
-            return string.Format ("[AlternativeSystem: Name={0}, Description={1}, Alternatives={2}]", Name, Description, Alternatives.Count);
         }
     }
 

@@ -102,8 +102,8 @@ namespace KAOSTools.Parsing
             if (string.IsNullOrEmpty (o1.Name))
                 o1.Name = o2.Name;
             
-            if (string.IsNullOrEmpty (o1.Description))
-                o1.Description= o2.Description;
+            if (string.IsNullOrEmpty (o1.Definition))
+                o1.Definition= o2.Definition;
 
             foreach (var r in o2.Alternatives)
                 if (!o1.Alternatives.Contains (r))
@@ -195,8 +195,8 @@ namespace KAOSTools.Parsing
             if (string.IsNullOrEmpty (a1.Name))
                 a1.Name = a2.Name;
             
-            if (string.IsNullOrEmpty (a1.Description))
-                a1.Description = a2.Description;
+            if (string.IsNullOrEmpty (a1.Definition))
+                a1.Definition = a2.Definition;
         }
     }
 }

@@ -109,30 +109,27 @@ namespace KAOSTools.Parsing.Tests
 
         [TestCase(@"declare agent
                         id test
-                        description ""My description""
-                    end", "My description")]
-        [TestCase(@"declare agent
-                        id test
-                        description """"
-                    end", "")]
-        [TestCase(@"declare agent
-                        id test
                         definition ""My description""
                     end", "My description")]
         [TestCase(@"declare agent
                         id test
                         definition """"
                     end", "")]
-        public void TestDescription (string input, string expectedDescription)
+        [TestCase(@"declare agent
+                        id test
+                        definition ""multi
+                                     line""
+                    end", "multi line")]
+        public void TestDefinition (string input, string expectedDescription)
         {
             var model = parser.Parse (input);
             model.GoalModel.Agents
                 .Where (x => x.Identifier == "test")
-                .ShallBeSuchThat (x => x.Description == expectedDescription);
+                .ShallBeSuchThat (x => x.Definition == expectedDescription);
         }
 
         [TestCase(@"declare agent
-                        description 
+                        definition "" "" "" 
                     end")]
         public void TestInvalidDescription (string input)
         {
@@ -190,6 +187,18 @@ namespace KAOSTools.Parsing.Tests
                 .SelectMany (x => x.Agents)
                 .Select (x => x.Identifier)
                 .ShallOnlyContain (new string[] { "agent1", "agent2" });
+        }
+
+        [TestCase(@"declare goal 
+                        id test
+                        assignedto agent1
+                    end")]
+        public void TestImplicit (string input)
+        {
+            var model = parser.Parse (input);
+            
+            var agent = model.GoalModel.Agents.Single (x => x.Identifier == "agent1");
+            agent.Implicit.ShallBeTrue ();
         }
     }
 }

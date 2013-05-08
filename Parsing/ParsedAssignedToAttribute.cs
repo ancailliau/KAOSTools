@@ -107,7 +107,6 @@ namespace KAOSTools.Parsing
     public class ParsedNameAttribute : ParsedAttributeWithValue<string> {}
     public class ParsedIdentifierAttribute : ParsedAttributeWithValue<string> {}
     public class ParsedDefinitionAttribute : ParsedAttributeWithValue<string> {}
-    public class ParsedDescriptionAttribute : ParsedAttributeWithValue<string> {}
     public class ParsedProbabilityAttribute : ParsedAttributeWithValue<double> {}
     public class ParsedRDSAttribute : ParsedAttributeWithValue<double> {}
     public class ParsedFormalSpecAttribute : ParsedAttributeWithValue<ParsedElement> {}
@@ -124,10 +123,10 @@ namespace KAOSTools.Parsing
     }
 
     public class ParsedAttributeAttribute : ParsedAttribute {
-        public NameExpression Name { get; set; }
-        public IdentifierOrNameExpression Type { get; set; }
+        public string Name { get; set; }
+        public dynamic Type { get; set; }
         
-        public ParsedAttributeAttribute (NameExpression name, IdentifierOrNameExpression type)
+        public ParsedAttributeAttribute (string name, dynamic type)
         {
             Name = name; Type = type;
         }

@@ -9,7 +9,6 @@ Elements :=
         / Entity / Type / Association ) S )*
     `value = BuildElements (results);`
 
-
 # 
 
 Import := 
@@ -75,7 +74,7 @@ ObstacleAttribute :=
     `value = results[0].Value;`
 
 AgentAttribute := 
-    ( IdAttribute / NameAttribute / Description / AgentTypeAttribute )
+    ( IdAttribute / NameAttribute / Definition / AgentTypeAttribute )
     `value = results[0].Value;`
                                                                          
 PredicateAttribute := 
@@ -83,7 +82,7 @@ PredicateAttribute :=
     `value = results[0].Value;`
 
 SystemAttribute := 
-    ( IdAttribute / NameAttribute / Description / Alternative ) 
+    ( IdAttribute / NameAttribute / Definition / Alternative ) 
     `value = results[0].Value;`
 
 EntityAttribute := 
@@ -112,12 +111,9 @@ Signature := 'signature'  S '"' String '"'
 FormalSpec := 'formalspec' S '"' Formula '"' 
     `value = BuildFormalSpec(results);`
     
-Definition := 'definition' S '"' String '"' 
+Definition := 'definition' S '"' String? '"' 
     `value = BuildDefinition(results);`
 
-Description := ('definition' / 'description') S ('"' String '"' / '"' '"')
-    `value = BuildDescription(results);`
-    
 AgentTypeAttribute := 'type' S ('software' / 'environment')
     `value = BuildAgentTypeAttribute (results);`
     
@@ -148,7 +144,7 @@ Alternative := 'alternative' S IdOrNameOrSystem
 Attribute := 'attribute' S Name S (':' S IdOrName)?
     `value = BuildAttribute(results);`
 
-Argument := 'argument' S Name S (':' S IdOrName)?
+Argument := 'argument' S Identifier S (':' S IdOrName)?
     `value = BuildArgument(results);`
 
 Link := 'link' S Multiplicity? S IdOrName

@@ -196,17 +196,17 @@ end
 
 declare agent 
   name         "Despatcher"
-  description  "Despatcher is the person at the call center dealing 
+  definition  "Despatcher is the person at the call center dealing 
                 with urgent calls and ambulance mobilization."
 end
 
 declare agent 
   name         "Ambulance Staff"
-  description  "Ambulance Staff contains the ambulance driver and the paramedic(s)."
+  definition  "Ambulance Staff contains the ambulance driver and the paramedic(s)."
 end
 
 declare agent
   name         "ADS"
-  description  "Automated despatching system"
+  definition  "Automated despatching system"
   type         software
 end

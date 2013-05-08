@@ -67,7 +67,6 @@ internal sealed partial class GoalModelParser
 		m_nonterminals.Add("Signature", new ParseMethod[]{this.DoParseSignatureRule});
 		m_nonterminals.Add("FormalSpec", new ParseMethod[]{this.DoParseFormalSpecRule});
 		m_nonterminals.Add("Definition", new ParseMethod[]{this.DoParseDefinitionRule});
-		m_nonterminals.Add("Description", new ParseMethod[]{this.DoParseDescriptionRule});
 		m_nonterminals.Add("AgentTypeAttribute", new ParseMethod[]{this.DoParseAgentTypeAttributeRule});
 		m_nonterminals.Add("RDS", new ParseMethod[]{this.DoParseRDSRule});
 		m_nonterminals.Add("Probability", new ParseMethod[]{this.DoParseProbabilityRule});
@@ -596,7 +595,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// AgentAttribute := IdAttribute / NameAttribute / Description / AgentTypeAttribute
+	// AgentAttribute := IdAttribute / NameAttribute / Definition / AgentTypeAttribute
 	private State DoParseAgentAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -605,7 +604,7 @@ internal sealed partial class GoalModelParser
 		_state = DoChoice(_state, results,
 			delegate (State s, List<Result> r) {return DoParse(s, r, "IdAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Description");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Definition");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "AgentTypeAttribute");});
 		
 		if (_state.Parsed)
@@ -642,7 +641,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// SystemAttribute := IdAttribute / NameAttribute / Description / Alternative
+	// SystemAttribute := IdAttribute / NameAttribute / Definition / Alternative
 	private State DoParseSystemAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -651,7 +650,7 @@ internal sealed partial class GoalModelParser
 		_state = DoChoice(_state, results,
 			delegate (State s, List<Result> r) {return DoParse(s, r, "IdAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Description");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Definition");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Alternative");});
 		
 		if (_state.Parsed)
@@ -821,7 +820,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Definition := 'definition' S '"' String '"'
+	// Definition := 'definition' S '"' String? '"'
 	private State DoParseDefinitionRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -831,43 +830,14 @@ internal sealed partial class GoalModelParser
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "definition");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "\"");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "String");},
+			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 1,
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "String");});},
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "\"");});
 		
 		if (_state.Parsed)
 		{
 			KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
 			value = BuildDefinition(results);
-			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
-		}
-		
-		return _state;
-	}
-	
-	// Description := ('definition' / 'description') S (('"' String '"') / ('"' '"'))
-	private State DoParseDescriptionRule(State _state, List<Result> _outResults)
-	{
-		State _start = _state;
-		List<Result> results = new List<Result>();
-		
-		_state = DoSequence(_state, results,
-			delegate (State s, List<Result> r) {return DoChoice(s, r,
-				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "definition");},
-				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "description");});},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
-			delegate (State s, List<Result> r) {return DoChoice(s, r,
-				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
-					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, "\"");},
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "String");},
-					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, "\"");});},
-				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
-					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, "\"");},
-					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, "\"");});});});
-		
-		if (_state.Parsed)
-		{
-			KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
-			value = BuildDescription(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
 		

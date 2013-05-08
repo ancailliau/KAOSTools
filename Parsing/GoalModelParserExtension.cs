@@ -149,13 +149,13 @@ internal sealed partial class GoalModelParser
 
     private KAOSTools.Parsing.ParsedElement BuildAttribute (List<Result> results)
     {
-        var name = results [1].Value as KAOSTools.Parsing.ParsedAttribute;
+        var name = results [1].Value as NameExpression;
 
-        KAOSTools.Parsing.IdentifierOrNameExpression type = null;
+        dynamic type = null;
         if (results.Count == 4) {
-            type = results [3].Value as KAOSTools.Parsing.IdentifierOrNameExpression;
+            type = results [3].Value;
         }
-        return new ParsedAttributeAttribute (name as NameExpression, type);
+        return new ParsedAttributeAttribute (name.Value, type);
     }
 
     private KAOSTools.Parsing.ParsedElement BuildArgument (List<Result> results)
@@ -328,7 +328,8 @@ internal sealed partial class GoalModelParser
 
     private KAOSTools.Parsing.ParsedElement BuildNameAttribute (List<Result> results)
     {
-        return new KAOSTools.Parsing.ParsedNameAttribute { Value = results[2].Text,
+        return new KAOSTools.Parsing.ParsedNameAttribute { 
+            Value = results.Count == 3 ? "" : results[2].Text,
             Line = results[0].Line, Col = results[0].Col, Filename = m_file };
     }
 
@@ -353,20 +354,11 @@ internal sealed partial class GoalModelParser
     
     private KAOSTools.Parsing.ParsedElement BuildDefinition (List<Result> results)
     {
-        return new KAOSTools.Parsing.ParsedDefinitionAttribute { Value = results [2].Text, 
-             Line = results[0].Line, Col = results[0].Col, Filename = m_file };
+        return new KAOSTools.Parsing.ParsedDefinitionAttribute { 
+            Value = results.Count == 3 ? "" : results [2].Text, 
+            Line = results[0].Line, Col = results[0].Col, Filename = m_file };
     }
-        
-    private KAOSTools.Parsing.ParsedElement BuildDescription (List<Result> results)
-    {
-        if (results.Count == 4)
-            return new KAOSTools.Parsing.ParsedDescriptionAttribute { Value = results [2].Text, 
-                 Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-        else 
-            return new KAOSTools.Parsing.ParsedDescriptionAttribute { Value = "",
-                 Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-    }
-    
+
     private KAOSTools.Parsing.ParsedElement BuildRDS (List<Result> results)
     {
         return new KAOSTools.Parsing.ParsedRDSAttribute { Value = double.Parse (results [1].Text),
