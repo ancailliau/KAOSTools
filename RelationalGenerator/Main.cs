@@ -105,7 +105,7 @@ namespace KAOSTools.ReportGenerator
               agents = from a in model.GoalModel.Agents.OrderBy (x => x.Name)
                        select new { id = a.Identifier,
                                     name = a.Name,
-                                    description = a.Description,
+                                    description = a.Definition,
                                     type = Enum.GetName(typeof(MetaModel.AgentType), a.Type) },
 
               assignments = from g in model.GoalModel.Goals
@@ -122,7 +122,7 @@ namespace KAOSTools.ReportGenerator
                           select new { object_id = HandleIdentifier(pair.Key),
                                        locations = HandleLocations(pair.Value) },
 
-              predicates = from p in model.Predicates.Values.OrderBy (x => x.Name)
+              predicates = from p in model.Predicates.OrderBy (x => x.Name)
                            select new { id = p.Identifier,
                                         name = p.Name,
                                         signature = p.Signature,
