@@ -44,7 +44,7 @@ DomHyp :=
     `value = BuildDomainHypothesis(results);`
 
 Entity := 
-    ( 'declare' / 'override' ) S (('software' / 'environment' / 'shared') S)? ('entity' / 'object' ) S (EntityAttribute S)* 'end'
+    ( 'declare' / 'override' ) S ( 'entity' / 'object' ) S (EntityAttribute S)* 'end'
     `value = BuildEntity(results);`
 
 Type := 
@@ -58,43 +58,43 @@ Association :=
 #
                                                                                                                                                                                                          
 GoalAttribute := 
-    ( IdAttribute / NameAttribute / Definition / FormalSpec / RefinedByGoal / ObstructedBy / AssignedTo / RDS )
+    ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByGoal / ObstructedBy / AssignedTo / RDS )
     `value = results[0].Value;`
     
 DomPropAttribute := 
-    ( IdAttribute / NameAttribute / Definition / FormalSpec / Probability )
+    ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / Probability )
     `value = results[0].Value;`
     
 DomHypAttribute := 
-    ( IdAttribute / NameAttribute / Definition )
+    ( IdAttribute / NameAttribute / DefinitionAttribute )
     `value = results[0].Value;`
 
 ObstacleAttribute := 
-    ( IdAttribute / NameAttribute / Definition / FormalSpec / RefinedByObstacle / ResolvedBy / Probability )
+    ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByObstacle / ResolvedBy / Probability )
     `value = results[0].Value;`
 
 AgentAttribute := 
-    ( IdAttribute / NameAttribute / Definition / AgentTypeAttribute )
+    ( IdAttribute / NameAttribute / DefinitionAttribute / AgentTypeAttribute )
     `value = results[0].Value;`
                                                                          
 PredicateAttribute := 
-    ( IdAttribute / NameAttribute / Definition / Signature / Argument / FormalSpec ) 
+    ( IdAttribute / NameAttribute / DefinitionAttribute / SignatureAttribute / Argument / FormalSpecAttribute ) 
     `value = results[0].Value;`
 
 SystemAttribute := 
-    ( IdAttribute / NameAttribute / Definition / Alternative ) 
+    ( IdAttribute / NameAttribute / DefinitionAttribute / Alternative ) 
     `value = results[0].Value;`
 
 EntityAttribute := 
-    ( IdAttribute / NameAttribute / Definition / Attribute / IsA ) 
+    ( IdAttribute / NameAttribute / DefinitionAttribute / Attribute / IsA / EntityTypeAttribute ) 
     `value = results[0].Value;`
     
 TypeAttribute := 
-    ( IdAttribute / NameAttribute / Definition ) 
+    ( IdAttribute / NameAttribute / DefinitionAttribute ) 
     `value = results[0].Value;`
     
 AssociationAttribute :=
-    ( IdAttribute / NameAttribute / Definition / Attribute / Link ) 
+    ( IdAttribute / NameAttribute / DefinitionAttribute / Attribute / Link ) 
     `value = results[0].Value;`
     
 # 
@@ -105,17 +105,20 @@ IdAttribute := 'id' S Identifier
 NameAttribute := 'name' S '"' String '"'
     `value = BuildNameAttribute(results);`
     
-Signature := 'signature'  S '"' String '"'
-    `value = BuildSignature(results);`
+SignatureAttribute := 'signature'  S '"' String '"'
+    `value = BuildSignatureAttribute(results);`
     
-FormalSpec := 'formalspec' S '"' Formula '"' 
-    `value = BuildFormalSpec(results);`
+FormalSpecAttribute := 'formalspec' S '"' Formula '"' 
+    `value = BuildFormalSpecAttribute(results);`
     
-Definition := 'definition' S '"' String? '"' 
-    `value = BuildDefinition(results);`
+DefinitionAttribute := 'definition' S '"' String? '"' 
+    `value = BuildDefinitionAttribute(results);`
 
-AgentTypeAttribute := 'type' S ('software' / 'environment')
+AgentTypeAttribute := 'type' S ( 'software' / 'environment' )
     `value = BuildAgentTypeAttribute (results);`
+    
+EntityTypeAttribute := 'type' S ( 'software' / 'environment' / 'shared' )
+    `value = BuildEntityTypeAttribute (results);`
     
 RDS := 'rds' S Float 
     `value = BuildRDS(results);`
@@ -144,7 +147,7 @@ Alternative := 'alternative' S IdOrNameOrSystem
 Attribute := 'attribute' S Name S (':' S IdOrName)?
     `value = BuildAttribute(results);`
 
-Argument := 'argument' S Identifier S (':' S IdOrName)?
+Argument := 'argument' S Name S (':' S IdOrName)?
     `value = BuildArgument(results);`
 
 Link := 'link' S Multiplicity? S IdOrName
@@ -252,7 +255,6 @@ SingleQuoteString := ( ( '\'\'' / [^'] )+ )
 Number := ( '.' [0-9]+ / [0-9]+ ( '.' [0-9]+ )? )
     `value = null` `expected = "string"`
 
-#  ( ( '==' / '!=' / '>' / '<' / '>=' / '<=' ) ( Identifier '.' Identifier / '"' String '"' / [0-9]+ / Identifier ) )?
 # Spaces and comments
 
 S := (Space* Comment+ Space*)+ / Space* `text = null`

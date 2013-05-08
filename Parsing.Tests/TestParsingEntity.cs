@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using ShallTests;
+using KAOSTools.MetaModel;
 
 namespace KAOSTools.Parsing.Tests
 {
@@ -203,6 +204,21 @@ namespace KAOSTools.Parsing.Tests
 
             var parentEntity = model.Entities.Single (x => x.Identifier == "test2");
             parentEntity.Implicit.ShallEqual (implicitParent);
+        }
+
+        [TestCase(@"declare entity
+                        id test
+                        type software
+                    end", EntityType.Software)]
+        [TestCase(@"declare entity
+                        id test
+                        type environment
+                    end", EntityType.Environment)]
+        public void TestEntityType (string input, EntityType type)
+        {
+            var model = parser.Parse (input);
+            var entity = model.Entities.Single (x => x.Identifier == "test");
+            entity.Type.ShallEqual (type);
         }
     }
 }

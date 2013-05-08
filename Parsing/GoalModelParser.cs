@@ -64,10 +64,11 @@ internal sealed partial class GoalModelParser
 		m_nonterminals.Add("AssociationAttribute", new ParseMethod[]{this.DoParseAssociationAttributeRule});
 		m_nonterminals.Add("IdAttribute", new ParseMethod[]{this.DoParseIdAttributeRule});
 		m_nonterminals.Add("NameAttribute", new ParseMethod[]{this.DoParseNameAttributeRule});
-		m_nonterminals.Add("Signature", new ParseMethod[]{this.DoParseSignatureRule});
-		m_nonterminals.Add("FormalSpec", new ParseMethod[]{this.DoParseFormalSpecRule});
-		m_nonterminals.Add("Definition", new ParseMethod[]{this.DoParseDefinitionRule});
+		m_nonterminals.Add("SignatureAttribute", new ParseMethod[]{this.DoParseSignatureAttributeRule});
+		m_nonterminals.Add("FormalSpecAttribute", new ParseMethod[]{this.DoParseFormalSpecAttributeRule});
+		m_nonterminals.Add("DefinitionAttribute", new ParseMethod[]{this.DoParseDefinitionAttributeRule});
 		m_nonterminals.Add("AgentTypeAttribute", new ParseMethod[]{this.DoParseAgentTypeAttributeRule});
+		m_nonterminals.Add("EntityTypeAttribute", new ParseMethod[]{this.DoParseEntityTypeAttributeRule});
 		m_nonterminals.Add("RDS", new ParseMethod[]{this.DoParseRDSRule});
 		m_nonterminals.Add("Probability", new ParseMethod[]{this.DoParseProbabilityRule});
 		m_nonterminals.Add("RefinedByObstacle", new ParseMethod[]{this.DoParseRefinedByObstacleRule});
@@ -402,7 +403,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Entity := ('declare' / 'override') S (('software' / 'environment' / 'shared') S)? ('entity' / 'object') S (EntityAttribute S)* 'end'
+	// Entity := ('declare' / 'override') S ('entity' / 'object') S (EntityAttribute S)* 'end'
 	private State DoParseEntityRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -413,13 +414,6 @@ internal sealed partial class GoalModelParser
 				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "declare");},
 				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "override");});},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
-			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 1,
-				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
-					delegate (State s3, List<Result> r3) {return DoChoice(s3, r3,
-						delegate (State s4, List<Result> r4) {return DoParseLiteral(s4, r4, "software");},
-						delegate (State s4, List<Result> r4) {return DoParseLiteral(s4, r4, "environment");},
-						delegate (State s4, List<Result> r4) {return DoParseLiteral(s4, r4, "shared");});},
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");});});},
 			delegate (State s, List<Result> r) {return DoChoice(s, r,
 				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "entity");},
 				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "object");});},
@@ -500,7 +494,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// GoalAttribute := IdAttribute / NameAttribute / Definition / FormalSpec / RefinedByGoal / ObstructedBy / AssignedTo / RDS
+	// GoalAttribute := IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByGoal / ObstructedBy / AssignedTo / RDS
 	private State DoParseGoalAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -509,8 +503,8 @@ internal sealed partial class GoalModelParser
 		_state = DoChoice(_state, results,
 			delegate (State s, List<Result> r) {return DoParse(s, r, "IdAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Definition");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpec");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpecAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "RefinedByGoal");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "ObstructedBy");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "AssignedTo");},
@@ -526,7 +520,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// DomPropAttribute := IdAttribute / NameAttribute / Definition / FormalSpec / Probability
+	// DomPropAttribute := IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / Probability
 	private State DoParseDomPropAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -535,8 +529,8 @@ internal sealed partial class GoalModelParser
 		_state = DoChoice(_state, results,
 			delegate (State s, List<Result> r) {return DoParse(s, r, "IdAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Definition");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpec");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpecAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Probability");});
 		
 		if (_state.Parsed)
@@ -549,7 +543,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// DomHypAttribute := IdAttribute / NameAttribute / Definition
+	// DomHypAttribute := IdAttribute / NameAttribute / DefinitionAttribute
 	private State DoParseDomHypAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -558,7 +552,7 @@ internal sealed partial class GoalModelParser
 		_state = DoChoice(_state, results,
 			delegate (State s, List<Result> r) {return DoParse(s, r, "IdAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Definition");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");});
 		
 		if (_state.Parsed)
 		{
@@ -570,7 +564,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// ObstacleAttribute := IdAttribute / NameAttribute / Definition / FormalSpec / RefinedByObstacle / ResolvedBy / Probability
+	// ObstacleAttribute := IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByObstacle / ResolvedBy / Probability
 	private State DoParseObstacleAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -579,8 +573,8 @@ internal sealed partial class GoalModelParser
 		_state = DoChoice(_state, results,
 			delegate (State s, List<Result> r) {return DoParse(s, r, "IdAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Definition");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpec");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpecAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "RefinedByObstacle");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "ResolvedBy");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Probability");});
@@ -595,7 +589,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// AgentAttribute := IdAttribute / NameAttribute / Definition / AgentTypeAttribute
+	// AgentAttribute := IdAttribute / NameAttribute / DefinitionAttribute / AgentTypeAttribute
 	private State DoParseAgentAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -604,7 +598,7 @@ internal sealed partial class GoalModelParser
 		_state = DoChoice(_state, results,
 			delegate (State s, List<Result> r) {return DoParse(s, r, "IdAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Definition");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "AgentTypeAttribute");});
 		
 		if (_state.Parsed)
@@ -617,7 +611,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// PredicateAttribute := IdAttribute / NameAttribute / Definition / Signature / Argument / FormalSpec
+	// PredicateAttribute := IdAttribute / NameAttribute / DefinitionAttribute / SignatureAttribute / Argument / FormalSpecAttribute
 	private State DoParsePredicateAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -626,10 +620,10 @@ internal sealed partial class GoalModelParser
 		_state = DoChoice(_state, results,
 			delegate (State s, List<Result> r) {return DoParse(s, r, "IdAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Definition");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Signature");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "SignatureAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Argument");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpec");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpecAttribute");});
 		
 		if (_state.Parsed)
 		{
@@ -641,7 +635,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// SystemAttribute := IdAttribute / NameAttribute / Definition / Alternative
+	// SystemAttribute := IdAttribute / NameAttribute / DefinitionAttribute / Alternative
 	private State DoParseSystemAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -650,7 +644,7 @@ internal sealed partial class GoalModelParser
 		_state = DoChoice(_state, results,
 			delegate (State s, List<Result> r) {return DoParse(s, r, "IdAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Definition");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Alternative");});
 		
 		if (_state.Parsed)
@@ -663,7 +657,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// EntityAttribute := IdAttribute / NameAttribute / Definition / Attribute / IsA
+	// EntityAttribute := IdAttribute / NameAttribute / DefinitionAttribute / Attribute / IsA / EntityTypeAttribute
 	private State DoParseEntityAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -672,9 +666,10 @@ internal sealed partial class GoalModelParser
 		_state = DoChoice(_state, results,
 			delegate (State s, List<Result> r) {return DoParse(s, r, "IdAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Definition");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Attribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "IsA");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "IsA");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "EntityTypeAttribute");});
 		
 		if (_state.Parsed)
 		{
@@ -686,7 +681,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// TypeAttribute := IdAttribute / NameAttribute / Definition
+	// TypeAttribute := IdAttribute / NameAttribute / DefinitionAttribute
 	private State DoParseTypeAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -695,7 +690,7 @@ internal sealed partial class GoalModelParser
 		_state = DoChoice(_state, results,
 			delegate (State s, List<Result> r) {return DoParse(s, r, "IdAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Definition");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");});
 		
 		if (_state.Parsed)
 		{
@@ -707,7 +702,7 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// AssociationAttribute := IdAttribute / NameAttribute / Definition / Attribute / Link
+	// AssociationAttribute := IdAttribute / NameAttribute / DefinitionAttribute / Attribute / Link
 	private State DoParseAssociationAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
@@ -716,7 +711,7 @@ internal sealed partial class GoalModelParser
 		_state = DoChoice(_state, results,
 			delegate (State s, List<Result> r) {return DoParse(s, r, "IdAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Definition");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Attribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Link");});
 		
@@ -774,8 +769,8 @@ internal sealed partial class GoalModelParser
 		return _state;
 	}
 	
-	// Signature := 'signature' S '"' String '"'
-	private State DoParseSignatureRule(State _state, List<Result> _outResults)
+	// SignatureAttribute := 'signature' S '"' String '"'
+	private State DoParseSignatureAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
@@ -790,15 +785,15 @@ internal sealed partial class GoalModelParser
 		if (_state.Parsed)
 		{
 			KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
-			value = BuildSignature(results);
+			value = BuildSignatureAttribute(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
 		
 		return _state;
 	}
 	
-	// FormalSpec := 'formalspec' S '"' Formula '"'
-	private State DoParseFormalSpecRule(State _state, List<Result> _outResults)
+	// FormalSpecAttribute := 'formalspec' S '"' Formula '"'
+	private State DoParseFormalSpecAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
@@ -813,15 +808,15 @@ internal sealed partial class GoalModelParser
 		if (_state.Parsed)
 		{
 			KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
-			value = BuildFormalSpec(results);
+			value = BuildFormalSpecAttribute(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
 		
 		return _state;
 	}
 	
-	// Definition := 'definition' S '"' String? '"'
-	private State DoParseDefinitionRule(State _state, List<Result> _outResults)
+	// DefinitionAttribute := 'definition' S '"' String? '"'
+	private State DoParseDefinitionAttributeRule(State _state, List<Result> _outResults)
 	{
 		State _start = _state;
 		List<Result> results = new List<Result>();
@@ -837,7 +832,7 @@ internal sealed partial class GoalModelParser
 		if (_state.Parsed)
 		{
 			KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
-			value = BuildDefinition(results);
+			value = BuildDefinitionAttribute(results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
 		
@@ -861,6 +856,29 @@ internal sealed partial class GoalModelParser
 		{
 			KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
 			value = BuildAgentTypeAttribute (results);
+			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+		}
+		
+		return _state;
+	}
+	
+	// EntityTypeAttribute := 'type' S ('software' / 'environment')
+	private State DoParseEntityTypeAttributeRule(State _state, List<Result> _outResults)
+	{
+		State _start = _state;
+		List<Result> results = new List<Result>();
+		
+		_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "type");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoChoice(s, r,
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "software");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "environment");});});
+		
+		if (_state.Parsed)
+		{
+			KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
+			value = BuildEntityTypeAttribute (results);
 			_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 		}
 		

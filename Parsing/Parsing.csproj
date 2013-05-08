@@ -56,7 +56,7 @@
     <Compile Include="Builder.cs" />
     <Compile Include="FormulaBuilder.cs" />
     <Compile Include="SecondStageBuilder.cs" />
-    <Compile Include="ParsedAssignedToAttribute.cs" />
+    <Compile Include="ParsedEntityType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

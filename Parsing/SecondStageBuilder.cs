@@ -390,6 +390,22 @@ namespace KAOSTools.Parsing
             Handle (element, attribute.Value == ParsedAgentType.Software ? AgentType.Software : AgentType.Environment, "Type");
         }
 
+        public void Handle (KAOSMetaModelElement element, ParsedEntityTypeAttribute attribute)
+        {
+            EntityType type;
+            if (attribute.Value == ParsedEntityType.Software) {
+                type = EntityType.Software;
+            } else if (attribute.Value == ParsedEntityType.Environment) {
+                type = EntityType.Environment;
+            } else if (attribute.Value == ParsedEntityType.Shared) {
+                type = EntityType.Shared;
+            } else {
+                type = EntityType.None;
+            }
+
+            Handle (element, type, "Type");
+        }
+
         public void Handle (KAOSMetaModelElement element, ParsedRDSAttribute attribute)
         {
             Handle (element, attribute.Value, "RDS");

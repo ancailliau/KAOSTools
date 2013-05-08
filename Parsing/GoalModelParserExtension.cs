@@ -113,19 +113,7 @@ internal sealed partial class GoalModelParser
         if (results[0].Text == "override")
             entity.Override = true;        
 
-        int start = 2;
-        if (results[1].Text == "software") {
-            entity.EntityType = KAOSTools.Parsing.EntityType.Software;
-            start = 3;
-        } else if (results[1].Text == "environment") {
-            entity.EntityType = KAOSTools.Parsing.EntityType.Environment;
-            start = 3;
-        } else if (results[1].Text == "shared") {
-            entity.EntityType = KAOSTools.Parsing.EntityType.Shared;
-            start = 3;
-        }
-
-        for (int i = start; i < results.Count - 1; i++) {
+        for (int i = 2; i < results.Count - 1; i++) {
             entity.Attributes.Add (results[i].Value as KAOSTools.Parsing.ParsedAttribute);
         }
         
@@ -316,6 +304,24 @@ internal sealed partial class GoalModelParser
             Line = results[0].Line, Col = results[0].Col, Filename = m_file };
     }
 
+    private KAOSTools.Parsing.ParsedElement BuildEntityTypeAttribute (List<Result> results)
+    {
+        ParsedEntityType type;
+        if (results[1].Text == "software") 
+            type = ParsedEntityType.Software;
+        else if (results[1].Text == "environment") 
+            type = ParsedEntityType.Environment;
+        else if (results[1].Text == "shared") 
+            type = ParsedEntityType.Shared;
+        else
+            type = ParsedEntityType.None;
+
+        return new KAOSTools.Parsing.ParsedEntityTypeAttribute { 
+            Value = type, 
+            Line = results[0].Line, Col = results[0].Col, Filename = m_file };
+    }
+
+
     private KAOSTools.Parsing.ParsedElement BuildIdentifierAttribute (List<Result> results)
     {
         return new KAOSTools.Parsing.ParsedIdentifierAttribute { 
@@ -330,26 +336,19 @@ internal sealed partial class GoalModelParser
             Line = results[0].Line, Col = results[0].Col, Filename = m_file };
     }
 
-    private KAOSTools.Parsing.ParsedElement BuildSignature (List<Result> results)
+    private KAOSTools.Parsing.ParsedElement BuildSignatureAttribute (List<Result> results)
     {
         return new KAOSTools.Parsing.ParsedSignatureAttribute { Value = results[2].Text,
             Line = results[0].Line, Col = results[0].Col, Filename = m_file };
     }
 
-    private KAOSTools.Parsing.ParsedElement BuildFormalSpec (List<Result> results)
-    {
-        return new ParsedFormalSpecAttribute () { Value = results[2].Value,
-            Line = results[0].Line, Col = results[0].Col, Filename = m_file };
-    }
-
-    // TODO deprecate this method
-    private KAOSTools.Parsing.ParsedElement BuildStringFormalSpec (List<Result> results)
+    private KAOSTools.Parsing.ParsedElement BuildFormalSpecAttribute (List<Result> results)
     {
         return new ParsedFormalSpecAttribute () { Value = results[2].Value,
             Line = results[0].Line, Col = results[0].Col, Filename = m_file };
     }
     
-    private KAOSTools.Parsing.ParsedElement BuildDefinition (List<Result> results)
+    private KAOSTools.Parsing.ParsedElement BuildDefinitionAttribute (List<Result> results)
     {
         return new KAOSTools.Parsing.ParsedDefinitionAttribute { 
             Value = results.Count == 3 ? "" : results [2].Text, 

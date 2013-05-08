@@ -46,7 +46,7 @@ namespace KAOSTools.Parsing
         None, Software, Environment
     }
 
-    public enum EntityType {
+    public enum ParsedEntityType {
         None, Software, Environment, Shared
     }
 
@@ -66,9 +66,9 @@ namespace KAOSTools.Parsing
 
     public class ParsedEntity : ParsedElementWithAttributes
     {
-        public EntityType EntityType { get; set; }
+        public ParsedEntityType EntityType { get; set; }
         public ParsedEntity () {
-            EntityType = EntityType.None;
+            EntityType = ParsedEntityType.None;
         }
     }
 
@@ -100,6 +100,7 @@ namespace KAOSTools.Parsing
     public class ParsedResolvedByAttribute : ParsedAttributeWithValue<dynamic> {}
 
     public class ParsedAgentTypeAttribute : ParsedAttributeWithValue<ParsedAgentType> {}
+    public class ParsedEntityTypeAttribute : ParsedAttributeWithValue<ParsedEntityType> {}
     public class ParsedNameAttribute : ParsedAttributeWithValue<string> {}
     public class ParsedIdentifierAttribute : ParsedAttributeWithValue<string> {}
     public class ParsedDefinitionAttribute : ParsedAttributeWithValue<string> {}
