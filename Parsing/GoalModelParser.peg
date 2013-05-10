@@ -87,7 +87,7 @@ PredicateAttribute :=
     `value = results[0].Value;`
 
 SystemAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / Alternative ) 
+    ( IdAttribute / NameAttribute / DefinitionAttribute / AlternativeAttribute ) 
     `value = results[0].Value;`
 
 EntityAttribute := 
@@ -131,8 +131,8 @@ ObstructedBy := 'obstructedby' S ( Obstacle / Name / Identifier )
 ResolvedBy := 'resolvedby' S ( Goal / Name / Identifier )
     `value = BuildResolvedBy(results);`
         
-Alternative := 'alternative' S ( System / Name / Identifier ) 
-    `value = BuildAlternative(results);`
+AlternativeAttribute := 'alternative' S ( System / Name / Identifier ) 
+    `value = BuildAlternativeAttribute(results);`
 
 IsA := 'is' S ( Entity / Name / Identifier )
     `value = BuildIsA(results);`
@@ -187,7 +187,7 @@ MultiplicityUpperBound :=
     ( [0-9] / 'M' / 'N' / '*' )
     `value = results[0].Value;`
 
-Identifier := ([$_-])? ([a-zA-Z0-9] [a-zA-Z0-9$_-]*)
+Identifier := [a-zA-Z0-9$_-]+
     `value = BuildIdentifier(results);`
 
 Name := '"' String '"' 

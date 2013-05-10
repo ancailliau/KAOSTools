@@ -73,7 +73,7 @@ namespace KAOSTools.Parsing
 			m_nonterminals.Add("Probability", new ParseMethod[]{this.DoParseProbabilityRule});
 			m_nonterminals.Add("ObstructedBy", new ParseMethod[]{this.DoParseObstructedByRule});
 			m_nonterminals.Add("ResolvedBy", new ParseMethod[]{this.DoParseResolvedByRule});
-			m_nonterminals.Add("Alternative", new ParseMethod[]{this.DoParseAlternativeRule});
+			m_nonterminals.Add("AlternativeAttribute", new ParseMethod[]{this.DoParseAlternativeAttributeRule});
 			m_nonterminals.Add("IsA", new ParseMethod[]{this.DoParseIsARule});
 			m_nonterminals.Add("AgentTypeAttribute", new ParseMethod[]{this.DoParseAgentTypeAttributeRule});
 			m_nonterminals.Add("EntityTypeAttribute", new ParseMethod[]{this.DoParseEntityTypeAttributeRule});
@@ -632,7 +632,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// SystemAttribute := IdAttribute / NameAttribute / DefinitionAttribute / Alternative
+		// SystemAttribute := IdAttribute / NameAttribute / DefinitionAttribute / AlternativeAttribute
 		private State DoParseSystemAttributeRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -642,7 +642,7 @@ namespace KAOSTools.Parsing
 			delegate (State s, List<Result> r) {return DoParse(s, r, "IdAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Alternative");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "AlternativeAttribute");});
 			
 			if (_state.Parsed)
 			{
@@ -931,8 +931,8 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// Alternative := 'alternative' S (System / Name / Identifier)
-		private State DoParseAlternativeRule(State _state, List<Result> _outResults)
+		// AlternativeAttribute := 'alternative' S (System / Name / Identifier)
+		private State DoParseAlternativeAttributeRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
 			List<Result> results = new List<Result>();
@@ -948,7 +948,7 @@ namespace KAOSTools.Parsing
 			if (_state.Parsed)
 			{
 				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
-				value = BuildAlternative(results);
+				value = BuildAlternativeAttribute(results);
 				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 			}
 			
@@ -1310,19 +1310,14 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// Identifier := [$_-]? ([a-zA-Z0-9] [$_-a-zA-Z0-9]*)
+		// Identifier := [$_-a-zA-Z0-9]+
 		private State DoParseIdentifierRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
 			List<Result> results = new List<Result>();
 			
-			_state = DoSequence(_state, results,
-			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 1,
-				delegate (State s2, List<Result> r2) {return DoParseRange(s2, r2, false, "$_-", string.Empty, null, "[$_-]");});},
-			delegate (State s, List<Result> r) {return DoSequence(s, r,
-				delegate (State s2, List<Result> r2) {return DoParseRange(s2, r2, false, string.Empty, "azAZ09", null, "[a-zA-Z0-9]");},
-				delegate (State s2, List<Result> r2) {return DoRepetition(s2, r2, 0, 2147483647,
-					delegate (State s3, List<Result> r3) {return DoParseRange(s3, r3, false, "$_-", "azAZ09", null, "[$_-a-zA-Z0-9]");});});});
+			_state = DoRepetition(_state, results, 1, 2147483647,
+			delegate (State s, List<Result> r) {return DoParseRange(s, r, false, "$_-", "azAZ09", null, "[$_-a-zA-Z0-9]");});
 			
 			if (_state.Parsed)
 			{

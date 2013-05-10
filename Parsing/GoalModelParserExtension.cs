@@ -226,7 +226,7 @@ namespace KAOSTools.Parsing {
                 (results, results[1].Value);
         }
 
-        ParsedElement BuildAlternative (List<Result> results)
+        ParsedElement BuildAlternativeAttribute (List<Result> results)
         {
             return BuildParsedAttributeWithValue<ParsedAlternativeAttribute, dynamic> 
                 (results, results[1].Value);
