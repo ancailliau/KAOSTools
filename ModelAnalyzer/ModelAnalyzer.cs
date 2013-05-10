@@ -6,27 +6,46 @@ using System.Collections.Generic;
 using NDesk.Options;
 using KAOSTools.MetaModel;
 using KAOSTools.Utils;
+using KAOSTools.Parsing;
+using System.Web.Script.Serialization;
 
 namespace KAOSTools.ModelAnalyzer
 {
+    enum ExportFormat {
+        Console, Json
+    }
+
     class ModelAnalyzer : KAOSToolCLI
     {
-        private static bool show_formal = false;
-        private static bool verbose = false;
-        private static int levensteinThreshold = 0;
-        private static string exportImplicit;
+        static bool show_formal = false;
+        static int levensteinThreshold = 0;
+
+        static ExportFormat format = ExportFormat.Console;
+        static List<CheckResult> results;
 
         public static void Main (string[] args)
         {
             options.Add ("f|formal",  "Check formal attributes", v => show_formal = true);
-            options.Add ("v|verbose",  "Display more details about checks", v => verbose = true);
-            options.Add ("export-implicit=",  "XXX", v => exportImplicit = v);
             options.Add ("l|levenstein=",  "Set threshold for duplicate detection", 
                     v => { 
                         int.TryParse (v, out levensteinThreshold);
             });
 
+            options.Add ("format=", 
+                         "Output using the given format. Accepted values are 'console', 'json'.",
+                         v => { 
+                if (v.Equals("console")) { 
+                    format = ExportFormat.Console;
+                } else if (v.Equals ("json")) {
+                    format = ExportFormat.Json;
+                } else {
+                    throw new ArgumentException (string.Format("'{0}' is not a supported output format.", v));
+                }
+            });
+
             Init (args);
+
+            results = new List<CheckResult>();
 
             CheckImplicit (model);
             CheckUnassignedLeafGoals (model.GoalModel);
@@ -36,205 +55,112 @@ namespace KAOSTools.ModelAnalyzer
 
             if (show_formal)
                 DisplayMissingFormalSpec (model.GoalModel);
+
+            if (format == ExportFormat.Console)
+                ConsoleWriter.Output (results);
+            else if (format == ExportFormat.Json)
+                JSONWriter.Output (results);
         }
 
-        private static void CheckImplicit (KAOSModel model) 
+        static void CheckImplicit (KAOSModel model) 
         {
-            foreach (var g in model.GoalModel.Goals) {
-                if (g.Implicit) {
-                    WriteWarning ("Goal " + (string.IsNullOrEmpty(g.Name) ? g.Identifier : g.Name) + " is implicitely declared.");
+            ForAllKAOSElement (x => {
+                if (x.Implicit) {
+                    AddWarning (string.Format ("{1} '{0}' is implicitely declared.", x.FriendlyName, x.ConceptName));
                 }
-            }
-
-            foreach (var a in model.GoalModel.Agents) {
-                if (a.Implicit) {
-                    WriteWarning ("Agent " + (string.IsNullOrEmpty(a.Name) ? a.Identifier : a.Name) + " is implicitely declared.");
-                }
-            }
-            
-            foreach (var p in model.Entities) {
-                if (p.Implicit) {
-                    if (p.GetType() == typeof (Relation)) {
-                        WriteWarning ("Relation " + (string.IsNullOrEmpty(p.Name) ? p.Identifier : p.Name) + " is implicitely declared.");
-                    } else {
-                        WriteWarning ("Entity " + (string.IsNullOrEmpty(p.Name) ? p.Identifier : p.Name) + " is implicitely declared.");
-                    }
-                }
-                foreach (var arg in p.Attributes.Where (x => x.Implicit == true)) {
-                    WriteWarning ("Attribute '" + arg.Name + "' in '" + (string.IsNullOrEmpty(p.Name) ? p.Identifier : p.Name) + "' is implicitely declared.");
-                }
-            }
-
-            foreach (var p in model.Predicates) {
-                if (p.Implicit) {
-                    WriteWarning ("Predicate " + (string.IsNullOrEmpty(p.Name) ? (string.IsNullOrEmpty(p.Signature) ? p.Identifier : p.Signature) : p.Name) + " is implicitely declared.");
-                }
-            }
+            });
         }
 
-        private static void CheckIncompatibleSystems (GoalModel model)
+        static void CheckIncompatibleSystems (GoalModel model)
         {
-            foreach (var g in model.Goals) {
-                if (g.InSystems.Count() == 0) {
-                    WriteKO (GetReferenceString("Goal", g) + " does not appear in any alternative system.");
+            ForAllGoals (x => {
+                if (x.InSystems.Count() == 0) {
+                    AddWarning (string.Format ("Goal '{0}' appears in no alternative system.", x.FriendlyName));
                 }
-            }
+            });
 
-            foreach (var g in model.Goals.Where (x => x.AgentAssignments.Count() > 0)) {
+            ForAllGoals (g => {
                 foreach (var ag in g.AgentAssignments) {
                     if (ag.InSystems.Count() == 0) {
-                        WriteKO ("The assignment of " + GetReferenceString("goal", g) + " to " + string.Join (",", ag.Agents.Select(x => "'" + x.Name + "'")) + " is not possible in any alternative system.");
+                        AddKO (string.Format ("The assignment of goal '{0}' to agent(s) {1} is incompatible. Goal appears only in {2} alternative systems.", 
+                                                g.FriendlyName, 
+                                                string.Join (",", ag.Agents.Select (x => string.Format ("'{0}'", x.Name))),
+                                                (g.InSystems.Count == 0 ? "no" : string.Join (",", g.InSystems.Select (x => string.Format ("'{0}'", x.Name))))
+                                                ));
                     }
                 }
-            }
+            });
         }
 
-        private static void CheckMissingDefinition (GoalModel model)
+        static void CheckMissingDefinition (GoalModel model)
         {
-            var goals = model.Goals.Where (g => string.IsNullOrWhiteSpace (g.Definition));
-            if (goals.Count () == 0) {
-                WriteOK ("All goals have definition");
-
-            } else {
-                foreach (var goal in goals) {
-                    WriteKO (GetReferenceString("Goal", goal) + " is missing definition");
+            ForAllKAOSElement (x => {
+                var propertyInfo = x.GetType ().GetProperty ("Definition");
+                if (propertyInfo != null) {
+                    if (string.IsNullOrWhiteSpace ((string) propertyInfo.GetValue (x, null))) {
+                        AddWarning (string.Format ("{1} '{0}' has no definition.", x.FriendlyName, x.ConceptName));
+                    }
                 }
-            }
-
-            var obstacles = model.Obstacles.Where (o => string.IsNullOrWhiteSpace (o.Definition));
-            if (obstacles.Count () == 0) {
-                WriteOK ("All obstacles have definition");
-                
-            } else {
-                foreach (var obstacle in obstacles) 
-                    WriteKO (string.Format ("Obstacle '{0}' is missing definition", obstacle.Name));
-            }
-
-            var domprops = model.DomainProperties.Where (d => string.IsNullOrWhiteSpace (d.Definition));
-            if (domprops.Count () == 0) {
-                WriteOK ("All domain properties have definition");
-                    
-            } else {
-                foreach (var domprop in domprops) 
-                    WriteKO (string.Format ("Domain property '{0}' is missing definition", domprop.Name));
-            }
-
-            var agents = model.Agents.Where (a => string.IsNullOrWhiteSpace (a.Definition));
-            if (agents.Count () == 0) {
-                WriteOK ("All agents have description");
-                        
-            } else {
-                foreach (var agent in agents) 
-                    WriteKO (string.Format ("Agent '{0}' is missing description", agent.Name));
-            }
+            });
         }
 
-        private static void DisplayMissingFormalSpec (GoalModel model)
+        static void DisplayMissingFormalSpec (GoalModel model)
         {
-            var goals = from g in model.Goals where g.FormalSpec == null select g;
-            foreach (var goal in goals) {
-                Console.WriteLine (string.Format ("Goal '{0}' is missing formal specification", goal.Name));
-            }
-
-            var domprops = from d in model.DomainProperties where d.FormalSpec == null select d;
-            foreach (var domprop in domprops) {
-                Console.WriteLine (string.Format ("Domain property '{0}' is missing formal specification", domprop.Name));
-            }
-
-            var obstacles = from o in model.Obstacles where o.FormalSpec == null select o;
-            foreach (var obstacle in obstacles) {
-                Console.WriteLine (string.Format ("Obstacle '{0}' is missing formal specification", obstacle.Name));
-            }
+            ForAllKAOSElement (x => {
+                var propertyInfo = x.GetType ().GetProperty ("FormalSpec");
+                if (propertyInfo != null) {
+                    if (string.IsNullOrWhiteSpace ((string) propertyInfo.GetValue (x, null))) {
+                        AddWarning (string.Format ("{1} '{0}' has no formal specification.", x.FriendlyName, x.ConceptName));
+                    }
+                }
+            });
         }
 
-        private static void CheckUnassignedLeafGoals (GoalModel model)
+        static void CheckUnassignedLeafGoals (GoalModel model)
         {
             var unassignedLeafGoals = from g in model.Goals 
                 where g.AgentAssignments.Count == 0 & g.Refinements.Count == 0 select g;
 
-            if (unassignedLeafGoals.Count () > 0) {
-                WriteKO ("Unassigned leaf goals");
-                
-                foreach (var item in unassignedLeafGoals) {
-                    Console.WriteLine ("       - {0}", GetReferenceString("Goal", item));
-                }
-            } else {
-                WriteOK ("All leaf goals are assigned");
+            foreach (var item in unassignedLeafGoals) {
+                AddWarning (string.Format ("Goal '{0}' is not refined or assigned.", item.FriendlyName));
             }
         }
         
-        private static void CheckGoalWithSimilarNames (GoalModel model, int levensteinThreshold)
+        static void CheckGoalWithSimilarNames (GoalModel model, int levensteinThreshold)
         {
+            /* TODO
             var duplicateGoals = from g1 in model.Goals 
                 where (from g2 in model.Goals where g2 != g1 && g2.Name == g1.Name select g2).Count () > 0 
                 select g1;
 
-            if (duplicateGoals.Count () > 0) {
-                WriteKO ("Potential duplicated goals exists");
-
-                foreach (var item in duplicateGoals) {
-                    var declaration = declarations[item].First();
-                    Console.WriteLine ("       - {0} ({1}:{2},{3})", item.Name, declaration.Filename, declaration.Line, declaration.Col);
-                }
-            } else {
-                WriteOK ("No potential duplicated goals found");
+            foreach (var item in duplicateGoals) {
+                WriteKO (item.FriendlyName + " is a potential duplicated item.");
             }
-
-            var duplicateObstacle = from o1 in model.Obstacles 
-                where (from o2 in model.Obstacles where o2 != o1 && o2.Name.LevenshteinDistance (o1.Name) < levensteinThreshold select o2).Count () > 0 
-                select o1;
-
-            var displayedDuplicates = new List<Obstacle> ();
-
-            if (duplicateObstacle.Count () > 0) {
-                WriteKO ("Potential duplicated obstacles exists");
-
-                foreach (var item in duplicateObstacle) {
-                    if (!displayedDuplicates.Contains (item)) {
-                        Console.WriteLine ("       - '{0}'", item.Name);
-                        var duplicates = from o2 in model.Obstacles where o2 != item && o2.Name.LevenshteinDistance (item.Name) < levensteinThreshold select o2;
-                        foreach (var item1 in duplicates) {
-                            Console.WriteLine ("         with '{0}'", item1.Name);
-                            displayedDuplicates.Add (item1);
-                        }
-                    }
-                }
-            } else {
-                WriteOK ("No potential duplicated obstacles found");
-            }
+            */
         }
 
-        private static void WriteOK (string message) {
-            if (verbose) {
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.BackgroundColor = ConsoleColor.DarkGreen;
-                Console.Write ("[ OK ]");
-                Console.ResetColor ();
-                Console.ForegroundColor = ConsoleColor.DarkGreen;
-                Console.WriteLine (" {0}", message);
-                Console.ResetColor ();
-            }
+        static void AddOK (string message) {
+            results.Add (new CheckResult {
+                Status = CheckResultStatus.OK,
+                Message = message
+            });
         }
 
-        private static void WriteKO (string message) {
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.BackgroundColor = ConsoleColor.Red;
-            Console.Write ("[ KO ]");
-            Console.ResetColor ();
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine (" {0}", message);
-            Console.ResetColor ();
+        static void AddKO (string message) {
+            results.Add (new CheckResult {
+                Status = CheckResultStatus.KO,
+                Message = message
+            });
         }
 
-        private static void WriteWarning (string message) {
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.BackgroundColor = ConsoleColor.Yellow;
-            Console.Write ("[WARN]");
-            Console.ResetColor ();
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine (" {0}", message);
-            Console.ResetColor ();
+        static void AddWarning (string message) {
+            results.Add (new CheckResult {
+                Status = CheckResultStatus.WARNING,
+                Message = message
+            });
         }
+
+        /*
 
         private static string GetReferenceString (string name, KAOSMetaModelElement pred) 
         {
@@ -253,17 +179,152 @@ namespace KAOSTools.ModelAnalyzer
                                    declaration.Col));
         }
 
-        private static bool HasName (KAOSMetaModelElement elm)
-        {
-            return elm.GetType().GetProperty("Name") != null;
+        */
+
+        #region ForAll... helpers 
+        
+        static void ForAllKAOSElement (Action<KAOSMetaModelElement> action) {
+            ForAllGoals (action);
+            ForAllObstacles (action);
+            ForAllDomainProperties (action);
+            ForAllDomainHypotheses (action);
+            ForAllAgents (action);
+            ForAllSystems (action);
+            ForAllObjects (action);
+            ForAllAssociations (action);
+            ForAllPredicates (action);
+            ForAllTypes (action);
+        }
+
+        static void ForAllGoals (Action<Goal> action) {
+            foreach (var goal in model.GoalModel.Goals) {
+                action(goal);
+            }
+        }
+
+        static void ForAllObstacles (Action<Obstacle> action) {
+            foreach (var obstacle in model.GoalModel.Obstacles) {
+                action(obstacle);
+            }
         }
         
-        private static string GetName (KAOSMetaModelElement elm)
-        {
-            if (elm == null)
-                return null;
+        static void ForAllDomainProperties (Action<DomainProperty> action) {
+            foreach (var domprop in model.GoalModel.DomainProperties) {
+                action(domprop);
+            }
+        }
 
-            return elm.GetType().GetProperty("Name").GetValue(elm, null) as String;
+        static void ForAllDomainHypotheses (Action<DomainHypothesis> action) {
+            foreach (var domhyp in model.GoalModel.DomainHypotheses) {
+                action(domhyp);
+            }
+        }
+
+        static void ForAllAgents (Action<Agent> action) {
+            foreach (var agent in model.GoalModel.Agents) {
+                action(agent);
+            }
+        }
+
+        static void ForAllSystems (Action<AlternativeSystem> action) {
+            foreach (var system in model.GoalModel.Systems) {
+                action(system);
+            }
+        }
+        
+        static void ForAllObjects (Action<Entity> action) {
+            foreach (var entity in model.Entities) {
+                action(entity);
+            }
+        }
+
+        static void ForAllAssociations (Action<Relation> action) {
+            foreach (var relation in model.Relations) {
+                action(relation);
+            }
+        }
+
+        static void ForAllPredicates (Action<Predicate> action) {
+            foreach (var predicate in model.Predicates) {
+                action(predicate);
+            }
+        }
+
+        static void ForAllTypes (Action<GivenType> action) {
+            foreach (var goal in model.GivenTypes) {
+                action(goal);
+            }
+        }
+
+        #endregion
+    }
+
+    enum CheckResultStatus {
+        OK, KO, WARNING
+    }
+
+    class CheckResult {
+        public CheckResultStatus Status { get; set; }
+        public string Message { get; set; }
+        public Declaration Location { get; set; }
+    }
+
+    class JSONWriter {
+
+        public static void Output (IList<CheckResult> results)
+        {
+            var json = new JavaScriptSerializer().Serialize(from r in results select new {
+                status = (r.Status == CheckResultStatus.OK ? "ok" : (r.Status == CheckResultStatus.KO ? "ko" : "warning" )),
+                message = r.Message
+            });
+            Console.WriteLine(json);
+        }
+    }
+
+    class ConsoleWriter {
+
+        public static void Output (IList<CheckResult> results)
+        {
+            foreach (var item in results) {
+                if (item.Status == CheckResultStatus.OK)
+                    WriteOK (item);
+                
+                if (item.Status == CheckResultStatus.KO)
+                    WriteKO (item);
+                
+                if (item.Status == CheckResultStatus.WARNING)
+                    WriteWarning (item);
+            }
+        }
+
+        static void WriteOK (CheckResult result) {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.DarkGreen;
+            Console.Write ("[ OK ]");
+            Console.ResetColor ();
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine (" {0}", result.Message);
+            Console.ResetColor ();
+        }
+
+        static void WriteKO (CheckResult result) {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.Red;
+            Console.Write ("[ KO ]");
+            Console.ResetColor ();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine (" {0}", result.Message);
+            Console.ResetColor ();
+        }
+
+        static void WriteWarning (CheckResult result) {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.Yellow;
+            Console.Write ("[WARN]");
+            Console.ResetColor ();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine (" {0}", result.Message);
+            Console.ResetColor ();
         }
     }
 }

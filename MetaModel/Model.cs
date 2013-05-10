@@ -25,6 +25,25 @@ namespace KAOSTools.MetaModel
         }
 
         /// <summary>
+        /// Gets the friendly name of the concept. For instance, it will return the name if a name is defined, 
+        /// otherwise the identifier.
+        /// </summary>
+        /// <value>The name.</value>
+        public virtual object FriendlyName {
+            get {
+                return Identifier;
+            }
+        }
+
+        /// <summary>
+        /// Gets the name of the concept. For instance, 'goal' or 'domain property'.
+        /// </summary>
+        /// <value>The name of the concept.</value>
+        public virtual object ConceptName {
+            get { return "KAOSMetaModelElement"; }
+        }
+
+        /// <summary>
         /// Gets or sets whether this <see cref="KAOSTools.MetaModel.KAOSMetaModelElement"/>
         /// is implicitly declared or explicitely declared.
         /// </summary>
@@ -82,6 +101,18 @@ namespace KAOSTools.MetaModel
         /// </summary>
         /// <value>The name of the goal.</value>
         public string Name { get; set; }
+
+        public override object FriendlyName {
+            get {
+                return string.IsNullOrEmpty(Name) ? Identifier : Name;
+            }
+        }
+
+        public override object ConceptName {
+            get {
+                return "Goal";
+            }
+        }
 
         /// <summary>
         /// Gets or sets the definition.
@@ -166,6 +197,18 @@ namespace KAOSTools.MetaModel
         /// </summary>
         /// <value>The name.</value>
         public string Name { get; set; }
+        
+        public override object FriendlyName {
+            get {
+                return string.IsNullOrEmpty(Name) ? Identifier : Name;
+            }
+        }
+        
+        public override object ConceptName {
+            get {
+                return "Obstacle";
+            }
+        }
 
         /// <summary>
         /// Gets or sets the definition of the obstacle.
@@ -242,6 +285,18 @@ namespace KAOSTools.MetaModel
         /// </summary>
         /// <value>The name.</value>
         public string Name { get; set; }
+        
+        public override object FriendlyName {
+            get {
+                return string.IsNullOrEmpty(Name) ? Identifier : Name;
+            }
+        }
+        
+        public override object ConceptName {
+            get {
+                return "Domain hypothesis";
+            }
+        }
 
         /// <summary>
         /// Gets or sets the definition of the domain hypothesis.
@@ -272,6 +327,18 @@ namespace KAOSTools.MetaModel
         /// </summary>
         /// <value>The name.</value>
         public string Name { get; set; }
+        
+        public override object FriendlyName {
+            get {
+                return string.IsNullOrEmpty(Name) ? Identifier : Name;
+            }
+        }
+        
+        public override object ConceptName {
+            get {
+                return "Domain property";
+            }
+        }
 
         /// <summary>
         /// Gets or sets the definition of the domain property.
@@ -302,6 +369,18 @@ namespace KAOSTools.MetaModel
         /// </summary>
         /// <value>The name.</value>
         public string Name { get; set; }
+        
+        public override object FriendlyName {
+            get {
+                return string.IsNullOrEmpty(Name) ? Identifier : Name;
+            }
+        }
+        
+        public override object ConceptName {
+            get {
+                return "Agent";
+            }
+        }
 
         /// <summary>
         /// Gets or sets the definition of the agent.
@@ -575,6 +654,19 @@ namespace KAOSTools.MetaModel
 
     public class Entity : KAOSMetaModelElement {
         public string Name { get; set; }
+        
+        public override object FriendlyName {
+            get {
+                return string.IsNullOrEmpty(Name) ? Identifier : Name;
+            }
+        }
+
+        public override object ConceptName {
+            get {
+                return "Object";
+            }
+        }
+
         public string Definition { get; set; }
         public ISet<Attribute> Attributes { get; set; }
         public EntityType Type { get; set; }
@@ -590,6 +682,7 @@ namespace KAOSTools.MetaModel
     public class Attribute : KAOSMetaModelElement {
         public bool Derived { get; set; }
         public string Name { get; set; }
+
         public GivenType Type { get; set; }
 
         public Attribute ()
@@ -606,10 +699,31 @@ namespace KAOSTools.MetaModel
 
     public class GivenType : KAOSMetaModelElement {
         public string Name { get; set; }
+        
+        public override object FriendlyName {
+            get {
+                return string.IsNullOrEmpty(Name) ? Identifier : Name;
+            }
+        }
+        
+
+        public override object ConceptName {
+            get {
+                return "Type";
+            }
+        }
+
         public string Definition { get; set; }
     }
 
     public class Relation : Entity {
+
+        public override object ConceptName {
+            get {
+                return "Association";
+            }
+        }
+
         public ISet<Link> Links { get; set; } 
         public Relation ()
         {
@@ -644,6 +758,18 @@ namespace KAOSTools.MetaModel
         /// </summary>
         /// <value>The name.</value>
         public string Name { get; set; }
+        
+        public override object FriendlyName {
+            get {
+                return string.IsNullOrEmpty(Name) ? Identifier : Name;
+            }
+        }
+
+        public override object ConceptName {
+            get {
+                return "System";
+            }
+        }
 
         /// <summary>
         /// Gets or sets the definition of the alternative system.
@@ -676,7 +802,19 @@ namespace KAOSTools.MetaModel
         /// </summary>
         /// <value>The name.</value>
         public string Name { get; set; }
- 
+        
+        public override object FriendlyName {
+            get {
+                return string.IsNullOrEmpty(Name) ? Identifier : Name;
+            }
+        }
+
+        public override object ConceptName {
+            get {
+                return "Predicate";
+            }
+        }
+
         /// <summary>
         /// Gets or sets the arguments of the predicate.
         /// </summary>
