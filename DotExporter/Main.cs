@@ -21,7 +21,6 @@ namespace KAOSTools.DotExporter
             string resolutions       = "";
 
             bool   exportModel       = false;
-            bool   show_help         = false;
             
             options.Add ("o|output=", "File to use to store dot model",
                          v => modelFilename = v );
@@ -35,9 +34,6 @@ namespace KAOSTools.DotExporter
                          v => responsibility = v  );
             options.Add ("resolutions=", "Resolutions to output, give name or identifier for obstacle.",
                          v => resolutions = v  );
-            options.Add ("h|help",  "show this message and exit", 
-                         v => show_help = true  );
-
 
             Init (args);
 
