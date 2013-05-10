@@ -43,6 +43,16 @@ namespace KAOSTools.DotExporter
             writer.WriteLine (@"""{0}"" [shape=trapezium,label=""{1}"",style=filled,fillcolor=""{2}"",fontname=""Arial"",fontsize=10,margin=""-.2,0""];", string.IsNullOrEmpty (domprop.Identifier) ? domprop.Name : domprop.Identifier, name, "#e8fdcb");
         }
 
+        public void ExportDomainHypothesis (DomainHypothesis domhyp)
+        {
+            var name = new StringBuilder (domhyp.Name);
+            if (name.Length > 30) {
+                var midspace = domhyp.Name.IndexOf (' ', (domhyp.Name.Length / 2) - 1);
+                name.Replace (" ", @"\n", midspace, 1);
+            }
+            writer.WriteLine (@"""{0}"" [shape=trapezium,label=""{1}"",style=filled,fillcolor=""{2}"",fontname=""Arial"",fontsize=10,margin=""-.2,0""];", domhyp.Identifier, name, "#FFEFEF");
+        }
+
         public void ExportObstacle (Obstacle o)
         {
             var name = new StringBuilder (o.Name);
@@ -53,11 +63,25 @@ namespace KAOSTools.DotExporter
             writer.WriteLine (@"""{0}"" [shape=polygon,skew=-.1,label=""{1}"",style=filled,fillcolor=""#ffa9ad"",penwidth={2},fontname=""Arial"",fontsize=10,margin=""-.2,0""];", string.IsNullOrEmpty (o.Identifier) ? o.Name : o.Identifier, name, o.Refinements.Count == 0 ? 2 : 1);
         }
 
-        public void ExportResponsibility (Agent agent, Goal g)
+        public void ExportResponsibility (Goal g, AgentAssignment assignement)
         {
-            var tempGUID = Guid.NewGuid ().ToString ();
-            writer.WriteLine (@"""{0}"" [shape=hexagon,label=""{1}"",style=filled,fillcolor=""#dcbdfa"",fontname=""Arial"",fontsize=10,margin=""0.2,0""];", tempGUID, agent.Name);
-            writer.WriteLine (@"""{0}"" -> ""{1}"";", string.IsNullOrEmpty (g.Identifier) ? g.Name : g.Identifier, tempGUID);
+            var tempGUID = Guid.NewGuid().ToString();
+            writer.WriteLine (@"""{0}""[shape=circle,width=.1,fixedsize=true,label=""""];", tempGUID);
+            writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=onormal, label=""{2}""];", 
+                              g.Identifier,
+                              tempGUID,
+                              g.InSystems.SetEquals(model.RootSystems) ? "" : string.Join (", ", assignement.InSystems.Select (x => x.FriendlyName)));
+
+
+            foreach (var agent in assignement.Agents) {
+                var tempGUID2 = Guid.NewGuid ().ToString ();
+                // agent shape
+                writer.WriteLine (@"""{0}"" [shape=hexagon,label=""{1}"",style=filled,fillcolor=""#dcbdfa"",fontname=""Arial"",fontsize=10,margin=""0,0""];", tempGUID2, agent.Name);
+                writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=none];", 
+                                  tempGUID, 
+                                  tempGUID2);
+
+            }
         }
 
         public void ExportObstruction (Goal g, Obstacle o)
@@ -78,33 +102,43 @@ namespace KAOSTools.DotExporter
             var tempGUID = Guid.NewGuid().ToString();
             writer.WriteLine (@"""{0}""[shape=circle,width=.1,fixedsize=true,label=""""];", tempGUID);
             writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=onormal];", 
-                              string.IsNullOrEmpty (parent.Identifier) ? parent.Name : parent.Identifier,
+                              parent.Identifier,
                               tempGUID);
 
             foreach (var child in refinement.Subgoals) {
                 writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=none];", 
                                   tempGUID, 
-                                  string.IsNullOrEmpty (child.Identifier) ? child.Name : child.Identifier);
+                                  child.Identifier);
             }
 
             foreach (var domprop in refinement.DomainProperties) {
                 writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=none];", 
                                   tempGUID, 
-                                  string.IsNullOrEmpty (domprop.Identifier) ? domprop.Name : domprop.Identifier);
+                                  domprop.Identifier);
+            }
+
+            foreach (var domhyp in refinement.DomainHypotheses) {
+                writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=none];", 
+                                  tempGUID, 
+                                  domhyp.Identifier);
             }
         }
 
         public void ExportRefinement (Obstacle parent, ObstacleRefinement refinement) {
             var tempGUID = Guid.NewGuid().ToString();
             writer.WriteLine (@"""{0}""[shape=circle,width=.1,fixedsize=true,label=""""];", tempGUID);
-            writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=onormal];", 
-                              string.IsNullOrEmpty (parent.Identifier) ? parent.Name : parent.Identifier,
-                              tempGUID);
+            writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=onormal];", parent.Identifier, tempGUID);
 
             foreach (var child in refinement.Subobstacles) {
-                writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=none];", 
-                                  tempGUID, 
-                                  string.IsNullOrEmpty (child.Identifier) ? child.Name : child.Identifier);
+                writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=none];", tempGUID, child.Identifier);
+            }
+            
+            foreach (var child in refinement.DomainHypotheses) {
+                writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=none];", tempGUID, child.Identifier);
+            }
+
+            foreach (var child in refinement.DomainProperties) {
+                writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=none];", tempGUID, child.Identifier);
             }
         }
 
@@ -180,7 +214,7 @@ namespace KAOSTools.DotExporter
                 if (g.AgentAssignments.Count > 0) {
                     foreach (var assignment in g.AgentAssignments) {
                         foreach (var agent in assignment.Agents) {
-                            ExportResponsibility (agent, g);
+                            ExportResponsibility (g, assignment);
                         }
                     }
                 }
