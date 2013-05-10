@@ -38,6 +38,13 @@ namespace KAOSTools.Parsing
             FSB.BuildElementWithKeys (elements);
             SSB.BuildElement (elements);
 
+            // Ensure that there is at least one alternative system
+            if (model.GoalModel.Systems.Count == 0)
+                model.GoalModel.Systems.Add (new AlternativeSystem {
+                    Name = "Default",
+                    Definition = "Default alternative"
+                });
+
             return model;
         }
 

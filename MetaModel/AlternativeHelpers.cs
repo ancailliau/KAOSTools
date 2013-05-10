@@ -12,16 +12,10 @@ namespace KAOSTools.MetaModel
         {
             this.model = model;
 
-            foreach (var g in model.RootGoals) {
-                g.InSystems = new HashSet<AlternativeSystem> (model.Systems);
-                foreach (var r in g.Refinements) {
-                    DownPropagate (g, r);
-                }
-            }
-
-            foreach (var g in model.Goals) {
-                foreach (var a in g.AgentAssignments) {
-                    DownPropagate (g, a);
+            foreach (var goal in model.RootGoals) {
+                goal.InSystems = new HashSet<AlternativeSystem> (model.Systems);
+                foreach (var r in goal.Refinements) {
+                    DownPropagate (goal, r);
                 }
             }
 
@@ -73,7 +67,8 @@ namespace KAOSTools.MetaModel
             return result;
         }
 
-        private ISet<AlternativeSystem> GetAllSubsystems (ISet<AlternativeSystem> systems, AlternativeSystem system)
+        private ISet<AlternativeSystem> GetAllSubsystems (ISet<AlternativeSystem> systems, 
+                                                          AlternativeSystem system)
         {
             systems.Add (system);
             foreach (var s in system.Alternatives) {
@@ -137,8 +132,79 @@ namespace KAOSTools.MetaModel
                 foreach (var childRefinement in child.Refinements) {
                     DownPropagate (child, childRefinement);
                 }
+
+                foreach (var agent in child.AgentAssignments) {
+                    DownPropagate (child, agent);
+                }
+
+                foreach (var obstacle in child.Obstructions) {
+                    DownPropagate (child, obstacle);
+                }
+            }
+
+        }
+
+        void DownPropagate (Goal parent, Obstacle obstacle)
+        {
+            var alternatives_to_add = new List<AlternativeSystem> (parent.InSystems);
+
+            if (obstacle.InSystems == null)
+                obstacle.InSystems = new HashSet<AlternativeSystem> ();
+
+            foreach (var a in alternatives_to_add) {
+                obstacle.InSystems.Add (a);
+            }
+
+            foreach (var child in obstacle.Refinements) {
+                DownPropagate (obstacle, child);
             }
         }
+
+        void DownPropagate (Obstacle parent, Goal resolution)
+        {
+            var alternatives_to_add = new List<AlternativeSystem> (parent.InSystems);
+
+            if (resolution.InSystems == null)
+                resolution.InSystems = new HashSet<AlternativeSystem> ();
+
+            foreach (var a in alternatives_to_add) {
+                resolution.InSystems.Add (a);
+            }
+
+            foreach (var child in resolution.Refinements) {
+                DownPropagate (resolution, child);
+            }
+        }
+        
+        void DownPropagate (Obstacle parent, ObstacleRefinement refinement)
+        {
+            var alternatives_to_add = new List<AlternativeSystem> (parent.InSystems);
+
+            if (refinement.InSystems == null)
+                refinement.InSystems = new HashSet<AlternativeSystem> ();
+
+            foreach (var a in alternatives_to_add) {
+                refinement.InSystems.Add (a);
+            }
+
+            foreach (var child in refinement.Subobstacles) {
+                if (child.InSystems == null)
+                    child.InSystems = new HashSet<AlternativeSystem> ();
+
+                foreach (var a in alternatives_to_add) {
+                    child.InSystems.Add (a);
+                }
+
+                foreach (var childRefinement in child.Refinements) {
+                    DownPropagate (child, childRefinement);
+                }
+
+                foreach (var resolvingGoal in child.Resolutions) {
+                    DownPropagate (child, resolvingGoal);
+                }
+            }
+        }
+
     }
 }
 
