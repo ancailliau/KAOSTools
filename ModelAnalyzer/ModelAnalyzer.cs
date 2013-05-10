@@ -76,14 +76,14 @@ namespace KAOSTools.ModelAnalyzer
         {
             foreach (var g in model.Goals) {
                 if (g.InSystems.Count() == 0) {
-                    WriteKO (GetReferenceString("Goal", g) + " is no alternative system.");
+                    WriteKO (GetReferenceString("Goal", g) + " does not appear in any alternative system.");
                 }
             }
 
             foreach (var g in model.Goals.Where (x => x.AgentAssignments.Count() > 0)) {
                 foreach (var ag in g.AgentAssignments) {
                     if (ag.InSystems.Count() == 0) {
-                        WriteKO (GetReferenceString("Goal", g) + " has a an incompatible agent assignment with '" + string.Join (",", ag.Agents.Select(x => x.Name)) + "'.");
+                        WriteKO ("The assignment of " + GetReferenceString("goal", g) + " to " + string.Join (",", ag.Agents.Select(x => "'" + x.Name + "'")) + " is not possible in any alternative system.");
                     }
                 }
             }
