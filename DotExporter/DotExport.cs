@@ -67,7 +67,7 @@ namespace KAOSTools.DotExporter
         {
             var tempGUID = Guid.NewGuid().ToString();
             writer.WriteLine (@"""{0}""[shape=circle,width=.1,fixedsize=true,label=""""];", tempGUID);
-            writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=onormal, label=""{2}""];", 
+            writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=onormal, label=""  {2}""];", 
                               g.Identifier,
                               tempGUID,
                               g.InSystems.SetEquals(model.RootSystems) ? "" : string.Join (", ", assignement.InSystems.Select (x => x.FriendlyName)));
@@ -101,9 +101,10 @@ namespace KAOSTools.DotExporter
         public void ExportRefinement (Goal parent, GoalRefinement refinement) {
             var tempGUID = Guid.NewGuid().ToString();
             writer.WriteLine (@"""{0}""[shape=circle,width=.1,fixedsize=true,label=""""];", tempGUID);
-            writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=onormal];", 
+            writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=onormal,label=""  {2}""];", 
                               parent.Identifier,
-                              tempGUID);
+                              tempGUID,
+                              refinement.SystemReference != null ? refinement.SystemReference.FriendlyName : "");
 
             foreach (var child in refinement.Subgoals) {
                 writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=none];", 
