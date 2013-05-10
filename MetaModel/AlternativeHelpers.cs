@@ -14,9 +14,7 @@ namespace KAOSTools.MetaModel
 
             foreach (var goal in model.RootGoals) {
                 goal.InSystems = new HashSet<AlternativeSystem> (model.Systems);
-                foreach (var r in goal.Refinements) {
-                    DownPropagate (goal, r);
-                }
+                DownPropagate (goal);
             }
 
             foreach (var g in model.RootGoals)
@@ -103,6 +101,21 @@ namespace KAOSTools.MetaModel
             }
         }
 
+        void DownPropagate (Goal goal) 
+        {
+            foreach (var childRefinement in goal.Refinements) {
+                DownPropagate (goal, childRefinement);
+            }
+
+            foreach (var agent in goal.AgentAssignments) {
+                DownPropagate (goal, agent);
+            }
+
+            foreach (var obstacle in goal.Obstructions) {
+                DownPropagate (goal, obstacle);
+            }
+        }
+
         private void DownPropagate (Goal parent, GoalRefinement refinement)
         {
             IList<AlternativeSystem> alternatives_to_add;
@@ -129,17 +142,7 @@ namespace KAOSTools.MetaModel
                    child.InSystems.Add (a);
                 }
 
-                foreach (var childRefinement in child.Refinements) {
-                    DownPropagate (child, childRefinement);
-                }
-
-                foreach (var agent in child.AgentAssignments) {
-                    DownPropagate (child, agent);
-                }
-
-                foreach (var obstacle in child.Obstructions) {
-                    DownPropagate (child, obstacle);
-                }
+                DownPropagate (child);
             }
 
         }
@@ -155,9 +158,7 @@ namespace KAOSTools.MetaModel
                 obstacle.InSystems.Add (a);
             }
 
-            foreach (var child in obstacle.Refinements) {
-                DownPropagate (obstacle, child);
-            }
+            DownPropagate (obstacle);
         }
 
         void DownPropagate (Obstacle parent, Goal resolution)
@@ -171,11 +172,20 @@ namespace KAOSTools.MetaModel
                 resolution.InSystems.Add (a);
             }
 
-            foreach (var child in resolution.Refinements) {
-                DownPropagate (resolution, child);
+            DownPropagate (resolution);
+        }
+
+        void DownPropagate (Obstacle obstacle)
+        {
+            foreach (var childRefinement in obstacle.Refinements) {
+                DownPropagate (obstacle, childRefinement);
+            }
+
+            foreach (var resolvingGoal in obstacle.Resolutions) {
+                DownPropagate (obstacle, resolvingGoal);
             }
         }
-        
+
         void DownPropagate (Obstacle parent, ObstacleRefinement refinement)
         {
             var alternatives_to_add = new List<AlternativeSystem> (parent.InSystems);
@@ -195,13 +205,7 @@ namespace KAOSTools.MetaModel
                     child.InSystems.Add (a);
                 }
 
-                foreach (var childRefinement in child.Refinements) {
-                    DownPropagate (child, childRefinement);
-                }
-
-                foreach (var resolvingGoal in child.Resolutions) {
-                    DownPropagate (child, resolvingGoal);
-                }
+                DownPropagate (child);
             }
         }
 
