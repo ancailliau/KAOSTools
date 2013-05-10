@@ -1,13 +1,10 @@
 using System;
 using System.Linq;
-using System.IO;
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
-using NDesk.Options;
-using KAOSTools.MetaModel;
 using KAOSTools.Utils;
 using KAOSTools.Parsing;
 using System.Web.Script.Serialization;
+using KAOSTools.MetaModel;
 
 namespace KAOSTools.ModelAnalyzer
 {
@@ -82,7 +79,7 @@ namespace KAOSTools.ModelAnalyzer
             ForAllGoals (g => {
                 foreach (var ag in g.AgentAssignments) {
                     if (ag.InSystems.Count() == 0) {
-                        AddKO (string.Format ("The assignment of goal '{0}' to agent(s) {1} is incompatible. Goal appears only in {2} alternative systems.", 
+                        AddWarning (string.Format ("The assignment of goal '{0}' to agent(s) {1} is incompatible. Goal appears only in {2} alternative systems.", 
                                                 g.FriendlyName, 
                                                 string.Join (",", ag.Agents.Select (x => string.Format ("'{0}'", x.Name))),
                                                 (g.InSystems.Count == 0 ? "no" : string.Join (",", g.InSystems.Select (x => string.Format ("'{0}'", x.Name))))
