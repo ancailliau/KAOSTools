@@ -806,7 +806,7 @@ namespace KAOSTools.OmnigraffleExport
             text = string.Join (@"\par ", 
                                 entity.Attributes.Select(attr => 
                                      GetRtfUnicodeEscapedString((attr.Derived ? "/" : "-") 
-                                       + " " + attr.Name 
+                                       + " " + attr.FriendlyName 
                                        + (attr.Type != null ? ": " + (!string.IsNullOrEmpty(attr.Type.Name) ? attr.Type.Name : attr.Type.Identifier) : ""))));
 
             graphic.Text = new Omnigraffle.TextInfo (text) {
@@ -828,11 +828,7 @@ namespace KAOSTools.OmnigraffleExport
             var header = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Rectangle, 50, 30, 175, 70);
             
             string text = @"\b\qc ";
-            if (string.IsNullOrEmpty (entity.Name)) {
-                text += GetRtfUnicodeEscapedString(entity.Identifier);
-            } else {
-                text += GetRtfUnicodeEscapedString(entity.Name);
-            }
+            text += GetRtfUnicodeEscapedString(entity.FriendlyName);
 
             header.Text = new Omnigraffle.TextInfo (text) {
                 Alignement = KAOSTools.OmnigraffleExport.Omnigraffle.TextAlignement.Left,
