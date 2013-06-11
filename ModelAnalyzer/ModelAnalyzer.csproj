@@ -8,6 +8,7 @@
     <ProjectGuid>{6ABA53F3-9825-461F-9945-04735EFCEF14}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>KAOSTools.ModelAnalyzer</RootNamespace>
+    <AssemblyName>KAOSTools.ModelAnalyzer</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -18,7 +19,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>True</Externalconsole>
-    <AssemblyName>KAOSTools.ModelAnalyzer</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -27,14 +27,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>True</Externalconsole>
-    <AssemblyName>KAOSTools.ModelAnalyzer</AssemblyName>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'CLI|AnyCPU' ">
-    <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\bin\ModelAnalyzer\CLI</OutputPath>
-    <WarningLevel>4</WarningLevel>
-    <AssemblyName>ModelAnalyzer</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

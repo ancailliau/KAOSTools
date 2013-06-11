@@ -8,6 +8,7 @@
     <ProjectGuid>{785D5DDF-8D86-485E-84C6-E429FC6CADE1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>KAOSTools.MetaModel.Tests</RootNamespace>
+    <AssemblyName>KAOSTools.MetaModel.Tests</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -18,7 +19,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
-    <AssemblyName>KAOSTools.MetaModel.Tests</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -27,14 +27,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
-    <AssemblyName>KAOSTools.MetaModel.Tests</AssemblyName>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'CLI|AnyCPU' ">
-    <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\bin\MetaModel.Tests\CLI</OutputPath>
-    <WarningLevel>4</WarningLevel>
-    <AssemblyName>MetaModel.Tests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

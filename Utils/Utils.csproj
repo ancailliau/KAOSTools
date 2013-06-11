@@ -8,6 +8,7 @@
     <ProjectGuid>{C96BDFB0-950D-4DF0-9BFB-27EA7C8CABD3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>KAOSTools.Utils</RootNamespace>
+    <AssemblyName>KAOSTools.Utils</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -18,7 +19,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>True</Externalconsole>
-    <AssemblyName>KAOSTools.Utils</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -27,14 +27,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>True</Externalconsole>
-    <AssemblyName>KAOSTools.Utils</AssemblyName>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'CLI|AnyCPU' ">
-    <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\bin\Utils\CLI</OutputPath>
-    <WarningLevel>4</WarningLevel>
-    <AssemblyName>Utils</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

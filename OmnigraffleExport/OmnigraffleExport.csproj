@@ -8,6 +8,7 @@
     <ProjectGuid>{DFAE4D76-E744-4F28-BFE6-7525C52AC6C2}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>KAOSTools.OmnigraffleExport</RootNamespace>
+    <AssemblyName>KAOSTools.OmnigraffleExport</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -18,7 +19,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>True</Externalconsole>
-    <AssemblyName>KAOSTools.OmnigraffleExport</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -27,14 +27,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>True</Externalconsole>
-    <AssemblyName>KAOSTools.OmnigraffleExport</AssemblyName>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'CLI|AnyCPU' ">
-    <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\bin\OmnigraffleExport\CLI</OutputPath>
-    <WarningLevel>4</WarningLevel>
-    <AssemblyName>OmnigraffleExport</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
