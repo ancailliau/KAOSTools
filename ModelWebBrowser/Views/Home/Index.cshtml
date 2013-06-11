@@ -1,0 +1,376 @@
+@model ModelWebBrowser.Models.IndexModel
+@using ModelWebBrowser.Helpers
+
+<div class="row"><div class="span12">
+<h1 style="margin: 40px 0;">London Ambulance Despatching Service</h1>
+</div></div>
+<div class="row"><div class="span12">
+    
+    <h2 id="goals-2">Goals</h2>
+
+    @foreach (var g in Model.Model.GoalModel.Goals) {
+    
+        <h3 id="goal-@g.Identifier">@g.FriendlyName</h3>
+       
+        <p>@g.Definition</p>
+        <div class="well" style="font-family: monospace;">@g.FormalSpec.ToHtmlString()</div>
+        
+<div class="tabbable">
+  <ul class="nav nav-tabs">
+    @{ var first = true; }
+    @if (@g.Refinements.Count > 0) {
+    <li @(first ? " class=active":null) ><a href="#goal-refinements-@g.Identifier" data-toggle="tab">Refinements (@g.Refinements.Count)</a></li>
+    first = false;
+    }
+    @if (@g.AgentAssignments.Count > 0) {
+    <li @(first ? " class=active":null)><a href="#goal-assignments-@g.Identifier" data-toggle="tab">Assignments (@g.AgentAssignments.Count)</a></li>
+    first = false;
+    }
+    @if (@g.Obstructions.Count > 0) {
+    <li @(first ? " class=active":null)><a href="#goal-obstructions-@g.Identifier" data-toggle="tab">Obstructions (@g.Obstructions.Count)</a></li>
+    first = false;
+    }
+    @if (@g.Assumptions.Count > 0) {
+    <li @(first ? " class=active":null)><a href="#goal-assumptions-@g.Identifier" data-toggle="tab">Assumptions (@g.Assumptions.Count)</a></li>
+    first = false;
+    }
+    @if (@g.Exceptions.Count > 0) {
+    <li @(first ? " class=active":null)><a href="#goal-exceptions-@g.Identifier" data-toggle="tab">Exceptions (@g.Exceptions.Count)</a></li>
+    first = false;
+    }
+    <li @(first ? " class=active":null)><a href="#goal-word-export-@g.Identifier" data-toggle="tab">Word export</a></li>
+    <li><a href="#goal-complete-formalspec-@g.Identifier" data-toggle="tab">Formal Spec</a></li>
+  </ul>
+  <div class="tab-content">
+    @{ first = true; }
+        @if (g.Refinements.Count > 0) {
+        <div id="goal-refinements-@g.Identifier" class="tab-pane @(first ? "active":null)">
+        @{ first = false; }
+        @foreach (var r in g.Refinements) {
+            <h4>Refinement</h4>
+            <ul>@foreach (var g2 in r.Subgoals) {
+                <li><a href="#goal-@g2.Identifier">@g2.FriendlyName</a></li>
+            }</ul>
+        }
+        
+        </div>
+        }
+        
+        @if (g.AgentAssignments.Count > 0) {
+        <div id="goal-assignments-@g.Identifier" class="tab-pane @(first ? "active":null)">
+       @{ first = false; }
+        @foreach (var r in g.AgentAssignments) {
+            <h4>Assignement</h4>
+            <ul>@foreach (var a in r.Agents) {
+                <li><a href="#agent-@a.Identifier">@a.FriendlyName</a></li>
+            }</ul>
+        }
+        
+        </div>
+        }
+        
+        @if (g.Obstructions.Count > 0) {
+        <div id="goal-obstructions-@g.Identifier" class="tab-pane @(first ? "active":null)">
+       @{ first = false; }
+        @if (g.Obstructions.Count > 0) {
+            <h4>@if (g.Obstructions.Count == 1) {
+                @:Obstruction
+            } else { 
+                @:Obstructions
+            }</h4>
+            <ul>@foreach (var o in g.Obstructions) {
+                <li><a href="#obstacle-@o.Identifier">@o.FriendlyName</a></li>
+            }</ul>
+        }
+        
+        </div>
+        }
+       
+       @if (g.Assumptions.Count > 0) {
+        <div id="goal-assumptions-@g.Identifier" class="tab-pane @(first ? "active":null)">
+           @{ first = false; }
+       
+            <h4>@if (g.Assumptions.Count == 1) {
+                @:Assumption
+            } else { 
+                @:Assumptions
+            }</h4>
+            <ul>@foreach (var o in g.Assumptions) {
+                <li>
+                    @if (o.Implicit) {
+                    <span class="label label-warning">Implicit</span>
+                    }
+                    
+                    @if (o is KAOSTools.MetaModel.GoalAssumption) {
+                        var ass = o as KAOSTools.MetaModel.GoalAssumption;
+                        <a href="#goal-@ass.Assumed.Identifier">@ass.Assumed.FriendlyName</a>
+                    } else if (o is KAOSTools.MetaModel.DomainHypothesisAssumption) {
+                        var ass = o as KAOSTools.MetaModel.DomainHypothesisAssumption;
+                        <a href="#domhyp-@ass.Assumed.Identifier">@ass.Assumed.FriendlyName</a>
+                    } else if (o is KAOSTools.MetaModel.ObstacleNegativeAssumption) {
+                        var ass = o as KAOSTools.MetaModel.ObstacleNegativeAssumption;
+                        @:<strong>not</strong> <a href="#obstacle-@ass.Assumed.Identifier">@ass.Assumed.FriendlyName</a>
+                    }
+                </li>
+            }</ul>
+        </div>
+        }
+        
+      @if (g.Exceptions.Count > 0) {
+        <div id="goal-exceptions-@g.Identifier" class="tab-pane @(first ? "active":null)">
+        @{ first = false; }
+        @if (g.Exceptions.Count > 0) {
+            <h4>@if (g.Exceptions.Count == 1) {
+                @:Exception
+            } else { 
+                @:Exceptions
+            }</h4>
+            <ul>@foreach (var o in g.Exceptions) {
+                <li>
+                @if (o.Implicit) {
+                    <span class="label label-warning">Implicit</span>
+                }
+                <a href="#obstacle-@o.ResolvedObstacle.Identifier">@o.ResolvedObstacle.FriendlyName</a>
+                @if (o.ResolvingGoal != null) {
+                    <br />
+                    @:see <a href="#goal-@o.ResolvingGoal.Identifier">@o.ResolvingGoal.FriendlyName</a>
+                }</li>
+            }</ul>
+        }
+        
+        </div>
+        }
+        
+        <div id="goal-word-export-@g.Identifier" class="tab-pane @(first ? "active":null)">
+            @{ first = false; }
+            <p><strong>Goal</strong> @g.Name</p>
+            
+            @if (!string.IsNullOrEmpty (g.Definition)) {
+                <p><strong>Def</strong> @g.Definition</p>
+            }
+            
+            <p><strong>FormalSpec</strong> @g.FormalSpec.ToHtmlString(false)</p>
+            
+            @foreach (var o in g.AgentAssignments) {
+                <p><strong>AssignedTo</strong> @(string.Join(",", o.Agents.Select(x => x.Name)))</p>
+            }       
+            
+            @foreach (var o in g.Obstructions) {
+                <p><strong>Obstructedby</strong> @o.Name</p>
+            }       
+            
+            @foreach (var o in g.Assumptions) {
+                if (o is KAOSTools.MetaModel.GoalAssumption) {
+                    var ass = o as KAOSTools.MetaModel.GoalAssumption;
+                    <p><strong>Assumption</strong> @ass.Assumed.FriendlyName</p>
+                } else if (o is KAOSTools.MetaModel.DomainHypothesisAssumption) {
+                    var ass = o as KAOSTools.MetaModel.DomainHypothesisAssumption;
+                    <p><strong>Assumption</strong> @ass.Assumed.FriendlyName</p>
+                } else if (o is KAOSTools.MetaModel.ObstacleNegativeAssumption) {
+                    var ass = o as KAOSTools.MetaModel.ObstacleNegativeAssumption;
+                    <p><strong>Assumption</strong> <strong>not</strong> @ass.Assumed.FriendlyName</p>
+                }
+            }
+            
+            @foreach (var o in g.Exceptions) {
+                <p><strong>Exception</strong> @o.ResolvedObstacle.Name <strong>then</strong> @o.ResolvingGoal.Name</p>
+            }
+        </div>
+        
+        <div id="goal-complete-formalspec-@g.Identifier" class="tab-pane @(first ? "active":null)">
+            @{
+                first = false;
+                var idealFormalSpec = g.FormalSpec.ToHtmlString(false);
+            }
+            
+            <div class="well" style="font-family: monospace;">
+            @{
+                var first_assumption = true;
+            }
+            @foreach (var o in g.Assumptions){
+                if (o is KAOSTools.MetaModel.GoalAssumption) {
+                    var ass = o as KAOSTools.MetaModel.GoalAssumption;
+                    if (!first_assumption) { 
+                        @:) &and; (
+                    } else {
+                        @:(
+                    }
+                    @((ass.Assumed.FormalSpec as KAOSTools.MetaModel.Formula).ToHtmlString())
+                } else if (o is KAOSTools.MetaModel.DomainHypothesisAssumption) {
+                    var ass = o as KAOSTools.MetaModel.DomainHypothesisAssumption;
+                    if (!first_assumption) { 
+                        @:) &and; (
+                    } else {
+                        @:(
+                    }
+                    @((ass.Assumed.FormalSpec as KAOSTools.MetaModel.Formula).ToHtmlString())
+                } else if (o is KAOSTools.MetaModel.ObstacleNegativeAssumption) {
+                    var ass = o as KAOSTools.MetaModel.ObstacleNegativeAssumption;
+                    if (!first_assumption) { 
+                        @:) &and; &not; (
+                    } else {
+                        @:(
+                    }
+                    @((ass.Assumed.FormalSpec as KAOSTools.MetaModel.Formula).ToHtmlString())
+                }
+                first_assumption = false;
+            }
+            @if (g.Assumptions.Count > 0) {
+                @:) &#8658; 
+            }
+            @g.FormalSpec.ToHtmlString(false)
+            </div>
+        </div>
+        
+        
+  </div><!-- /.tab-content -->
+</div><!-- /.tabbable -->
+        <hr />
+        
+    }
+
+    <h2 id="obstacles-2">Obstacles</h2>
+
+    @foreach (var g in Model.Model.GoalModel.Obstacles) {
+        <h3 id="obstacle-@g.Identifier">@g.FriendlyName</h3>
+        <p>@g.Definition</p>
+        <div class="well" style="font-family: monospace;">@g.FormalSpec.ToHtmlString()</div>
+       
+        <div class="tabbable">
+          <ul class="nav nav-tabs">
+            @{ var first = true; }
+            @if (@g.Refinements.Count > 0) {
+              <li @(first ? " class=active":null) ><a href="#obstacle-refinements-@g.Identifier" data-toggle="tab">Refinements (@g.Refinements.Count)</a></li>
+              first = false;
+            }
+            @if (@g.Resolutions.Count > 0) {
+              <li @(first ? " class=active":null)><a href="#obstacle-resolutions-@g.Identifier" data-toggle="tab">Resolutions (@g.Resolutions.Count)</a></li>
+              first = false;
+            }
+            @if (@g.Assumptions.Count > 0) {
+              <li @(first ? " class=active":null)><a href="#obstacle-assumptions-@g.Identifier" data-toggle="tab">Assumptions (@g.Assumptions.Count)</a></li>
+              first = false;
+            }
+            <li @(first ? " class=active":null)><a href="#goal-word-export-@g.Identifier" data-toggle="tab">Word export</a></li>
+          </ul>
+  
+          <div class="tab-content">
+            @{ first = true; }
+            @if (g.Refinements.Count > 0) {
+              <div id="obstacle-refinements-@g.Identifier" class="tab-pane @(first ? "active":null)">
+                @{ first = false; }
+                @foreach (var r in g.Refinements) {
+                  <h4>Refinement</h4>
+                  <ul>@foreach (var g2 in r.Subobstacles) {
+                    <li><a href="#obstacle-@g2.Identifier">@g2.FriendlyName</a></li>
+                  }</ul>
+                }
+              </div>
+            }
+        
+            @if (g.Resolutions.Count > 0) {
+              <div id="obstacle-resolutions-@g.Identifier" class="tab-pane @(first ? "active":null)">
+                @{ first = false; }
+                @if (g.Resolutions.Count > 0) {
+                  <h4>@if (g.Resolutions.Count == 1) {
+                    @:Resolution
+                  } else { 
+                    @:Resolutions
+                  }</h4>
+                  <ul>@foreach (var o in g.Resolutions) {
+                    <li><a href="#goal-@o.ResolvingGoal.Identifier">@o.ResolvingGoal.FriendlyName</a></li>
+                  }</ul>
+                }
+              </div>
+            }
+       
+            @if (g.Assumptions.Count > 0) {
+              <div id="obstacle-assumptions-@g.Identifier" class="tab-pane @(first ? "active":null)">
+                @{ first = false; }
+                <h4>@if (g.Assumptions.Count == 1) {
+                  @:Assumption
+                } else { 
+                  @:Assumptions
+                }</h4>
+                <ul>@foreach (var o in g.Assumptions) {
+                  <li>
+                    @if (o.Implicit) {
+                      <span class="label label-warning">Implicit</span>
+                    }
+                    
+                    @if (o is KAOSTools.MetaModel.GoalAssumption) {
+                        var ass = o as KAOSTools.MetaModel.GoalAssumption;
+                        <a href="#goal-@ass.Assumed.Identifier">@ass.Assumed.FriendlyName</a>
+                    } else if (o is KAOSTools.MetaModel.DomainHypothesisAssumption) {
+                        var ass = o as KAOSTools.MetaModel.DomainHypothesisAssumption;
+                        <a href="#domhyp-@ass.Assumed.Identifier">@ass.Assumed.FriendlyName</a>
+                    } else if (o is KAOSTools.MetaModel.ObstacleNegativeAssumption) {
+                        var ass = o as KAOSTools.MetaModel.ObstacleNegativeAssumption;
+                        @:<strong>not</strong> <a href="#obstacle-@ass.Assumed.Identifier">@ass.Assumed.FriendlyName</a>
+                    }
+                  </li>
+                }</ul>
+              </div>
+            }
+        
+            <div id="goal-word-export-@g.Identifier" class="tab-pane @(first ? "active":null)">
+              <p><strong>Obstacle</strong> @g.Name</p>
+              @if (!string.IsNullOrEmpty (g.Definition)) {
+              <p><strong>Def</strong> @g.Definition</p>
+              }
+              <p><strong>FormalSpec</strong> @g.FormalSpec.ToHtmlString(false)</p>
+              @foreach (var o in g.Resolutions) {
+                <p><strong>ResolvedBy</strong> @o.ResolvingGoal.FriendlyName</p>
+              }       
+              @foreach (var o in g.Assumptions) {
+                    if (o is KAOSTools.MetaModel.GoalAssumption) {
+                       var ass = o as KAOSTools.MetaModel.GoalAssumption;
+                       <p><strong>Assumption</strong>@ass.Assumed.FriendlyName</p>
+                    } else if (o is KAOSTools.MetaModel.DomainHypothesisAssumption) {
+                        var ass = o as KAOSTools.MetaModel.DomainHypothesisAssumption;
+                        <p><strong>Assumption</strong>@ass.Assumed.FriendlyName</p>
+                    } else if (o is KAOSTools.MetaModel.ObstacleNegativeAssumption) {
+                        var ass = o as KAOSTools.MetaModel.ObstacleNegativeAssumption;
+                        <p><strong>Assumption</strong> <strong>not</strong> @ass.Assumed.FriendlyName</p>
+                    }
+              }
+            </div><!-- /.word-export -->
+          
+          </div><!-- /.tab-content -->
+        </div><!-- /.tabbable -->
+
+        <hr />
+    
+      }
+      
+      <h2 id="domhyp">Domain Hypothesis</h2>
+
+      @foreach (var g in Model.Model.GoalModel.DomainHypotheses) {
+        <h3 id="domhyp-@g.Identifier">@g.FriendlyName</h3>
+        <p>@g.Definition</p>
+        <div class="well" style="font-family: monospace;">@g.FormalSpec.ToHtmlString()</div>
+       
+        <div class="tabbable">
+          <ul class="nav nav-tabs">
+            @{ var first = true; }
+            <li @(first ? " class=active":null)><a href="#domhyp-word-export-@g.Identifier" data-toggle="tab">Word export</a></li>
+          </ul>
+  
+          <div class="tab-content">
+            @{ first = true; }
+            
+            <div id="goal-word-export-@g.Identifier" class="tab-pane @(first ? "active":null)">
+              <p><strong>DomHyp</strong> @g.Name</p>
+              @if (!string.IsNullOrEmpty (g.Definition)) {
+              <p><strong>Def</strong> @g.Definition</p>
+              }
+              <p><strong>FormalSpec</strong> @g.FormalSpec.ToHtmlString(false)</p>
+            </div><!-- /.word-export -->
+          
+          </div><!-- /.tab-content -->
+        </div><!-- /.tabbable -->
+
+        <hr />
+    
+      }    
+</div></div>

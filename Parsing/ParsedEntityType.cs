@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using LtlSharp;
 
 namespace KAOSTools.Parsing
 {
@@ -38,6 +37,11 @@ namespace KAOSTools.Parsing
 
     public class ParsedAttributeWithValue<T> : ParsedAttribute {
         public T Value { get; set; }
+    }
+
+    public class ParsedExceptionAttribute : ParsedAttribute {
+        public dynamic ResolvedObstacle { get; set ; }
+        public dynamic ResolvingGoal { get; set ; }
     }
 
     #region Enumerations
@@ -85,13 +89,16 @@ namespace KAOSTools.Parsing
         }
     }
 
-    public class ParsedRefinedByAttribute  : ParsedAttributeWithElementsAndSystemIdentifier {}
+    public class ParsedRefinedByAttribute  : ParsedAttributeWithElementsAndSystemIdentifier {
+        public ParsedRefinementPattern RefinementPattern { get; set; }
+    }
     public class ParsedAssignedToAttribute : ParsedAttributeWithElementsAndSystemIdentifier {}
 
     public class ParsedIsAAttribute          : ParsedAttributeWithValue<dynamic> {}
     public class ParsedObstructedByAttribute : ParsedAttributeWithValue<dynamic> {}
     public class ParsedAlternativeAttribute  : ParsedAttributeWithValue<dynamic> {}
-    public class ParsedResolvedByAttribute   : ParsedAttributeWithValue<dynamic> {}
+    public class ParsedAssumptionAttribute   : ParsedAttributeWithValue<dynamic> {}
+    public class ParsedNegativeAssumptionAttribute   : ParsedAttributeWithValue<dynamic> {}
 
     public class ParsedAgentTypeAttribute    : ParsedAttributeWithValue<ParsedAgentType>  {}
     public class ParsedEntityTypeAttribute   : ParsedAttributeWithValue<ParsedEntityType> {}
@@ -106,12 +113,44 @@ namespace KAOSTools.Parsing
 
     public class ParsedFormalSpecAttribute   : ParsedAttributeWithValue<ParsedElement> {}
 
+    
+    public class ParsedResolvedByAttribute   : ParsedAttributeWithValue<dynamic> {
+        public ParsedResolutionPattern Pattern { get; set; }
+    }
 
     public class ParsedLinkAttribute : ParsedAttribute
     {
         public string Multiplicity { get; set; }
         public dynamic Target { get; set; }
     }
+
+
+    public class ParsedResolutionPattern : ParsedElement
+    {
+        public string Name { get; set; }
+        public List<dynamic> Parameters { get; set; }
+        public ParsedResolutionPattern ()
+        {
+            Parameters = new List<dynamic> ();
+        }
+    }
+
+    public class ParsedRefinementPattern : ParsedElement
+    {
+        public ParsedRefinementPatternName Name { get; set; }
+        public List<dynamic> Parameters { get; set; }
+        public ParsedRefinementPattern ()
+        {
+            Parameters = new List<dynamic> ();
+        }
+    }
+
+    public enum ParsedRefinementPatternName {
+        None, Milestone, Case, IntroduceGuard, DivideAndConquer, Unmonitorability, Uncontrollability
+    }
+
+
+
 
     public class ParsedPredicateArgumentAttribute : ParsedAttribute {
         public string Name { get; set; }
@@ -135,9 +174,27 @@ namespace KAOSTools.Parsing
         }
     }
 
+    public class ParsedVariableReference : ParsedElement
+    {
+        public string Value { get; set; }
+        public ParsedVariableReference (string value) {
+            Value = value;
+        }
+    }
+
     #endregion
 
     #region Expressions
+
+    public class ParsedSystemReference : ParsedElement {
+        public dynamic Name { get; set; }
+        public List<dynamic> Values { get; set; }
+        public ParsedSystemReference ()
+        {
+            Values = new List<dynamic>();
+        }
+    }
+
 
     public class IdentifierExpression : ParsedAttribute
     {
@@ -155,6 +212,17 @@ namespace KAOSTools.Parsing
         }
     }
     
+    public class ParsedFloat : ParsedElement
+    {
+        public double Value { get; set; }
+    }
+    
+    public class ParsedString : ParsedElement
+    {
+        public string Value { get; set; }
+    }
+
+    
     public class MultiplictyExpression : ParsedAttribute
     {
         public string Value { get; set; }
@@ -162,8 +230,8 @@ namespace KAOSTools.Parsing
 
     public class ParsedVariableDeclaration {
         public string VariableName;
-        public string Type;
-        public ParsedVariableDeclaration (string name, string type)
+        public dynamic Type;
+        public ParsedVariableDeclaration (string name, dynamic type)
         {
             VariableName = name; Type = type;
         }
@@ -200,15 +268,25 @@ namespace KAOSTools.Parsing
     public class ParsedUnlessExpression : ParsedBinaryExpression {}
     public class ParsedAndExpression : ParsedBinaryExpression {}
     public class ParsedOrExpression : ParsedBinaryExpression {}
-        
+   
+
+    public class ParsedEventuallyBeforeExpression : ParsedBinaryExpression {
+        public ParsedTimeBound TimeBound;
+    }
+
+
     public class ParsedUnaryExpression : ParsedElement {
         public ParsedElement Enclosed;
     }
 
     public class ParsedNotExpression : ParsedUnaryExpression {}
     public class ParsedNextExpression : ParsedUnaryExpression {}
-    public class ParsedEventuallyExpression : ParsedUnaryExpression {}
-    public class ParsedGloballyExpression : ParsedUnaryExpression {}
+    public class ParsedEventuallyExpression : ParsedUnaryExpression {
+        public ParsedTimeBound TimeBound;
+    }
+    public class ParsedGloballyExpression : ParsedUnaryExpression {
+        public ParsedTimeBound TimeBound;
+    }
 
 
     public class ParsedComparisonExpression : ParsedBinaryExpression {
@@ -228,7 +306,7 @@ namespace KAOSTools.Parsing
     }
 
     public class ParsedInRelationExpression : ParsedElement {
-        public string Relation;
+        public dynamic Relation;
         public IList<string> Variables;
         public ParsedInRelationExpression ()
         {
@@ -237,19 +315,19 @@ namespace KAOSTools.Parsing
     }
 
     public class ParsedPredicateReferenceExpression : ParsedElement {
-        public string PredicateSignature;
-        public IList<IdentifierExpression> ActualArguments;
-        public ParsedPredicateReferenceExpression (string name)
+        public dynamic PredicateSignature;
+        public IList<string> ActualArguments;
+        public ParsedPredicateReferenceExpression (dynamic nameoridentifier)
         {
-            PredicateSignature = name;
-            ActualArguments = new List<IdentifierExpression>();
+            PredicateSignature = nameoridentifier;
+            ActualArguments = new List<string>();
         }
     }
 
     public class ParsedAttributeReferenceExpression : ParsedElement {
         public string Variable;
-        public string AttributeSignature;
-        public ParsedAttributeReferenceExpression (string variable, string attribute)
+        public dynamic AttributeSignature;
+        public ParsedAttributeReferenceExpression (string variable, dynamic attribute)
         {
             this.Variable = variable;
             this.AttributeSignature = attribute;
@@ -282,6 +360,32 @@ namespace KAOSTools.Parsing
     }
 
     #endregion
+
+    public enum ParsedTimeUnit {
+        day, hour, minute, second, milisecond
+    }
+    
+    public enum ParsedTimeComparator {
+        less, strictly_less, greater, strictly_greater, equal
+    }
+
+    public class ParsedTime : ParsedElement {
+        public IList<ParsedAtomicTime> Constraints { get; set; }
+        public ParsedTime ()
+        {
+            Constraints = new List<ParsedAtomicTime> ();
+        }
+    }
+
+    public class ParsedAtomicTime {
+        public int Duration { get; set; }
+        public ParsedTimeUnit Unit { get; set; }
+    }
+
+    public class ParsedTimeBound : ParsedElement {
+        public ParsedTimeComparator Comparator;
+        public ParsedTime Bound;
+    }
 
 }
 

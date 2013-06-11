@@ -40,15 +40,13 @@
     <Reference Include="Antlr3.Runtime">
       <HintPath>..\Libraries\Antlr3.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="LtlSharp">
-      <HintPath>..\Libraries\LtlSharp.dll</HintPath>
-    </Reference>
     <Reference Include="MathNet.Numerics.IO">
       <HintPath>..\Libraries\MathNet.Numerics.IO.dll</HintPath>
     </Reference>
     <Reference Include="MathNet.Numerics">
       <HintPath>..\Libraries\MathNet.Numerics.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -59,6 +57,7 @@
     <Compile Include="KAOSModel.cs" />
     <Compile Include="AlternativeHelpers.cs" />
     <Compile Include="FormalSpec.cs" />
+    <Compile Include="ResolutionIntegrationHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

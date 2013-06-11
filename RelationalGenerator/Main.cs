@@ -133,7 +133,7 @@ namespace KAOSTools.ReportGenerator
                                             obstacle = o.Identifier },
 
               resolutions = from o in model.GoalModel.Obstacles.OrderBy (x => x.Name)
-                              from g in o.Resolutions.OrderBy (x => x.Name)
+                              from g in o.Resolutions.OrderBy (x => x.ResolvingGoal.Name)
                                 select new { obstacle = o.Identifier,
                                                  goal = g.Identifier },
 
@@ -162,7 +162,7 @@ namespace KAOSTools.ReportGenerator
               predicates = from p in model.Predicates.OrderBy (x => x.Name)
                            select new { id = p.Identifier,
                                         name = p.Name,
-                                        signature = p.Signature,
+                                        signature = "", // TODO
                                         definition = p.Definition }
 
             };

@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using LtlSharp.Utils;
 
 namespace KAOSTools.MetaModel
 {
@@ -25,7 +24,7 @@ namespace KAOSTools.MetaModel
                             goals.Remove (child);
                 foreach (var obstacle in Obstacles)
                     foreach (var resolution in obstacle.Resolutions)
-                        goals.Remove (resolution);
+                        goals.Remove (resolution.ResolvingGoal);
                 return goals;
             }
         }
@@ -93,22 +92,6 @@ namespace KAOSTools.MetaModel
             return Goals.Where (x => x.Identifier == identifier).Count () > 0;
         }
         
-        public void ReplaceGoal (Goal g1, Goal g2)
-        {
-            Goals.Remove (g1);
-            Goals.Add (g2);
-
-            foreach (var refinement in Goals.SelectMany (g => g.Refinements).Where (r => r.Subgoals.Contains (g1))) {
-                refinement.Subgoals.Remove (g1);
-                refinement.Subgoals.Add (g2);
-            }
-
-            foreach (var obstacle in Obstacles.Where (o => o.Resolutions.Contains (g1))) {
-                obstacle.Resolutions.Remove (g1);
-                obstacle.Resolutions.Add (g2);
-            }
-        }
-
         public Obstacle GetObstacleByIdentifier (string identifier)
         {
             return Obstacles.Where (x => x.Identifier == identifier).SingleOrDefault ();

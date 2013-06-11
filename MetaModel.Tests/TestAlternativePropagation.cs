@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using ShallTests;
 using NUnit.Framework;
-using LtlSharp;
 
 namespace KAOSTools.MetaModel.Tests
 {

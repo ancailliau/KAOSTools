@@ -14,15 +14,6 @@ namespace KAOSTools.Parsing.Tests
                         id test
                     end", "test")]
         [TestCase(@"declare relation
-                        id _test
-                    end", "_test")]
-        [TestCase(@"declare relation
-                        id -test
-                    end", "-test")]
-        [TestCase(@"declare relation
-                        id $test
-                    end", "$test")]
-        [TestCase(@"declare relation
                         id test_long_identifier
                     end", "test_long_identifier")]
         [TestCase(@"declare relation
@@ -31,9 +22,6 @@ namespace KAOSTools.Parsing.Tests
         [TestCase(@"declare relation
                         id test12
                     end", "test12")]
-        [TestCase(@"declare relation
-                        id 0
-                    end", "0")]
         public void TestIdentifier (string input, string identifier)
         {
             var model = parser.Parse (input);
@@ -43,8 +31,8 @@ namespace KAOSTools.Parsing.Tests
         }
 
         [TestCase(@"declare association
-                        id 0
-                    end", "0")]
+                        id test
+                    end", "test")]
         public void TestAssociation (string input, string identifier)
         {
             var model = parser.Parse (input);

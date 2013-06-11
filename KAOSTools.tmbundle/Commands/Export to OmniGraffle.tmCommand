@@ -7,7 +7,7 @@
 	<key>command</key>
 	<string>#!/bin/sh
 rm -rf "/tmp/output.graffle"
-mono $KAOS_OMNIGRAFFLE_EXPORT -o "/tmp/output.graffle" "$TM_FILEPATH"
+mono --debug $KAOS_OMNIGRAFFLE_EXPORT -o "/tmp/output.graffle" "$TM_FILEPATH"
 open "/tmp/output.graffle"
 </string>
 	<key>input</key>
@@ -17,7 +17,7 @@ open "/tmp/output.graffle"
 	<key>name</key>
 	<string>Export to OmniGraffle</string>
 	<key>output</key>
-	<string>showAsTooltip</string>
+	<string>showAsHTML</string>
 	<key>uuid</key>
 	<string>DDBF472C-BCB1-48E8-98AF-2C59A6898C9F</string>
 </dict>

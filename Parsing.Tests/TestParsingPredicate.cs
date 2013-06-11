@@ -16,15 +16,6 @@ namespace KAOSTools.Parsing.Tests
                         id test
                     end", "test")]
         [TestCase(@"declare predicate
-                        id _test
-                    end", "_test")]
-        [TestCase(@"declare predicate
-                        id -test
-                    end", "-test")]
-        [TestCase(@"declare predicate
-                        id $test
-                    end", "$test")]
-        [TestCase(@"declare predicate
                         id test_long_identifier
                     end", "test_long_identifier")]
         [TestCase(@"declare predicate
@@ -33,9 +24,6 @@ namespace KAOSTools.Parsing.Tests
         [TestCase(@"declare predicate
                         id test12
                     end", "test12")]
-        [TestCase(@"declare predicate
-                        id 0
-                    end", "0")]
         public void TestIdentifier (string input, string expectedIdentifier)
         {
             var model = parser.Parse (input);
@@ -91,14 +79,12 @@ namespace KAOSTools.Parsing.Tests
                         id test
                         name ""old name""
                         definition ""old definition""
-                        formalspec ""old""
                     end
 
                     override predicate
                         id test
                         name ""new name""
                         definition ""new definition""
-                        formalspec ""new""
                     end")]
         [TestCase(@"declare predicate
                         id test
@@ -107,14 +93,12 @@ namespace KAOSTools.Parsing.Tests
                     override predicate 
                         id test
                         name ""old name""
-                        formalspec ""old""
                     end
 
                     override predicate
                         id test
                         name ""new name""
                         definition ""new definition""
-                        formalspec ""new""
                     end")]
         public void TestMerge (string input)
         {
@@ -123,7 +107,6 @@ namespace KAOSTools.Parsing.Tests
             var predicate = model.Predicates.Where (x => x.Identifier == "test").ShallBeSingle ();
             predicate.Name.ShallEqual ("new name");
             predicate.Definition.ShallEqual ("new definition");
-            ((PredicateReference) predicate.FormalSpec).Predicate.Signature.ShallEqual ("new");
         }
 
         [TestCase(@"declare predicate
@@ -157,7 +140,7 @@ namespace KAOSTools.Parsing.Tests
         [TestCase(@"declare predicate
                         name ""Test""
                         argument c: ""MyType""
-                        formalspec ""c.MyAttribute""
+                        formalspec c.""MyAttribute""
                     end")]
         public void TestFormalSpec (string input)
         {
@@ -170,17 +153,6 @@ namespace KAOSTools.Parsing.Tests
             ((AttributeReference) predicate.FormalSpec).Variable.ShallEqual ("c");
             ((AttributeReference) predicate.FormalSpec).Entity.ShallEqual (entity);
             ((AttributeReference) predicate.FormalSpec).Attribute.ShallEqual (attribute);
-        }
-
-        [TestCase(@"declare predicate
-                        id test
-                        signature ""mypredicate""
-                    end", "mypredicate")]
-        public void TestSignature (string input, string signature)
-        {
-            var model = parser.Parse (input);
-            var predicate = model.Predicates.Single (x => x.Identifier == "test");
-            predicate.Signature.ShallEqual (signature);
         }
     }
 }

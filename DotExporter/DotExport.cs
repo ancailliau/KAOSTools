@@ -25,12 +25,16 @@ namespace KAOSTools.DotExporter
         public void ExportGoal (Goal g)
         {
             bool assignedToSoftwareAgents = (from a in g.AgentAssignments.SelectMany (x => x.Agents) select a.Type == AgentType.Software ).Count () > 0;
-            var name = new StringBuilder (g.Name);
+            var name = new StringBuilder (g.FriendlyName);
             if (name.Length > 30) {
-                var midspace = g.Name.IndexOf (' ', (g.Name.Length / 2) - 1);
-                name.Replace (" ", @"\n", midspace, 1);
+                var midspace = g.Name.IndexOf (' ', (g.Name.Length / 3) - 1);
+                if (midspace > 0)
+                    name.Replace (" ", @"\n", midspace, 1);
             }
-            writer.WriteLine (@"""{0}"" [shape=polygon,skew=.1,label=""{1}"",style=filled,fillcolor=""{2}"",penwidth={3},fontname=""Arial"",fontsize=10,margin=""-.2,0""];", string.IsNullOrEmpty (g.Identifier) ? g.Name : g.Identifier, name, assignedToSoftwareAgents ? "#fff9c1" : "#d8ebfd", g.AgentAssignments.Count > 0 ? 2 : 1);
+            writer.WriteLine (@"""{0}"" [shape=polygon,skew=.1,label=""{1}"",style=filled,fillcolor=""{2}"",penwidth={3},fontname=""Arial"",fontsize=10,margin=""-.2,0""];", 
+                              g.Identifier, name, 
+                              assignedToSoftwareAgents ? "#fff9c1" : "#d8ebfd", 
+                              g.AgentAssignments.Count > 0 ? 2 : 1);
         }
         
         public void ExportDomainProperty (DomainProperty domprop)
@@ -40,7 +44,8 @@ namespace KAOSTools.DotExporter
                 var midspace = domprop.Name.IndexOf (' ', (domprop.Name.Length / 2) - 1);
                 name.Replace (" ", @"\n", midspace, 1);
             }
-            writer.WriteLine (@"""{0}"" [shape=trapezium,label=""{1}"",style=filled,fillcolor=""{2}"",fontname=""Arial"",fontsize=10,margin=""-.2,0""];", string.IsNullOrEmpty (domprop.Identifier) ? domprop.Name : domprop.Identifier, name, "#e8fdcb");
+            writer.WriteLine (@"""{0}"" [shape=trapezium,label=""{1}"",style=filled,fillcolor=""{2}"",fontname=""Arial"",fontsize=10,margin=""-.2,0""];", 
+                              domprop.Identifier, name, "#e8fdcb");
         }
 
         public void ExportDomainHypothesis (DomainHypothesis domhyp)
@@ -50,7 +55,8 @@ namespace KAOSTools.DotExporter
                 var midspace = domhyp.Name.IndexOf (' ', (domhyp.Name.Length / 2) - 1);
                 name.Replace (" ", @"\n", midspace, 1);
             }
-            writer.WriteLine (@"""{0}"" [shape=trapezium,label=""{1}"",style=filled,fillcolor=""{2}"",fontname=""Arial"",fontsize=10,margin=""-.2,0""];", domhyp.Identifier, name, "#FFEFEF");
+            writer.WriteLine (@"""{0}"" [shape=trapezium,label=""{1}"",style=filled,fillcolor=""{2}"",fontname=""Arial"",fontsize=10,margin=""-.2,0""];", 
+                              domhyp.Identifier, name, "#FFEFEF");
         }
 
         public void ExportObstacle (Obstacle o)
@@ -60,7 +66,8 @@ namespace KAOSTools.DotExporter
                 var midspace = o.Name.IndexOf (' ', (o.Name.Length / 2) - 1);
                 name.Replace (" ", @"\n", midspace, 1);
             }
-            writer.WriteLine (@"""{0}"" [shape=polygon,skew=-.1,label=""{1}"",style=filled,fillcolor=""#ffa9ad"",penwidth={2},fontname=""Arial"",fontsize=10,margin=""-.2,0""];", string.IsNullOrEmpty (o.Identifier) ? o.Name : o.Identifier, name, o.Refinements.Count == 0 ? 2 : 1);
+            writer.WriteLine (@"""{0}"" [shape=polygon,skew=-.1,label=""{1}"",style=filled,fillcolor=""#ffa9ad"",penwidth={2},fontname=""Arial"",fontsize=10,margin=""-.2,0""];", 
+                              o.Identifier, name, o.Refinements.Count == 0 ? 2 : 1);
         }
 
         public void ExportResponsibility (Goal g, AgentAssignment assignement)
@@ -76,7 +83,7 @@ namespace KAOSTools.DotExporter
             foreach (var agent in assignement.Agents) {
                 var tempGUID2 = Guid.NewGuid ().ToString ();
                 // agent shape
-                writer.WriteLine (@"""{0}"" [shape=hexagon,label=""{1}"",style=filled,fillcolor=""#dcbdfa"",fontname=""Arial"",fontsize=10,margin=""0,0""];", tempGUID2, agent.Name);
+                writer.WriteLine (@"""{0}"" [shape=hexagon,label=""{1}"",style=filled,fillcolor=""#dcbdfa"",fontname=""Arial"",fontsize=10,margin=""0.1,-0.1""];", tempGUID2, agent.Name);
                 writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=none];", 
                                   tempGUID, 
                                   tempGUID2);
@@ -87,15 +94,15 @@ namespace KAOSTools.DotExporter
         public void ExportObstruction (Goal g, Obstacle o)
         {
             writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=onormaltee];", 
-                              string.IsNullOrEmpty (g.Identifier) ? g.Name : g.Identifier, 
-                              string.IsNullOrEmpty (o.Identifier) ? o.Name : o.Identifier);
+                              g.Identifier, 
+                              o.Identifier);
         }
         
         public void ExportResolution (Obstacle o, Goal g)
         {
             writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=onormaltee];", 
-                              string.IsNullOrEmpty (o.Identifier) ? o.Name : o.Identifier, 
-                              string.IsNullOrEmpty (g.Identifier) ? g.Name : g.Identifier);
+                              o.Identifier, 
+                              g.Identifier);
         }
 
         public void ExportRefinement (Goal parent, GoalRefinement refinement) {
@@ -253,8 +260,8 @@ namespace KAOSTools.DotExporter
             writer.WriteLine ("## RESOLUTIONS");
             
             foreach (var o in model.ResolvedObstacles) {
-                foreach (var g in o.Resolutions) {
-                    ExportResolution (o, g);
+                foreach (var resolution in o.Resolutions) {
+                    ExportResolution (o, resolution.ResolvingGoal);
                 }
             }
 

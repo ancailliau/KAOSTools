@@ -1,4 +1,3 @@
-using LtlSharp;
 using System.Collections.Generic;
 using System;
 
@@ -29,7 +28,7 @@ namespace KAOSTools.MetaModel
         /// otherwise the identifier.
         /// </summary>
         /// <value>The name.</value>
-        public virtual object FriendlyName {
+        public virtual string FriendlyName {
             get {
                 return Identifier;
             }
@@ -39,7 +38,7 @@ namespace KAOSTools.MetaModel
         /// Gets the name of the concept. For instance, 'goal' or 'domain property'.
         /// </summary>
         /// <value>The name of the concept.</value>
-        public virtual object ConceptName {
+        public virtual string ConceptName {
             get { return "KAOSMetaModelElement"; }
         }
 
@@ -50,7 +49,6 @@ namespace KAOSTools.MetaModel
         /// <value><c>true</c> if implicit; otherwise, <c>false</c>.</value>
         public bool Implicit { get; set; }
 
-        
         /// <summary>
         /// Gets or sets the systems the element is in.
         /// </summary>
@@ -102,13 +100,13 @@ namespace KAOSTools.MetaModel
         /// <value>The name of the goal.</value>
         public string Name { get; set; }
 
-        public override object FriendlyName {
+        public override string FriendlyName {
             get {
                 return string.IsNullOrEmpty(Name) ? Identifier : Name;
             }
         }
 
-        public override object ConceptName {
+        public override string ConceptName {
             get {
                 return "Goal";
             }
@@ -156,6 +154,9 @@ namespace KAOSTools.MetaModel
         /// <value>The agents assignments.</value>
         public ISet<AgentAssignment> AgentAssignments { get; set; }
 
+        public ISet<GoalException> Exceptions { get; set; }
+        public ISet<Assumption> Assumptions { get; set; }
+
         /// <summary>
         /// Initializes a new goal.
         /// </summary>
@@ -165,6 +166,8 @@ namespace KAOSTools.MetaModel
             Obstructions = new HashSet<Obstacle> ();
             AgentAssignments = new HashSet<AgentAssignment> ();
             InSystems = new HashSet<AlternativeSystem>();
+            Exceptions = new HashSet<GoalException> ();
+            Assumptions = new HashSet<Assumption> ();
         }
 
         /// <summary>
@@ -198,13 +201,13 @@ namespace KAOSTools.MetaModel
         /// <value>The name.</value>
         public string Name { get; set; }
         
-        public override object FriendlyName {
+        public override string FriendlyName {
             get {
                 return string.IsNullOrEmpty(Name) ? Identifier : Name;
             }
         }
         
-        public override object ConceptName {
+        public override string ConceptName {
             get {
                 return "Obstacle";
             }
@@ -244,7 +247,9 @@ namespace KAOSTools.MetaModel
         /// Gets or sets the resolutions for the obstacle.
         /// </summary>
         /// <value>The resolutions.</value>
-        public IList<Goal> Resolutions { get; set; }
+        public IList<Resolution> Resolutions { get; set; }
+
+        public ISet<Assumption> Assumptions { get; set; }
 
         /// <summary>
         /// Initializes a new obstacle.
@@ -252,7 +257,8 @@ namespace KAOSTools.MetaModel
         public Obstacle ()
         {
             Refinements = new List<ObstacleRefinement> ();
-            Resolutions = new List<Goal> ();
+            Resolutions = new List<Resolution> ();
+            Assumptions = new HashSet<Assumption> ();
         }
 
         /// <summary>
@@ -286,13 +292,13 @@ namespace KAOSTools.MetaModel
         /// <value>The name.</value>
         public string Name { get; set; }
         
-        public override object FriendlyName {
+        public override string FriendlyName {
             get {
                 return string.IsNullOrEmpty(Name) ? Identifier : Name;
             }
         }
         
-        public override object ConceptName {
+        public override string ConceptName {
             get {
                 return "Domain hypothesis";
             }
@@ -308,7 +314,7 @@ namespace KAOSTools.MetaModel
         /// Gets or sets the formal specification for the domain property.
         /// </summary>
         /// <value>The formal specification.</value>
-        public LTLFormula FormalSpec { get; set; }
+        public Formula FormalSpec { get; set; }
         
         /// <summary>
         /// Gets or sets the estimated probability of satisfaction.
@@ -328,13 +334,13 @@ namespace KAOSTools.MetaModel
         /// <value>The name.</value>
         public string Name { get; set; }
         
-        public override object FriendlyName {
+        public override string FriendlyName {
             get {
                 return string.IsNullOrEmpty(Name) ? Identifier : Name;
             }
         }
         
-        public override object ConceptName {
+        public override string ConceptName {
             get {
                 return "Domain property";
             }
@@ -370,13 +376,13 @@ namespace KAOSTools.MetaModel
         /// <value>The name.</value>
         public string Name { get; set; }
         
-        public override object FriendlyName {
+        public override string FriendlyName {
             get {
                 return string.IsNullOrEmpty(Name) ? Identifier : Name;
             }
         }
         
-        public override object ConceptName {
+        public override string ConceptName {
             get {
                 return "Agent";
             }
@@ -555,6 +561,9 @@ namespace KAOSTools.MetaModel
             }
         }
 
+        public RefinementPattern RefinementPattern { get; set; }
+        public List<dynamic> Parameters { get; set; }
+
         /// <summary>
         /// Initializes a new goal refinement.
         /// </summary>
@@ -564,6 +573,7 @@ namespace KAOSTools.MetaModel
             Subgoals = new List<Goal> ();
             DomainProperties = new List<DomainProperty> ();
             DomainHypotheses = new List<DomainHypothesis> ();
+            Parameters = new List<dynamic> ();
         }
 
         /// <summary>
@@ -648,6 +658,51 @@ namespace KAOSTools.MetaModel
         }
     }
 
+    public class GoalException : KAOSMetaModelElement {
+        public Obstacle ResolvedObstacle { get; set; }
+        public Goal ResolvingGoal { get; set; }
+    }
+
+    public abstract class Assumption : KAOSMetaModelElement {
+        public dynamic Assumed { get; set; }
+    }
+
+    public class GoalAssumption : Assumption {}
+    public class DomainHypothesisAssumption : Assumption {}
+    public class ObstacleNegativeAssumption : Assumption {}
+
+    public class Resolution : KAOSMetaModelElement {
+        public Goal ResolvingGoal { get; set; }
+        public List<dynamic> Parameters { get; set; }
+        public ResolutionPattern ResolutionPattern { get; set; }
+        public Resolution ()
+        {
+            ResolutionPattern = ResolutionPattern.None;
+            Parameters = new List<dynamic> ();
+        }
+    }
+
+    public enum ResolutionPattern {
+        None, 
+        GoalSubstitution,
+        ObstaclePrevention,
+        ObstacleReduction,
+        GoalRestoration,
+        GoalWeakening,
+        ObstacleWeakMitigation,
+        ObstacleStrongMitigation
+    }
+
+    public enum RefinementPattern {
+        None, 
+        Milestone, 
+        Case, 
+        IntroduceGuard, 
+        DivideAndConquer, 
+        Unmonitorability, 
+        Uncontrollability
+    }
+
     #endregion
 
     #region Object Model
@@ -655,13 +710,13 @@ namespace KAOSTools.MetaModel
     public class Entity : KAOSMetaModelElement {
         public string Name { get; set; }
         
-        public override object FriendlyName {
+        public override string FriendlyName {
             get {
                 return string.IsNullOrEmpty(Name) ? Identifier : Name;
             }
         }
 
-        public override object ConceptName {
+        public override string ConceptName {
             get {
                 return "Object";
             }
@@ -683,6 +738,12 @@ namespace KAOSTools.MetaModel
         public bool Derived { get; set; }
         public string Name { get; set; }
 
+        public override string FriendlyName {
+            get {
+                return string.IsNullOrEmpty(Name) ? Identifier : Name;
+            }
+        }
+
         public GivenType Type { get; set; }
 
         public Attribute ()
@@ -700,14 +761,14 @@ namespace KAOSTools.MetaModel
     public class GivenType : KAOSMetaModelElement {
         public string Name { get; set; }
         
-        public override object FriendlyName {
+        public override string FriendlyName {
             get {
                 return string.IsNullOrEmpty(Name) ? Identifier : Name;
             }
         }
         
 
-        public override object ConceptName {
+        public override string ConceptName {
             get {
                 return "Type";
             }
@@ -718,7 +779,7 @@ namespace KAOSTools.MetaModel
 
     public class Relation : Entity {
 
-        public override object ConceptName {
+        public override string ConceptName {
             get {
                 return "Association";
             }
@@ -759,13 +820,13 @@ namespace KAOSTools.MetaModel
         /// <value>The name.</value>
         public string Name { get; set; }
         
-        public override object FriendlyName {
+        public override string FriendlyName {
             get {
                 return string.IsNullOrEmpty(Name) ? Identifier : Name;
             }
         }
 
-        public override object ConceptName {
+        public override string ConceptName {
             get {
                 return "System";
             }
@@ -803,13 +864,13 @@ namespace KAOSTools.MetaModel
         /// <value>The name.</value>
         public string Name { get; set; }
         
-        public override object FriendlyName {
+        public override string FriendlyName {
             get {
                 return string.IsNullOrEmpty(Name) ? Identifier : Name;
             }
         }
 
-        public override object ConceptName {
+        public override string ConceptName {
             get {
                 return "Predicate";
             }
@@ -826,12 +887,6 @@ namespace KAOSTools.MetaModel
         /// </summary>
         /// <value>The definition.</value>
         public string Definition { get; set; }
- 
-        /// <summary>
-        /// Gets or sets the signature of the predicate.
-        /// </summary>
-        /// <value>The signature.</value>
-        public string Signature { get; set; }
  
         /// <summary>
         /// Gets or sets the formal specification of the predicate.

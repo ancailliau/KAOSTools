@@ -23,6 +23,11 @@ namespace KAOSTools.MetaModel
         }
     }
 
+    public class ArgumentDeclaration {
+        public string Name { get; set; }
+        public Entity Type { get; set; }
+    }
+
     public class StrongImply : Formula {
         public Formula Left;
         public Formula Right;
@@ -73,23 +78,46 @@ namespace KAOSTools.MetaModel
     
     public class Eventually : Formula {
         public Formula Enclosed;
+        public TimeBound TimeBound;
     }
     
+    public class EventuallyBefore : Formula {
+        public Formula Left;
+        public Formula Right;
+        public TimeBound TimeBound;
+    }
+
     public class Globally : Formula {
         public Formula Enclosed;
+        public TimeBound TimeBound;
     }
 
     public class PredicateReference : Formula {
         public Predicate Predicate;
+        public IList<string> ActualArguments;
+        public PredicateReference ()
+        {
+            ActualArguments = new List<string>();
+        }
     }
     
     public class RelationReference : Formula {
         public Relation Relation;
+        public IList<string> ActualArguments;
+        public RelationReference ()
+        {
+            ActualArguments = new List<string>();
+        }
     }
-
-    public class ArgumentDeclaration {
+    
+    public class VariableReference : Formula {
         public string Name { get; set; }
-        public Entity Type { get; set; }
+        public VariableReference ()
+        {}
+        public VariableReference (string name)
+        {
+            this.Name = name;
+        }
     }
 
     public class AttributeReference : Formula {
@@ -125,5 +153,21 @@ namespace KAOSTools.MetaModel
     public class NumericConstant : Formula {
         public double Value { get; set; }
     }
+
+    public class BoolConstant : Formula {
+        public bool Value { get; set; }
+    }
+    #region Time bound
+
+    public enum TimeComparator {
+        less, strictly_less, greater, strictly_greater, equal
+    }
+
+    public class TimeBound {
+        public TimeComparator Comparator;
+        public TimeSpan Bound;
+    }
+
+    #endregion
 }
 

@@ -43,6 +43,8 @@ namespace KAOSTools.OmnigraffleExport
             var document   = new Omnigraffle.Document ();
 
             ExportIdealGoalModel (model.GoalModel, document);
+            ExportExceptions (model.GoalModel, document);
+            ExportObstructedGoalModel (model.GoalModel, document);
             ExportObstacles (model.GoalModel, document);
             ExportResolutionsGoalModel (model.GoalModel, document);
             ExportResponsibilities (model.GoalModel, document);
@@ -236,6 +238,18 @@ namespace KAOSTools.OmnigraffleExport
                 RecursiveExportGoal (goalCanvas, goal);
             }
 
+            document.Canvas.Add (goalCanvas);
+        }
+
+        static void ExportObstructedGoalModel (GoalModel model, KAOSTools.OmnigraffleExport.Omnigraffle.Document document)
+        {
+            var goalCanvas = new Omnigraffle.Sheet (1, "Obstructed Goal Model");
+            goalCanvas.LayoutInfo.HierarchicalOrientation = Omnigraffle.HierarchicalOrientation.BottomTop;
+            mapping.Add (goalCanvas, new Dictionary<string, KAOSTools.OmnigraffleExport.Omnigraffle.ShapedGraphic> ());
+            foreach (var goal in model.RootGoals) {
+                RecursiveExportGoal (goalCanvas, goal);
+            }
+
             foreach (var goal in model.ObstructedGoals) {
                 foreach (var obstacle in goal.Obstructions) {
                     AddObstacle (goalCanvas, obstacle);
@@ -244,6 +258,90 @@ namespace KAOSTools.OmnigraffleExport
             }
 
             document.Canvas.Add (goalCanvas);
+        }
+
+        static void ExportExceptions (GoalModel model, KAOSTools.OmnigraffleExport.Omnigraffle.Document document)
+        {
+            var canvas = new Omnigraffle.Sheet (1, "Exceptions");
+            canvas.LayoutInfo.HierarchicalOrientation = Omnigraffle.HierarchicalOrientation.BottomTop;
+            mapping.Add (canvas, new Dictionary<string, KAOSTools.OmnigraffleExport.Omnigraffle.ShapedGraphic> ());
+            foreach (var goal in model.Goals.Where (x => x.Assumptions.Count + x.Exceptions.Count > 0)) {
+                AddGoal (canvas, goal);
+            }
+
+            foreach (var goal in model.Goals.Where (x => x.Assumptions.Count + x.Exceptions.Count > 0)) {
+                var parentGraphic = mapping [canvas] [goal.Identifier];
+
+                foreach (var exception in goal.Exceptions) {
+                    if (exception.ResolvingGoal == null)
+                        continue;
+
+                    ShapedGraphic exceptionGoal;
+                    exceptionGoal = RenderGoal (exception.ResolvingGoal);
+                    canvas.GraphicsList.Add (exceptionGoal);
+
+                    var topArrow = AddFilledArrow (canvas.GraphicsList, exceptionGoal, parentGraphic, false);
+                    topArrow.Style.Stroke.HeadArrow = Arrow.None;
+                    topArrow.Style.Stroke.TailArrow = Arrow.Arrow;
+
+                    var text = "Exception " + exception.ResolvedObstacle.FriendlyName;
+                    var alternativeText = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Rectangle, 50, 50, 100, 100);
+                    alternativeText.Text = new Omnigraffle.TextInfo (GetRtfUnicodeEscapedString(text)) {
+                        Alignement = KAOSTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
+                        SideMargin = 0, TopBottomMargin = 0
+                    };
+                    alternativeText.FontInfo.Size = 10;
+                    alternativeText.Style.Shadow.Draws = false;
+                    alternativeText.FitText = KAOSTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
+                    alternativeText.Flow = KAOSTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
+                    alternativeText.Style.Fill.Color = new KAOSTools.OmnigraffleExport.Omnigraffle.Color (1, 1, 1);
+                    alternativeText.Style.Stroke.Draws = false;
+                    alternativeText.Line = new LineInfo (topArrow.ID);
+                    canvas.GraphicsList.Add (alternativeText);
+
+                    // Ad the arrow
+                    canvas.GraphicsList.Add (topArrow);
+                }
+
+                foreach (var assumption in goal.Assumptions) {
+                    ShapedGraphic assumeGoal;
+                    if (assumption is GoalAssumption) {
+                        assumeGoal = RenderGoal ((assumption as GoalAssumption).Assumed as Goal);
+                    } else if (assumption is ObstacleNegativeAssumption) {
+                        assumeGoal = RenderObstacle ((assumption as ObstacleNegativeAssumption).Assumed as Obstacle);
+                    } else {
+                        throw new NotImplementedException ();
+                    }
+                    canvas.GraphicsList.Add (assumeGoal);
+
+                    var topArrow = AddFilledArrow (canvas.GraphicsList, assumeGoal, parentGraphic, false);
+                    topArrow.Style.Stroke.HeadArrow = Arrow.None;
+                    topArrow.Style.Stroke.TailArrow = Arrow.Arrow;
+
+                    var text = GetRtfUnicodeEscapedString("Assume");
+                    if (assumption is ObstacleNegativeAssumption)
+                        text += " \\b "+GetRtfUnicodeEscapedString("not")+"\\b0 ";
+
+                    var alternativeText = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Rectangle, 50, 50, 100, 100);
+                    alternativeText.Text = new Omnigraffle.TextInfo (text) {
+                        Alignement = KAOSTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
+                        SideMargin = 0, TopBottomMargin = 0
+                    };
+                    alternativeText.FontInfo.Size = 10;
+                    alternativeText.Style.Shadow.Draws = false;
+                    alternativeText.FitText = KAOSTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
+                    alternativeText.Flow = KAOSTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
+                    alternativeText.Style.Fill.Color = new KAOSTools.OmnigraffleExport.Omnigraffle.Color (1, 1, 1);
+                    alternativeText.Style.Stroke.Draws = false;
+                    alternativeText.Line = new LineInfo (topArrow.ID);
+                    canvas.GraphicsList.Add (alternativeText);
+
+                    // Ad the arrow
+                    canvas.GraphicsList.Add (topArrow);
+                }
+            }
+
+            document.Canvas.Add (canvas);
         }
         
         static void ExportResolutionsGoalModel (GoalModel model, KAOSTools.OmnigraffleExport.Omnigraffle.Document document)
@@ -255,8 +353,8 @@ namespace KAOSTools.OmnigraffleExport
                     mapping.Add (canvas, new Dictionary<string, KAOSTools.OmnigraffleExport.Omnigraffle.ShapedGraphic> ());
 
                     var obstacleGraphic = AddObstacle (canvas, obstacle);
-                    RecursiveExportGoal (canvas, resolution);
-                    AddSharpBackCrossArrow (canvas.GraphicsList, mapping [canvas] [resolution.Identifier], obstacleGraphic);
+                    RecursiveExportGoal (canvas, resolution.ResolvingGoal);
+                    AddSharpBackCrossArrow (canvas.GraphicsList, mapping [canvas] [resolution.ResolvingGoal.Identifier], obstacleGraphic);
 
                     document.Canvas.Add (canvas);
                 }
@@ -379,7 +477,8 @@ namespace KAOSTools.OmnigraffleExport
             }
 
             if (export_resolution) {
-                foreach (var goal in obstacle.Resolutions) {
+                foreach (var resolution in obstacle.Resolutions) {
+                    var goal = resolution.ResolvingGoal;
                     if (!mapping[canvas].ContainsKey (goal.Identifier))
                         AddGoal (canvas, goal);
 
@@ -499,36 +598,39 @@ namespace KAOSTools.OmnigraffleExport
             return line;
         }
 
-        static Omnigraffle.ShapedGraphic AddObstacle (Omnigraffle.Sheet canvas, Obstacle obstacle)
+        static ShapedGraphic RenderObstacle (Obstacle obstacle)
         {
             var graphic = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Bezier, 50, 50, 150, 70);
-           
-            graphic.ShapeData.UnitPoints.Add(new KAOSTools.OmnigraffleExport.Omnigraffle.Point(-0.5, -0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSTools.OmnigraffleExport.Omnigraffle.Point(-0.5, -0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSTools.OmnigraffleExport.Omnigraffle.Point(0.45, -0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSTools.OmnigraffleExport.Omnigraffle.Point(0.45, -0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSTools.OmnigraffleExport.Omnigraffle.Point(0.45, -0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSTools.OmnigraffleExport.Omnigraffle.Point(0.5, 0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSTools.OmnigraffleExport.Omnigraffle.Point(0.5, 0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSTools.OmnigraffleExport.Omnigraffle.Point(0.5, 0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSTools.OmnigraffleExport.Omnigraffle.Point(-0.45, 0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSTools.OmnigraffleExport.Omnigraffle.Point(-0.45, 0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSTools.OmnigraffleExport.Omnigraffle.Point(-0.45, 0.5));
-            graphic.ShapeData.UnitPoints.Add(new KAOSTools.OmnigraffleExport.Omnigraffle.Point(-0.5, -0.5));
-
-            graphic.Text = new Omnigraffle.TextInfo (GetRtfUnicodeEscapedString(obstacle.Name)) {
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (-0.5, -0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (-0.5, -0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (-0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (-0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (-0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (-0.5, -0.5));
+            graphic.Text = new Omnigraffle.TextInfo (GetRtfUnicodeEscapedString (obstacle.Name)) {
                 Alignement = KAOSTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
-                SideMargin = 10, TopBottomMargin = 3
+                SideMargin = 10,
+                TopBottomMargin = 3
             };
             graphic.Style.Shadow.Draws = false;
             graphic.FitText = KAOSTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
             graphic.Flow = KAOSTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
-
             graphic.Style.Fill.Color = new KAOSTools.OmnigraffleExport.Omnigraffle.Color (1, 0.590278, 0.611992);
-
             if (obstacle.Refinements.Count == 0)
                 graphic.Style.Stroke.Width = 2;
+            return graphic;
+        }
 
+        static Omnigraffle.ShapedGraphic AddObstacle (Omnigraffle.Sheet canvas, Obstacle obstacle)
+        {
+            var graphic = RenderObstacle (obstacle);
+           
             canvas.GraphicsList.Add (graphic);
             mapping[canvas].Add (obstacle.Identifier, graphic);
 
@@ -659,16 +761,7 @@ namespace KAOSTools.OmnigraffleExport
             graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (-0.5, 0.5));
             graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (-0.45, -0.5));
 
-            string text = "";
-            if (string.IsNullOrEmpty (goal.Name)) {
-                text = goal.Identifier;
-            } else {
-                text = goal.Name;
-
-                if (exportOptions.DisplayIdentifiers) {
-                    text = goal.Identifier + " : " + text;
-                }
-            }
+            string text = goal.FriendlyName;
 
             graphic.Text = new Omnigraffle.TextInfo (GetRtfUnicodeEscapedString(text)) {
                 Alignement = KAOSTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,

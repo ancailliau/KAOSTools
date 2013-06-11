@@ -417,7 +417,7 @@ namespace KAOSTools.OmnigraffleExport.Omnigraffle
 
     public enum Arrow
     {
-        None, FilledArrow, SharpBackCross, Arrow
+        None, FilledArrow, SharpBackCross, Arrow, FilledBox, Box
     }
 
     public class FillInfo {

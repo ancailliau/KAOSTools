@@ -30,15 +30,6 @@ namespace KAOSTools.Parsing.Tests
                         id test
                     end", "test")]
         [TestCase(@"declare agent
-                        id _test
-                    end", "_test")]
-        [TestCase(@"declare agent
-                        id -test
-                    end", "-test")]
-        [TestCase(@"declare agent
-                        id $test
-                    end", "$test")]
-        [TestCase(@"declare agent
                         id test_long_identifier
                     end", "test_long_identifier")]
         [TestCase(@"declare agent
@@ -47,9 +38,6 @@ namespace KAOSTools.Parsing.Tests
         [TestCase(@"declare agent
                         id test12
                     end", "test12")]
-        [TestCase(@"declare agent
-                        id 0
-                    end", "0")]
         public void TestIdentifier (string input, string identifier)
         {
             var model = parser.Parse (input);

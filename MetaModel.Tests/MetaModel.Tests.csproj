@@ -48,13 +48,9 @@
     <Reference Include="MathNet.Numerics">
       <HintPath>..\Libraries\MathNet.Numerics.dll</HintPath>
     </Reference>
-    <Reference Include="LtlSharp">
-      <HintPath>..\Libraries\LtlSharp.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TestExperimentalResponsibilities.cs" />
-    <Compile Include="BehaviorHelpers.cs" />
     <Compile Include="TestAlternativePropagation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -70,5 +66,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="TestBehaviorModel.cs" />
+    <None Include="BehaviorHelpers.cs" />
   </ItemGroup>
 </Project>

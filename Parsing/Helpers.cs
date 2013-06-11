@@ -35,9 +35,6 @@ namespace KAOSTools.Parsing
             
             if (o1.FormalSpec == null)
                 o1.FormalSpec = o2.FormalSpec;
-            
-            if (string.IsNullOrEmpty (o1.Signature))
-                o1.Signature = o2.Signature;
         }
 
         public static void Merge (this KAOSTools.MetaModel.GivenType o1, KAOSTools.MetaModel.GivenType o2)
@@ -158,6 +155,10 @@ namespace KAOSTools.Parsing
             foreach (var r in g2.Obstructions)
                 if (!g1.Obstructions.Contains (r))
                     g1.Obstructions.Add (r);
+            
+            foreach (var r in g2.Exceptions)
+                if (!g1.Exceptions.Contains (r))
+                    g1.Exceptions.Add (r);
         }
 
         public static void Merge (this KAOSTools.MetaModel.DomainProperty d1, KAOSTools.MetaModel.DomainProperty d2)

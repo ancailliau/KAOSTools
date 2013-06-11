@@ -2,8 +2,8 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using KAOSTools.Parsing;
-using LtlSharp;
 using ShallTests;
+using KAOSTools.MetaModel;
 
 namespace KAOSTools.Parsing.Tests
 {
@@ -16,15 +16,6 @@ namespace KAOSTools.Parsing.Tests
                         id test
                     end", "test")]
         [TestCase(@"declare goal
-                        id _test
-                    end", "_test")]
-        [TestCase(@"declare goal
-                        id -test
-                    end", "-test")]
-        [TestCase(@"declare goal
-                        id $test
-                    end", "$test")]
-        [TestCase(@"declare goal
                         id test_long_identifier
                     end", "test_long_identifier")]
         [TestCase(@"declare goal
@@ -33,9 +24,6 @@ namespace KAOSTools.Parsing.Tests
         [TestCase(@"declare goal
                         id test12
                     end", "test12")]
-        [TestCase(@"declare goal
-                        id 0
-                    end", "0")]
         public void TestIdentifier (string input, string expectedIdentifier)
         {
             var model = parser.Parse (input);
@@ -118,7 +106,6 @@ namespace KAOSTools.Parsing.Tests
                         id test
                         name ""old name""
                         definition ""old definition""
-                        formalspec ""old""
                         refinedby old_child1, old_child2
                         obstructedby old_obstacle
                         assignedto old_agent
@@ -128,7 +115,6 @@ namespace KAOSTools.Parsing.Tests
                         id test
                         name ""new name""
                         definition ""new definition""
-                        formalspec ""new""
                         refinedby new_child1, new_child2
                         obstructedby new_obstacle
                         assignedto new_agent
@@ -141,7 +127,6 @@ namespace KAOSTools.Parsing.Tests
                         id test
                         name ""old name""
                         definition ""old definition""
-                        formalspec ""old""
                         refinedby old_child1, old_child2
                         obstructedby old_obstacle
                         assignedto old_agent
@@ -151,7 +136,6 @@ namespace KAOSTools.Parsing.Tests
                         id test
                         name ""new name""
                         definition ""new definition""
-                        formalspec ""new""
                         refinedby new_child1, new_child2
                         obstructedby new_obstacle
                         assignedto new_agent
@@ -178,19 +162,6 @@ namespace KAOSTools.Parsing.Tests
                 .SelectMany (x => x.Agents)
                 .Select (x => x.Identifier)
                 .ShallOnlyContain (new string[] { "new_agent", "old_agent" });
-        }
-
-        [Test()]
-        public void TestFormalSpec ()
-        {
-            var input = @"declare goal
-                              id          test
-                              formalspec  ""pif""
-                          end";
-            
-            var model = parser.Parse (input);
-            var root = model.GoalModel.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
-            Assert.IsNotNull (root.FormalSpec);
         }
 
         [Test()]
@@ -355,6 +326,99 @@ namespace KAOSTools.Parsing.Tests
                                .OnlyContains ( new string [] { "child1" , "child2" }));
         }
 
+        [TestCase(@"declare goal 
+                        id test
+                        refinedby(milestone) goal1, goal2
+                    end", RefinementPattern.Milestone)]
+        [TestCase(@"declare goal 
+                        id test
+                        refinedby(case[.5]) goal1, goal2
+                    end", RefinementPattern.Case)]
+        [TestCase(@"declare goal 
+                        id test
+                        refinedby(introduce_guard) goal1, goal2
+                    end", RefinementPattern.IntroduceGuard)]
+        [TestCase(@"declare goal 
+                        id test
+                        refinedby(divide_and_conquer) goal1, goal2
+                    end", RefinementPattern.DivideAndConquer)]
+        [TestCase(@"declare goal 
+                        id test
+                        refinedby(unmonitorability) goal1, goal2
+                    end", RefinementPattern.Unmonitorability)]
+        [TestCase(@"declare goal 
+                        id test
+                        refinedby(uncontrollability) goal1, goal2
+                    end", RefinementPattern.Uncontrollability)]
+        public void TestRefinementPatterns (string input, RefinementPattern pattern)
+        {
+            var model = parser.Parse (input);
+
+            var goal = model.GoalModel.Goals
+                .ShallContain (x => x.Identifier == "test")
+                    .ShallBeSingle ();
+
+            var refinement = goal.Refinements.Single ();
+            refinement.RefinementPattern.ShallEqual (pattern);
+
+            if (pattern == RefinementPattern.Case) {
+                var probability = refinement.Parameters.Single();
+                Assert.AreEqual(.5, probability);
+            }
+        }
+        
+        [TestCase(@"declare goal 
+                        id test
+                        exception o then rg
+                    end")]
+        [TestCase(@"declare goal 
+                        id test
+                        exception ""O"" then ""RG""
+                    end
+                    declare goal name ""RG"" id rg end
+                    declare obstacle name ""O"" id o end")]
+        [TestCase(@"declare goal 
+                        id test
+                        exception declare obstacle id o end then declare goal id rg end
+                    end")]
+        public void TestException (string input)
+        {
+            var model = parser.Parse (input);
+
+            var goal = model.GoalModel.Goals
+                .ShallContain (x => x.Identifier == "test")
+                    .ShallBeSingle ();
+
+            var e = goal.Exceptions.ShallBeSingle ();
+            e.ResolvingGoal.Identifier.ShallEqual ("rg");
+            e.ResolvedObstacle.Identifier.ShallEqual ("o");
+        }
+
+        
+        [TestCase(@"declare goal 
+                        id test
+                        assumption rg
+                    end")]
+        [TestCase(@"declare goal 
+                        id test
+                        assumption ""RG""
+                    end
+                    declare goal name ""RG"" id rg end")]
+        [TestCase(@"declare goal 
+                        id test
+                        assumption declare goal id rg end
+                    end")]
+        public void TestAssumption (string input)
+        {
+            var model = parser.Parse (input);
+
+            var goal = model.GoalModel.Goals
+                .ShallContain (x => x.Identifier == "test")
+                    .ShallBeSingle ();
+
+            var e = goal.Assumptions.ShallBeSingle ();
+            Assert.AreEqual ("rg", e.Assumed.Identifier);
+        }
 
         [TestCase(@"declare goal id test rds 0.95 end", 0.95)]
         [TestCase(@"declare goal id test rds 1    end", 1)]

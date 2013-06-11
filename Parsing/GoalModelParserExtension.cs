@@ -193,7 +193,7 @@ namespace KAOSTools.Parsing {
         ParsedElement BuildFormalSpecAttribute (List<Result> results)
         {
             return BuildParsedAttributeWithValue<ParsedFormalSpecAttribute, ParsedElement> 
-                (results, results.Count == 3 ? null : results[2].Value);
+                (results, results[1].Value);
         }
 
         ParsedElement BuildDefinitionAttribute (List<Result> results)
@@ -220,10 +220,121 @@ namespace KAOSTools.Parsing {
                 (results, results[1].Value);
         }
 
+        ParsedElement BuildExceptionAttribute (List<Result> results)
+        {
+            return new ParsedExceptionAttribute { 
+                ResolvingGoal = results.Count > 2 ? results[3].Value : null,
+                ResolvedObstacle = results[1].Value,
+                Line = results[0].Line, 
+                Col = results[0].Col, 
+                Filename = m_file
+            };
+        }
+        
+        ParsedElement BuildAssumptionAttribute (List<Result> results)
+        {
+            if (results.Count == 2)
+                return BuildParsedAttributeWithValue<ParsedAssumptionAttribute, dynamic> 
+                    (results, results[1].Value);
+
+            return BuildParsedAttributeWithValue<ParsedNegativeAssumptionAttribute, dynamic> 
+                (results, results[2].Value);
+        }
+
         ParsedElement BuildResolvedBy (List<Result> results)
         {
+            if (results.Count > 2) {
+                var element = BuildParsedAttributeWithValue<ParsedResolvedByAttribute, dynamic> 
+                    (results, results[4].Value) as ParsedResolvedByAttribute;
+                element.Pattern = results[2].Value as ParsedResolutionPattern;
+                return element;
+            }
             return BuildParsedAttributeWithValue<ParsedResolvedByAttribute, dynamic> 
                 (results, results[1].Value);
+        }
+
+
+        ParsedElement BuildRefinementPattern (List<Result> results)
+        {
+            ParsedRefinementPattern parsedRefinementPattern = null;
+
+            if (results[0].Text == "milestone") {
+                parsedRefinementPattern = new ParsedRefinementPattern { 
+                    Name = ParsedRefinementPatternName.Milestone 
+                } ;
+            }
+
+            else if (results[0].Text == "case") {
+                parsedRefinementPattern = new ParsedRefinementPattern { 
+                    Name = ParsedRefinementPatternName.Case 
+                } ;
+                parsedRefinementPattern.Parameters.Add (results[2].Value);
+            }
+
+            else if (results[0].Text == "introduce_guard") {
+                parsedRefinementPattern = new ParsedRefinementPattern { 
+                    Name = ParsedRefinementPatternName.IntroduceGuard } ;
+            }
+
+            else if (results[0].Text == "divide_and_conquer") {
+                parsedRefinementPattern = new ParsedRefinementPattern { 
+                    Name = ParsedRefinementPatternName.DivideAndConquer } ;
+            }
+
+            else if (results[0].Text == "unmonitorability") {
+                parsedRefinementPattern = new ParsedRefinementPattern { 
+                    Name = ParsedRefinementPatternName.Unmonitorability } ;
+            }
+
+            else if (results[0].Text == "uncontrollability") {
+                parsedRefinementPattern = new ParsedRefinementPattern { 
+                    Name = ParsedRefinementPatternName.Uncontrollability } ;
+            }
+
+            else {
+                throw new NotImplementedException (results[0].Text);
+            }
+            return parsedRefinementPattern;
+        }
+
+        ParsedElement BuildResolutionPattern (List<Result> results)
+        {
+            ParsedResolutionPattern parsedRefinementPattern = null;
+
+            if (results[0].Text == "substitution")
+                parsedRefinementPattern = new ParsedResolutionPattern { Name = "substitution" } ;
+
+            if (results[0].Text == "prevention")
+                parsedRefinementPattern = new ParsedResolutionPattern { Name = "prevention" } ;
+
+            if (results[0].Text == "obstacle_reduction")
+                parsedRefinementPattern = new ParsedResolutionPattern { Name = "obstacle_reduction" } ;
+
+            if (results[0].Text == "restoration")
+                parsedRefinementPattern = new ParsedResolutionPattern { Name = "restoration" } ;
+
+            if (results[0].Text == "weakening")
+                parsedRefinementPattern = new ParsedResolutionPattern { Name = "weakening" } ;
+
+            if (results[0].Text == "weak_mitigation")
+                parsedRefinementPattern = new ParsedResolutionPattern { Name = "weak_mitigation" } ;
+
+            if (results[0].Text == "strong_mitigation")
+                parsedRefinementPattern = new ParsedResolutionPattern { Name = "strong_mitigation" } ;;
+            
+            if (results[0].Text == "strong_mitigation")
+                parsedRefinementPattern = new ParsedResolutionPattern { Name = "strong_mitigation" } ;
+
+            if (parsedRefinementPattern == null)
+                throw new NotImplementedException ();
+
+            if (results.Count > 1) {
+                for (int i = 2; i < results.Count - 1; i = i + 2) {
+                    parsedRefinementPattern.Parameters.Add (results[i].Value);
+                }
+            }
+
+            return parsedRefinementPattern;
         }
 
         ParsedElement BuildAlternativeAttribute (List<Result> results)
@@ -271,8 +382,45 @@ namespace KAOSTools.Parsing {
 
         ParsedElement BuildRefinedBy (List<Result> results)
         {
-            return BuildParsedAttributeWithElementsAndSystemIdentifier<ParsedRefinedByAttribute> 
-                (results);
+            var attribute = new ParsedRefinedByAttribute () { 
+                Line = results[0].Line, 
+                Col = results[0].Col, 
+                Filename = m_file
+            };
+
+            int start = 1;
+            if (results.Count > start && results[start].Value is ParsedRefinementPattern) {
+                attribute.RefinementPattern = results[start].Value as ParsedRefinementPattern;
+                start++;
+            }
+
+            if (results.Count > start && results[start].Value is ParsedSystemReference) {
+                attribute.SystemIdentifier = (results[start].Value as ParsedSystemReference).Name;
+                start++;
+            }
+
+            for (int i = start; i < results.Count; i = i + 2) {
+                attribute.Values.Add (results[i].Value);
+            }
+
+            return attribute;
+        }
+
+        ParsedElement BuildRefinedByPattern (List<Result> results)
+        {
+            return results[1].Value;
+        }
+
+        ParsedElement BuildRefinedByAlternative (List<Result> results)
+        {
+            var systemIdentifier = new ParsedSystemReference { 
+                Name = results[1].Value
+            };
+            for (int i = 4; i < results.Count; i = i + 2) {
+                systemIdentifier.Values.Add (results[i].Value);
+            }
+
+            return systemIdentifier;
         }
 
         ParsedElement BuildAssignedTo (List<Result> results)
@@ -300,7 +448,11 @@ namespace KAOSTools.Parsing {
             if (results.Count == 4) {
                 type = results [3].Value;
             }
-            return new ParsedPredicateArgumentAttribute (name.Value, type);
+            return new ParsedPredicateArgumentAttribute (name.Value, type) { 
+                Line = results[0].Line, 
+                Col = results[0].Col, 
+                Filename = m_file
+            };
         }
         
         ParsedElement BuildLink (List<Result> results)
@@ -333,6 +485,15 @@ namespace KAOSTools.Parsing {
             return new MultiplictyExpression { Value = results[1].Text };
         }
 
+        ParsedElement BuildVariable (List<Result> results)
+        {
+            return new ParsedVariableReference (results[0].Text) { 
+                Line = results[0].Line, 
+                Col = results[0].Col, 
+                Filename = m_file
+            };
+        }
+
         ParsedElement BuildIdentifier (List<Result> results)
         {
             return new IdentifierExpression (string.Join ("", results.Select (x => x.Text))) { 
@@ -351,6 +512,27 @@ namespace KAOSTools.Parsing {
             };
         }
 
+        ParsedElement BuildString (List<Result> results)
+        {
+            return new ParsedString { 
+                Value = string.Join("", results.Select(x => x.Text)),
+                Line = results[0].Line, 
+                Col = results[0].Col, 
+                Filename = m_file
+            };
+        }
+
+        ParsedElement BuildFloat (List<Result> results)
+        {
+            return new ParsedFloat {
+                Value = double.Parse (string.Join("", results.Select(x => x.Text))),
+                Line = results[0].Line, 
+                Col = results[0].Col, 
+                Filename = m_file
+            };
+        }
+
+
         #endregion
 
         #region Formal spec
@@ -361,7 +543,7 @@ namespace KAOSTools.Parsing {
             if (results[0].Text == "forall") {
                 var f = new ParsedForallExpression ();
                 for (int i = 1; i < results.Count - 1; i = i + 4) {
-                    f.arguments.Add (new KAOSTools.Parsing.ParsedVariableDeclaration(results[i].Text, results[i+2].Text));
+                    f.arguments.Add (new KAOSTools.Parsing.ParsedVariableDeclaration(results[i].Text, results[i+2].Value));
                 }
                 f.Enclosed = results.Last().Value;
                 return f;
@@ -371,7 +553,7 @@ namespace KAOSTools.Parsing {
             if (results[0].Text == "exists") {
                 var f = new ParsedExistsExpression ();
                 for (int i = 1; i < results.Count - 1; i = i + 4) {
-                    f.arguments.Add (new KAOSTools.Parsing.ParsedVariableDeclaration(results[i].Text, results[i+2].Text));
+                    f.arguments.Add (new KAOSTools.Parsing.ParsedVariableDeclaration(results[i].Text, results[i+2].Value));
                 }
                 f.Enclosed = results.Last().Value;
                 return f;
@@ -410,24 +592,31 @@ namespace KAOSTools.Parsing {
         
         ParsedElement BuildTemporalBinary (List<Result> results)
         {
-            // And
             if (results.Count == 1) 
                 return results[0].Value;
 
-            // And S 'until' S TemporalBinary
-            if (results[2].Text == "until")
-                return new ParsedUntilExpression () { Left = results[0].Value, Right = results[2].Value };
+            if (results[1].Text == "until")
+                return new ParsedUntilExpression { 
+                    Left = results[0].Value, 
+                    Right = results[2].Value
+                };
 
-            // And S 'release' S TemporalBinary
-            if (results[2].Text == "release")
-                return new ParsedReleaseExpression () { Left = results[0].Value, Right = results[2].Value };
+            if (results[1].Text == "release")
+                return new ParsedReleaseExpression { 
+                    Left = results[0].Value, 
+                    Right = results[2].Value
+                };
 
-            // And S 'unless' S TemporalBinary
-            // if (results[2].Text == "unless")
-            return new ParsedUnlessExpression () { Left = results[0].Value, Right = results[2].Value };
+            if (results[1].Text == "unless")
+                return new ParsedUnlessExpression { 
+                    Left = results[0].Value,
+                    Right = results[2].Value
+                };
+        
+            throw new NotImplementedException ();
         }
         
-        private KAOSTools.Parsing.ParsedElement BuildAnd (List<Result> results)
+        ParsedElement BuildAnd (List<Result> results)
         {
             // Or
             if (results.Count == 1) 
@@ -437,7 +626,7 @@ namespace KAOSTools.Parsing {
             return new ParsedAndExpression () { Left = results[0].Value, Right = results[2].Value };
         }
         
-        private KAOSTools.Parsing.ParsedElement BuildOr (List<Result> results)
+        ParsedElement BuildOr (List<Result> results)
         {
             // Unary
             if (results.Count == 1) 
@@ -448,7 +637,7 @@ namespace KAOSTools.Parsing {
 
         }
         
-        private KAOSTools.Parsing.ParsedElement BuildUnary (List<Result> results)
+        ParsedElement BuildUnary (List<Result> results)
         {
             // Atom
             if (results.Count == 1) 
@@ -462,92 +651,225 @@ namespace KAOSTools.Parsing {
             if (results[0].Text == "next")
                 return new ParsedNextExpression () { Enclosed = results[1].Value };
             
-            // ('sooner-or-later' / 'eventually') S Unary
-            if (results[0].Text == "sooner-or-later" | results[0].Text == "eventually")
-                return new ParsedEventuallyExpression () { Enclosed = results[1].Value };
+            // ('sooner-or-later' / 'eventually') (S EventuallyTimeBoundEmphasis)? S Unary
+            if (results[0].Text == "sooner-or-later" | results[0].Text == "eventually") {
+                if (results.Count < 4) {
+                    return new ParsedEventuallyExpression () { 
+                        Enclosed = results.Count == 2 ? results[1].Value : results[2].Value,
+                        TimeBound = results.Count == 2 ? null : (results[1].Value as ParsedTimeBound)
+                    };
+                } else if (results.Count == 4 && results[2].Text == "before") {
+                    return new ParsedEventuallyBeforeExpression () { 
+                        Left = results[1].Value,
+                        Right = results[3].Value,
+                        TimeBound = null
+                    };
+                } else if (results.Count > 4 && results[3].Text == "before") {
+                    return new ParsedEventuallyBeforeExpression () { 
+                        Left = results[2].Value,
+                        Right = results[4].Value,
+                        TimeBound = results[1].Value as ParsedTimeBound
+                    };
+                }
+            }
 
-            // ('always' / 'globally') S Unary
-            // if (results[0].Text == "always" | results[0].Text == "globally")
-            return new ParsedGloballyExpression () { Enclosed = results[1].Value };
+            // ('always' / 'globally') (S GloballyTimeBoundEmphasis)? S Unary
+            if (results[0].Text == "always" | results[0].Text == "globally")
+            return new ParsedGloballyExpression () { 
+                Enclosed = results.Count == 2 ? results[1].Value : results[2].Value,
+                TimeBound = results.Count == 2 ? null : (results[1].Value as ParsedTimeBound)
+            };
+
+            throw new NotImplementedException ();
         }
         
-        private KAOSTools.Parsing.ParsedElement BuildAtom (List<Result> results)
+        ParsedElement BuildPredicateReference (List<Result> results)
         {
-            // Identifier
-            if (results.Count == 1) {
-                return new ParsedPredicateReferenceExpression (results[0].Text)
-                    { Line = results[0].Line, Col = results[0].Col, Filename = m_file };
+            var p = new ParsedPredicateReferenceExpression (results[0].Value) { 
+                Line = results[0].Line, 
+                Col = results[0].Col, 
+                Filename = m_file
+            };
+
+            for (int i = 2; i < results.Count - 1; i = i + 2) {
+                p.ActualArguments.Add (results[i].Text);
             }
 
-            // '(' S Identifier ( S ',' S Identifier )* S ')' S 'in' S Identifier
-            if (results.Count > 3 && results[0].Text == "(") {
-                var p = new ParsedInRelationExpression ();
-                foreach (var r in results) {
-                    if (r.Text == "(" | r.Text == ")" | r.Text == ",")
-                        continue;
+            return p;
+        }
 
-                    if (r.Text == "in")
-                        break;
+        ParsedElement BuildRelationReference (List<Result> results)
+        {
+            var p = new ParsedInRelationExpression ();
+            foreach (var r in results) {
+                if (r.Text == "(" | r.Text == ")" | r.Text == ",")
+                    continue;
 
-                    p.Variables.Add (r.Text);
-                }
-                p.Relation = results.Last().Text;
-                return p;
+                if (r.Text == "in")
+                    break;
+
+                p.Variables.Add (r.Text);
+            }
+            p.Relation = results.Last().Value;
+            return p;
+        }
+
+        ParsedElement BuildAttributeReference (List<Result> results)
+        {
+            return new ParsedAttributeReferenceExpression(results[0].Text, 
+                                                          results[2].Value);
+        }
+
+        ParsedElement BuildComparison (List<Result> results)
+        {
+            ParsedComparisonCriteria criteria;
+            if (results[1].Text == "==") {
+                criteria = ParsedComparisonCriteria.Equals;
+            } else if (results[1].Text == "!=") {
+                criteria = ParsedComparisonCriteria.NotEquals;
+            } else if (results[1].Text == ">=") {
+                criteria = ParsedComparisonCriteria.BiggerThanOrEquals;
+            } else if (results[1].Text == "<=") {
+                criteria = ParsedComparisonCriteria.LessThanOrEquals;
+            } else if (results[1].Text == ">") {
+                criteria = ParsedComparisonCriteria.BiggerThan;
+            } else if (results[1].Text == "<") {
+                criteria = ParsedComparisonCriteria.LessThan;
+            } else {
+                throw new NotImplementedException ("Comparison '" + results[1].Text + "' is not supported");
             }
 
-            // Identifier ( S '(' S Identifier ( S ',' S Identifier )* S ')' )
-            if (results[1].Text == "(") {
-                var p = new ParsedPredicateReferenceExpression (results[0].Text)
-                    { Line = results[0].Line, Col = results[0].Col, Filename = m_file };
+            return new ParsedComparisonExpression (criteria, 
+                                                   results[0].Value, 
+                                                   results[2].Value);
+        }
 
-                for (int i = 2; i < results.Count; i = i + 2) {
-                    p.ActualArguments.Add (results[i].Value as IdentifierExpression);
-                }
-                return p;
+        ParsedElement BuildComparisonMember (List<Result> results)
+        {
+            if (results[0].Text == "\"") {
+                return new ParsedStringConstantExpression (results.Count == 2 ? "" : results[1].Text);
             }
 
-            // Identifier '.' Identifier ( ( '==' / '!=' / '>' / '<' / '>=' / '<=' ) ( Identifier '.' Identifier / '"' String '"' / [0-9]+ / Identifier ) )?
-            if (results[1].Text == ".") {
-                if (results.Count > 3) {
-                    ParsedComparisonCriteria criteria;
-                    if (results[3].Text == "==") {
-                        criteria = ParsedComparisonCriteria.Equals;
-                    } else if (results[3].Text == "!=") {
-                        criteria = ParsedComparisonCriteria.NotEquals;
-                    } else if (results[3].Text == ">=") {
-                        criteria = ParsedComparisonCriteria.BiggerThanOrEquals;
-                    } else if (results[3].Text == "<=") {
-                        criteria = ParsedComparisonCriteria.LessThanOrEquals;
-                    } else if (results[3].Text == ">") {
-                        criteria = ParsedComparisonCriteria.BiggerThan;
-                    } else if (results[3].Text == "<") {
-                        criteria = ParsedComparisonCriteria.LessThan;
-                    } else {
-                        throw new NotImplementedException ("Comparison '" + results[3].Text + "' is not supported");
-                    }
+            if (results[0].Text == "true" | results[0].Text == "false")
+                return new ParsedBoolConstantExpression (bool.Parse (results[0].Text));
 
-                    ParsedElement left = new ParsedAttributeReferenceExpression(results[0].Text, results[2].Text);
-                    ParsedElement right = null;
+            double val;
+            if (double.TryParse(results[0].Text, out val))
+                return new ParsedNumericConstantExpression (val);
 
-                    if (results[4].Text == "'") {
-                        right = new ParsedStringConstantExpression (results[5].Text);
-                    } else if (results.Count > 5 && results[5].Text == ".") {
-                        right = new ParsedAttributeReferenceExpression(results[4].Text, results[6].Text);
-                    } else if (results.Count == 5) {
-                        right = new ParsedNumericConstantExpression(double.Parse (results[4].Text));
-                    } else {
-                        throw new NotImplementedException (string.Join ("", results.Select(x => x.Text)));
-                    }
+            return results[0].Value;
+        }
 
-                    return new ParsedComparisonExpression (criteria, left, right);
+        ParsedElement BuildAtom (List<Result> results)
+        {
+            if (results[0].Text == "(")
+               return results[1].Value;
+            else
+                return results[0].Value;
+        }
+
+        #endregion
+
+        #region Time bounds
+
+        ParsedElement BuildEventuallyTimeBound (List<Result> results) {
+            if (results[0].Text == "strictly") {
+                if (results[1].Text == "after")
+                    return new ParsedTimeBound {
+                    Comparator = ParsedTimeComparator.strictly_greater,
+                    Bound = results[2].Value as ParsedTime
+                };
+
+                if (results[1].Text == "before")
+                    return new ParsedTimeBound {
+                    Comparator = ParsedTimeComparator.strictly_less,
+                    Bound = results[2].Value as ParsedTime
+                };
+
+                throw new NotImplementedException ();
+            }
+
+            if (results[0].Text == "after")
+                return new ParsedTimeBound {
+                Comparator = ParsedTimeComparator.greater,
+                Bound = results[1].Value as ParsedTime
+            };
+
+            if (results[0].Text == "before")
+                return new ParsedTimeBound {
+                Comparator = ParsedTimeComparator.less,
+                Bound = results[1].Value as ParsedTime
+            };
+
+            return new ParsedTimeBound {
+                Comparator = ParsedTimeComparator.equal,
+                Bound = results[1].Value as ParsedTime
+            };
+        }
+
+        ParsedElement BuildGloballyTimeBound (List<Result> results) {
+            if (results[1].Text == "strictly") {
+                if (results[2].Text == "more")
+                    return new ParsedTimeBound {
+                        Comparator = ParsedTimeComparator.strictly_greater,
+                        Bound = results[4].Value as ParsedTime
+                    };
+
+                if (results[2].Text == "less")
+                    return new ParsedTimeBound {
+                        Comparator = ParsedTimeComparator.strictly_less,
+                        Bound = results[4].Value as ParsedTime
+                    };
+
+                throw new NotImplementedException ();
+            }
+
+            if (results[1].Text == "more")
+                return new ParsedTimeBound {
+                    Comparator = ParsedTimeComparator.greater,
+                    Bound = results[3].Value as ParsedTime
+                };
+
+            if (results[1].Text == "less")
+                return new ParsedTimeBound {
+                    Comparator = ParsedTimeComparator.less,
+                    Bound = results[3].Value as ParsedTime
+                };
+
+            return new ParsedTimeBound {
+                Comparator = ParsedTimeComparator.equal,
+                Bound = results[1].Value as ParsedTime
+            };
+        }
+
+        ParsedElement BuildTimeConstraint (List<Result> results) {
+            var constraints = new ParsedTime ();
+
+            for (int i = 0; i < results.Count; i = i + 2) {
+                var atomicConstraints = new ParsedAtomicTime ();
+                atomicConstraints.Duration = int.Parse (results[i].Text);
+
+                var timeunit = results[i+1].Text;
+                if (timeunit.StartsWith ("day") | timeunit.Equals("d")) {
+                    atomicConstraints.Unit = ParsedTimeUnit.day;
+
+                } else if (timeunit.StartsWith ("minute") | timeunit.Equals("m")) {
+                    atomicConstraints.Unit = ParsedTimeUnit.minute;
+
+                } else if (timeunit.StartsWith ("second") | timeunit.Equals("s")) {
+                    atomicConstraints.Unit = ParsedTimeUnit.second;
+
+                } else if (timeunit.StartsWith ("milisecond") | timeunit.Equals("ms")) {
+                    atomicConstraints.Unit = ParsedTimeUnit.milisecond;
+
                 } else {
-                    return new ParsedAttributeReferenceExpression(results[0].Text, results[2].Text);
+                    throw new NotImplementedException ();
                 }
+
+                constraints.Constraints.Add (atomicConstraints);
             }
 
-            // '(' S Formula S ')'
-            // if (results[0].Text == "(")
-            return results[1].Value;
+            return constraints;
         }
 
         #endregion

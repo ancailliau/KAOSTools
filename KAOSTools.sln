@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaModel.Tests", "MetaMode
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RelationalGenerator", "RelationalGenerator\RelationalGenerator.csproj", "{A8967A56-9443-476E-B914-98A4BD9FAADF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelWebBrowser", "ModelWebBrowser\ModelWebBrowser.csproj", "{C33A7489-C75F-49A9-94BE-A08C3AA5B8C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -118,6 +120,18 @@ Global
 		{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}.Release|x86.ActiveCfg = Release|Any CPU
 		{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}.Release|x86.Build.0 = Release|Any CPU
+		{C33A7489-C75F-49A9-94BE-A08C3AA5B8C1}.CLI|Any CPU.ActiveCfg = Release|Any CPU
+		{C33A7489-C75F-49A9-94BE-A08C3AA5B8C1}.CLI|Any CPU.Build.0 = Release|Any CPU
+		{C33A7489-C75F-49A9-94BE-A08C3AA5B8C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C33A7489-C75F-49A9-94BE-A08C3AA5B8C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C33A7489-C75F-49A9-94BE-A08C3AA5B8C1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C33A7489-C75F-49A9-94BE-A08C3AA5B8C1}.Debug|x86.Build.0 = Debug|Any CPU
+		{C33A7489-C75F-49A9-94BE-A08C3AA5B8C1}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{C33A7489-C75F-49A9-94BE-A08C3AA5B8C1}.Default|Any CPU.Build.0 = Debug|Any CPU
+		{C33A7489-C75F-49A9-94BE-A08C3AA5B8C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C33A7489-C75F-49A9-94BE-A08C3AA5B8C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C33A7489-C75F-49A9-94BE-A08C3AA5B8C1}.Release|x86.ActiveCfg = Release|Any CPU
+		{C33A7489-C75F-49A9-94BE-A08C3AA5B8C1}.Release|x86.Build.0 = Release|Any CPU
 		{C96BDFB0-950D-4DF0-9BFB-27EA7C8CABD3}.CLI|Any CPU.ActiveCfg = CLI|Any CPU
 		{C96BDFB0-950D-4DF0-9BFB-27EA7C8CABD3}.CLI|Any CPU.Build.0 = CLI|Any CPU
 		{C96BDFB0-950D-4DF0-9BFB-27EA7C8CABD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

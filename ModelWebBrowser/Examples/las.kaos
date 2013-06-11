@@ -1,0 +1,841 @@
+#region Goals 
+
+declare goal
+  id on_scene_when_reported
+  name "Achieve [Ambulance On Scene When Incident Reported]"
+  definition "For every reported incident, an ambulance shall be allocated to
+              that incident within 2 minutes."
+  formalspec forall inc : Incident . 
+              when IncidentReported(inc) 
+              then sooner-or-later, before 14 minutes, 
+                exists amb : Ambulance . AmbulanceOnScene(amb, inc)
+  refinedby allocated_when_reported, 
+            on_scene_when_allocated
+end
+
+  declare goal
+    id allocated_when_reported
+    name "Achieve [Ambulance Allocated When Incident Reported]"
+    definition "When an incident is reported, an ambulance shall be allocated
+                to that incident within 2 minutes."
+    formalspec forall inc : Incident . 
+                when IncidentReported(inc) 
+                then sooner-or-later, before 2 minutes,
+                  exists amb : Ambulance . AmbulanceAllocated(amb, inc)
+    assignedto "ADS"
+  end
+
+  declare goal
+    id on_scene_when_allocated
+    name "Achieve [Ambulance On Scene When Allocated]"
+    definition "The ambulance allocated to an incident shall be on scene of
+                that incident within 12 minutes."
+    formalspec forall inc : Incident, amb: Ambulance . 
+                when AmbulanceAllocated(amb, inc) 
+                then sooner-or-later, before 12 minutes, AmbulanceOnScene(amb, inc)
+    refinedby mobilized_when_allocated, on_scene_when_mobilized
+  end
+
+    declare goal
+      id mobilized_when_allocated
+      name "Achieve [Ambulance Mobilized When Allocated]"
+      definition "The ambulance allocated to an incident shall be mobilized
+                  for that incident within 2 minutes."
+      formalspec forall inc : Incident, amb : Ambulance . 
+                  when AmbulanceAllocated(amb, inc) 
+                  then sooner-or-later, before 2 minutes, AmbulanceMobilized(amb, inc)
+      refinedby at_station_known, 
+                mobilized_when_allocated_at_station, 
+                mobilized_when_allocated_out
+    end
+    
+      #region at_station_known 
+    
+      declare goal
+        id at_station_known
+        name "Maintain [Ambulance At Station Known]"
+        definition "Whether the ambulance is at station shall be known by the
+                    system. The information shall be at most outdated for 1
+                    minute. "
+        formalspec forall amb: Ambulance . 
+                      always sooner-or-later AmbulanceAtStationAccurate(amb)
+        refinedby at_station_encoded, at_station_know_when_encoded
+      end
+        
+        declare goal
+          id at_station_encoded
+          name "Achieve [Ambulance At Station Encoded]"
+          formalspec forall amb : Ambulance . 
+                      when AmbulanceAtStation(amb) 
+                      then sooner-or-later AtStationButtonPressed(amb)
+          assignedto "Ambulance Staff"
+        end
+        
+        declare goal
+          id at_station_know_when_encoded
+          name "Achieve [Ambulance At Station Known When Encoded]"
+          formalspec forall amb : Ambulance . 
+                      when AtStationButtonPressed(amb) 
+                      then sooner-or-later AmbulanceAtStationAccurate(amb)
+          refinedby at_station_sent_when_encoded, 
+                    at_station_received_when_sent, 
+                    at_station_known_when_received
+        end
+        
+          declare goal
+            id at_station_sent_when_encoded
+            name "Achieve [At Station Notification Sent When Encoded]"
+            formalspec forall amb : Ambulance . 
+                        when AtStationButtonPressed(amb) 
+                        then sooner-or-later 
+                          exists msg: AtStationMessage . 
+                            AtStationNotificationSent(amb, msg)
+                            and AtStationNotificationAccurate(amb, msg)
+            assignedto "MDT"
+          end
+          
+          declare goal
+            id at_station_received_when_sent
+            name "Achieve [At Station Notification Received When Sent]"
+            formalspec forall amb : Ambulance, msg: AtStationMessage . 
+                        when AtStationNotificationSent(amb, msg) 
+                        then sooner-or-later 
+                          AtStationNotificationReceived(amb, msg)
+            assignedto "MDT Network"
+          end
+          
+          declare goal
+            id at_station_known_when_received
+            name "Achieve [At Station Notification Known When Received]"
+            formalspec forall amb : Ambulance, msg : AtStationMessage . 
+                        when AtStationNotificationReceived(amb, msg) 
+                        then sooner-or-later AmbulanceAtStationAccurate(amb)
+                        and KnownAtStationAccurateForNotification(amb, msg)
+            assignedto "ADS"
+          end
+      
+      #endregion
+      
+      #region mobilized_when_allocated_at_station
+      
+      declare goal
+        id mobilized_when_allocated_at_station
+        name "Achieve [Ambulance Mobilized When Allocated At Station]"
+        definition "The ambulance, at station, allocated to an incident shall
+                    be mobilized for that incident within 2 minutes."
+        formalspec forall inc : Incident, amb: Ambulance . 
+                    when AmbulanceAllocated(amb, inc) 
+                         and AmbulanceAtStationAccurate(amb) 
+                         and AmbulanceKnownAtStation(amb) 
+                    then sooner-or-later, before 2 minutes,
+                         AmbulanceMobilized(amb, inc)
+        refinedby fax_sent_when_allocated_at_station, 
+                  fax_printed_when_sent,
+                  mobilized_when_fax_printed
+      end
+
+        declare goal 
+          id fax_sent_when_allocated_at_station
+          name "Achieve [Mobilization Order Sent When Ambulance Allocated At 
+                Station]"
+          formalspec forall inc : Incident, amb: Ambulance . 
+                    when AmbulanceAllocated(amb, inc) 
+                         and AmbulanceAtStationAccurate(amb) 
+                         and AmbulanceKnownAtStation(amb) 
+                    then sooner-or-later, before 10 seconds, 
+                      exists fax : Fax . 
+                        MobilizationOrderFor(fax, inc, amb)
+                        and FaxSent(fax, amb)
+          assignedto "ADS"
+        end
+  
+        declare goal
+          id fax_printed_when_sent
+          name "Achieve [Mobilization Order Printed When Sent]"
+          definition "Every sent fax shall be printed at ambulance station,
+                      within 50 seconds."
+          formalspec forall fax: Fax, amb: Ambulance . 
+                      when FaxSent(fax, amb)
+                      then sooner-or-later, before 50 seconds,
+                        FaxPrintedAtStation(fax, amb)
+          refinedby fax_received_when_sent,
+                    fax_printed_when_received
+        end
+  
+          declare goal
+            id fax_received_when_sent
+            name "Achieve [Mobilization Order Received When Sent]"
+            definition "Every sent fax shall be received at ambulance station,
+                          within 10 seconds."
+            formalspec forall fax: Fax, amb: Ambulance . 
+                        when FaxSent(fax, amb)
+                        then sooner-or-later, before 10 seconds, 
+                          FaxReceived(fax, amb)
+            assignedto "Printer Network"
+          end
+  
+          declare goal
+            id fax_printed_when_received
+            name "Achieve [Mobilization Order Printed When Received]"
+            definition "Every received fax shall be printed at ambulance
+                        station, within 40 seconds."
+            formalspec forall fax: Fax, amb: Ambulance . 
+                        when FaxReceived(fax, amb)
+                        then sooner-or-later, before 40 seconds, 
+                          FaxPrintedAtStation(fax, amb)
+            assignedto "Printer"
+          end
+  
+        declare goal
+          id mobilized_when_fax_printed
+          name "Achieve [Ambulance Mobilized When Mobilization Order Printed]"
+          formalspec forall fax: Fax, amb: Ambulance, inc: Incident . 
+                      when FaxPrintedAtStation(fax, amb)
+                           and MobilizationOrderFor(fax, inc, amb)
+                      then sooner-or-later, before 1 minute, 
+                        AmbulanceMobilized(amb, inc)
+          assignedto "Ambulance Staff"
+        end
+
+      #endregion
+
+      #region mobilized_when_allocated_out 
+      
+      declare goal
+        id mobilized_when_allocated_out
+        name "Achieve [Ambulance Mobilized When Allocated Out]"
+        definition "The ambulance, out of station, allocated to an incident
+                    shall be mobilized for that incident within 2 minutes."
+        assignedto "Radio Operator"
+        formalspec forall inc : Incident, amb: Ambulance . 
+                    when AmbulanceAllocated(amb, inc) 
+                         and AmbulanceAtStationAccurate(amb) 
+                         and not AmbulanceKnownAtStation(amb) 
+                    then sooner-or-later, before 2 minutes,
+                         AmbulanceMobilized(amb, inc)
+      end
+      
+      #endregion
+      
+    declare goal
+      id on_scene_when_mobilized
+      name "Achieve [Ambulance On Scene When Mobilized]"
+      definition "The ambulance mobilized for an incident shall be on scene of
+                  that incident within 10 minutes."
+      formalspec forall inc : Incident, amb : Ambulance . 
+                  when AmbulanceMobilized(amb, inc) 
+                  then sooner-or-later, before 10 minutes, 
+                    AmbulanceOnScene(amb, inc)
+      assignedto "Ambulance Staff"
+    end
+
+#endregion
+
+#region Obstacle 
+
+override goal 
+  id on_scene_when_mobilized
+  obstructedby not_on_scene_when_mobilized
+end
+
+  #region Obstacles for not_on_scene_when_mobilized  
+
+  declare obstacle
+    id not_on_scene_when_mobilized
+    name "Ambulance Not On Scene When Mobilized"
+    definition "Sooner-or-later, there is an ambulance allocated to an incident
+                that do not reach the incident scene within 10 minutes."
+    formalspec sooner-or-later exists inc: Incident, amb: Ambulance . 
+                 ( AmbulanceMobilized(amb, inc) 
+                   and always, for strictly more than 10 minutes, 
+                     not AmbulanceOnScene (amb, inc) )
+    refinedby ambulance_lost_when_mobilized
+    refinedby ambulance_broken_down_when_mobilized
+    refinedby ambulance_stuck_in_traffic_jam_when_mobilized
+  end
+
+    declare obstacle
+      id ambulance_lost_when_mobilized
+      name "Ambulance Lost When Mobilized"
+      definition "Sooner-or-later, there is an ambulance allocated to an 
+                  incident that is lost for than 10 minutes."
+      formalspec sooner-or-later exists inc: Incident, amb: Ambulance . 
+                   ( AmbulanceMobilized(amb, inc) 
+                     and always, for strictly more than 10 minutes, 
+                       AmbulanceLost (amb, inc) )
+      resolvedby(prevention) instructions_provided
+      resolvedby(restoration) ambulance_on_scene_when_mobilized_and_lost
+    end
+    
+      #region Resolutions 
+    
+      declare goal
+        id instructions_provided
+        name "Maintain [Instructions Provided When Ambulance Mobilized]"
+        formalspec forall inc:Incident, amb: Ambulance .
+                   when AmbulanceMobilized(amb, inc) 
+                   then InstructionsProvided(amb, inc)
+      end
+      
+      declare goal
+        id ambulance_on_scene_when_mobilized_and_lost
+        name "Achieve [Ambulance On Scene When Mobilized And Lost]"
+        formalspec forall inc : Incident, amb : Ambulance . 
+                    when AmbulanceMobilized(amb, inc) 
+                     and always, for strictly more than 10 minutes, 
+                       AmbulanceLost (amb, inc) 
+                    then sooner-or-later, before 20 minutes, 
+                      AmbulanceOnScene(amb, inc)
+      end
+      
+      #endregion 
+
+    declare obstacle
+      id ambulance_broken_down_when_mobilized
+      name "Ambulance Broken Down When Mobilized"
+      definition "Sooner-or-later, there is an ambulance allocated to an 
+                  incident that is broken down and cannot reach incident scene
+                  within 10 minutes."
+      formalspec sooner-or-later exists inc: Incident, amb: Ambulance . 
+                   ( AmbulanceMobilized(amb, inc) 
+                     and sooner-or-later, strictly before 10 minutes, 
+                       AmbulanceBrokenDown (amb, inc) before OnScene(amb, inc) )
+      resolvedby(strong_mitigation) other_ambulance_on_scene_when_mobilized_and_broken
+    end
+    
+      #region Resolution 
+    
+      declare goal
+        id other_ambulance_on_scene_when_mobilized_and_broken
+        name "Achieve [Other Ambulance On Scene When Mobilized And Broken Down]"
+        formalspec forall inc : Incident, amb : Ambulance . 
+                    when AmbulanceMobilized(amb, inc) 
+                     and sooner-or-later, strictly before 10 minutes, 
+                       AmbulanceBrokenDown (amb, inc) before OnScene(amb, inc)
+                    then sooner-or-later, before 20 minutes, 
+                      exists otherAmb:Ambulance . otherAmb != amb 
+                        and AmbulanceOnScene(otherAmb, inc)
+      end
+      
+      #endregion
+
+    declare obstacle
+      id ambulance_stuck_in_traffic_jam_when_mobilized
+      name "Ambulance Stuck In Traffic Jam When Mobilized"
+      definition "Sooner-or-later, there is an ambulance allocated to an 
+                  incident that is stuck in traffic jams for more than 10
+                  minutes."
+      formalspec sooner-or-later exists inc: Incident, amb: Ambulance . 
+                   AmbulanceMobilized(amb, inc) 
+                     and always, for strictly more than 10 minutes, 
+                       not AmbulanceStuckInTrafficJam (amb, inc)
+    end
+      
+      #region Resolution 
+      
+      # Resolution 1
+      
+      override obstacle
+        id ambulance_stuck_in_traffic_jam_when_mobilized
+        resolvedby(restoration) ambulance_on_scene_when_mobilized_and_stuck_in_traffic_jam
+      end
+      
+      declare goal
+        id ambulance_on_scene_when_mobilized_and_stuck_in_traffic_jam
+        name "Achieve [Ambulance On Scene When Mobilized And Stuck In Traffic Jam]"
+        formalspec forall inc : Incident, amb : Ambulance . 
+                    when AmbulanceMobilized(amb, inc) 
+                     and always, for strictly more than 10 minutes, 
+                       AmbulanceStuckInTrafficJam (amb, inc)
+                    then sooner-or-later, before 10 minutes, 
+                      AmbulanceOnScene(amb, inc)
+      end
+      
+      # Resolution 2
+      
+      override obstacle
+        id ambulance_stuck_in_traffic_jam_when_mobilized
+        resolvedby(prevention) avoid_busy_roads
+      end
+
+      declare goal
+        id avoid_busy_roads
+        name "Avoid [Ambulance Mobilized On Busy Roads]"
+        formalspec forall inc : Incident, amb : Ambulance . 
+                    when AmbulanceMobilized(amb, inc) 
+                    then exists road : Road . 
+                      RoadFor(road, amb, inc) and not BusyRoad(road)
+      end
+      
+      # Resolution 3
+      
+      override obstacle
+        id ambulance_stuck_in_traffic_jam_when_mobilized
+        resolvedby(prevention) dynamic_ambulance_positionning
+      end
+      
+      declare goal
+        id dynamic_ambulance_positionning
+        name "Maintain [Ambulance Parking Position Optimal]"
+        formalspec forall inc : Incident . exists amb : Ambulance . 
+                     AmbulanceNear(inc, amb)
+      end
+      
+      #endregion
+
+  #endregion 
+
+override goal 
+  id mobilized_when_allocated_out
+  obstructedby not_mobilized_when_allocated_out
+end
+
+  #region Obstacles for not_mobilized_when_allocated_out 
+  
+  declare obstacle
+    id not_mobilized_when_allocated_out
+    name "Ambulance Not Mobilized When Allocated Out"
+    definition "Sooner-or-later, an ambulance, out of station, allocated to an
+                incident is not mobilized for that incident within 2 minutes."
+    formalspec sooner-or-later exists inc : Incident, amb: Ambulance . 
+                AmbulanceAllocated(amb, inc) 
+                and AmbulanceAtStationAccurate(amb) 
+                and not AmbulanceKnownAtStation(amb) 
+                and always, for strictly more than 2 minutes,
+                    not AmbulanceMobilized(amb, inc)
+    refinedby already_mobilized_when_allocated_out
+    refinedby broken_when_allocated_out
+    refinedby radio_not_working_when_allocated_out
+  end
+  
+    declare obstacle
+      id already_mobilized_when_allocated_out
+      name "Ambulance Already Mobilized When Allocated Out"
+      definition "Sooner-or-later, an ambulance, out of station, allocated to
+                  an incident is already mobilized for another incident for
+                  more than 2 minutes."
+      formalspec sooner-or-later exists inc : Incident, amb: Ambulance . 
+                  AmbulanceAllocated(amb, inc) 
+                  and AmbulanceAtStationAccurate(amb) 
+                  and not AmbulanceKnownAtStation(amb) 
+                  and always, for strictly more than 2 minutes,
+                      exists otherInc:Incident . otherInc != inc 
+                        and AmbulanceMobilized(amb, otherInc)
+      resolvedby(prevention) avoid_already_mobilized_when_allocated
+    end
+    
+      #region Resolution 
+      
+      declare goal
+        id avoid_already_mobilized_when_allocated
+        name "Avoid [Ambulance Already Mobilized When Allocated Out]"
+        formalspec forall inc : Incident, amb: Ambulance . 
+                    when AmbulanceAllocated(amb, inc) 
+                         and AmbulanceAtStationAccurate(amb) 
+                         and not AmbulanceKnownAtStation(amb) 
+                    then forall otherInc:Incident . 
+                      if otherInc != inc 
+                        then not AmbulanceMobilized(amb, otherInc)
+      end
+      
+      #endregion
+    
+    declare obstacle
+      id broken_when_allocated_out
+      name "Ambulance Broken Down When Allocated Out"
+      definition "Sooner-or-later, an ambulance, out of station, allocated to
+                  an incident broke down before being mobilized."
+      formalspec sooner-or-later exists inc : Incident, amb: Ambulance . 
+                  AmbulanceAllocated(amb, inc) 
+                  and AmbulanceAtStationAccurate(amb) 
+                  and not AmbulanceKnownAtStation(amb) 
+                  and sooner-or-later, strictly before 2 minutes, 
+                    AmbulanceBrokenDown(amb, inc) 
+                      before AmbulanceMobilized(amb, inc)
+      resolvedby(weak_mitigation[on_scene_when_reported]) 
+                other_ambulance_on_scene_when_broken_down
+    end
+    
+      #region Resolution 
+    
+      declare goal
+        id other_ambulance_on_scene_when_broken_down
+        name "Achieve [Other Ambulance Mobilized When Allocated Out Ambulance
+              Broken Down]"
+        formalspec forall inc : Incident, amb: Ambulance . 
+                  when AmbulanceAllocated(amb, inc) 
+                  and AmbulanceAtStationAccurate(amb) 
+                  and not AmbulanceKnownAtStation(amb) 
+                  and sooner-or-later, strictly before 2 minutes, 
+                    AmbulanceBrokenDown(amb, inc) 
+                      before AmbulanceMobilized(amb, inc)
+                  then sooner-or-later, before 12 minutes, 
+                    exists otherAmb:Ambulance . otherAmb != amb 
+                      and AmbulanceMobilized(otherAmb, inc)
+      end
+      
+      #endregion
+    
+    declare obstacle
+      id radio_not_working_when_allocated_out
+      name "Radio Not Working When Allocated Out"
+      definition "Sooner-or-later, an ambulance, out of station, allocated to
+                  an incident has a disfunctionning radio for more than 2
+                  minutes."
+      formalspec sooner-or-later exists inc : Incident, amb: Ambulance . 
+                  AmbulanceAllocated(amb, inc) 
+                  and AmbulanceAtStationAccurate(amb) 
+                  and not AmbulanceKnownAtStation(amb) 
+                  and always, for strictly more than 2 minutes,
+                      RadioBrokenDown(amb)
+      resolvedby(restoration) ambulance_mobilized_by_phone_when_broken_down
+    end
+    
+      #region Resolution 
+    
+      declare goal
+        id ambulance_mobilized_by_phone_when_broken_down
+        name "Achieve [Ambulance Mobilized By Phone When Allocated Out
+              Ambulance Radio Not Working]"
+        formalspec forall inc : Incident, amb: Ambulance . 
+                  when AmbulanceAllocated(amb, inc) 
+                  and AmbulanceAtStationAccurate(amb) 
+                  and not AmbulanceKnownAtStation(amb) 
+                  and always, for strictly more than 2 minutes,
+                      RadioBrokenDown(amb)
+                  then sooner-or-later, before 4 minutes, 
+                    AmbulanceMobilized(amb, inc)
+      end
+    
+      #endregion
+  
+  #endregion
+
+override goal
+  id allocated_when_reported
+  obstructedby not_allocated_when_reported
+end
+
+  #region Obstacles for not_allocated_when_reported 
+  
+  declare obstacle
+    id not_allocated_when_reported
+    name "Ambulance Not Allocated When Incident Reported"
+    definition "Sooner-or-later, an incident is reported and no ambulance is
+                allocated to that incident within two minutes."
+    formalspec sooner-or-later exists inc : Incident . 
+                IncidentReported(inc) 
+                and always, for more than 2 minutes,
+                  forall amb : Ambulance . not AmbulanceAllocated(amb, inc)
+    refinedby no_ambulance_available
+  end
+  
+    declare obstacle
+      id no_ambulance_available
+      name "No Ambulance Available"
+      definition "Sooner-or-later, an incident is reported and no ambulance is
+                  available within two minutes."
+      formalspec sooner-or-later exists inc : Incident . 
+                  IncidentReported(inc) 
+                  and always, for more than 2 minutes,
+                    forall amb : Ambulance . not AmbulanceAvailable(amb)
+      resolvedby(prevention) avoid_no_ambulance_available
+      resolvedby(restoration) delayed_allocation
+    end
+    
+      #region Resolutions 
+    
+      declare goal 
+        id avoid_no_ambulance_available
+        name "Avoid [No Ambulance Available When Incident Reported]"
+        definition "For every reported incident, an ambulance shall be
+                    available within two minutes."
+        formalspec forall inc : Incident . 
+                    when IncidentReported(inc) 
+                    then sooner-or-later, before 2 minutes,
+                      exists amb : Ambulance . AmbulanceAvailable(amb)
+      end
+      
+      declare goal
+        id delayed_allocation
+        name "Achieve [Ambulance Allocated With Delay When Incident Reported 
+              And No Ambulance Available]"
+        definition "For every reported incident, if no ambulance is available
+                    within two minutes, an ambulance shall be allocated to
+                    that incident within six minutes minutes (four additional
+                    minutes)"
+        formalspec forall inc : Incident . 
+                    when IncidentReported(inc) 
+                    and always, for more than 2 minutes,
+                      forall amb : Ambulance . not AmbulanceAvailable(amb)
+                    then sooner-or-later, before 6 minutes,
+                      exists amb : Ambulance . AmbulanceAllocated(amb, inc)
+      end
+      
+      #endregion
+  
+  #endregion
+
+override goal
+  id fax_printed_when_received
+  obstructedby fax_not_printed_when_received
+end
+
+  #region Obstacles for fax_not_printed_when_received 
+
+  declare obstacle
+    id fax_not_printed_when_received
+    name "Fax Not Printed When Received"
+    definition "Sooner-or-later, a fax is received at ambulance station but is
+                not printed."
+    formalspec sooner-or-later exists fax: Fax, amb: Ambulance . 
+                FaxReceived(fax, amb)
+                and always, for strictly more than 40 seconds, 
+                  not FaxPrintedAtStation(fax, amb)
+    refinedby no_paper_left
+    refinedby paper_jam
+    refinedby printer_off
+  end
+
+    declare obstacle
+      id no_paper_left
+      name "No Paper Left In Printer At Ambulance Station"
+      definition "Sooner-or-later, a fax is received at ambulance station but
+                  there is no paper left in the printer for more than 40
+                  seconds."
+      formalspec sooner-or-later exists fax: Fax, amb: Ambulance . 
+                  FaxReceived(fax, amb)
+                  and always, for strictly more than 40 seconds, 
+                    not PaperLeftAtStation(fax, amb)
+      resolvedby(prevention) avoid_no_paper_left
+    end
+    
+      #region Resolution 
+      
+      declare goal
+        id avoid_no_paper_left
+        name "Avoid [No Paper Left When Fax Received]"
+        definition "When a fax is received there is always some paper left in
+                    the printer."
+        formalspec forall fax: Fax, amb: Ambulance . 
+                    when FaxReceived(fax, amb)
+                    then PaperLeftAtStation(fax, amb)
+      end
+      
+      #endregion
+
+    declare obstacle
+      id paper_jam
+      name "Paper Jam At Ambulance Station"
+      definition "Sooner-or-later, a fax is received at ambulance station but
+                  there is a paper jam in the printer for more than 40
+                  seconds."
+      formalspec sooner-or-later exists fax: Fax, amb: Ambulance . 
+                  FaxReceived(fax, amb)
+                  and always, for strictly more than 40 seconds, 
+                    PaperJamAtStation(fax, amb)
+    end
+      
+      #region Resolution 
+      
+      override obstacle
+        id paper_jam
+        resolvedby(restoration) ambulance_mobilized_by_phone_when_paper_jam
+      end
+      
+      declare goal
+        id ambulance_mobilized_by_phone_when_paper_jam
+        name "Achieve [Ambulance Mobilized By Phone When Fax Received And
+              Paper Jam]"
+        definition "When a fax is received and there is a paper jam for more
+                    than 40 seconds, the allocated ambulance shall be
+                    mobilized within two minutes."
+        formalspec forall fax: Fax, amb: Ambulance, inc:Incident . 
+                    when FaxReceived(fax, amb)
+                      and MobilizationOrderFor(fax, inc, amb)
+                      and always, for strictly more than 40 seconds, 
+                      PaperJamAtStation(fax, amb)
+                    then sooner-or-later, before 2 minutes, 
+                      AmbulanceMobilized(amb, inc)
+      end
+      
+      #endregion
+  
+    declare obstacle
+      id printer_off
+      name "Printer Off At Ambulance Station"
+      definition "Sooner-or-later, a fax is received at ambulance station but
+                  the printer is off for more than 40 seconds."
+      formalspec sooner-or-later exists fax: Fax, amb: Ambulance . 
+                  FaxReceived(fax, amb)
+                  and always, for strictly more than 40 seconds, 
+                    FaxPrinterOffAtStation(fax, amb)
+    end
+    
+      #region Resolution 
+      
+      override obstacle
+        id printer_off
+        resolvedby(strong_mitigation) ambulance_mobilized_by_phone_when_printer_off
+      end
+      
+      declare goal
+        id ambulance_mobilized_by_phone_when_printer_off
+        name "Achieve [Ambulance Mobilized By Phone When Fax Received And
+              Printer Off]"
+        definition "When a fax is received and the printer is off for more
+                    than 40 seconds, the allocated ambulance shall be
+                    mobilized within two minutes."
+        formalspec forall fax: Fax, amb: Ambulance, inc: Incident . 
+                    when FaxReceived(fax, amb)
+                      and MobilizationOrderFor(fax, inc, amb)
+                      and always, for strictly more than 40 seconds, 
+                        FaxPrinterOffAtStation(fax, amb)
+                    then sooner-or-later, before 2 minutes, 
+                      AmbulanceMobilized(amb, inc)
+      end
+      
+      override obstacle
+        id printer_off
+        resolvedby(prevention) avoid_printer_off_when_off_button_pressed
+      end
+      
+      declare goal
+        id avoid_printer_off_when_off_button_pressed
+        name "Avoid [Printer Off When Off Button Pressed]"
+      end
+      
+      #endregion
+      
+  #endregion
+  
+#endregion 
+
+#region Predicates 
+
+declare predicate
+  id IncidentReported
+  argument inc : Incident
+  formalspec inc.Reported
+end
+
+declare predicate
+  id AmbulanceOnScene
+  argument amb : Ambulance
+  argument inc : Incident
+  formalspec (amb, inc) in OnScene
+end
+
+declare predicate
+  id AmbulanceAllocated
+  argument amb : Ambulance
+  argument inc : Incident
+  formalspec exists ambInfo : AmbulanceInfo, 
+                     incInfo : IncidentInfo .
+                (amb, ambInfo) in AmbulanceTracking 
+                and (inc, incInfo) in IncidentReporting 
+                and (ambInfo, incInfo) in Allocation
+end
+
+declare predicate
+  id AmbulanceMobilized
+  argument amb : Ambulance
+  argument inc : Incident
+  formalspec (amb, inc) in Mobilization
+end
+
+declare predicate
+  id AmbulanceAtStationAccurate
+  argument amb : Ambulance
+  formalspec exists ambInfo : AmbulanceInfo . (amb, ambInfo) in AmbulanceTracking and amb.AtStation == ambInfo.AtStation
+end
+
+declare predicate
+  id AmbulanceKnownAtStation
+  argument amb : Ambulance
+  formalspec exists ambInfo : AmbulanceInfo . (amb, ambInfo) in AmbulanceTracking and ambInfo.AtStation
+end
+
+declare predicate
+  id AmbulanceAtStation
+  argument amb : Ambulance
+  formalspec amb.AtStation
+end
+
+declare predicate
+  id AtStationButtonPressed
+  argument amb : Ambulance
+  formalspec exists mdt : MDT . (amb, mdt) in In and mdt.AtStationButton == "Pressed"
+end
+
+declare predicate
+  id AtStationNotificationAccurate
+  argument amb : Ambulance
+  argument msg : AtStationMessage
+  formalspec amb.AtStation == msg.AtStation and amb.AmbulanceID == msg.AmbulanceID
+end
+
+declare predicate
+  id AtStationNotificationSent
+  argument amb : Ambulance
+  argument msg : AtStationMessage
+  formalspec (amb, msg) in SentNotifications
+end
+
+declare predicate
+  id AtStationNotificationReceived
+  argument amb : Ambulance
+  argument msg : AtStationMessage
+  formalspec exists ambInfo : AmbulanceInfo . 
+              (ambInfo, amb) in AmbulanceTracking 
+              and (ambInfo, msg) in ReceivedNotifications
+              and msg.AmbulanceID == ambInfo.AmbulanceID
+end
+
+declare predicate
+  id KnownAtStationAccurateForNotification
+  argument amb : Ambulance
+  argument msg : AtStationMessage
+  formalspec exists ambInfo : AmbulanceInfo . 
+                (amb, ambInfo) in AmbulanceTracking
+                and ambInfo.AtStation == msg.AtStation 
+                and ambInfo.AmbulanceID == msg.AmbulanceID
+end
+
+declare predicate
+  id MobilizationOrderFor
+  argument fax : Fax
+  argument inc : Incident
+  argument amb : Ambulance
+  formalspec exists incInfo : IncidentInfo, ambInfo : AmbulanceInfo . 
+              (inc, incInfo) in IncidentReporting
+              and (amb, ambInfo) in AmbulanceTracking
+              and fax.IncidentID == incInfo.IncidentID
+              and fax.AmbulanceID == ambInfo.AmbulanceID
+end
+
+declare predicate
+  id FaxSent
+  argument fax : Fax
+  argument amb : Ambulance
+  formalspec exists ambInfo : AmbulanceInfo . 
+              (amb, ambInfo) in AmbulanceTracking
+              and (ambInfo, fax) in SentFaxes
+end
+
+declare predicate
+  id FaxPrintedAtStation
+  argument fax : Fax
+  argument amb : Ambulance
+  formalspec (amb, fax) in PrintedFaxes
+end
+
+declare predicate
+  id FaxReceived
+  argument fax : Fax
+  argument amb : Ambulance
+  formalspec (amb, fax) in ReceivedFaxes 
+              and amb.AmbulanceID == fax.ambulanceID
+end
+
+#endregion

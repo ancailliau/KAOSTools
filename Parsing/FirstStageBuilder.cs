@@ -121,7 +121,8 @@ namespace KAOSTools.Parsing
             if (hasName & !hasNameProperty)
                 throw new InvalidOperationException("Attempt to set a name to '" + element.GetType () + "'.");
 
-            if (hasNameProperty 
+            if (!hasIdentifier
+                && hasNameProperty 
                 && hasName 
                 && collection.Any(predicate)) {
                 if (parsedElement.Override)

@@ -14,15 +14,6 @@ namespace KAOSTools.Parsing.Tests
                         id test
                     end", "test")]
         [TestCase(@"declare type
-                        id _test
-                    end", "_test")]
-        [TestCase(@"declare type
-                        id -test
-                    end", "-test")]
-        [TestCase(@"declare type
-                        id $test
-                    end", "$test")]
-        [TestCase(@"declare type
                         id test_long_identifier
                     end", "test_long_identifier")]
         [TestCase(@"declare type
@@ -31,9 +22,6 @@ namespace KAOSTools.Parsing.Tests
         [TestCase(@"declare type
                         id test12
                     end", "test12")]
-        [TestCase(@"declare type
-                        id 0
-                    end", "0")]
         public void TestIdentifier (string input, string identifier)
         {
             var model = parser.Parse (input);

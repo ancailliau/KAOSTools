@@ -61,7 +61,7 @@ Association :=
                                                                                                                                                                                                          
 GoalAttribute := 
     ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByGoal 
-      / ObstructedBy / AssignedTo / RDSAttribute )
+      / ObstructedBy / AssignedTo / RDSAttribute / ExceptionAttribute / AssumptionAttribute )
     `value = results[0].Value;`
     
 DomPropAttribute := 
@@ -82,7 +82,7 @@ AgentAttribute :=
     `value = results[0].Value;`
                                                                          
 PredicateAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / SignatureAttribute / Argument 
+    ( IdAttribute / NameAttribute / DefinitionAttribute / Argument 
       / FormalSpecAttribute ) 
     `value = results[0].Value;`
 
@@ -110,10 +110,7 @@ IdAttribute := 'id' S Identifier
 NameAttribute := 'name' S '"' String? '"'
     `value = BuildNameAttribute(results);`
     
-SignatureAttribute := 'signature'  S '"' String? '"'
-    `value = BuildSignatureAttribute(results);`
-    
-FormalSpecAttribute := 'formalspec' S '"' Formula? '"' 
+FormalSpecAttribute := 'formalspec' S Formula
     `value = BuildFormalSpecAttribute(results);`
     
 DefinitionAttribute := 'definition' S '"' String? '"' 
@@ -127,8 +124,14 @@ Probability := ('probability' / 'eps') S Float
 
 ObstructedBy := 'obstructedby' S ( Obstacle / Name / Identifier ) 
     `value = BuildObstructedBy(results);`
+
+AssumptionAttribute := 'assumption' S ( ( 'not' ( Obstacle / Name / Identifier ) ) / ( DomHyp / Goal / Name / Identifier ))
+    `value = BuildAssumptionAttribute(results);`    
     
-ResolvedBy := 'resolvedby' S ( Goal / Name / Identifier )
+ExceptionAttribute := 'exception' S ( Obstacle / Name / Identifier ) (S 'then' S ( Goal / Name / Identifier ))?
+    `value = BuildExceptionAttribute(results);`    
+    
+ResolvedBy := 'resolvedby' ( S '(' S ResolutionPattern S ')' )? S ( Goal / Name / Identifier )
     `value = BuildResolvedBy(results);`
         
 AlternativeAttribute := 'alternative' S ( System / Name / Identifier ) 
@@ -152,10 +155,16 @@ RefinedByObstacle :=
     `value = BuildRefinedBy(results);`
     
 RefinedByGoal := 
-    'refinedby' ('[' S ( Name / Identifier ) S ']')? S 
+    'refinedby' S (RefinedByPattern S)? (RefinedByAlternative S)?
     ( Goal / DomProp / DomHyp / Name / Identifier ) 
     (S ',' S ( Goal / DomProp / DomHyp / Name / Identifier ) )*
     `value = BuildRefinedBy(results);`
+    
+RefinedByPattern := '(' S RefinementPattern S ')'
+    `value = BuildRefinedByPattern(results);`
+    
+RefinedByAlternative := ('[' S ( Name / Identifier ) S ']')
+    `value = BuildRefinedByAlternative(results);`
     
 AssignedTo := 
     'assignedto' ('[' S ( Name / Identifier ) S ']')? S 
@@ -172,6 +181,23 @@ Argument := 'argument' S Identifier S (':' S ( Entity / Name / Identifier ) )?
 Link := 'link' S Multiplicity? S ( Entity / Name / Identifier )
     `value = BuildLink(results);`
 
+
+# 
+
+ResolutionPattern := 
+	( 'substitution' / 'prevention' / 'obstacle_reduction' / 'restoration'
+	  / 'weakening' / 'weak_mitigation' / 'strong_mitigation' )
+	  ( S '[' S ( DomHyp / Goal / Name / Identifier ) ( S ',' S ( DomHyp / Goal / Name / Identifier ))* S ']' )?
+    `value = BuildResolutionPattern(results);`
+    
+RefinementPattern := 
+	( 'milestone' 
+	/ ( 'case' S '[' S ( Float ) S ']' ) 
+	/ 'introduce_guard' 
+	/ 'divide_and_conquer' 
+	/ 'unmonitorability' 
+	/ 'uncontrollability' )
+    `value = BuildRefinementPattern(results);`
     
 # Expressions                                
 
@@ -187,36 +213,39 @@ MultiplicityUpperBound :=
     ( [0-9] / 'M' / 'N' / '*' )
     `value = results[0].Value;`
 
-Identifier := [a-zA-Z0-9$_-]+
+Identifier := [a-zA-Z] [a-zA-Z0-9_-]*
     `value = BuildIdentifier(results);`
 
 Name := '"' String '"' 
     `value = BuildName(results);`
 
 String := ( ( '""' / [^"] )+ )
-    `value = null` `expected = "string"`
+    `value = BuildString(results)` `expected = "string"`
     
 Float := ('.' [0-9]+) / ( [0-9]+ ('.' [0-9]+)? )
-    `value = null` `expected = "float"`
+    `value = BuildFloat(results)` `expected = "float"`
 
 # Formal specification
 
 Formula := 
-    'forall' S Identifier S ':' S Identifier ( ',' S Identifier S ':' S Identifier )* S '.' S Formula
-    / 'exists' S Identifier S ':' S Identifier ( ',' S Identifier S ':' S Identifier )* S '.' S Formula
+    'forall' S Variable S ':' S (Identifier / Name) ( ',' S Variable S ':' S (Identifier / Name) )* S '.' S Formula
+    / 'exists' S Variable S ':' S (Identifier / Name) ( ',' S Variable S ':' S (Identifier / Name) )* S '.' S Formula
     / StrongBinary
     `value = BuildFormula(results);`
+    `expected = "temporal formula"`
 
 StrongBinary :=
     'when' S Binary S 'then' S Formula
     / Binary
     `value = BuildStrongBinary(results);`
+    `expected = "temporal implication"`
 
 Binary :=
     'if' S TemporalBinary S 'then' S Formula
     / TemporalBinary S 'iff' S Formula
     / TemporalBinary
     `value = BuildBinary(results);`
+    `expected = "binary formula"`
 
 TemporalBinary :=
     And S 'until' S Formula
@@ -224,41 +253,124 @@ TemporalBinary :=
     / And S 'unless' S Formula
     / And
     `value = BuildTemporalBinary(results);`
+    `expected = "temporal binary formula"`
 
 And :=
     Or S 'and' S Formula
     / Or
     `value = BuildAnd(results);`
+    `expected = "and"`
 
 Or := 
     Unary S 'or' S Formula
     / Unary
     `value = BuildOr(results);`
+    `expected = "or"`
 
 Unary :=
     'not' S Formula
     / 'next' S Formula
-    / ('sooner-or-later' / 'eventually') S Formula
-    / ('always' / 'globally') S Formula
+    / ('sooner-or-later' / 'eventually') (S EventuallyTimeBoundEmphasis)? S Formula (S 'before' S Formula)?
+    / ('always' / 'globally') (S GloballyTimeBoundEmphasis)? S Formula
     / Atom
     `value = BuildUnary(results);`
+    `expected = "unary formula"`
 
 Atom :=
-    '(' S Identifier ( S ',' S Identifier )* S ')' S 'in' S Identifier
-    / Identifier ( S '(' S Identifier ( S ',' S Identifier )* S ')' )
-    / Identifier '.' Identifier ( S ( '==' / '!=' / '>=' / '<=' / '>' / '<' ) S ( Identifier '.' Identifier / '\'' SingleQuoteString '\'' / Number ) )?
-    / Identifier
+    RelationReference
+    / Comparison
+    / AttributeReference
+    / PredicateReference
     / '(' S Formula S ')'
     `value = BuildAtom(results);`
+    `expected = "atomic formula"`
 
-SingleQuoteString := ( ( '\'\'' / [^'] )+ )
-    `value = null` `expected = "string"`
+Comparison :=
+	ComparisonMember S Comparator S ComparisonMember
+    `value = BuildComparison(results);`
+    `expected = "comparison"`
+
+Comparator :=
+	( '==' / '!=' / '>=' / '<=' / '>' / '<' ) 
+    `value = null;`
+    `expected = "comparator"`
+
+
+ComparisonMember := 
+	AttributeReference / PredicateReference / VariableReference / '"' String? '"' / Number / Bool
+    `value = BuildComparisonMember(results);`
+    `expected = "comparison member"`
+
+AttributeReference :=
+	Variable '.' (Identifier / Name)
+    `value = BuildAttributeReference(results);`
+    `expected = "attribute reference"`
+
+RelationReference :=
+	'(' S Variable ( S ',' S Variable )* S ')' S 'in' S (Identifier / Name)
+    `value = BuildRelationReference(results);`
+    `expected = "relation reference"`
+
+PredicateReference :=  
+	Identifier ( S '(' S (Variable ( S ',' S Variable )*)? S ')' )
+	/ Name  S '(' S (Variable ( S ',' S Variable )*)? S ')'
+    `value = BuildPredicateReference(results);`
+    `expected = "predicate reference"`
+
+VariableReference := Variable
+    `value = BuildVariable(results)` `expected = "number"`
+
+EventuallyTimeBoundEmphasis := 
+	',' S EventuallyTimeBound S ','
+    `value = results[1].Value;`
+    `expected = "time bound emphasis"`
+
+GloballyTimeBoundEmphasis := 
+	',' S GloballyTimeBound S ','
+    `value = results[1].Value;`
+    `expected = "time bound emphasis"`
+
+EventuallyTimeBound := 
+	('strictly' S)? 'before' S TimeConstraint
+	/ ('strictly' S)? 'after' S TimeConstraint
+	/ 'in' S TimeConstraint
+    `value = BuildEventuallyTimeBound(results);`
+    `expected = "time bound"`
+
+GloballyTimeBound :=
+	'for' S ('strictly' S)? 'more' S 'than' S TimeConstraint
+	/ 'for' S ('strictly' S)? 'less' S 'than' S TimeConstraint
+	/ 'for' S TimeConstraint
+    `value = BuildGloballyTimeBound(results);`
+    `expected = "time bound"`
+	
+TimeConstraint :=
+	(Integer S TimeUnit) (S Integer S TimeUnit)*
+    `value = BuildTimeConstraint(results);`
+    `expected = "time"`
+	
+TimeUnit :=
+	( 'day' 's'? / 'd' )
+	/ ( 'hour' 's'? / 'h' )
+	/ ( 'minute' 's'? / 'min' )
+	/ ( 'second' 's'? / 's' )
+	/ ( 'milisecond' 's'? / 'ms' )
+    `value = null` `expected = "time unit"`
+
+Integer := [0-9]+
+    `value = null` `expected = "integer"`
 
 Number := ( '.' [0-9]+ / [0-9]+ ( '.' [0-9]+ )? )
-    `value = null` `expected = "string"`
+    `value = null` `expected = "number"`
+
+Variable := [a-z]+ [a-zA-Z0-9]*
+    `value = null` `expected = "number"`
+
+Bool := 'true' / 'false'
+    `value = null` `expected = "bool"`
 
 # Spaces and comments
 
 S := (Space* Comment+ Space*)+ / Space* `text = null`
 Space := [ \t\r\n] `;` `expected = "whitespace"`
-Comment := '#' [^\r\n]* `text = null`
+Comment := '#' [^\r\n]* `text = null` `expected = "comment"`

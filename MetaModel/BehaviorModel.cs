@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra.Double;
-using LtlSharp;
 
 namespace KAOSTools.MetaModel
 {
@@ -64,7 +63,7 @@ namespace KAOSTools.MetaModel
     public class State {
         public string            Identifier        { get; set; }
         public bool              Initial           { get; set; }
-        public ISet<Proposition> ValidPropositions { get; set; }
+        public ISet<Predicate> ValidPropositions { get; set; }
 
         public State ()
             : this ("")
@@ -78,7 +77,7 @@ namespace KAOSTools.MetaModel
         {
             Identifier        = identifier;
             Initial           = initial;
-            ValidPropositions = new HashSet<Proposition> ();
+            ValidPropositions = new HashSet<Predicate> ();
         }
 
         public State (State copy)

@@ -1,5 +1,4 @@
 using System;
-using LtlSharp;
 
 namespace KAOSTools.MetaModel.Tests
 {
@@ -10,7 +9,7 @@ namespace KAOSTools.MetaModel.Tests
             var sm = new MarkovChain ();
             
             var s1 = sm.Add (new State ("s1", true));
-            s1.ValidPropositions.Add (new Proposition ("state_one"));
+            s1.ValidPropositions.Add (new Predicate () { Name = "state_one" });
             
             sm.Add (new Transition ("t1", 1, s1, s1));
             
@@ -54,8 +53,8 @@ namespace KAOSTools.MetaModel.Tests
             var s1 = sm.Add (new State ("s1", true));
             var s2 = sm.Add (new State ("s2"));
             
-            s1.ValidPropositions.Add (new Proposition ("state_one"));
-            s2.ValidPropositions.Add (new Proposition ("state_two"));
+            s1.ValidPropositions.Add (new Predicate { Name = "state_one" });
+            s2.ValidPropositions.Add (new Predicate { Name = "state_two" });
             
             sm.Add (new Transition ("t1", 1, s1, s2));
             sm.Add (new Transition ("t2", 1, s2, s1));
@@ -70,8 +69,8 @@ namespace KAOSTools.MetaModel.Tests
             var s1 = sm.Add (new State ("s1", true));
             var s2 = sm.Add (new State ("s2"));
             
-            s1.ValidPropositions.Add (new Proposition ("state_one"));
-            s2.ValidPropositions.Add (new Proposition ("state_two"));
+            s1.ValidPropositions.Add (new Predicate { Name = "state_one" });
+            s2.ValidPropositions.Add (new Predicate { Name = "state_two" });
             
             sm.Add (new Transition ("t1", .5, s1, s2));
             sm.Add (new Transition ("t2", .5, s1, s1));

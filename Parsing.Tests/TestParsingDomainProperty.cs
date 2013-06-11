@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using KAOSTools.Parsing;
-using LtlSharp;
 using ShallTests;
 using KAOSTools.MetaModel;
 
@@ -17,15 +16,6 @@ namespace KAOSTools.Parsing.Tests
                         id test
                     end", "test")]
         [TestCase(@"declare domainproperty
-                        id _test
-                    end", "_test")]
-        [TestCase(@"declare domainproperty
-                        id -test
-                    end", "-test")]
-        [TestCase(@"declare domainproperty
-                        id $test
-                    end", "$test")]
-        [TestCase(@"declare domainproperty
                         id test_long_identifier
                     end", "test_long_identifier")]
         [TestCase(@"declare domainproperty
@@ -34,9 +24,6 @@ namespace KAOSTools.Parsing.Tests
         [TestCase(@"declare domainproperty
                         id test12
                     end", "test12")]
-        [TestCase(@"declare domainproperty
-                        id 0
-                    end", "0")]
         public void TestIdentifier (string input, string expectedIdentifier)
         {
             var model = parser.Parse (input);
@@ -79,20 +66,7 @@ namespace KAOSTools.Parsing.Tests
             Assert.Throws<ParserException> (() => {
                 parser.Parse (input);
             });
-        }        
-        
-        [Test()]
-        public void TestFormalSpec ()
-        {
-            var input = @"declare domainproperty
-                              id          test
-                              formalspec  ""paf""
-                          end";
-            
-            var model = parser.Parse (input);
-            var test = model.GoalModel.DomainProperties.Where (x => x.Identifier == "test").ShallBeSingle ();
-            Assert.IsNotNull (test.FormalSpec);
-        }
+        }      
                 
         [TestCase(@"declare domprop
                         id test
@@ -104,7 +78,6 @@ namespace KAOSTools.Parsing.Tests
                         id test
                         name ""new name""
                         definition ""new definition""
-                        formalspec ""new""
                     end")]
         [TestCase(@"declare domprop
                         id test
@@ -114,7 +87,6 @@ namespace KAOSTools.Parsing.Tests
                         id test
                         name ""new name""
                         definition ""new definition""
-                        formalspec ""new""
                     end")]
         public void TestMerge (string input)
         {
@@ -123,7 +95,6 @@ namespace KAOSTools.Parsing.Tests
             var domprop = model.GoalModel.DomainProperties.Where (x => x.Identifier == "test").ShallBeSingle ();
             domprop.Name.ShallEqual ("new name");
             domprop.Definition.ShallEqual ("new definition");
-            ((PredicateReference) domprop.FormalSpec).Predicate.Signature.ShallEqual ("new");
         }
         
         [TestCase(@"declare domainproperty id test  end

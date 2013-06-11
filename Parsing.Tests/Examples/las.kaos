@@ -4,47 +4,50 @@
 
 declare goal
   id          achieve_ambulance_on_scene_when_incident_reported
-  name        "Achieve [AmbulanceOnScene When IncidentReported]"
+  name        "Achieve [Ambulance On Scene When Incident Reported]"
   definition  "Sooner-or-later, ambulance shall be on scene when incident is reported."
-  formalspec  "when incidentReported then sooner-or-later ambulanceOnScene"
+  formalspec  when incidentReported() then sooner-or-later ambulanceOnScene()
   
-  refinedby   achieve_ambulance_allocated_when_incident_reported, 
+  refinedby (milestone)
+  			  achieve_ambulance_allocated_when_incident_reported, 
               achieve_ambulance_on_scene_when_ambulance_allocated
 end
 
 declare goal
   id          achieve_ambulance_allocated_when_incident_reported
-  name        "Achieve [AmbulanceAllocated When IncidentReported]"
+  name        "Achieve [Ambulance Allocated When Incident Reported]"
   definition  "Sooner-or-later, ambulance shall be allocated when incident is reported."
-  formalspec  "when incidentReported then sooner-or-later ambulanceAllocated"
+  formalspec  when incidentReported() then sooner-or-later ambulanceAllocated()
   assignedto  "ADS"
 end
 
 declare goal
   id          achieve_ambulance_on_scene_when_ambulance_allocated
-  name        "Achieve [AmbulanceOnScene When AmbulanceAllocated]"
+  name        "Achieve [Ambulance On Scene When Ambulance Allocated]"
   definition  "Sooner-or-later, ambulance shall be on scene when allocated."
-  formalspec  "when ambulanceAllocated then sooner-or-later ambulanceOnScene"
+  formalspec  when ambulanceAllocated() then sooner-or-later ambulanceOnScene()
   
-  refinedby   achieve_ambulance_mobilized_when_ambulance_allocated, 
+  refinedby (milestone)  
+  			  achieve_ambulance_mobilized_when_ambulance_allocated, 
               achieve_ambulance_on_scene_when_ambulance_mobilized
 end
 
 declare goal
   id          achieve_ambulance_mobilized_when_ambulance_allocated
-  name        "Achieve [AmbulanceMobilized When AmbulanceAllocated]"
+  name        "Achieve [Ambulance Mobilized When Ambulance Allocated]"
   definition  "Sooner-or-later, ambulance shall be mobilized when allocated."
-  formalspec  "when ambulanceAllocated then sooner-or-later ambulanceMobilized"
+  formalspec  when ambulanceAllocated() then sooner-or-later ambulanceMobilized()
   
-  refinedby   achieve_ambulance_mobilized_when_ambulance_allocated_on_road, 
+  refinedby (case[.8])  
+  			  achieve_ambulance_mobilized_when_ambulance_allocated_on_road, 
               achieve_ambulance_mobilized_when_ambulance_allocated_at_station
 end
 
 declare goal
   id           achieve_ambulance_on_scene_when_ambulance_mobilized
-  name         "Achieve [AmbulanceOnScene When AmbulanceMobilized]"
+  name         "Achieve [Ambulance On Scene When Ambulance Mobilized]"
   definition   "Sooner-or-later, ambulance shall be on scene when mobilized."
-  formalspec   "when ambulanceMobilized then sooner-or-later ambulanceOnScene"
+  formalspec   when ambulanceMobilized() then sooner-or-later ambulanceOnScene()
   assignedto   "Ambulance Staff"
   
   obstructedby mobilized_ambulance_not_on_scene_in_time
@@ -52,17 +55,17 @@ end
 
 declare goal
   id           achieve_ambulance_mobilized_when_ambulance_allocated_on_road
-  name         "Achieve [AmbulanceMobilized When AmbulanceAllocatedOnRoad]"
+  name         "Achieve [Ambulance Mobilized When Ambulance Allocated On Road]"
   definition   "Sooner-or-later, ambulance shall be mobilized when allocated and on road."
-  formalspec   "when ambulanceAllocated and onRoad then sooner-or-later ambulanceMobilized"
+  formalspec   when ambulanceAllocated() and onRoad() then sooner-or-later ambulanceMobilized()
   assignedto   "Despatcher"
 end
 
 declare goal
   id           achieve_ambulance_mobilized_when_ambulance_allocated_at_station
-  name         "Achieve [AmbulanceMobilized When AmbulanceAllocatedAtStation]"
+  name         "Achieve [Ambulance Mobilized When Ambulance Allocated At Station]"
   definition   "Sooner-or-later, ambulance shall be mobilized when allocated and at station."
-  formalspec   "when ambulanceAllocated and not onRoad then sooner-or-later ambulanceMobilized"
+  formalspec   when ambulanceAllocated() and not onRoad() then sooner-or-later ambulanceMobilized()
   
   refinedby    achieve_ambulance_mobilized_by_fax, 
                achieve_ambulance_mobilized_by_phone,
@@ -71,17 +74,17 @@ end
 
 declare goal
   id           achieve_ambulance_mobilized_by_fax
-  name         "Achieve [AmbulanceMobilizedByFax When AmbulanceAllocatedAtStation]"
+  name         "Achieve [Ambulance Mobilized By Fax When Ambulance Allocated At Station]"
   definition   "Sooner-or-later, ambulance shall be mobilized by fax when allocated and at station."
-  formalspec   "when ambulanceAllocated and not onRoad then sooner-or-later ambulanceMobilizedByFax"
+  formalspec   when ambulanceAllocated() and not onRoad() then sooner-or-later ambulanceMobilizedByFax()
   assignedto   "ADS"
 end
 
 declare goal
   id           achieve_ambulance_mobilized_by_phone
-  name         "Achieve [AmbulanceMobilizedByPhone When AmbulanceAllocatedAtStation]"
+  name         "Achieve [Ambulance Mobilized By Phone When Ambulance Allocated At Station]"
   definition   "Sooner-or-later, ambulance shall be mobilized by phone when allocated and at station."
-  formalspec   "when ambulanceAllocated and not onRoad then sooner-or-later ambulanceMobilizedByPhone"
+  formalspec   when ambulanceAllocated() and not onRoad() then sooner-or-later ambulanceMobilizedByPhone()
   assignedto   "Despatcher"
 end
 
@@ -93,7 +96,7 @@ declare obstacle
   id           mobilized_ambulance_not_on_scene_in_time
   name         "Mobilized Ambulance Not On Scene in Time"
   definition   "Ambulance is mobilized and cannot reach the incident scene within time constraints"
-  formalspec   "sooner-or-later (ambulanceMobilized and always not ambulanceOnScene)"
+  formalspec   sooner-or-later (ambulanceMobilized() and always not ambulanceOnScene())
   
   refinedby    ambulance_stuck_in_traffic_jam, ambulance_on_scene_not_in_traffic_jam
   refinedby    ambulance_lost, ambulance_on_scene_not_lost
@@ -104,14 +107,14 @@ declare obstacle
   id           ambulance_stuck_in_traffic_jam
   name         "Ambulance Stuck In Traffic Jam"
   definition   "Ambulance is mobilized and is stuck in traffic jams"
-  formalspec   "sooner-or-later (ambulanceMobilized and always (ambulanceInTrafficJam))"
+  formalspec   sooner-or-later (ambulanceMobilized() and always (ambulanceInTrafficJam()))
 end
 
 declare obstacle
   id           ambulance_lost
   name         "Ambulance Lost"
   definition   "Ambulance is mobilized and is lost and cannot find his way to incident scene"
-  formalspec   "sooner-or-later (ambulanceMobilized and always (ambulanceLost))"
+  formalspec   sooner-or-later (ambulanceMobilized() and always (ambulanceLost()))
   refinedby    ambulance_not_in_familiar_area, gps_not_working, ambulance_lost_iff_gps_not_working_and_not_in_familiar_area
 end
 
@@ -119,21 +122,21 @@ declare obstacle
   id           ambulance_broken_down
   name         "Ambulance Broken Down"
   definition   "Ambulance is mobilized and is broken down"
-  formalspec   "sooner-or-later (ambulanceMobilized and always (ambulanceBrokenDown))"
+  formalspec   sooner-or-later (ambulanceMobilized() and always (ambulanceBrokenDown()))
 end
 
 declare obstacle
   id           ambulance_not_in_familiar_area
   name         "Ambulance Not In Familiar Area"
   definition   "Ambulance is mobilized and is in a unfamiliar area"
-  formalspec   "sooner-or-later (ambulanceMobilized and always (not ambulanceInFamiliarArea))"
+  formalspec   sooner-or-later (ambulanceMobilized() and always (not ambulanceInFamiliarArea()))
 end
 
 declare obstacle
   id           gps_not_working
   name         "GPS Not Working"
   definition   "Ambulance is mobilized and the GPS is not working"
-  formalspec   "sooner-or-later (ambulanceMobilized and always (gpsNotWorking))"
+  formalspec   sooner-or-later (ambulanceMobilized() and always (gpsNotWorking()))
 end
 
 #
@@ -148,7 +151,7 @@ end
 declare goal
   id          avoid_ambulance_not_in_familiar_area
   name        "Avoid [Ambulance Not In Familiar Area]"
-  formalspec  "when ambulanceMobilized then ambulanceInFamiliarArea"
+  formalspec  when ambulanceMobilized() then ambulanceInFamiliarArea()
 end
 
 #
@@ -159,35 +162,35 @@ declare domainproperty
   id           ambulance_on_scene_not_in_traffic_jam
   name         "Ambulance On Scene Not In Traffic Jam"
   definition   "Ambulance cannot reach incident scene if stuck in traffic jams."
-  formalspec   "always (if ambulanceOnScene then not ambulanceInTrafficJam)"
+  formalspec   always (if ambulanceOnScene() then not ambulanceInTrafficJam())
 end
 
 declare domainproperty
   id           ambulance_on_scene_not_lost
   name         "Ambulance On Scene Not Lost"
   definition   "Ambulance cannot reach incident scene if lost."
-  formalspec   "always (if ambulanceOnScene then not ambulanceLost)"
+  formalspec   always (if ambulanceOnScene() then not ambulanceLost())
 end
 
 declare domainproperty
   id           ambulance_on_scene_not_broken_down
   name         "Ambulance On Scene Broken Down"
   definition   "Ambulance cannot reach incident scene if broken down."
-  formalspec   "always (if ambulanceOnScene then not ambulanceBrokenDown)"
+  formalspec   always (if ambulanceOnScene() then not ambulanceBrokenDown())
 end
 
 declare domainproperty
   id           ambulance_lost_iff_gps_not_working_and_not_in_familiar_area
   name         "Ambulance Lost Iff GPS Not Working And Not In Familiar Area"
   definition   "Ambulance cannot reach incident scene if in unfamiliar area and if the GPS is not working."
-  formalspec   "always (ambulanceLost iff (not ambulanceInFamiliarArea and gpsNotWorking))"
+  formalspec   always (ambulanceLost() iff (not ambulanceInFamiliarArea() and gpsNotWorking()))
 end
 
 declare domainproperty
   id           by_fax_or_by_phone_mobilization
   name         "Ambulance Mobilized By Fax or Phone"
   definition   "An ambulance mobilized by fax or by phone is considered as mobilized."
-  formalspec   "always (if (ambulanceMobilizedByFax or ambulanceMobilizedByPhone) then ambulanceMobilized)"
+  formalspec   always (if (ambulanceMobilizedByFax() or ambulanceMobilizedByPhone()) then ambulanceMobilized())
 end
 
 #

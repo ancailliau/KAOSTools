@@ -2,6 +2,7 @@ using System;
 using KAOSTools.MetaModel;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace KAOSTools.Parsing
 {
@@ -119,11 +120,21 @@ namespace KAOSTools.Parsing
                 };
             } else if (value.GetType() == typeof (ParsedEventuallyExpression)) {
                 return new Eventually () { 
-                    Enclosed = BuildFormula ((value as ParsedEventuallyExpression).Enclosed, declaredVariables)
+                    Enclosed = BuildFormula ((value as ParsedEventuallyExpression).Enclosed, declaredVariables),
+                    TimeBound = BuildTimeBound ((value as ParsedEventuallyExpression).TimeBound)
                 };
+
+            } else if (value.GetType() == typeof (ParsedEventuallyBeforeExpression)) {
+                return new EventuallyBefore () { 
+                    Left = BuildFormula ((value as ParsedEventuallyBeforeExpression).Left, declaredVariables),
+                    Right = BuildFormula ((value as ParsedEventuallyBeforeExpression).Right, declaredVariables),
+                    TimeBound = BuildTimeBound ((value as ParsedEventuallyBeforeExpression).TimeBound)
+                };
+
             } else if (value.GetType() == typeof (ParsedGloballyExpression)) {
                 return new Globally () { 
-                    Enclosed = BuildFormula ((value as ParsedGloballyExpression).Enclosed, declaredVariables)
+                    Enclosed = BuildFormula ((value as ParsedGloballyExpression).Enclosed, declaredVariables),
+                    TimeBound = BuildTimeBound ((value as ParsedGloballyExpression).TimeBound)
                 };
                 
             } else if (value.GetType() == typeof (ParsedPredicateReferenceExpression)) {
@@ -131,14 +142,15 @@ namespace KAOSTools.Parsing
                 
                 // Check if arguments are all defined
                 foreach (var arg in prel.ActualArguments) {
-                    if (!declaredVariables.ContainsKey (arg.Value)) {
+                    if (!declaredVariables.ContainsKey (arg)) {
                         throw new CompilationException (string.Format("'{0}' is not declared ({1}:{2},{3})", 
-                                                                      arg.Value, prel.Filename, prel.Line, prel.Col));
+                                                                      arg, prel.Filename, prel.Line, prel.Col));
                     }
                 }
                 
                 return new PredicateReference () {
-                    Predicate = GetOrCreatePredicate (prel, declaredVariables)
+                    Predicate = GetOrCreatePredicate (prel, declaredVariables),
+                    ActualArguments = prel.ActualArguments
                 };
             } else if (value.GetType() == typeof (ParsedInRelationExpression)) {
                 var prel = value as ParsedInRelationExpression;
@@ -149,7 +161,8 @@ namespace KAOSTools.Parsing
                 }
                 
                 return new RelationReference () {
-                    Relation = GetOrCreateRelation (value as ParsedInRelationExpression, declaredVariables)
+                    Relation = GetOrCreateRelation (value as ParsedInRelationExpression, declaredVariables),
+                    ActualArguments = prel.Variables
                 };
             } else if (value.GetType() == typeof (ParsedAttributeReferenceExpression)) {
                 var pref = value as ParsedAttributeReferenceExpression;
@@ -188,13 +201,22 @@ namespace KAOSTools.Parsing
                     Right = BuildFormula (pref.Right, declaredVariables)
                 };
             } else if (value.GetType() == typeof (ParsedStringConstantExpression)) {
-                return new StringConstant { Value = (value as ParsedStringConstantExpression).Value };
+                return new StringConstant { Value = Sanitize((value as ParsedStringConstantExpression).Value) };
                 
-            } else if (value.GetType() == typeof (ParsedBoolConstantExpression)) {
+            } else if (value.GetType() == typeof (ParsedNumericConstantExpression)) {
                 return new NumericConstant { Value = (value as ParsedNumericConstantExpression).Value };
+            } else if (value.GetType() == typeof (ParsedBoolConstantExpression)) {
+                return new BoolConstant { Value = (value as ParsedBoolConstantExpression).Value };
+            } else if (value.GetType() == typeof (ParsedVariableReference)) {
+                if (!declaredVariables.ContainsKey((value as ParsedVariableReference).Value)) {
+                    throw new CompilationException (string.Format ("Variable '{0}' is not declared", (value as ParsedVariableReference).Value));
+                }
+
+                return new VariableReference { Name = (value as ParsedVariableReference).Value };
             }
             
-            throw new NotImplementedException ();
+            throw new NotImplementedException (string.Format ("{0} is not yet supported", 
+                                                              value.GetType ().Name));
         }
         
         public Formula BuildPredicateFormula (KAOSTools.MetaModel.Predicate p, ParsedElement value)
@@ -208,12 +230,75 @@ namespace KAOSTools.Parsing
             return BuildFormula (value, dict);
         }
 
-        
-        private KAOSTools.MetaModel.Entity GetOrCreateEntity (string signature) {
-            var type = model.Entities.SingleOrDefault (t => t.Name == signature);
+        #region 
+
+        TimeBound BuildTimeBound (ParsedTimeBound parsed) {
+            if (parsed == null)
+                return null;
+
+            TimeComparator comparator;
+            if (parsed.Comparator == ParsedTimeComparator.equal) {
+                comparator = TimeComparator.equal;
+            } else if (parsed.Comparator == ParsedTimeComparator.greater) {
+                comparator = TimeComparator.greater;
+            } else if (parsed.Comparator == ParsedTimeComparator.less) {
+                comparator = TimeComparator.less;
+            } else if (parsed.Comparator == ParsedTimeComparator.strictly_greater) {
+                comparator = TimeComparator.strictly_greater;
+            } else if (parsed.Comparator == ParsedTimeComparator.strictly_less) {
+                comparator = TimeComparator.strictly_less;
+            } else {
+                throw new NotImplementedException ();
+            }
+
+            return new TimeBound {
+                Comparator = comparator,
+                Bound = BuildTime (parsed.Bound)
+            };
+        }
+
+        TimeSpan BuildTime (ParsedTime parsed) {
+            return parsed.Constraints.Select (BuildAtomicTime).Aggregate (new TimeSpan(), (x,y) => x+y);
+        }
+
+        TimeSpan BuildAtomicTime (ParsedAtomicTime parsed) {
+            if (parsed.Unit == ParsedTimeUnit.day)
+                return new TimeSpan (parsed.Duration, 0, 0, 0, 0);
             
+            if (parsed.Unit == ParsedTimeUnit.hour)
+                return new TimeSpan (0, parsed.Duration, 0, 0, 0);
+
+            if (parsed.Unit == ParsedTimeUnit.minute)
+                return new TimeSpan (0, 0, parsed.Duration, 0, 0);
+            
+            if (parsed.Unit == ParsedTimeUnit.second)
+                return new TimeSpan (0, 0, 0, parsed.Duration, 0);
+            
+            if (parsed.Unit == ParsedTimeUnit.milisecond)
+                return new TimeSpan (0, 0, 0, 0, parsed.Duration);
+
+            throw new NotImplementedException ();
+        }
+
+        #endregion
+
+        Entity GetOrCreateEntity (dynamic idOrName) {
+            Entity type;
+            if (idOrName is NameExpression)
+                type = model.Entities.SingleOrDefault (t => t.Name == idOrName.Value);
+            else if (idOrName is IdentifierExpression)
+                type = model.Entities.SingleOrDefault (t => t.Identifier == idOrName.Value);
+            else 
+                throw new NotImplementedException ();
+
             if (type == null) {
-                type = new KAOSTools.MetaModel.Entity() { Name = signature, Implicit = true };
+                if (idOrName is NameExpression)
+                    type = new Entity { Name = idOrName.Value, Implicit = true };
+                else if (idOrName is IdentifierExpression)
+                    type = new Entity { Identifier = idOrName.Value, Implicit = true };
+                else 
+                    throw new NotImplementedException ();
+
                 model.Entities.Add (type);
             }
             
@@ -221,35 +306,57 @@ namespace KAOSTools.Parsing
         }
         
         
-        private KAOSTools.MetaModel.Attribute GetOrCreateAttribute (ParsedAttributeReferenceExpression pref, KAOSTools.MetaModel.Entity entity) {
+        KAOSTools.MetaModel.Attribute GetOrCreateAttribute (ParsedAttributeReferenceExpression pref, KAOSTools.MetaModel.Entity entity) {
             if (entity != null) {
-                var attribute = entity.Attributes.SingleOrDefault (x => x.Name == pref.AttributeSignature);
-                if (attribute == null) {
-                    attribute = new KAOSTools.MetaModel.Attribute () { Name = pref.AttributeSignature, Implicit = true } ;
-                    entity.Attributes.Add (attribute);
-                }
-                return attribute;
+                if (pref.AttributeSignature is NameExpression) {
+                    var attribute = entity.Attributes.SingleOrDefault (x => x.Name == pref.AttributeSignature.Value);
+                    if (attribute == null) {
+                        attribute = new KAOSTools.MetaModel.Attribute () { Name = pref.AttributeSignature.Value, Implicit = true } ;
+                        entity.Attributes.Add (attribute);
+                    }
+                    return attribute;
+                } else if (pref.AttributeSignature is IdentifierExpression) {
+                    var attribute = entity.Attributes.SingleOrDefault (x => x.Identifier == pref.AttributeSignature.Value);
+                    if (attribute == null) {
+                        attribute = new KAOSTools.MetaModel.Attribute () { Identifier = pref.AttributeSignature.Value, Implicit = true } ;
+                        entity.Attributes.Add (attribute);
+                    }
+                    return attribute;
+                } else 
+                    throw new NotImplementedException (pref.AttributeSignature.GetType() + " is not yet supported");
                 
             } else {
                 throw new Exception (string.Format("Entity '{0}' not found", pref.Variable));
             }
         }
         
-        private KAOSTools.MetaModel.Relation GetOrCreateRelation (ParsedInRelationExpression rel, Dictionary<string, KAOSTools.MetaModel.Entity> declarations)
+        Relation GetOrCreateRelation (ParsedInRelationExpression rel, Dictionary<string, KAOSTools.MetaModel.Entity> declarations)
         {
-            string identifierOrName = rel.Relation;
-            var type = model.Entities.SingleOrDefault (t => t.GetType() == typeof(Relation) & t.Identifier == identifierOrName) as Relation;
+            dynamic identifierOrName = rel.Relation;
+
+            Relation type;
+            if (identifierOrName is NameExpression) {
+                type = model.Entities.SingleOrDefault (t => t.GetType() == typeof(Relation) & t.Name == identifierOrName.Value) as Relation;
+
+            } else if (identifierOrName is IdentifierExpression) {
+                type = model.Entities.SingleOrDefault (t => t.GetType() == typeof(Relation) & t.Identifier == identifierOrName.Value) as Relation;
+
+            } else {
+                throw new NotImplementedException ();
+            }
             
             if (type == null) {
-                type = model.Entities.FirstOrDefault (t => t.GetType() == typeof(Relation) & t.Name == identifierOrName) as Relation;
-                
-                if (type == null) {
-                    type = new KAOSTools.MetaModel.Relation() { Identifier = identifierOrName, Implicit = true };
-                    foreach (var arg in rel.Variables) {
-                        type.Links.Add (new KAOSTools.MetaModel.Link(declarations[arg]));
-                    }
-                    model.Entities.Add (type);
+                if (identifierOrName is NameExpression) {
+                    type = new Relation() { Name = identifierOrName.Value, Implicit = true };
+                } else if (identifierOrName is IdentifierExpression) {
+                    type = new Relation() { Identifier = identifierOrName.Value, Implicit = true };
                 }
+
+                foreach (var arg in rel.Variables) {
+                    type.Links.Add (new Link(declarations[arg]));
+                }
+
+                model.Entities.Add (type);
             } else {
                 // Check that types matches
                 // TODO make this shit more robust. In the case of two links to a same entity, this
@@ -264,31 +371,45 @@ namespace KAOSTools.Parsing
             return type;
         }
         
-        private KAOSTools.MetaModel.Predicate GetOrCreatePredicate (ParsedPredicateReferenceExpression parsedPred, 
-                                                                    Dictionary<string, KAOSTools.MetaModel.Entity> declarations)
+        Predicate GetOrCreatePredicate (ParsedPredicateReferenceExpression parsedPred,
+                                        Dictionary<string, KAOSTools.MetaModel.Entity> declarations)
         {
-            var signature = parsedPred.PredicateSignature;
-            var predicate = model.Predicates.SingleOrDefault (t => t.Signature == signature);
-            
+            var idOrName = parsedPred.PredicateSignature;
+            Predicate predicate;
+            if (idOrName is NameExpression)
+                predicate = model.Predicates.SingleOrDefault (t => t.Name == idOrName.Value);
+            else if (idOrName is IdentifierExpression)
+                predicate = model.Predicates.SingleOrDefault (t => t.Identifier == idOrName.Value);
+            else
+                throw new NotImplementedException (idOrName.GetType().Name + " is not yet supported");
+
             if (predicate == null) {
-                predicate = new KAOSTools.MetaModel.Predicate() { Signature = signature, Implicit = true };
+                if (idOrName is NameExpression)
+                    predicate = new Predicate() { Name = idOrName.Value, Implicit = true };
+                else if (idOrName is IdentifierExpression)
+                    predicate = new Predicate() { Identifier = idOrName.Value, Implicit = true };
+                else
+                    throw new NotImplementedException ();
+
                 foreach (var arg in parsedPred.ActualArguments) {
-                    predicate.Arguments.Add (new PredicateArgument() { Name = arg.Value, Type = declarations[arg.Value] });
+                    predicate.Arguments.Add (new PredicateArgument() { Name = arg, Type = declarations[arg] });
                 }
+
                 model.Predicates.Add (predicate);
+
             } else {
                 // Check that same number of arguments are used (if none is already declared)
                 if (predicate.Arguments.Count > 0 && parsedPred.ActualArguments.Count != predicate.Arguments.Count) {
-                    throw new CompilationException ("Predicate '" + signature + "' arguments mismatch. " +
+                    throw new CompilationException ("Predicate '" + idOrName.Value + "' arguments mismatch. " +
                                                     "Expect " + predicate.Arguments.Count + " arguments but " + parsedPred.ActualArguments.Count + " received.");
                 } else {
                     // Check that arguments match the declared type (if none is already declared)
                     if (predicate.Arguments.Count > 0) {
                         for (int i = 0; i < parsedPred.ActualArguments.Count; i++) {
                             var parsedArg = parsedPred.ActualArguments[i];
-                            if (declarations[parsedArg.Value] != predicate.Arguments[i].Type) {
-                                throw new CompilationException ("Predicate '" + signature + "' arguments mismatch. " +
-                                                                "Argument '" + parsedArg.Value + "' is type '" + declarations[parsedArg.Value].Name + "' " +
+                            if (declarations[parsedArg] != predicate.Arguments[i].Type) {
+                                throw new CompilationException ("Predicate '" + idOrName + "' arguments mismatch. " +
+                                                                "Argument '" + parsedArg + "' is type '" + declarations[parsedArg].Name + "' " +
                                                                 "but type '" + predicate.Arguments[i].Name + "' is expected.");
                             }
                         }
@@ -299,8 +420,8 @@ namespace KAOSTools.Parsing
                         for (int i = 0; i < parsedPred.ActualArguments.Count; i++) {
                             var parsedArg = parsedPred.ActualArguments[i];
                             predicate.Arguments.Add (new PredicateArgument () { 
-                                Name = parsedArg.Value, 
-                                Type = declarations[parsedArg.Value]
+                                Name = parsedArg, 
+                                Type = declarations[parsedArg]
                             });
                         }
                     }
@@ -309,6 +430,15 @@ namespace KAOSTools.Parsing
             
             return predicate;
         }
+        
+
+        protected string Sanitize (string text) 
+        {
+            var t = Regex.Replace(text, @"\s+", " ", RegexOptions.Multiline).Trim ();
+            t = Regex.Replace (t, "\"\"", "\"", RegexOptions.Multiline);
+            return t;
+        }
+
     }
 }
 

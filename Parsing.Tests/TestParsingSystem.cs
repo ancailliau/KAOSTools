@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using KAOSTools.Parsing;
-using LtlSharp;
 using ShallTests;
 
 namespace KAOSTools.Parsing.Tests
@@ -16,15 +15,6 @@ namespace KAOSTools.Parsing.Tests
                         id test
                     end", "test")]
         [TestCase(@"declare system
-                        id _test
-                    end", "_test")]
-        [TestCase(@"declare system
-                        id -test
-                    end", "-test")]
-        [TestCase(@"declare system
-                        id $test
-                    end", "$test")]
-        [TestCase(@"declare system
                         id test_long_identifier
                     end", "test_long_identifier")]
         [TestCase(@"declare system
@@ -33,9 +23,6 @@ namespace KAOSTools.Parsing.Tests
         [TestCase(@"declare system
                         id test12
                     end", "test12")]
-        [TestCase(@"declare system
-                        id 0
-                    end", "0")]
         public void TestIdentifier (string input, string expectedIdentifier)
         {
             var model = parser.Parse (input);

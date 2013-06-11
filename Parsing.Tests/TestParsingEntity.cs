@@ -15,15 +15,6 @@ namespace KAOSTools.Parsing.Tests
                         id test
                     end", "test")]
         [TestCase(@"declare entity
-                        id _test
-                    end", "_test")]
-        [TestCase(@"declare entity
-                        id -test
-                    end", "-test")]
-        [TestCase(@"declare entity
-                        id $test
-                    end", "$test")]
-        [TestCase(@"declare entity
                         id test_long_identifier
                     end", "test_long_identifier")]
         [TestCase(@"declare entity
@@ -32,9 +23,6 @@ namespace KAOSTools.Parsing.Tests
         [TestCase(@"declare entity
                         id test12
                     end", "test12")]
-        [TestCase(@"declare entity
-                        id 0
-                    end", "0")]
         public void TestIdentifier (string input, string identifier)
         {
             var model = parser.Parse (input);
@@ -44,8 +32,8 @@ namespace KAOSTools.Parsing.Tests
         }
 
         [TestCase(@"declare object
-                        id 0
-                    end", "0")]
+                        id test
+                    end", "test")]
         public void TestObject (string input, string identifier)
         {
             var model = parser.Parse (input);

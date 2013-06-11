@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using KAOSTools.Parsing;
-using LtlSharp;
 using System.Collections.Generic;
 using ShallTests;
 using KAOSTools.MetaModel;
@@ -18,15 +17,6 @@ namespace KAOSTools.Parsing.Tests
                         id test
                     end", "test")]
         [TestCase(@"declare obstacle
-                        id _test
-                    end", "_test")]
-        [TestCase(@"declare obstacle
-                        id -test
-                    end", "-test")]
-        [TestCase(@"declare obstacle
-                        id $test
-                    end", "$test")]
-        [TestCase(@"declare obstacle
                         id test_long_identifier
                     end", "test_long_identifier")]
         [TestCase(@"declare obstacle
@@ -35,9 +25,6 @@ namespace KAOSTools.Parsing.Tests
         [TestCase(@"declare obstacle
                         id test12
                     end", "test12")]
-        [TestCase(@"declare obstacle
-                        id 0
-                    end", "0")]
         public void TestIdentifier (string input, string expectedIdentifier)
         {
             var model = parser.Parse (input);
@@ -90,20 +77,6 @@ namespace KAOSTools.Parsing.Tests
             });
         }
 
-        
-        [Test()]
-        public void TestFormalSpec ()
-        {
-            var input = @"declare obstacle
-                              id          test
-                              formalspec  ""pouf""
-                          end";
-            
-            var model = parser.Parse (input);
-            var test = model.GoalModel.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
-            Assert.IsNotNull (test.FormalSpec);
-        }
-        
         [Test()]
         public void TestMultiple ()
         {
@@ -283,7 +256,6 @@ namespace KAOSTools.Parsing.Tests
                             id test
                             name ""old name""
                             definition ""old definition""
-                            formalspec ""old""
                             refinedby old_child1, old_child2
                             resolvedby old_goal
                         end
@@ -292,7 +264,6 @@ namespace KAOSTools.Parsing.Tests
                             id test
                             name ""new name""
                             definition ""new definition""
-                            formalspec ""new""
                             refinedby new_child1, new_child2
                             resolvedby new_goal
                         end";
@@ -302,8 +273,7 @@ namespace KAOSTools.Parsing.Tests
             var obstacle = model.GoalModel.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
             obstacle.Name.ShallEqual ("new name");
             obstacle.Definition.ShallEqual ("new definition");
-            ((PredicateReference) obstacle.FormalSpec).Predicate.Signature.ShallEqual ("new");
-            
+
             obstacle.Refinements.ShallContain (y => y.Subobstacles.Select (x => x.Identifier)
                                            .OnlyContains (new string[] { "old_child1", "old_child2" }));
             
@@ -311,7 +281,7 @@ namespace KAOSTools.Parsing.Tests
                                            .OnlyContains (new string[] { "new_child1", "new_child2" }));
             
             obstacle.Resolutions
-                .Select (x => x.Identifier)
+                .Select (x => x.ResolvingGoal.Identifier)
                     .ShallOnlyContain (new string[] { "new_goal", "old_goal" });
         }
 
@@ -356,7 +326,54 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             var test = model.GoalModel.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
-            test.Resolutions.Select (x => x.Identifier).ShallOnlyContain (new string[] { "goal_1", "goal_2" });
+            test.Resolutions.Select (x => x.ResolvingGoal.Identifier).ShallOnlyContain (new string[] { "goal_1", "goal_2" });
+        }
+
+        [TestCase(@"declare goal id obstructedgoal obstructedby test end
+                    declare obstacle
+                        id test
+                        resolvedby(prevention) goal
+                    end")]
+        public void TestResolutionPattern (string input)
+        {
+            var model = parser.Parse (input);
+            model.GoalModel.IntegrateResolutions ();
+
+            var test = model.GoalModel.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var resolution = test.Resolutions.Single ();
+            resolution.ResolvingGoal.Identifier.ShallEqual ("goal");
+            resolution.ResolutionPattern.ShallEqual (ResolutionPattern.ObstaclePrevention);
+
+            var obstructedGoal = model.GoalModel.Goals.Single (x => x.Identifier == "obstructedgoal");
+            var e = obstructedGoal.Assumptions.Single ();
+            e.Implicit.ShallBeTrue ();
+            Assert.AreEqual ("goal", e.Assumed.Identifier);
+        }
+
+        [TestCase(@"declare goal id obstructedgoal obstructedby test end
+                    declare obstacle
+                        id test
+                        resolvedby(weak_mitigation[anchor]) goal
+                    end")]
+        public void TestResolutionPatternWithAnchor (string input)
+        {
+            var model = parser.Parse (input);
+            model.GoalModel.IntegrateResolutions ();
+
+            var test = model.GoalModel.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var resolution = test.Resolutions.Single ();
+            resolution.ResolvingGoal.Identifier.ShallEqual ("goal");
+            resolution.ResolutionPattern.ShallEqual (ResolutionPattern.ObstacleWeakMitigation);
+            (resolution.Parameters.First() as Goal).Identifier.ShallEqual ("anchor");
+
+            Console.WriteLine (string.Join(",", model.GoalModel.Goals.Select(x => x.Identifier + "("+ x.Exceptions.Count + ")")));
+
+            var obstructedGoal = model.GoalModel.Goals.Single (x => x.Identifier == "anchor");
+            var e = obstructedGoal.Exceptions.Single ();
+            e.Implicit.ShallBeTrue ();
+            e.ResolvedObstacle.Identifier.ShallEqual ("test");
+            e.ResolvingGoal.Identifier.ShallEqual ("goal");
+
         }
 
         [TestCase(@"declare obstacle id test probability 0.95 end", 0.95)]

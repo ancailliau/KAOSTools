@@ -181,8 +181,8 @@ namespace KAOSTools.MetaModel
                 DownPropagate (obstacle, childRefinement);
             }
 
-            foreach (var resolvingGoal in obstacle.Resolutions) {
-                DownPropagate (obstacle, resolvingGoal);
+            foreach (var resolution in obstacle.Resolutions) {
+                DownPropagate (obstacle, resolution.ResolvingGoal);
             }
         }
 

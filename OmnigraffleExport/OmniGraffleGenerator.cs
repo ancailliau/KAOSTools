@@ -476,6 +476,12 @@ namespace KAOSTools.OmnigraffleExport
             if (tailArrow == KAOSTools.OmnigraffleExport.Omnigraffle.Arrow.Arrow)
                 return new PListString ("Arrow");
 
+            if (tailArrow == KAOSTools.OmnigraffleExport.Omnigraffle.Arrow.FilledBox)
+                return new PListString ("FilledBox");
+            
+            if (tailArrow == KAOSTools.OmnigraffleExport.Omnigraffle.Arrow.Box)
+                return new PListString ("Box");
+
             throw new NotImplementedException ();
         }
 

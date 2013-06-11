@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using KAOSTools.Parsing;
-using LtlSharp;
 using System.Net;
 using System.IO;
 using ShallTests;
