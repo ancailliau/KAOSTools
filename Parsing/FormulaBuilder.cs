@@ -407,7 +407,6 @@ namespace KAOSTools.Parsing
                     if (predicate.Arguments.Count > 0) {
                         for (int i = 0; i < parsedPred.ActualArguments.Count; i++) {
                             var parsedArg = parsedPred.ActualArguments[i];
-                            Console.WriteLine (string.Join(",", declarations[parsedArg].Ancestors.Select(x => x.FriendlyName)));
                             if (!declarations[parsedArg].Ancestors.Contains(predicate.Arguments[i].Type)) {
                                 throw new BuilderException ("Predicate '" + idOrName + "' arguments mismatch. " +
                                                             "Argument '" + parsedArg + "' is type '" + declarations[parsedArg].FriendlyName + "' " +
