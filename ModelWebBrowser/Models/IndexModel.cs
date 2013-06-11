@@ -1,5 +1,7 @@
 using System;
 using KAOSTools.MetaModel;
+using System.Collections.Generic;
+using KAOSTools.Parsing;
 
 namespace ModelWebBrowser.Models
 {
@@ -11,6 +13,11 @@ namespace ModelWebBrowser.Models
         }
 
         public KAOSModel Model {
+            get;
+            set;
+        }
+
+        public IDictionary<KAOSMetaModelElement, IList<Declaration>> Declarations {
             get;
             set;
         }

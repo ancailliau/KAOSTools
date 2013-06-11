@@ -156,13 +156,13 @@ namespace ModelWebBrowser.Helpers
         {
             if (link)
                 return MvcHtmlString.Create (string.Format("<a href=#predicate-{2}>{0}</a>({1})", 
-                                                       expression.Predicate.FriendlyName,
+                                                       expression.Predicate.Identifier,
                                                        string.Join(", ", expression.ActualArguments),
                                                        expression.Predicate.Identifier
                                                        ));
 
             return MvcHtmlString.Create (string.Format("{0}({1})", 
-                                                           expression.Predicate.FriendlyName,
+                                                           expression.Predicate.Identifier,
                                                            string.Join(", ", expression.ActualArguments)));
         }
 

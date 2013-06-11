@@ -12,8 +12,14 @@
     
         <h3 id="goal-@g.Identifier">@g.FriendlyName</h3>
        
+        if (string.IsNullOrWhiteSpace(g.Definition)) {
+        <p style="color: red; text-style: italic">to be defined</p>
+        } else {
         <p>@g.Definition</p>
+        }
+        if (g.FormalSpec != null) {
         <div class="well" style="font-family: monospace;">@g.FormalSpec.ToHtmlString()</div>
+        }
         
 <div class="tabbable">
   <ul class="nav nav-tabs">
@@ -39,7 +45,6 @@
     first = false;
     }
     <li @(first ? " class=active":null)><a href="#goal-word-export-@g.Identifier" data-toggle="tab">Word export</a></li>
-    <li><a href="#goal-complete-formalspec-@g.Identifier" data-toggle="tab">Formal Spec</a></li>
   </ul>
   <div class="tab-content">
     @{ first = true; }
@@ -149,7 +154,9 @@
                 <p><strong>Def</strong> @g.Definition</p>
             }
             
-            <p><strong>FormalSpec</strong> @g.FormalSpec.ToHtmlString(false)</p>
+            @if (g.FormalSpec != null) {
+                <p><strong>FormalSpec</strong> @g.FormalSpec.ToHtmlString(false)</p>
+            }
             
             @foreach (var o in g.AgentAssignments) {
                 <p><strong>AssignedTo</strong> @(string.Join(",", o.Agents.Select(x => x.Name)))</p>
@@ -175,51 +182,6 @@
             @foreach (var o in g.Exceptions) {
                 <p><strong>Exception</strong> @o.ResolvedObstacle.Name <strong>then</strong> @o.ResolvingGoal.Name</p>
             }
-        </div>
-        
-        <div id="goal-complete-formalspec-@g.Identifier" class="tab-pane @(first ? "active":null)">
-            @{
-                first = false;
-                var idealFormalSpec = g.FormalSpec.ToHtmlString(false);
-            }
-            
-            <div class="well" style="font-family: monospace;">
-            @{
-                var first_assumption = true;
-            }
-            @foreach (var o in g.Assumptions){
-                if (o is KAOSTools.MetaModel.GoalAssumption) {
-                    var ass = o as KAOSTools.MetaModel.GoalAssumption;
-                    if (!first_assumption) { 
-                        @:) &and; (
-                    } else {
-                        @:(
-                    }
-                    @((ass.Assumed.FormalSpec as KAOSTools.MetaModel.Formula).ToHtmlString())
-                } else if (o is KAOSTools.MetaModel.DomainHypothesisAssumption) {
-                    var ass = o as KAOSTools.MetaModel.DomainHypothesisAssumption;
-                    if (!first_assumption) { 
-                        @:) &and; (
-                    } else {
-                        @:(
-                    }
-                    @((ass.Assumed.FormalSpec as KAOSTools.MetaModel.Formula).ToHtmlString())
-                } else if (o is KAOSTools.MetaModel.ObstacleNegativeAssumption) {
-                    var ass = o as KAOSTools.MetaModel.ObstacleNegativeAssumption;
-                    if (!first_assumption) { 
-                        @:) &and; &not; (
-                    } else {
-                        @:(
-                    }
-                    @((ass.Assumed.FormalSpec as KAOSTools.MetaModel.Formula).ToHtmlString())
-                }
-                first_assumption = false;
-            }
-            @if (g.Assumptions.Count > 0) {
-                @:) &#8658; 
-            }
-            @g.FormalSpec.ToHtmlString(false)
-            </div>
         </div>
         
         
@@ -343,12 +305,95 @@
     
       }
       
-      <h2 id="domhyp">Domain Hypothesis</h2>
+      <h2 id="domhyp">Domain Properties</h2>
+      
+      This section describes domain properties.
+      
+<p><strong>Table of content</strong></p>
+      <div class="well">
+<ul>
+      @foreach (var g in Model.Model.GoalModel.DomainProperties) {
+        <li><a href="#domprop-@g.Identifier">@g.FriendlyName</a></li>
+      }
+</ul>
+      </div>
+      
+      <hr />
+      
+      @foreach (var g in Model.Model.GoalModel.DomainProperties) {
+     
+        <h3 id="domprop-@g.Identifier">@g.FriendlyName
+            @if (g.Implicit) {
+                <span class="label label-important">Implicit</span>
+            }
+        </h3>
+        if (string.IsNullOrWhiteSpace(g.Definition)) {
+       
+        <p style="color: red; text-style: italic">to be defined</p>
+        } else {
+        <p>@g.Definition</p>
+        }
+        if (g.FormalSpec != null) {
+            <div class="well" style="font-family: monospace;">@g.FormalSpec.ToHtmlString()</div>
+            }
+       
+        <div class="tabbable">
+          <ul class="nav nav-tabs">
+            @{ var first = true; }
+            <li @(first ? " class=active":null)><a href="#domhyp-word-export-@g.Identifier" data-toggle="tab">Word export</a></li>
+          </ul>
+  
+          <div class="tab-content">
+            @{ first = true; }
+            
+            <div id="goal-word-export-@g.Identifier" class="tab-pane @(first ? "active":null)">
+              <p><strong>DomProp</strong> @g.Name</p>
+              @if (!string.IsNullOrEmpty (g.Definition)) {
+              <p><strong>Def</strong> @g.Definition</p>
+              }
+              @if (g.FormalSpec != null) {
+                <p><strong>FormalSpec</strong> @g.FormalSpec.ToHtmlString(false)</p>
+                }
+            </div><!-- /.word-export -->
+          
+          </div><!-- /.tab-content -->
+        </div><!-- /.tabbable -->
+
+        <hr />
+    
+      }  
+      
+      <h2 id="domhyp">Domain Hypotheses</h2>
+      
+      This section describes domain hypotheses.
+      
+<p><strong>Table of content</strong></p>
+      <div class="well">
+<ul>
+      @foreach (var g in Model.Model.GoalModel.DomainHypotheses) {
+        <li><a href="#domhyp-@g.Identifier">@g.FriendlyName</a></li>
+      }
+</ul>
+      </div>
+      
+      <hr />
+
 
       @foreach (var g in Model.Model.GoalModel.DomainHypotheses) {
-        <h3 id="domhyp-@g.Identifier">@g.FriendlyName</h3>
+        <h3 id="domhyp-@g.Identifier">@g.FriendlyName
+            @if (g.Implicit) {
+                <span class="label label-important">Implicit</span>
+            }
+        </h3>
+        if (string.IsNullOrWhiteSpace(g.Definition)) {
+       
+        <p style="color: red; text-style: italic">to be defined</p>
+        } else {
         <p>@g.Definition</p>
-        <div class="well" style="font-family: monospace;">@g.FormalSpec.ToHtmlString()</div>
+        }
+        if (g.FormalSpec != null) {
+            <div class="well" style="font-family: monospace;">@g.FormalSpec.ToHtmlString()</div>
+            }
        
         <div class="tabbable">
           <ul class="nav nav-tabs">
@@ -364,7 +409,9 @@
               @if (!string.IsNullOrEmpty (g.Definition)) {
               <p><strong>Def</strong> @g.Definition</p>
               }
-              <p><strong>FormalSpec</strong> @g.FormalSpec.ToHtmlString(false)</p>
+              @if (g.FormalSpec != null) {
+                <p><strong>FormalSpec</strong> @g.FormalSpec.ToHtmlString(false)</p>
+                }
             </div><!-- /.word-export -->
           
           </div><!-- /.tab-content -->
@@ -372,5 +419,84 @@
 
         <hr />
     
-      }    
+      }  
+      
+      
+      <h2 id="domhyp">Predicates</h2>
+      
+      This section describes predicates.
+      
+<p><strong>Table of content</strong></p>
+      <div class="well">
+<ul>
+      @foreach (var g in Model.Model.Predicates) {
+        <li><a href="#predicate-@g.Identifier">@g.FriendlyName</a></li>
+      }
+</ul>
+      </div>
+      
+      <hr />
+
+      @foreach (var g in Model.Model.Predicates) {
+        <h3 id="predicate-@g.Identifier">@g.FriendlyName
+            @if (g.Implicit) {
+                <span class="label label-important">Implicit</span>
+            }
+        </h3>
+        if (string.IsNullOrWhiteSpace(g.Definition)) {
+       
+        <p style="color: red; text-style: italic">to be defined</p>
+        } else {
+        <p>@g.Definition</p>
+        }
+        if (g.FormalSpec != null) {
+            <div class="well" style="font-family: monospace;">@g.FormalSpec.ToHtmlString()</div>
+        }
+        
+        <h4>Arguments</h4>
+        
+        <table class="table table-striped">
+            <tr><th>Name</th><th>Type</th></tr>
+        @foreach (var argument in g.Arguments) {
+            <tr>
+                <td><code>@argument.Name</code></td>
+                <td><a href="#type-@argument.Type.Identifier">@argument.Type.FriendlyName</a></td>
+            </tr>
+        }
+        </table>
+        
+        if (Model.Declarations.ContainsKey(g)) {
+        <p class="muted">Declared in @(string.Join (" / ", Model.Declarations[g].Select (x => x.Filename + ":" + x.Line + "," + x.Col)))</p>
+        }
+       
+        <div class="tabbable">
+          <ul class="nav nav-tabs">
+            @{ var first = true; }
+            <li @(first ? " class=active":null)><a href="#domhyp-word-export-@g.Identifier" data-toggle="tab">Word export</a></li>
+          </ul>
+  
+          <div class="tab-content">
+            @{ first = true; }
+            
+            <div id="goal-word-export-@g.Identifier" class="tab-pane @(first ? "active":null)">
+              <p><strong>Predicate</strong> @g.Name</p>
+              @if (!string.IsNullOrEmpty (g.Definition)) {
+              <p><strong>Def</strong> @g.Definition</p>
+              }
+              @if (g.FormalSpec != null) {
+                <p><strong>FormalSpec</strong> @g.FormalSpec.ToHtmlString(false)</p>
+                }
+                @foreach (var argument in g.Arguments) {
+            <p><strong>Argument</strong> @argument.Name : @argument.Type.FriendlyName</p>
+        }
+            </div><!-- /.word-export -->
+          
+          </div><!-- /.tab-content -->
+        </div><!-- /.tabbable -->
+
+        <hr />
+    
+      }  
+          
+              
 </div></div>

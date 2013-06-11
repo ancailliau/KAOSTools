@@ -22,12 +22,13 @@ namespace ModelWebBrowser.Controllers
             var code = System.IO.File.ReadAllText (Path.Combine("Examples", example));
             var parser = new ModelBuilder ();
 
-            var model = parser.Parse (code);
+            var model = parser.Parse (code, Path.Combine("Examples", example));
             model.GoalModel.IntegrateResolutions ();
 
             return View (new IndexModel {
                 Code = code,
-                Model = model
+                Model = model,
+                Declarations = parser.Declarations
             });
         }
     }
