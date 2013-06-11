@@ -46,6 +46,7 @@
     <Compile Include="FormulaBuilder.cs" />
     <Compile Include="SecondStageBuilder.cs" />
     <Compile Include="ParsedEntityType.cs" />
+    <Compile Include="ThirdStageBuilder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -726,6 +726,22 @@ namespace KAOSTools.MetaModel
         public ISet<Attribute> Attributes { get; set; }
         public EntityType Type { get; set; }
         public ISet<Entity> Parents { get; set; }
+
+        public ISet<Entity> Ancestors
+        {
+            get
+            {
+                var ancestors = new HashSet<Entity>();
+                ancestors.Add(this);
+                foreach (var parent in Parents) {
+                    foreach (var a in parent.Ancestors) {
+                        ancestors.Add (a);
+                    }
+                }
+                return ancestors;
+            }
+        }
+
         public Entity ()
         {
             Attributes = new HashSet<Attribute> ();

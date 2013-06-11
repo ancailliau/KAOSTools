@@ -9,7 +9,6 @@ namespace KAOSTools.Parsing
     {
         FirstStageBuilder fsb;
         FormulaBuilder fb;
-        IDictionary<Predicate, int> predicateArgumentCurrentPosition;
 
         public SecondStageBuilder (KAOSModel model, 
                                    IDictionary<KAOSMetaModelElement, IList<Declaration>> declarations,
@@ -19,7 +18,6 @@ namespace KAOSTools.Parsing
         {
             this.fsb = fsb;
             this.fb = fb;
-            this.predicateArgumentCurrentPosition = new Dictionary<Predicate, int> ();
         }
 
         public void BuildElement (ParsedElements elements)
@@ -55,69 +53,7 @@ namespace KAOSTools.Parsing
 
         public void Handle (Predicate predicate, ParsedPredicateArgumentAttribute ppa)
         {
-            var arg_name = ppa.Name;
-            Entity arg_type = null;
-            if (ppa.Type != null) {
-                if (ppa.Type is IdentifierExpression | ppa.Type is NameExpression) {
-                    if (!Get<Entity>(ppa.Type, out arg_type)) {
-                        arg_type = Create<Entity> (ppa.Type);
-                    }
-                } else if (ppa.Type is ParsedEntity) {
-                    arg_type = fsb.BuildElementWithKeys (ppa.Type);
-                    BuildElement (ppa.Type);
-                    
-                } else {
-                    throw new NotImplementedException (string.Format ("'{0}' is not supported in '{1}' on '{2}'", 
-                                                                      ppa.Type.GetType().Name,
-                                                                      ppa.GetType().Name,
-                                                                      predicate.GetType().Name));
-                }
-            }
-
-            var currentPosition = 0;
-            if (!predicateArgumentCurrentPosition.ContainsKey(predicate)) {
-                predicateArgumentCurrentPosition.Add (predicate, 0);
-            } else {
-                currentPosition = predicateArgumentCurrentPosition[predicate];
-            }
-
-            // No argument with the same name is already declared
-            if (predicate.Arguments.Count (w => w.Name == arg_name) == 0) {
-                predicate.Arguments.Add (new PredicateArgument() { Name = arg_name, Type = arg_type });
-            }
-            
-            // Otherwise, it shall be the same to the one already declared
-            else {
-                // if no type is already declared, use the new one (may be not declared)
-                if (predicate.Arguments[currentPosition].Type == null) {
-                    predicate.Arguments[currentPosition].Type = arg_type;
-                } 
-                
-                // if a type was already declared, it shall be the same
-                else if (predicate.Arguments[currentPosition].Type != arg_type) {
-                    throw new BuilderException (string.Format ("Argument at index {0} does not match. Actual has identifier '{1}' and name '{2}' but expected has identifier '{3}' and name '{4}'. Check that you don't mix name and identifier references on implicit declarations.", 
-                                                               currentPosition, 
-                                                               predicate.Arguments [currentPosition].Type.Identifier, 
-                                                               predicate.Arguments [currentPosition].Type.Name, 
-                                                               arg_type.Identifier, 
-                                                               arg_type.Name),
-                                                ppa.Filename, ppa.Line, ppa.Col);
-                }
-                
-                // if no name is already declared, use the new one (may be not declared)
-                if (predicate.Arguments[currentPosition].Name == null) {
-                    predicate.Arguments[currentPosition].Name = arg_name;
-                }
-                
-                // if a name was already defined, it shall be the same
-                else if (predicate.Arguments[currentPosition].Name != arg_name) {
-                    throw new BuilderException (string.Format ("Argument at index {0} shall be named '{1}' but is '{2}'", 
-                                                               currentPosition, predicate.Arguments [currentPosition].Name, arg_name),
-                                                ppa.Filename, ppa.Line, ppa.Col);
-                }
-            }
-            
-            predicateArgumentCurrentPosition[predicate]++;
+            // ignore
         }
 
         public void Handle (Goal element, ParsedExceptionAttribute exception)
@@ -636,20 +572,21 @@ namespace KAOSTools.Parsing
             Handle (element, identifier.Value, "Identifier");
         }
         
-        public void Handle (KAOSMetaModelElement element, ParsedFormalSpecAttribute formalSpec)
-        {
-            Handle (element, fb.BuildFormula (formalSpec.Value), "FormalSpec");
-        }
-        
         public void Handle (Predicate element, ParsedFormalSpecAttribute formalSpec)
         {
-            Handle (element, fb.BuildPredicateFormula (element, formalSpec.Value), "FormalSpec");
+            // ignore, see third stage
         }
         
         public void Handle (KAOSMetaModelElement element, ParsedSignatureAttribute attribute)
         {
             Handle (element, attribute.Value, "Signature");
         }
+
+        public void Handle (KAOSMetaModelElement element, ParsedFormalSpecAttribute formalSpec)
+        {
+            // ignore, see third stage
+        }
+
 
         public void Handle<T> (KAOSMetaModelElement element, 
                                T value, 

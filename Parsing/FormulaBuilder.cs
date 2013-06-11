@@ -407,10 +407,12 @@ namespace KAOSTools.Parsing
                     if (predicate.Arguments.Count > 0) {
                         for (int i = 0; i < parsedPred.ActualArguments.Count; i++) {
                             var parsedArg = parsedPred.ActualArguments[i];
-                            if (declarations[parsedArg] != predicate.Arguments[i].Type) {
-                                throw new CompilationException ("Predicate '" + idOrName + "' arguments mismatch. " +
-                                                                "Argument '" + parsedArg + "' is type '" + declarations[parsedArg].Name + "' " +
-                                                                "but type '" + predicate.Arguments[i].Name + "' is expected.");
+                            Console.WriteLine (string.Join(",", declarations[parsedArg].Ancestors.Select(x => x.FriendlyName)));
+                            if (!declarations[parsedArg].Ancestors.Contains(predicate.Arguments[i].Type)) {
+                                throw new BuilderException ("Predicate '" + idOrName + "' arguments mismatch. " +
+                                                            "Argument '" + parsedArg + "' is type '" + declarations[parsedArg].FriendlyName + "' " +
+                                                            "but type '" + predicate.Arguments[i].Type.FriendlyName + "' is expected. Make sure that you do not mix names and identifiers.",
+                                                            parsedPred.Filename, parsedPred.Line, parsedPred.Col);
                             }
                         }
                     }
