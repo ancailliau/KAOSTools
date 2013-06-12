@@ -21,6 +21,10 @@
         <div class="well" style="font-family: monospace;">@g.FormalSpec.ToHtmlString()</div>
         }
         
+       
+        if (Model.Declarations.ContainsKey(g)) {
+        <p class="muted">Declared in @(string.Join (" / ", Model.Declarations[g].Select (x => x.Filename + ":" + x.Line + "," + x.Col)))</p>
+        }
 <div class="tabbable">
   <ul class="nav nav-tabs">
     @{ var first = true; }
@@ -196,8 +200,13 @@
     @foreach (var g in Model.Model.GoalModel.Obstacles) {
         <h3 id="obstacle-@g.Identifier">@g.FriendlyName</h3>
         <p>@g.Definition</p>
+        
         <div class="well" style="font-family: monospace;">@g.FormalSpec.ToHtmlString()</div>
        
+       
+        if (Model.Declarations.ContainsKey(g)) {
+        <p class="muted">Declared in @(string.Join (" / ", Model.Declarations[g].Select (x => x.Filename + ":" + x.Line + "," + x.Col)))</p>
+        }
         <div class="tabbable">
           <ul class="nav nav-tabs">
             @{ var first = true; }
@@ -337,6 +346,10 @@
             <div class="well" style="font-family: monospace;">@g.FormalSpec.ToHtmlString()</div>
             }
        
+       
+        if (Model.Declarations.ContainsKey(g)) {
+        <p class="muted">Declared in @(string.Join (" / ", Model.Declarations[g].Select (x => x.Filename + ":" + x.Line + "," + x.Col)))</p>
+        }
         <div class="tabbable">
           <ul class="nav nav-tabs">
             @{ var first = true; }
@@ -395,6 +408,10 @@
             <div class="well" style="font-family: monospace;">@g.FormalSpec.ToHtmlString()</div>
             }
        
+       
+        if (Model.Declarations.ContainsKey(g)) {
+        <p class="muted">Declared in @(string.Join (" / ", Model.Declarations[g].Select (x => x.Filename + ":" + x.Line + "," + x.Col)))</p>
+        }
         <div class="tabbable">
           <ul class="nav nav-tabs">
             @{ var first = true; }

@@ -39,79 +39,79 @@ namespace ModelWebBrowser.Helpers
                 comparator = "&ne;";
 
             return MvcHtmlString.Create (string.Format("{0} {1} {2}", 
-                                                       expression.Left.ToHtmlString(link),
+                                                       Embed(expression, expression.Left, expression.Left.ToHtmlString(link)),
                                                        comparator,
-                                                       expression.Right.ToHtmlString(link)
+                                                       Embed(expression, expression.Right, expression.Right.ToHtmlString(link))
                                                        ));
         }
 
         public static MvcHtmlString ToHtmlString ( Not expression, bool link = true)
         {
             return MvcHtmlString.Create (string.Format("&not; {0}", 
-                                                       expression.Enclosed.ToHtmlString(link)
+                                                       Embed(expression, expression.Enclosed, expression.Enclosed.ToHtmlString(link))
                                                        ));
         }
 
         public static MvcHtmlString ToHtmlString ( Next expression, bool link = true)
         {
             return MvcHtmlString.Create (string.Format("&cir; {0}", 
-                                                       expression.Enclosed.ToHtmlString(link)
+                                                       Embed(expression, expression.Enclosed, expression.Enclosed.ToHtmlString(link))
                                                        ));
         }
 
         public static MvcHtmlString ToHtmlString ( Unless expression, bool link = true)
         {
             return MvcHtmlString.Create (string.Format("{0} W {1}", 
-                                                       expression.Left.ToHtmlString(link),
-                                                       expression.Right.ToHtmlString(link)
+                                                       Embed(expression, expression.Left, expression.Left.ToHtmlString(link)),
+                                                       Embed(expression, expression.Right, expression.Right.ToHtmlString(link))
                                                        ));
         }
 
         public static MvcHtmlString ToHtmlString ( Until expression, bool link = true)
         {
             return MvcHtmlString.Create (string.Format("{0} U {1}", 
-                                                       expression.Left.ToHtmlString(link),
-                                                       expression.Right.ToHtmlString(link)
+                                                       Embed(expression, expression.Left, expression.Left.ToHtmlString(link)),
+                                                       Embed(expression, expression.Right, expression.Right.ToHtmlString(link))
                                                        ));
         }
 
         public static MvcHtmlString ToHtmlString ( Release expression, bool link = true)
         {
             return MvcHtmlString.Create (string.Format("{0} R {1}", 
-                                                       expression.Left.ToHtmlString(link),
-                                                       expression.Right.ToHtmlString(link)
+                                                       Embed(expression, expression.Left, expression.Left.ToHtmlString(link)),
+                                                       Embed(expression, expression.Right, expression.Right.ToHtmlString(link))
                                                        ));
         }
 
         public static MvcHtmlString ToHtmlString ( And expression, bool link = true)
         {
             return MvcHtmlString.Create (string.Format("{0} &and; {1}", 
-                                                       expression.Left.ToHtmlString(link),
-                                                       expression.Right.ToHtmlString(link)
+                                                       Embed(expression, expression.Left, expression.Left.ToHtmlString(link)),
+                                                       Embed(expression, expression.Right, expression.Right.ToHtmlString(link))
                                                        ));
         }
         
         public static MvcHtmlString ToHtmlString ( Or expression, bool link = true)
         {
             return MvcHtmlString.Create (string.Format("{0} &or; {1}", 
-                                                       expression.Left.ToHtmlString(link),
-                                                       expression.Right.ToHtmlString(link)
+                                                       Embed(expression, expression.Left, expression.Left.ToHtmlString(link)),
+                                                       Embed(expression, expression.Right, expression.Right.ToHtmlString(link))
                                                        ));
         }
 
         public static MvcHtmlString ToHtmlString ( Equivalence expression, bool link = true)
         {
             return MvcHtmlString.Create (string.Format("{0} &leftrightarrow; {1}", 
-                                                       expression.Left.ToHtmlString(link),
-                                                       expression.Right.ToHtmlString(link)
+                                                       Embed(expression, expression.Left, expression.Left.ToHtmlString(link)),
+                                                       Embed(expression, expression.Right, expression.Right.ToHtmlString(link))
                                                        ));
         }
 
         public static MvcHtmlString ToHtmlString ( Imply expression, bool link = true)
         {
             return MvcHtmlString.Create (string.Format("{0} &rightarrow; {1}", 
-                                                       expression.Left.ToHtmlString(link),
-                                                       expression.Right.ToHtmlString(link)
+                                                       Embed(expression, expression.Left, expression.Left.ToHtmlString(link)),
+                                                       Embed(expression, expression.Right, expression.Right.ToHtmlString(link))
                                                        ));
         }
 
@@ -121,12 +121,12 @@ namespace ModelWebBrowser.Helpers
             if (link)
             return MvcHtmlString.Create (string.Format("&forall; {0} &middot; {1}", 
                                                        string.Join(", ", expression.Declarations.Select (variable => string.Format ("{0}:<a href=#object-{2}>{1}</a>", variable.Name, variable.Type.FriendlyName, variable.Type.Identifier))),
-                                                       expression.Enclosed.ToHtmlString(link)
+                                                           Embed(expression, expression.Enclosed, expression.Enclosed.ToHtmlString(link))
                                                        ));
 
             return MvcHtmlString.Create (string.Format("&forall; {0} &middot; {1}", 
                                                        string.Join(", ", expression.Declarations.Select (variable => string.Format ("{0}:{1}", variable.Name, variable.Type.FriendlyName))),
-                                                       expression.Enclosed.ToHtmlString(link)
+                                                       Embed(expression, expression.Enclosed, expression.Enclosed.ToHtmlString(link))
                                                        ));
         }
         
@@ -135,20 +135,20 @@ namespace ModelWebBrowser.Helpers
             if (link)
             return MvcHtmlString.Create (string.Format("&exist; {0} &middot; {1}", 
                                                        string.Join(", ", expression.Declarations.Select (variable => string.Format ("{0}:<a href=#object-{2}>{1}</a>", variable.Name, variable.Type.FriendlyName, variable.Type.Identifier))),
-                                                       expression.Enclosed.ToHtmlString(link)
+                                                           Embed(expression, expression.Enclosed, expression.Enclosed.ToHtmlString(link))
                                                            ));
 
             return MvcHtmlString.Create (string.Format("&exist; {0} &middot; {1}", 
                                                        string.Join(", ", expression.Declarations.Select (variable => string.Format ("{0}:{1}", variable.Name, variable.Type.FriendlyName))),
-                                                       expression.Enclosed.ToHtmlString(link)
+                                                       Embed(expression, expression.Enclosed, expression.Enclosed.ToHtmlString(link))
                                                        ));
         }
 
         public static MvcHtmlString ToHtmlString ( StrongImply expression, bool link = true)
         {
             return MvcHtmlString.Create (string.Format("{0} &#8658; {1}", 
-                                                       expression.Left.ToHtmlString(link),
-                                                       expression.Right.ToHtmlString(link)
+                                                       Embed(expression, expression.Left, expression.Left.ToHtmlString(link)),
+                                                       Embed(expression, expression.Right, expression.Right.ToHtmlString(link))
             ));
         }
 
@@ -206,8 +206,8 @@ namespace ModelWebBrowser.Helpers
         {
             var bound = GetTimeBound (expression.TimeBound);
             return MvcHtmlString.Create (string.Format("&not; {1} W{2} ({0} &and; &not; {1})", 
-                                                       expression.Left.ToHtmlString(link),
-                                                       expression.Right.ToHtmlString(link),
+                                                       Embed(expression, expression.Left, expression.Left.ToHtmlString(link)),
+                                                       Embed(expression, expression.Right, expression.Right.ToHtmlString(link)),
                                                        bound
                                                        ));
         }
@@ -306,6 +306,108 @@ namespace ModelWebBrowser.Helpers
         {
             return MvcHtmlString.Create (string.Format("{0}", expression.Value));
         }
+
+
+        public static MvcHtmlString Embed (Formula fout, Formula enclosed, MvcHtmlString str) {
+            if (fout is ComparisonCriteria && !(enclosed is BoolConstant 
+                                               | enclosed is NumericConstant 
+                                               | enclosed is StringConstant 
+                                               | enclosed is AttributeReference 
+                                               | enclosed is VariableReference
+                                               | enclosed is RelationReference
+                                               | enclosed is PredicateReference)) {
+                return MvcHtmlString.Create ("(" + str + ")");
+            }
+
+            if ((fout is Globally 
+                 | fout is Eventually 
+                 | fout is Next 
+                 | fout is Not
+                 && !( enclosed is ComparisonCriteria 
+                      | enclosed is BoolConstant 
+                      | enclosed is NumericConstant 
+                      | enclosed is StringConstant 
+                      | enclosed is AttributeReference 
+                      | enclosed is VariableReference
+                      | enclosed is RelationReference
+                      | enclosed is PredicateReference))) {
+                return MvcHtmlString.Create ("(" + str + ")");
+            }
+
+            if ((fout is EventuallyBefore 
+                 | fout is And 
+                 | fout is Or 
+                 | fout is Unless
+                 | fout is Release
+                 | fout is Until
+                 && !(enclosed is Globally 
+                 | enclosed is Eventually 
+                 | enclosed is Next 
+                 | enclosed is Not
+                 | enclosed is ComparisonCriteria 
+                 | enclosed is BoolConstant 
+                 | enclosed is NumericConstant 
+                 | enclosed is StringConstant 
+                 | enclosed is AttributeReference 
+                 | enclosed is VariableReference
+                 | enclosed is RelationReference
+                 | enclosed is PredicateReference))) {
+                return MvcHtmlString.Create ("(" + str + ")");
+            }
+
+            if ((fout is Equivalence 
+                 | fout is Imply 
+                 | fout is StrongImply
+                 && !(enclosed is EventuallyBefore 
+                 | enclosed is And 
+                 | enclosed is Or 
+                 | enclosed is Unless
+                 | enclosed is Release
+                 | enclosed is Until
+                 | enclosed is Globally 
+                 | enclosed is Eventually 
+                 | enclosed is Next 
+                 | enclosed is Not
+                 | enclosed is ComparisonCriteria 
+                 | enclosed is BoolConstant 
+                 | enclosed is NumericConstant 
+                 | enclosed is StringConstant 
+                 | enclosed is AttributeReference 
+                 | enclosed is VariableReference
+                 | enclosed is RelationReference
+                 | enclosed is PredicateReference))) {
+                return MvcHtmlString.Create ("(" + str + ")");
+            }
+            
+            if ((fout is Forall 
+                 | fout is Exists
+                 && !(enclosed is Equivalence 
+                 | enclosed is Imply 
+                 | enclosed is StrongImply
+                 | enclosed is EventuallyBefore 
+                 | enclosed is And 
+                 | enclosed is Or 
+                 | enclosed is Unless
+                 | enclosed is Release
+                 | enclosed is Until
+                 | enclosed is Globally 
+                 | enclosed is Eventually 
+                 | enclosed is Next 
+                 | enclosed is Not
+                 | enclosed is ComparisonCriteria 
+                 | enclosed is BoolConstant 
+                 | enclosed is NumericConstant 
+                 | enclosed is StringConstant 
+                 | enclosed is AttributeReference 
+                 | enclosed is VariableReference
+                 | enclosed is RelationReference
+                 | enclosed is PredicateReference))) {
+                return MvcHtmlString.Create ("(" + str + ")");
+            }
+
+            return str;
+        }
+
 
     }
 }
