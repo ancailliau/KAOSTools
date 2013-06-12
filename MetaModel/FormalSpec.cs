@@ -157,6 +157,7 @@ namespace KAOSTools.MetaModel
     public class BoolConstant : Formula {
         public bool Value { get; set; }
     }
+
     #region Time bound
 
     public enum TimeComparator {
