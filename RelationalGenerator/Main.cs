@@ -133,9 +133,9 @@ namespace KAOSTools.ReportGenerator
                                             obstacle = o.Identifier },
 
               resolutions = from o in model.GoalModel.Obstacles.OrderBy (x => x.Name)
-                              from g in o.Resolutions.OrderBy (x => x.ResolvingGoal.Name)
+                              from r in o.Resolutions.OrderBy (x => x.ResolvingGoal.Name)
                                 select new { obstacle = o.Identifier,
-                                                 goal = g.Identifier },
+                                                 goal = r.ResolvingGoal.Identifier },
 
               // AGENT MODEL
 
