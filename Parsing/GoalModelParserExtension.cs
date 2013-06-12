@@ -853,6 +853,9 @@ namespace KAOSTools.Parsing {
                 if (timeunit.StartsWith ("day") | timeunit.Equals("d")) {
                     atomicConstraints.Unit = ParsedTimeUnit.day;
 
+                } else if (timeunit.StartsWith ("hour") | timeunit.Equals("h")) {
+                    atomicConstraints.Unit = ParsedTimeUnit.hour;
+
                 } else if (timeunit.StartsWith ("minute") | timeunit.Equals("m")) {
                     atomicConstraints.Unit = ParsedTimeUnit.minute;
 
