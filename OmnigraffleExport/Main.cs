@@ -252,7 +252,9 @@ namespace KAOSTools.OmnigraffleExport
 
             foreach (var goal in model.ObstructedGoals) {
                 foreach (var obstacle in goal.Obstructions) {
-                    AddObstacle (goalCanvas, obstacle);
+                    if (!mapping[goalCanvas].ContainsKey(obstacle.Identifier)) {
+                        AddObstacle (goalCanvas, obstacle);
+                    }
                     AddSharpBackCrossArrow (goalCanvas.GraphicsList, mapping [goalCanvas] [obstacle.Identifier], mapping [goalCanvas] [goal.Identifier]);
                 }
             }
@@ -613,7 +615,7 @@ namespace KAOSTools.OmnigraffleExport
             graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (-0.45, 0.5));
             graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (-0.45, 0.5));
             graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (-0.5, -0.5));
-            graphic.Text = new Omnigraffle.TextInfo (GetRtfUnicodeEscapedString (obstacle.Name)) {
+            graphic.Text = new Omnigraffle.TextInfo (GetRtfUnicodeEscapedString (obstacle.FriendlyName)) {
                 Alignement = KAOSTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
                 SideMargin = 10,
                 TopBottomMargin = 3
