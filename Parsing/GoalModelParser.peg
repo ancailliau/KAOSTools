@@ -57,6 +57,10 @@ Association :=
     ( 'declare' / 'override' ) S ( 'association' / 'relation' ) S (AssociationAttribute S)* 'end'
     `value = BuildAssociation(results);`
     
+Attribute := 
+    ( 'declare' / 'override' ) S ( 'attribute' ) S (AttributeAttribute S)* 'end'
+    `value = BuildAttribute(results);`
+    
 # Attribute collection
                                                                                                                                                                                                          
 GoalAttribute := 
@@ -91,7 +95,7 @@ SystemAttribute :=
     `value = results[0].Value;`
 
 EntityAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / Attribute / IsA / EntityTypeAttribute ) 
+    ( IdAttribute / NameAttribute / DefinitionAttribute / AttributeEntity / IsA / EntityTypeAttribute ) 
     `value = results[0].Value;`
     
 TypeAttribute := 
@@ -99,7 +103,11 @@ TypeAttribute :=
     `value = results[0].Value;`
     
 AssociationAttribute :=
-    ( IdAttribute / NameAttribute / DefinitionAttribute / Attribute / Link ) 
+    ( IdAttribute / NameAttribute / DefinitionAttribute / AttributeEntity / Link ) 
+    `value = results[0].Value;`
+    
+AttributeAttribute :=
+	( IdAttribute / NameAttribute / DefinitionAttribute / AttributeEntityTypeAttribute )
     `value = results[0].Value;`
     
 # Attributes
@@ -171,9 +179,8 @@ AssignedTo :=
     ( Agent / Name / Identifier ) (S ',' S ( Agent / Name / Identifier ) )*
     `value = BuildAssignedTo(results);`
 
-
-Attribute := 'attribute' S Name S (':' S ( Type / Name / Identifier ) )?
-    `value = BuildAttribute(results);`
+AttributeEntity := 'attribute' S ( Attribute / ( Name S (':' S ( Type / Name / Identifier ) )? ) )
+    `value = BuildAttributeAttribute(results);`
 
 Argument := 'argument' S Identifier S (':' S ( Entity / Name / Identifier ) )?
     `value = BuildArgument(results);`
@@ -181,6 +188,9 @@ Argument := 'argument' S Identifier S (':' S ( Entity / Name / Identifier ) )?
 Link := 'link' S Multiplicity? S ( Entity / Name / Identifier )
     `value = BuildLink(results);`
 
+
+AttributeEntityTypeAttribute := 'type' S ( Type / Name / Identifier )
+    `value = BuildAttributeEntityTypeAttribute(results);`
 
 # 
 

@@ -13,8 +13,9 @@ namespace KAOSTools.Parsing
         public SecondStageBuilder (KAOSModel model, 
                                    IDictionary<KAOSMetaModelElement, IList<Declaration>> declarations,
                                    FirstStageBuilder fsb,
-                                   FormulaBuilder fb)
-            : base (model, declarations)
+                                   FormulaBuilder fb,
+                                   Uri relativePath)
+            : base (model, declarations, relativePath)
         {
             this.fsb = fsb;
             this.fb = fb;
@@ -44,7 +45,7 @@ namespace KAOSTools.Parsing
             }
         }
 
-        public void Handle (KAOSMetaModelElement element, ParsedAttribute attribute)
+        public void Handle (KAOSMetaModelElement element, object attribute)
         {
             throw new NotImplementedException (string.Format("'{0}' is not yet supported on '{1}'", 
                                                              attribute.GetType().Name,
@@ -234,26 +235,59 @@ namespace KAOSTools.Parsing
 
         public void Handle (Entity element, ParsedAttributeAttribute attribute)
         {
+            var e = new KAOSTools.MetaModel.Attribute ();
+
+            Handle (e, new ParsedNameAttribute() { 
+                Value = attribute.Name
+            });
+
+            Handle (e, new ParsedAttributeEntityTypeAttribute() { 
+                Value = attribute.Type
+            });
+
+            element.Attributes.Add (e);
+
+            declarations.Add (e, new List<Declaration> {
+                new Declaration (attribute.Line, attribute.Col, attribute.Filename, relativePath, DeclarationType.Declaration)
+            });
+        }
+
+        public void Handle (Entity element, ParsedAttributeDeclaration attribute)
+        {
+            var e = new KAOSTools.MetaModel.Attribute ();
+
+            foreach (dynamic attr in attribute.Attributes) {
+                Handle (e, attr);
+            }
+
+            element.Attributes.Add (e);
+
+            declarations.Add (e, new List<Declaration> {
+                new Declaration (attribute.Line, attribute.Col, attribute.Filename, relativePath, DeclarationType.Declaration)
+            });
+        }
+
+        public void Handle (KAOSTools.MetaModel.Attribute element, ParsedAttributeEntityTypeAttribute attribute) {
             GivenType givenType = null;
-            if (attribute.Type != null) {
-                if (attribute.Type is IdentifierExpression | attribute.Type is NameExpression) {
-                    if (!Get (attribute.Type, out givenType)) {
-                        givenType = Create<GivenType> (attribute.Type);
+            if (attribute.Value != null) {
+                if (attribute.Value is IdentifierExpression | attribute.Value is NameExpression) {
+                    if (!Get (attribute.Value, out givenType)) {
+                        givenType = Create<GivenType> (attribute.Value);
                     }
 
-                } else if (attribute.Type is ParsedGivenType) {
-                    givenType = fsb.BuildElementWithKeys (attribute.Type);
-                    BuildElement (attribute.Type);
-                    
+                } else if (attribute.Value is ParsedGivenType) {
+                    givenType = fsb.BuildElementWithKeys (attribute.Value);
+                    BuildElement (attribute.Value);
+
                 } else {
                     throw new NotImplementedException (string.Format ("'{0}' is not supported in '{1}' on '{2}'", 
-                                                                      attribute.Type.GetType().Name,
+                                                                      attribute.Value.GetType().Name,
                                                                       attribute.GetType().Name,
                                                                       element.GetType().Name));
                 }
             }
 
-            element.Attributes.Add (new KAOSTools.MetaModel.Attribute (attribute.Name, givenType));
+            element.Type = givenType;
         }
 
         public void Handle (Goal element, ParsedObstructedByAttribute obstructedBy)

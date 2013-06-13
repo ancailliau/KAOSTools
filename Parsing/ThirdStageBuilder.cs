@@ -16,8 +16,9 @@ namespace KAOSTools.Parsing
                                    IDictionary<KAOSMetaModelElement, IList<Declaration>> declarations,
                                    FirstStageBuilder fsb,
                                    SecondStageBuilder ssb,
-                                   FormulaBuilder fb)
-            : base (model, declarations)
+                                  FormulaBuilder fb,
+                                  Uri relativePath)
+            : base (model, declarations, relativePath)
         {
             this.fsb = fsb;
             this.fb = fb;
@@ -49,7 +50,7 @@ namespace KAOSTools.Parsing
             }
         }
         
-        public void Handle (KAOSMetaModelElement element, ParsedAttribute attribute)
+        public void Handle (KAOSMetaModelElement element, object attribute)
         {
             // Ignore all but defined
         }

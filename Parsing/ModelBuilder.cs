@@ -31,8 +31,8 @@ namespace KAOSTools.Parsing
 
             FirstStageBuilder FSB = new FirstStageBuilder (model, Declarations, RelativePath);
             FormulaBuilder FB = new FormulaBuilder (model, Declarations, FSB);
-            SecondStageBuilder SSB = new SecondStageBuilder (model, Declarations, FSB, FB);
-            ThirdStageBuilder TSB = new ThirdStageBuilder (model, Declarations, FSB, SSB, FB);
+            SecondStageBuilder SSB = new SecondStageBuilder (model, Declarations, FSB, FB, RelativePath);
+            ThirdStageBuilder TSB = new ThirdStageBuilder (model, Declarations, FSB, SSB, FB, RelativePath);
 
             var elements = _parser.Parse (input, filename) as ParsedElements;    
 

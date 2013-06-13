@@ -10,11 +10,15 @@ namespace KAOSTools.Parsing
     {
         protected KAOSModel model;
         protected IDictionary<KAOSMetaModelElement, IList<Declaration>> declarations;
-        
-        public Builder (KAOSModel model, IDictionary<KAOSMetaModelElement, IList<Declaration>> declarations)
+        protected Uri relativePath;
+    
+        public Builder (KAOSModel model, 
+                        IDictionary<KAOSMetaModelElement, IList<Declaration>> declarations,
+                        Uri relativePath)
         {
             this.model = model;
             this.declarations = declarations;
+            this.relativePath = relativePath;
         }
 
         protected string Sanitize (string text) 
@@ -208,13 +212,29 @@ namespace KAOSTools.Parsing
         protected bool Get<T> (IdentifierExpression identifier, out T element)
             where T : KAOSMetaModelElement
         {
-            return Get (identifier.Value, out element, "Identifier");
+            var val = Get (identifier.Value, out element, "Identifier");
+            if (val) {
+                if (!declarations.ContainsKey(element)) {
+                    declarations.Add (element, new List<Declaration> ());
+                }
+                declarations[element].Add (new Declaration (identifier.Line, identifier.Col, identifier.Filename, relativePath, DeclarationType.Reference));
+            }
+
+            return val;
         }
 
         protected bool Get<T> (NameExpression name, out T element)
             where T : KAOSMetaModelElement
         {
-            return Get (name.Value, out element, "Name");
+            var val = Get (name.Value, out element, "Name");
+            if (val) {
+                if (!declarations.ContainsKey(element)) {
+                    declarations.Add (element, new List<Declaration> ());
+                }
+                declarations[element].Add (new Declaration (name.Line, name.Col, name.Filename, relativePath, DeclarationType.Reference));
+            }
+
+            return val;
         }
 
         #endregion
@@ -230,6 +250,9 @@ namespace KAOSTools.Parsing
             };
             
             GetCollection<T> ().Add (system);
+            declarations.Add (system, new List<Declaration> {
+                new Declaration (identifier.Line, identifier.Col, identifier.Filename, relativePath, DeclarationType.Reference)
+            });
             
             return system;
         }
@@ -247,6 +270,9 @@ namespace KAOSTools.Parsing
             typeof(T).GetProperty ("Name").SetValue (t, name.Value, null);
 
             GetCollection<T> ().Add (t);
+            declarations.Add (t, new List<Declaration> {
+                new Declaration (name.Line, name.Col, name.Filename, relativePath, DeclarationType.Reference)
+            });
             
             return t;
         }

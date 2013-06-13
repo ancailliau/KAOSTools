@@ -25,6 +25,9 @@ namespace KAOSTools.Parsing {
                     BuildElement (attrs, result2);
                 }
             } else {
+                if (value == null) 
+                    throw new NullReferenceException ();
+
                 attrs.Values.Add (value);
             }
             return attrs;
@@ -65,7 +68,7 @@ namespace KAOSTools.Parsing {
                 t.Override = true;
             
             for (int i = 2; i < results.Count - 1; i++) {
-                t.Attributes.Add (results[i].Value as ParsedAttribute);
+                t.Attributes.Add (results[i].Value);
             }
             
             return t;
@@ -119,6 +122,11 @@ namespace KAOSTools.Parsing {
         ParsedElement BuildAssociation (List<Result> results)
         {
             return BuildParsedElementWithAttributes<ParsedAssociation> (results);
+        }
+
+        ParsedElement BuildAttribute (List<Result> results)
+        {
+            return BuildParsedElementWithAttributes<ParsedAttributeDeclaration> (results);
         }
 
         #endregion
@@ -429,8 +437,13 @@ namespace KAOSTools.Parsing {
                 (results);
         }
 
-        ParsedElement BuildAttribute (List<Result> results)
+        ParsedElement BuildAttributeAttribute (List<Result> results)
         {
+            if (results[1].Value is ParsedAttributeDeclaration) {
+                Console.WriteLine ("pif");
+                return results[1].Value;
+            }
+
             var name = results [1].Value as NameExpression;
             
             dynamic type = null;
@@ -471,6 +484,12 @@ namespace KAOSTools.Parsing {
             }
             
             return link;
+        }
+
+        ParsedElement BuildAttributeEntityTypeAttribute (List<Result> results)
+        {
+            return BuildParsedAttributeWithValue<ParsedAttributeEntityTypeAttribute,dynamic> 
+                (results, results[1].Value);
         }
 
         #endregion

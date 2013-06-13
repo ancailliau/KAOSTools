@@ -11,16 +11,13 @@ namespace KAOSTools.Parsing
     /// </summary>
     public class FirstStageBuilder : Builder
     {
-        private Uri relativePath;
 
         public FirstStageBuilder (KAOSModel model, 
                                   IDictionary<KAOSMetaModelElement, 
                                   IList<Declaration>> declarations,
                                   Uri relativePath)
-            : base (model, declarations)
-        {
-            this.relativePath = relativePath;
-        }
+            : base (model, declarations, relativePath)
+        {}
 
         public void BuildElementWithKeys (ParsedElements elements)
         {
@@ -160,11 +157,13 @@ namespace KAOSTools.Parsing
             if (hasSignatureProperty & hasSignature) 
                 typeof(TOut).GetProperty ("Signature").SetValue (element, signature, null);
 
-            declarations.Add (element, new List<Declaration> {
-                new Declaration (parsedElement.Line, 
-                                 parsedElement.Col, 
-                                 parsedElement.Filename, relativePath)
-            });
+            if (!declarations.ContainsKey(element)) {
+                declarations.Add (element, new List<Declaration> {
+                    new Declaration (parsedElement.Line, parsedElement.Col, parsedElement.Filename, relativePath, DeclarationType.Declaration)
+                });
+            } else {
+                declarations[element].Add(new Declaration (parsedElement.Line, parsedElement.Col, parsedElement.Filename, relativePath, DeclarationType.Override));
+            }
 
             collection.Add (element);
 
