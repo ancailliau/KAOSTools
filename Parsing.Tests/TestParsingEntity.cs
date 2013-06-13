@@ -146,6 +146,10 @@ namespace KAOSTools.Parsing.Tests
                         id test
                         attribute ""My attribute 1"" : declare type name ""MyType"" end
                     end", new string[] { "My attribute 1" })]
+        [TestCase(@"declare entity
+                        id test
+                        attribute declare attribute name ""My attribute 1"" type ""MyType"" end
+                    end", new string[] { "My attribute 1" })]
         public void TestAttribute (string input, string[] attributes)
         {
             var model = parser.Parse (input);
