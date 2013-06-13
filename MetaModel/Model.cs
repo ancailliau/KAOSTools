@@ -753,6 +753,7 @@ namespace KAOSTools.MetaModel
     public class Attribute : KAOSMetaModelElement {
         public bool Derived { get; set; }
         public string Name { get; set; }
+        public string Definition { get; set; }
 
         public override string FriendlyName {
             get {
