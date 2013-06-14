@@ -107,7 +107,7 @@ AssociationAttribute :=
     `value = results[0].Value;`
     
 AttributeAttribute :=
-	( IdAttribute / NameAttribute / DefinitionAttribute / AttributeEntityTypeAttribute )
+	( IdAttribute / NameAttribute / DefinitionAttribute / AttributeEntityTypeAttribute / DerivedAttribute )
     `value = results[0].Value;`
     
 # Attributes
@@ -191,6 +191,9 @@ Link := 'link' S Multiplicity? S ( Entity / Name / Identifier )
 
 AttributeEntityTypeAttribute := 'type' S ( Type / Name / Identifier )
     `value = BuildAttributeEntityTypeAttribute(results);`
+
+DerivedAttribute := 'derived'
+    `value = BuildDerivedAttribute(results);`
 
 # 
 

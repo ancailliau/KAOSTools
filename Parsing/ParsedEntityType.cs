@@ -101,6 +101,7 @@ namespace KAOSTools.Parsing
     public class ParsedAssumptionAttribute           : ParsedAttributeWithValue<dynamic> {}
     public class ParsedNegativeAssumptionAttribute   : ParsedAttributeWithValue<dynamic> {}
     public class ParsedAttributeEntityTypeAttribute  : ParsedAttributeWithValue<dynamic> {}
+    public class ParsedDerivedAttribute              : ParsedAttributeWithValue<dynamic> {}
 
     public class ParsedAgentTypeAttribute    : ParsedAttributeWithValue<ParsedAgentType>  {}
     public class ParsedEntityTypeAttribute   : ParsedAttributeWithValue<ParsedEntityType> {}

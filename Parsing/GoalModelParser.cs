@@ -89,6 +89,7 @@ namespace KAOSTools.Parsing
 			m_nonterminals.Add("Argument", new ParseMethod[]{this.DoParseArgumentRule});
 			m_nonterminals.Add("Link", new ParseMethod[]{this.DoParseLinkRule});
 			m_nonterminals.Add("AttributeEntityTypeAttribute", new ParseMethod[]{this.DoParseAttributeEntityTypeAttributeRule});
+			m_nonterminals.Add("DerivedAttribute", new ParseMethod[]{this.DoParseDerivedAttributeRule});
 			m_nonterminals.Add("ResolutionPattern", new ParseMethod[]{this.DoParseResolutionPatternRule});
 			m_nonterminals.Add("RefinementPattern", new ParseMethod[]{this.DoParseRefinementPatternRule});
 			m_nonterminals.Add("Multiplicity", new ParseMethod[]{this.DoParseMultiplicityRule});
@@ -775,7 +776,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// AttributeAttribute := IdAttribute / NameAttribute / DefinitionAttribute / AttributeEntityTypeAttribute
+		// AttributeAttribute := IdAttribute / NameAttribute / DefinitionAttribute / AttributeEntityTypeAttribute / DerivedAttribute
 		private State DoParseAttributeAttributeRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -785,7 +786,8 @@ namespace KAOSTools.Parsing
 			delegate (State s, List<Result> r) {return DoParse(s, r, "IdAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "AttributeEntityTypeAttribute");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "AttributeEntityTypeAttribute");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "DerivedAttribute");});
 			
 			if (_state.Parsed)
 			{
@@ -1427,6 +1429,24 @@ namespace KAOSTools.Parsing
 			{
 				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
 				value = BuildAttributeEntityTypeAttribute(results);
+				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+			}
+			
+			return _state;
+		}
+		
+		// DerivedAttribute := 'derived'
+		private State DoParseDerivedAttributeRule(State _state, List<Result> _outResults)
+		{
+			State _start = _state;
+			List<Result> results = new List<Result>();
+			
+			_state = DoParseLiteral(_state, results, "derived");
+			
+			if (_state.Parsed)
+			{
+				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
+				value = BuildDerivedAttribute(results);
 				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 			}
 			

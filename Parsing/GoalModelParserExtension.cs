@@ -550,6 +550,11 @@ namespace KAOSTools.Parsing {
             };
         }
 
+        ParsedElement BuildDerivedAttribute (List<Result> results) 
+        {
+            return BuildParsedAttributeWithValue<ParsedDerivedAttribute,dynamic> 
+                (results, null);
+        }
 
         #endregion
 

@@ -57,6 +57,11 @@ namespace KAOSTools.Parsing
             // ignore
         }
 
+        public void Handle (KAOSTools.MetaModel.Attribute attribute, ParsedDerivedAttribute parsedAttribute)
+        {
+            attribute.Derived = true;
+        }
+
         public void Handle (Goal element, ParsedExceptionAttribute exception)
         {
             Goal goal;
