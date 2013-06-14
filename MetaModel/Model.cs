@@ -15,7 +15,7 @@ namespace KAOSTools.MetaModel
         /// </summary>
         /// <value>The unique identifier.</value>
         public string Identifier { 
-            get { 
+            get {
                 return _identifier; 
             }
             set { 
@@ -189,6 +189,83 @@ namespace KAOSTools.MetaModel
             Identifier = identifier;
         }
     }
+    
+    /// <summary>
+    /// Represents a goal
+    /// </summary>
+    public class AntiGoal : KAOSMetaModelElement
+    {
+        /// <summary>
+        /// Gets or sets the name.
+        /// </summary>
+        /// <value>The name of the goal.</value>
+        public string Name { get; set; }
+
+        public override string FriendlyName {
+            get {
+                return string.IsNullOrEmpty(Name) ? Identifier : Name;
+            }
+        }
+
+        public override string ConceptName {
+            get {
+                return "AntiGoal";
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the definition.
+        /// </summary>
+        /// <value>The definition of the goal.</value>
+        public string Definition { get; set; }
+
+        /// <summary>
+        /// Gets or sets the formal specification.
+        /// </summary>
+        /// <value>The formal specification of the goal.</value>
+        public Formula FormalSpec { get; set; }
+
+        /// <summary>
+        /// Gets or sets the refinements for the goal.
+        /// </summary>
+        /// <value>The refinements.</value>
+        public ISet<AntiGoalRefinement> Refinements { get; set; }
+
+        /// <summary>
+        /// Gets or sets the agents assignment for the goal.
+        /// </summary>
+        /// <value>The agents assignments.</value>
+        public ISet<AgentAssignment> AgentAssignments { get; set; }
+
+        /// <summary>
+        /// Initializes a new goal.
+        /// </summary>
+        public AntiGoal ()
+        {
+            Refinements = new HashSet<AntiGoalRefinement> ();
+            AgentAssignments = new HashSet<AgentAssignment> ();
+            InSystems = new HashSet<AlternativeSystem>();
+        }
+
+        /// <summary>
+        /// Initializes a new goal with the specified name.
+        /// </summary>
+        /// <param name="name">Name.</param>
+        public AntiGoal (string name) : this()
+        {
+            Name = name;
+        }
+
+        /// <summary>
+        /// Initializes a new goal with the specified identifier and name.
+        /// </summary>
+        /// <param name="identifier">Identifier.</param>
+        /// <param name="name">Name.</param>
+        public AntiGoal (string identifier, string name) : this(name)
+        {
+            Identifier = identifier;
+        }
+    }
 
     /// <summary>
     /// Represents an obstacle.
@@ -251,6 +328,9 @@ namespace KAOSTools.MetaModel
 
         public ISet<Assumption> Assumptions { get; set; }
 
+        
+        public ISet<AgentAssignment> AgentAssignments { get; set; }
+
         /// <summary>
         /// Initializes a new obstacle.
         /// </summary>
@@ -259,6 +339,7 @@ namespace KAOSTools.MetaModel
             Refinements = new List<ObstacleRefinement> ();
             Resolutions = new List<Resolution> ();
             Assumptions = new HashSet<Assumption> ();
+            AgentAssignments = new HashSet<AgentAssignment> ();
         }
 
         /// <summary>
@@ -593,6 +674,37 @@ namespace KAOSTools.MetaModel
         {
             foreach (var goal in goals)
                 Subgoals.Add (goal);
+        }
+    }
+    
+
+    /// <summary>
+    /// Represents a anti-goal refinement
+    /// </summary>
+    public class AntiGoalRefinement : KAOSMetaModelElement
+    {
+        public IList<AntiGoal> Subantigoals { get; set; }
+        public IList<Obstacle> Obstacles { get; set; }
+
+        public IList<DomainProperty> DomainProperties { get; set; }
+        public IList<DomainHypothesis> DomainHypotheses { get; set; }
+
+        public bool IsEmpty {
+            get {
+                return Subantigoals.Count + Obstacles.Count 
+                    + DomainProperties.Count + DomainHypotheses.Count == 0;
+            }
+        }
+
+        /// <summary>
+        /// Initializes a new goal refinement.
+        /// </summary>
+        public AntiGoalRefinement ()
+        {
+            Subantigoals = new List<AntiGoal> ();
+            Obstacles = new List<Obstacle> ();
+            DomainProperties = new List<DomainProperty> ();
+            DomainHypotheses = new List<DomainHypothesis> ();
         }
     }
 

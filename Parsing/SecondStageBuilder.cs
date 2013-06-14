@@ -343,6 +343,28 @@ namespace KAOSTools.Parsing
 
         public void Handle (Goal element, ParsedAssignedToAttribute assignedTo)
         {
+            AddAssignement (element, assignedTo);
+        }
+        
+        public void Handle (AntiGoal element, ParsedAssignedToAttribute assignedTo)
+        {
+            AddAssignement (element, assignedTo);
+        }
+        
+        public void Handle (Obstacle element, ParsedAssignedToAttribute assignedTo)
+        {
+            AddAssignement (element, assignedTo);
+        }
+
+        private void AddAssignement (dynamic element, ParsedAssignedToAttribute assignedTo)
+        {
+            if (!(element is Goal | element is AntiGoal | element is Obstacle)) {
+                throw new NotImplementedException (
+                    "'" + assignedTo.GetType().Name 
+                    + "' is not supported on '" 
+                    + element.GetType().Name + "'");
+            }
+
             var assignment = new AgentAssignment ();
             
             if (assignedTo.SystemIdentifier != null) {

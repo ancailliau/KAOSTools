@@ -616,7 +616,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// ObstacleAttribute := IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByObstacle / ResolvedBy / Probability
+		// ObstacleAttribute := IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByObstacle / ResolvedBy / Probability / AssignedTo
 		private State DoParseObstacleAttributeRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -629,7 +629,8 @@ namespace KAOSTools.Parsing
 			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpecAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "RefinedByObstacle");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "ResolvedBy");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Probability");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Probability");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "AssignedTo");});
 			
 			if (_state.Parsed)
 			{
