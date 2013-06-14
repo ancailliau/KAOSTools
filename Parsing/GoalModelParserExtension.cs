@@ -440,7 +440,6 @@ namespace KAOSTools.Parsing {
         ParsedElement BuildAttributeAttribute (List<Result> results)
         {
             if (results[1].Value is ParsedAttributeDeclaration) {
-                Console.WriteLine ("pif");
                 return results[1].Value;
             }
 
@@ -736,7 +735,11 @@ namespace KAOSTools.Parsing {
         ParsedElement BuildAttributeReference (List<Result> results)
         {
             return new ParsedAttributeReferenceExpression(results[0].Text, 
-                                                          results[2].Value);
+                                                          results[2].Value){ 
+                Line = results[0].Line, 
+                Col = results[0].Col, 
+                Filename = m_file
+            };
         }
 
         ParsedElement BuildComparison (List<Result> results)
