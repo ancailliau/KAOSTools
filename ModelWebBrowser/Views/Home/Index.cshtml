@@ -434,7 +434,7 @@
   if (item.Attributes.Count > 0) {
     <h4>@(item.Attributes.Count > 1 ? "Attribute" : "Attribute")</h4>
     <table class="table table-striped">
-      <tr><th>Identifier</th><th>Name</th><th>Definition</th><th>Type</th></tr>
+      <tr><th>Identifier</th><th>Name</th><th>Definition</th><th>Type</th><th>Source reference</th></tr>
       @foreach (var argument in item.Attributes) {
         <tr>
           <td><code>@argument.Identifier</code></td>
@@ -459,6 +459,22 @@
               <div class="alert"><strong>Warning!</strong> This element is missing a type</div>
             }
           </td>
+          <td>           
+            <ul>
+            @foreach (var declaration in Model.Declarations[argument]) {
+              <li>
+                @if (declaration.Type == KAOSTools.Parsing.DeclarationType.Declaration) {
+                  @:Declared at
+                } else if (declaration.Type == KAOSTools.Parsing.DeclarationType.Override) {
+                  @:Overriden at
+                } else if (declaration.Type == KAOSTools.Parsing.DeclarationType.Reference) {
+                  @:Referenced at
+                }
+                <code>@declaration.Filename</code>, line @declaration.Line and column @declaration.Col
+              </li>
+            }
+            </ul>
+            </td>
         </tr>
       }
     </table>

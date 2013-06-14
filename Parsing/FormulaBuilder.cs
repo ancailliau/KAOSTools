@@ -11,15 +11,18 @@ namespace KAOSTools.Parsing
         private KAOSModel model;
         private IDictionary<KAOSMetaModelElement, IList<Declaration>> Declarations;
         private FirstStageBuilder FSB;
+        protected Uri relativePath;
 
         public FormulaBuilder (KAOSModel model, 
                                IDictionary<KAOSMetaModelElement, 
                                IList<Declaration>> declarations, 
-                               FirstStageBuilder fsb)
+                               FirstStageBuilder fsb,
+                               Uri relativePath)
         {
             this.model = model;
             this.Declarations = declarations;
             this.FSB = fsb;
+            this.relativePath = relativePath;
         }
         public Formula BuildFormula (ParsedElement value)
         {
@@ -147,7 +150,7 @@ namespace KAOSTools.Parsing
                                                                       arg, prel.Filename, prel.Line, prel.Col));
                     }
                 }
-                
+
                 return new PredicateReference () {
                     Predicate = GetOrCreatePredicate (prel, declaredVariables),
                     ActualArguments = prel.ActualArguments
@@ -300,8 +303,16 @@ namespace KAOSTools.Parsing
                     throw new NotImplementedException ();
 
                 model.Entities.Add (type);
+
+                Declarations.Add (type, new List<Declaration> () {
+                    new Declaration (idOrName.Line, idOrName.Col, idOrName.Filename, relativePath, DeclarationType.Reference)
+                });
+            } else {
+                Declarations[type].Add (
+                    new Declaration (idOrName.Line, idOrName.Col, idOrName.Filename, relativePath, DeclarationType.Reference)
+                );
             }
-            
+
             return type;
         }
         
@@ -313,13 +324,30 @@ namespace KAOSTools.Parsing
                     if (attribute == null) {
                         attribute = new KAOSTools.MetaModel.Attribute () { Name = pref.AttributeSignature.Value, Implicit = true } ;
                         entity.Attributes.Add (attribute);
+
+                        Declarations.Add (attribute, new List<Declaration> () {
+                            new Declaration (pref.Line, pref.Col, pref.Filename, relativePath, DeclarationType.Reference)
+                        });
+                    } else {
+                        Declarations[attribute].Add (
+                            new Declaration (pref.Line, pref.Col, pref.Filename, relativePath, DeclarationType.Reference)
+                            );
                     }
                     return attribute;
+
                 } else if (pref.AttributeSignature is IdentifierExpression) {
                     var attribute = entity.Attributes.SingleOrDefault (x => x.Identifier == pref.AttributeSignature.Value);
                     if (attribute == null) {
                         attribute = new KAOSTools.MetaModel.Attribute () { Identifier = pref.AttributeSignature.Value, Implicit = true } ;
                         entity.Attributes.Add (attribute);
+
+                        Declarations.Add (attribute, new List<Declaration> () {
+                            new Declaration (pref.Line, pref.Col, pref.Filename, relativePath, DeclarationType.Reference)
+                        });
+                    } else {
+                        Declarations[attribute].Add (
+                            new Declaration (pref.Line, pref.Col, pref.Filename, relativePath, DeclarationType.Reference)
+                            );
                     }
                     return attribute;
                 } else 
@@ -357,6 +385,10 @@ namespace KAOSTools.Parsing
                 }
 
                 model.Entities.Add (type);
+
+                Declarations.Add (type, new List<Declaration> () {
+                    new Declaration (identifierOrName.Line, identifierOrName.Col, identifierOrName.Filename, relativePath, DeclarationType.Reference)
+                });
             } else {
                 // Check that types matches
                 // TODO make this shit more robust. In the case of two links to a same entity, this
@@ -366,8 +398,13 @@ namespace KAOSTools.Parsing
                         throw new CompilationException ("Relation and formal spec are incompatible.");
                     }
                 }
-            }
-            
+                Declarations[type].Add (
+                    new Declaration (identifierOrName.Line, identifierOrName.Col, identifierOrName.Filename, relativePath, DeclarationType.Reference)
+                    );
+
+             }
+
+
             return type;
         }
         
@@ -396,6 +433,10 @@ namespace KAOSTools.Parsing
                 }
 
                 model.Predicates.Add (predicate);
+                // TODO Add relativePath
+                Declarations.Add (predicate, new List<Declaration> () {
+                    new Declaration (idOrName.Line, idOrName.Col, idOrName.Filename, null, DeclarationType.Reference)
+                });
 
             } else {
                 // Check that same number of arguments are used (if none is already declared)
@@ -427,11 +468,16 @@ namespace KAOSTools.Parsing
                         }
                     }
                 }
+
+                // TODO Add relativePath
+                Declarations[predicate].Add (
+                    new Declaration (idOrName.Line, idOrName.Col, idOrName.Filename, null, DeclarationType.Reference)
+                    );
+
             }
             
             return predicate;
         }
-        
 
         protected string Sanitize (string text) 
         {
@@ -439,7 +485,6 @@ namespace KAOSTools.Parsing
             t = Regex.Replace (t, "\"\"", "\"", RegexOptions.Multiline);
             return t;
         }
-
     }
 }
 

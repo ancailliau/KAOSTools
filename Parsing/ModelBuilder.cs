@@ -30,7 +30,7 @@ namespace KAOSTools.Parsing
                 RelativePath = new Uri(Path.GetFullPath (Path.GetDirectoryName(filename) + "/"));
 
             FirstStageBuilder FSB = new FirstStageBuilder (model, Declarations, RelativePath);
-            FormulaBuilder FB = new FormulaBuilder (model, Declarations, FSB);
+            FormulaBuilder FB = new FormulaBuilder (model, Declarations, FSB, RelativePath);
             SecondStageBuilder SSB = new SecondStageBuilder (model, Declarations, FSB, FB, RelativePath);
             ThirdStageBuilder TSB = new ThirdStageBuilder (model, Declarations, FSB, SSB, FB, RelativePath);
 
