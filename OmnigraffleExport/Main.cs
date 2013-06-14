@@ -43,6 +43,7 @@ namespace KAOSTools.OmnigraffleExport
             var document   = new Omnigraffle.Document ();
 
             ExportIdealGoalModel (model.GoalModel, document);
+            ExportAntiGoalModel (model.GoalModel, document);
             ExportExceptions (model.GoalModel, document);
             ExportObstructedGoalModel (model.GoalModel, document);
             ExportObstacles (model.GoalModel, document);
@@ -241,6 +242,18 @@ namespace KAOSTools.OmnigraffleExport
             document.Canvas.Add (goalCanvas);
         }
 
+        static void ExportAntiGoalModel (GoalModel model, KAOSTools.OmnigraffleExport.Omnigraffle.Document document)
+        {
+            var goalCanvas = new Omnigraffle.Sheet (1, "Anti Goal Model");
+            goalCanvas.LayoutInfo.HierarchicalOrientation = Omnigraffle.HierarchicalOrientation.BottomTop;
+            mapping.Add (goalCanvas, new Dictionary<string, KAOSTools.OmnigraffleExport.Omnigraffle.ShapedGraphic> ());
+            foreach (var goal in model.RootAntiGoals) {
+                RecursiveExportAntiGoal (goalCanvas, goal);
+            }
+
+            document.Canvas.Add (goalCanvas);
+        }
+
         static void ExportObstructedGoalModel (GoalModel model, KAOSTools.OmnigraffleExport.Omnigraffle.Document document)
         {
             var goalCanvas = new Omnigraffle.Sheet (1, "Obstructed Goal Model");
@@ -419,14 +432,26 @@ namespace KAOSTools.OmnigraffleExport
             }
             
             foreach (var assignment in goal.AgentAssignments) {
+                AddAgentAssignements (canvas, assignment, parentGraphic);
+            }
+        }
 
+        static void RecursiveExportAntiGoal (Omnigraffle.Sheet canvas, AntiGoal goal)
+        {
+            if (mapping[canvas].ContainsKey (goal.Identifier))
+                return;
+
+            var parentGraphic = AddAntiGoal (canvas, goal);
+
+            foreach (var refinement in goal.Refinements.Reverse ()) {
                 var circle = AddCircle (canvas.GraphicsList);
-                
+
                 // We add the arrow to the canvas after the label, so that label is above the arrow
                 var topArrow = AddFilledArrow (canvas.GraphicsList, circle, parentGraphic, false);
 
-                if (assignment.SystemReference != null) {
-                    var text = string.IsNullOrEmpty (assignment.SystemReference.Name) ? assignment.SystemReference.Identifier : assignment.SystemReference.Name;
+                if (refinement.SystemReference != null) {
+                    var text = string.IsNullOrEmpty (refinement.SystemReference.Name) ? refinement.SystemReference.Identifier : refinement.SystemReference.Name;
+
                     var alternativeText = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Rectangle, 50, 50, 100, 100);
                     alternativeText.Text = new Omnigraffle.TextInfo (GetRtfUnicodeEscapedString(text)) {
                         Alignement = KAOSTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
@@ -441,16 +466,66 @@ namespace KAOSTools.OmnigraffleExport
                     alternativeText.Line = new LineInfo (topArrow.ID);
                     canvas.GraphicsList.Add (alternativeText);
                 }
-                
+
                 // Ad the arrow
                 canvas.GraphicsList.Add (topArrow);
 
+                foreach (var child in refinement.SubAntiGoals.Reverse ()) {
+                    RecursiveExportAntiGoal (canvas, child);
+                    var childGraphic = mapping[canvas][child.Identifier];
+                    AddLine (canvas.GraphicsList, childGraphic, circle);
+                }
+
+                foreach (var domprop in refinement.DomainProperties.Reverse ()) {
+                    var childGraphic = AddDomainProperty (canvas, domprop);
+                    AddLine (canvas.GraphicsList, childGraphic, circle);
+                }
+
+                foreach (var domhyp in refinement.DomainHypotheses.Reverse ()) {
+                    var childGraphic = AddDomainHypothesis (canvas, domhyp);
+                    AddLine (canvas.GraphicsList, childGraphic, circle);
+                }
+
+                foreach (var obstacle in refinement.Obstacles.Reverse ()) {
+                    var childGraphic = AddObstacle (canvas, obstacle);
+                    AddLine (canvas.GraphicsList, childGraphic, circle);
+                }
+            }
+
+            foreach (var assignment in goal.AgentAssignments) {
+                AddAgentAssignements (canvas, assignment, parentGraphic);
+            }
+        }
+
+        static void AddAgentAssignements (Sheet canvas, AgentAssignment assignment, ShapedGraphic parentGraphic)
+        {
+                var circle = AddCircle (canvas.GraphicsList);
+                // We add the arrow to the canvas after the label, so that label is above the arrow
+                var topArrow = AddFilledArrow (canvas.GraphicsList, circle, parentGraphic, false);
+                if (assignment.SystemReference != null) {
+                    var text = string.IsNullOrEmpty (assignment.SystemReference.Name) ? assignment.SystemReference.Identifier : assignment.SystemReference.Name;
+                    var alternativeText = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Rectangle, 50, 50, 100, 100);
+                    alternativeText.Text = new Omnigraffle.TextInfo (GetRtfUnicodeEscapedString (text)) {
+                        Alignement = KAOSTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
+                        SideMargin = 0,
+                        TopBottomMargin = 0
+                    };
+                    alternativeText.FontInfo.Size = 10;
+                    alternativeText.Style.Shadow.Draws = false;
+                    alternativeText.FitText = KAOSTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
+                    alternativeText.Flow = KAOSTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
+                    alternativeText.Style.Fill.Color = new KAOSTools.OmnigraffleExport.Omnigraffle.Color (1, 1, 1);
+                    alternativeText.Style.Stroke.Draws = false;
+                    alternativeText.Line = new LineInfo (topArrow.ID);
+                    canvas.GraphicsList.Add (alternativeText);
+                }
+                // Ad the arrow
+                canvas.GraphicsList.Add (topArrow);
                 foreach (var agent in assignment.Agents) {
                     var agentGraphic = AddAgent (canvas, agent);
                     AddLine (canvas.GraphicsList, agentGraphic, circle);
                     // AddResponsibility (canvas.GraphicsList, agentGraphic, parentGraphic);
                 }
-            }
         }
         
         static void RecursiveExportObstacle (Omnigraffle.Sheet canvas, Obstacle obstacle, bool export_resolution = false)
@@ -487,6 +562,10 @@ namespace KAOSTools.OmnigraffleExport
                     var goalGraphic = mapping [canvas] [goal.Identifier];
                     AddSharpBackCrossArrow (canvas.GraphicsList, goalGraphic, parentGraphic);
                 }
+            }
+        
+            foreach (var assignment in obstacle.AgentAssignments) {
+                AddAgentAssignements (canvas, assignment, parentGraphic);
             }
         }
 
@@ -598,6 +677,35 @@ namespace KAOSTools.OmnigraffleExport
             var line = AddLine (canvas, @from, to);
             line.Style.Stroke.TailArrow = KAOSTools.OmnigraffleExport.Omnigraffle.Arrow.SharpBackCross;
             return line;
+        }
+
+        static ShapedGraphic RenderAntiGoal (AntiGoal antigoal)
+        {
+            var graphic = new Omnigraffle.ShapedGraphic (NextId, Omnigraffle.Shape.Bezier, 50, 50, 150, 70);
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (-0.5, -0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (-0.5, -0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (0.45, -0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (0.5, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (-0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (-0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (-0.45, 0.5));
+            graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (-0.5, -0.5));
+            graphic.Text = new Omnigraffle.TextInfo (GetRtfUnicodeEscapedString (antigoal.FriendlyName)) {
+                Alignement = KAOSTools.OmnigraffleExport.Omnigraffle.TextAlignement.Center,
+                SideMargin = 10,
+                TopBottomMargin = 3
+            };
+            graphic.Style.Shadow.Draws = false;
+            graphic.FitText = KAOSTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
+            graphic.Flow = KAOSTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
+            graphic.Style.Fill.Color = new KAOSTools.OmnigraffleExport.Omnigraffle.Color (0.810871, 0.896814, 1);
+            if (antigoal.Refinements.Count == 0)
+                graphic.Style.Stroke.Width = 2;
+            return graphic;
         }
 
         static ShapedGraphic RenderObstacle (Obstacle obstacle)
@@ -785,6 +893,16 @@ namespace KAOSTools.OmnigraffleExport
 
             if (goal.AgentAssignments.Count > 0)
                 graphic.Style.Stroke.Width = 2;
+
+            return graphic;
+        }
+        
+        static Omnigraffle.ShapedGraphic AddAntiGoal (Omnigraffle.Sheet canvas, AntiGoal goal)
+        {
+            var graphic = RenderAntiGoal (goal);
+
+            canvas.GraphicsList.Add (graphic);
+            mapping[canvas].Add (goal.Identifier, graphic);
 
             return graphic;
         }

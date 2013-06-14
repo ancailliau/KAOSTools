@@ -31,6 +31,17 @@ namespace KAOSTools.MetaModel
             }
         }
 
+        public ISet<AntiGoal>           RootAntiGoals { 
+            get {
+                var rootAntiGoals = new HashSet<AntiGoal> (AntiGoals);
+                foreach (var goal in AntiGoals)
+                    foreach (var refinement in goal.Refinements) 
+                        foreach (var child in refinement.SubAntiGoals)
+                            rootAntiGoals.Remove (child);
+                return rootAntiGoals;
+            }
+        }
+
         public ISet<AlternativeSystem>           RootSystems { 
             get {
                 var systems = new HashSet<AlternativeSystem> (Systems);
