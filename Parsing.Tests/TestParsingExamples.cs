@@ -13,7 +13,17 @@ namespace KAOSTools.Parsing.Tests
     public class TestParsingExamples
     {
         private static ModelBuilder parser = new ModelBuilder ();
-        
+
+        [Test()]
+        public void TestBCMS ()
+        {
+            string input = File.ReadAllText ("/Users/acailliau/Dropbox/bCMS/model/Goal Model/Z-whole-model.kaos");
+            var model = parser.Parse (input, "/Users/acailliau/Dropbox/bCMS/model/Goal Model/Z-whole-model.kaos");
+
+            Assert.IsNotNull (model);
+        }
+
+
         [Test()]
         public void TestLAS ()
         {

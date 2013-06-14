@@ -24,8 +24,6 @@ namespace KAOSTools.Parsing
             this.fb = fb;
             this.ssb = ssb;
             this.predicateArgumentCurrentPosition = new Dictionary<Predicate, int> ();
-
-            Console.WriteLine ("*** THIRD STAGE ***");
         }
 
         public void BuildElement (ParsedElements elements)

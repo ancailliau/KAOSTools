@@ -433,9 +433,8 @@ namespace KAOSTools.Parsing
                 }
 
                 model.Predicates.Add (predicate);
-                // TODO Add relativePath
                 Declarations.Add (predicate, new List<Declaration> () {
-                    new Declaration (idOrName.Line, idOrName.Col, idOrName.Filename, null, DeclarationType.Reference)
+                    new Declaration (idOrName.Line, idOrName.Col, idOrName.Filename, relativePath, DeclarationType.Reference)
                 });
 
             } else {
@@ -469,9 +468,8 @@ namespace KAOSTools.Parsing
                     }
                 }
 
-                // TODO Add relativePath
                 Declarations[predicate].Add (
-                    new Declaration (idOrName.Line, idOrName.Col, idOrName.Filename, null, DeclarationType.Reference)
+                    new Declaration (idOrName.Line, idOrName.Col, idOrName.Filename, relativePath, DeclarationType.Reference)
                     );
 
             }
