@@ -32,6 +32,10 @@ namespace KAOSTools.Parsing
                 return BuildKAOSElement<Goal> (element as ParsedGoal, 
                                                model.GoalModel.Goals);
 
+            if (element is ParsedAntiGoal)
+                return BuildKAOSElement<AntiGoal> (element as ParsedAntiGoal, 
+                                                   model.GoalModel.AntiGoals);
+
             if (element is ParsedDomainProperty)
                 return BuildKAOSElement<DomainProperty> (element as ParsedDomainProperty, 
                                                          model.GoalModel.DomainProperties);

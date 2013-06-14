@@ -493,6 +493,75 @@ namespace KAOSTools.Parsing
                 element.Refinements.Add (refinement);
         }
 
+        public void Handle (AntiGoal element, ParsedRefinedByAntiGoalAttribute refinedBy)
+        {
+            var refinement = new AntiGoalRefinement ();
+
+            if (refinedBy.SystemIdentifier != null) {
+                AlternativeSystem alternative;
+                if (!Get<AlternativeSystem> (refinedBy.SystemIdentifier, out alternative)) {
+                    alternative = Create<AlternativeSystem> (refinedBy.SystemIdentifier);
+                }
+                refinement.SystemReference = alternative;
+            }
+
+            foreach (var child in refinedBy.Values) {
+                if (child is IdentifierExpression | child is NameExpression) {
+                    DomainProperty domprop;
+                    if (Get (child, out domprop)) {
+                        refinement.DomainProperties.Add (domprop);
+                        continue;
+                    }
+
+                    DomainHypothesis domhyp;
+                    if (Get (child, out domhyp)) {
+                        refinement.DomainHypotheses.Add (domhyp);
+                        continue;
+                    }
+                    
+                    Obstacle obstacle;
+                    if (Get (child, out obstacle)) {
+                        refinement.Obstacles.Add (obstacle);
+                        continue;
+                    }
+
+                    AntiGoal antigoal;
+                    if (!Get (child, out antigoal)) {
+                        antigoal = Create<AntiGoal> (child);
+                    }
+                    refinement.SubAntiGoals.Add (antigoal);
+
+                } else if (child is ParsedAntiGoal) {
+                    refinement.SubAntiGoals.Add (fsb.BuildElementWithKeys (child));
+                    BuildElement (child);
+
+                } else if (child is ParsedObstacle) {
+                    refinement.Obstacles.Add (fsb.BuildElementWithKeys (child));
+                    BuildElement (child);
+
+                } else if (child is ParsedDomainProperty) {
+                    refinement.DomainProperties.Add (fsb.BuildElementWithKeys (child));
+                    BuildElement (child);
+
+                } else if (child is ParsedDomainHypothesis) {
+                    refinement.DomainHypotheses.Add (fsb.BuildElementWithKeys (child));
+                    BuildElement (child);
+
+                } else {
+
+                    // TODO use string.Format
+                    throw new NotImplementedException (
+                        "'" + child.GetType().Name 
+                        + "' is not supported in '" 
+                        + refinedBy.GetType().Name + "' on '" 
+                        + element.GetType().Name + "'");
+                }
+            }
+
+            if (!refinement.IsEmpty)
+                element.Refinements.Add (refinement);
+        }
+
         public void Handle (Obstacle element, ParsedRefinedByAttribute refinedBy)
         {
             var refinement = new ObstacleRefinement ();

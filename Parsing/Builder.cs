@@ -41,7 +41,7 @@ namespace KAOSTools.Parsing
                 return false;
             }
             
-            name = (expr as ParsedNameAttribute).Value;
+            name = Sanitize((expr as ParsedNameAttribute).Value);
             return true;
         }
         
@@ -87,6 +87,9 @@ namespace KAOSTools.Parsing
             if (element is ParsedGoal)
                 return model.GoalModel.Goals;
             
+            if (element is ParsedAntiGoal)
+                return model.GoalModel.AntiGoals;
+
             if (element is ParsedDomainProperty)
                 return model.GoalModel.DomainProperties;
             
@@ -123,6 +126,9 @@ namespace KAOSTools.Parsing
             if (typeof(T) == typeof(Goal))
                 return (ISet<T>) model.GoalModel.Goals;
             
+            if (typeof(T) == typeof(AntiGoal))
+                return (ISet<T>) model.GoalModel.AntiGoals;
+
             if (typeof(T) == typeof(DomainProperty))
                 return (ISet<T>) model.GoalModel.DomainProperties;
             

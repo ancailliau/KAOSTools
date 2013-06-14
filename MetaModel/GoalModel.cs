@@ -7,6 +7,8 @@ namespace KAOSTools.MetaModel
 {
     public class GoalModel
     {
+        public ISet<AntiGoal>         AntiGoals             { get; set; }
+
         public ISet<Goal>             Goals             { get; set; }
         public ISet<DomainProperty>   DomainProperties  { get; set; }
         public ISet<DomainHypothesis> DomainHypotheses  { get; set; }
@@ -55,6 +57,7 @@ namespace KAOSTools.MetaModel
         public GoalModel ()
         {
             Goals             = new HashSet<Goal> ();
+            AntiGoals             = new HashSet<AntiGoal> ();
             DomainProperties  = new HashSet<DomainProperty> ();
             DomainHypotheses  = new HashSet<DomainHypothesis> ();
             Obstacles         = new HashSet<Obstacle> ();

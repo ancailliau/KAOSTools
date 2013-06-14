@@ -7,7 +7,7 @@ debug =
 Start := S Elements S;
 
 Elements := 
-    ( ( System / Predicate / Goal / DomProp / Obstacle / Agent / Import / DomHyp 
+    ( ( System / Predicate / Goal / AntiGoal / DomProp / Obstacle / Agent / Import / DomHyp 
         / Entity / Type / Association ) S )*
     `value = BuildElements (results);`
 
@@ -28,6 +28,10 @@ System :=
 Goal := 
     ( 'declare' / 'override' ) S 'goal' S (GoalAttribute S)* 'end'
     `value = BuildGoal(results);`
+    
+AntiGoal := 
+    ( 'declare' / 'override' ) S 'antigoal' S (AntiGoalAttribute S)* 'end'
+    `value = BuildAntiGoal(results);`
     
 DomProp := 
     ( 'declare' / 'override' ) S ('domainproperty' / 'domprop' ) S (DomPropAttribute S)* 'end'
@@ -66,6 +70,11 @@ Attribute :=
 GoalAttribute := 
     ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByGoal 
       / ObstructedBy / AssignedTo / RDSAttribute / ExceptionAttribute / AssumptionAttribute )
+    `value = results[0].Value;`            
+                                                                                                                                                                  
+AntiGoalAttribute := 
+    ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByAntiGoal 
+      / AssignedTo )
     `value = results[0].Value;`
     
 DomPropAttribute := 
@@ -167,6 +176,12 @@ RefinedByGoal :=
     ( Goal / DomProp / DomHyp / Name / Identifier ) 
     (S ',' S ( Goal / DomProp / DomHyp / Name / Identifier ) )*
     `value = BuildRefinedBy(results);`
+    
+RefinedByAntiGoal := 
+    'refinedby' S (RefinedByAlternative S)?
+    ( AntiGoal / Obstacle / DomProp / DomHyp / Name / Identifier ) 
+    (S ',' S ( AntiGoal / Obstacle / DomProp / DomHyp / Name / Identifier ) )*
+    `value = BuildRefinedByAntiGoal(results);`
     
 RefinedByPattern := '(' S RefinementPattern S ')'
     `value = BuildRefinedByPattern(results);`

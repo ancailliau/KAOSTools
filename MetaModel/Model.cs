@@ -683,7 +683,8 @@ namespace KAOSTools.MetaModel
     /// </summary>
     public class AntiGoalRefinement : KAOSMetaModelElement
     {
-        public IList<AntiGoal> Subantigoals { get; set; }
+        public AlternativeSystem SystemReference { get; set; }
+        public IList<AntiGoal> SubAntiGoals { get; set; }
         public IList<Obstacle> Obstacles { get; set; }
 
         public IList<DomainProperty> DomainProperties { get; set; }
@@ -691,7 +692,7 @@ namespace KAOSTools.MetaModel
 
         public bool IsEmpty {
             get {
-                return Subantigoals.Count + Obstacles.Count 
+                return SubAntiGoals.Count + Obstacles.Count 
                     + DomainProperties.Count + DomainHypotheses.Count == 0;
             }
         }
@@ -701,7 +702,7 @@ namespace KAOSTools.MetaModel
         /// </summary>
         public AntiGoalRefinement ()
         {
-            Subantigoals = new List<AntiGoal> ();
+            SubAntiGoals = new List<AntiGoal> ();
             Obstacles = new List<Obstacle> ();
             DomainProperties = new List<DomainProperty> ();
             DomainHypotheses = new List<DomainHypothesis> ();

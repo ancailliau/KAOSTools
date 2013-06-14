@@ -61,6 +61,7 @@ namespace KAOSTools.Parsing
     public class ParsedPredicate            : ParsedElementWithAttributes {}
     public class ParsedSystem               : ParsedElementWithAttributes {}
     public class ParsedGoal                 : ParsedElementWithAttributes {}
+    public class ParsedAntiGoal             : ParsedElementWithAttributes {}
     public class ParsedDomainProperty       : ParsedElementWithAttributes {}
     public class ParsedDomainHypothesis     : ParsedElementWithAttributes {}
     public class ParsedObstacle             : ParsedElementWithAttributes {}
@@ -93,6 +94,11 @@ namespace KAOSTools.Parsing
     public class ParsedRefinedByAttribute  : ParsedAttributeWithElementsAndSystemIdentifier {
         public ParsedRefinementPattern RefinementPattern { get; set; }
     }
+    
+    public class ParsedRefinedByAntiGoalAttribute  : ParsedAttributeWithElementsAndSystemIdentifier {
+        public ParsedRefinementPattern RefinementPattern { get; set; }
+    }
+
     public class ParsedAssignedToAttribute : ParsedAttributeWithElementsAndSystemIdentifier {}
 
     public class ParsedIsAAttribute                  : ParsedAttributeWithValue<dynamic> {}
