@@ -120,12 +120,12 @@ namespace ModelWebBrowser.Helpers
         {
             if (link)
             return MvcHtmlString.Create (string.Format("&forall; {0} &middot; {1}", 
-                                                       string.Join(", ", expression.Declarations.Select (variable => string.Format ("{0}:<a href=#object-{2}>{1}</a>", variable.Name, variable.Type.FriendlyName, variable.Type.Identifier))),
+                                                       string.Join(", ", expression.Declarations.Select (variable => string.Format ("{0}:<a href=#object-{2}>{1}</a>", variable.Name, variable.Type.Identifier, variable.Type.Identifier))),
                                                            Embed(expression, expression.Enclosed, expression.Enclosed.ToHtmlString(link))
                                                        ));
 
             return MvcHtmlString.Create (string.Format("&forall; {0} &middot; {1}", 
-                                                       string.Join(", ", expression.Declarations.Select (variable => string.Format ("{0}:{1}", variable.Name, variable.Type.FriendlyName))),
+                                                       string.Join(", ", expression.Declarations.Select (variable => string.Format ("{0}:{1}", variable.Name, variable.Type.Identifier))),
                                                        Embed(expression, expression.Enclosed, expression.Enclosed.ToHtmlString(link))
                                                        ));
         }
@@ -134,12 +134,12 @@ namespace ModelWebBrowser.Helpers
         {
             if (link)
             return MvcHtmlString.Create (string.Format("&exist; {0} &middot; {1}", 
-                                                       string.Join(", ", expression.Declarations.Select (variable => string.Format ("{0}:<a href=#object-{2}>{1}</a>", variable.Name, variable.Type.FriendlyName, variable.Type.Identifier))),
+                                                           string.Join(", ", expression.Declarations.Select (variable => string.Format ("{0}:<a href=#object-{2}>{1}</a>", variable.Name, variable.Type.Identifier, variable.Type.Identifier))),
                                                            Embed(expression, expression.Enclosed, expression.Enclosed.ToHtmlString(link))
                                                            ));
 
             return MvcHtmlString.Create (string.Format("&exist; {0} &middot; {1}", 
-                                                       string.Join(", ", expression.Declarations.Select (variable => string.Format ("{0}:{1}", variable.Name, variable.Type.FriendlyName))),
+                                                       string.Join(", ", expression.Declarations.Select (variable => string.Format ("{0}:{1}", variable.Name, variable.Type.Identifier))),
                                                        Embed(expression, expression.Enclosed, expression.Enclosed.ToHtmlString(link))
                                                        ));
         }
@@ -191,13 +191,13 @@ namespace ModelWebBrowser.Helpers
         {
             if (link)
                 return MvcHtmlString.Create (string.Format("({1}) &isin; <a href=#association-{2}>{0}</a>", 
-                                                       expression.Relation.FriendlyName,
+                                                       expression.Relation.Identifier,
                                                        string.Join(", ", expression.ActualArguments),
                                                        expression.Relation.Identifier
                                                        ));
 
             return MvcHtmlString.Create (string.Format("({1}) &isin; {0}", 
-                                                       expression.Relation.FriendlyName,
+                                                       expression.Relation.Identifier,
                                                        string.Join(", ", expression.ActualArguments)
                                                        ));
         }

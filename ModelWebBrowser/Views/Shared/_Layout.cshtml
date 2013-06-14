@@ -7,10 +7,152 @@
     <link href="/Content/bootstrap/css/bootstrap.min.css" rel="stylesheet" >
     <script src="http://code.jquery.com/jquery.js"></script>
     <script src="/Content/bootstrap/js/bootstrap.min.js"></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/Content/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    
+    <style type="text/css">
+        .example {
+            position: relative;
+            margin: 15px 0;
+            padding: 39px 14px 19px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+        }
+        
+        .example p {
+            margin: 0 0 0 45px;
+            text-indent: -30px;
+        }
+        
+        .example p:first-child {
+            margin-right: 30px;
+        }
+        
+        .example:after {
+            content: "Text export";
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            padding: 3px 7px;
+            font-size: 12px;
+            font-weight: bold;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            color: #9da0a4;
+            -webkit-border-radius: 4px 0 4px 0;
+            -moz-border-radius: 4px 0 4px 0;
+            border-radius: 4px 0 4px 0;
+        }
+        
+        .attribute_details {
+            border-left: 2px solid #f5f5f5;
+            padding-left: 20px;
+        }
+        
+        hr.spacer {
+            margin: 25px 0;
+        }
+        
+        .section-header {
+            padding: 25px 0 10px;
+            color: #5a5a5a;
+            border-bottom: 2px solid #eee;
+        }
+        
+        h3 {
+            margin: 25px 0 25px;
+        }
+        
+        h4 {
+            margin: 35px 0 25px;
+        }
+        
+        h5 {
+            font-size: 1.14em;
+            margin: 35px 0 25px;
+        }
+        
+        h6 {
+            font-size: 1.1em;
+            margin: 35px 0 25px;
+        }
+        
+        .formalspec {
+            font-family: monospace;
+        }
+        
+        dd {
+            margin-top: 10px; 
+        }
+        
+        
+.jumbotron {
+  position: relative;
+  padding: 40px 0;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 20px;
+  text-shadow: 0 1px 3px rgba(0,0,0,.4), 0 0 30px rgba(0,0,0,.075);
+  background: #020031; /* Old browsers */
+  background: -moz-linear-gradient(45deg,  #020031 0%, #6d3353 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,#020031), color-stop(100%,#6d3353)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(45deg,  #020031 0%,#6d3353 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(45deg,  #020031 0%,#6d3353 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(45deg,  #020031 0%,#6d3353 100%); /* IE10+ */
+  background: linear-gradient(45deg,  #020031 0%,#6d3353 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#020031', endColorstr='#6d3353',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+  -webkit-box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+     -moz-box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+          box-shadow: inset 0 3px 7px rgba(0,0,0,.2), inset 0 -3px 7px rgba(0,0,0,.2);
+}
+
+.jumbotron div {
+  text-align: left;
+}
+
+.jumbotron h1 {
+  font-size: 80px;
+  font-weight: bold;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.jumbotron p {
+  font-size: 24px;
+  font-weight: 300;
+  line-height: 1.25;
+  margin-bottom: 30px;
+}
+
+
+.left-nav .affix {
+    position: fixed; 
+    top: 20px;
+    width: 270px;
+}
+
+.left-nav .nav-tabs>.active>a {
+    background: #0088CC;
+    color: white;
+}
+
+    </style>
+    
   </head>
-  <body style="padding-top: 20px;">
+  <body data-spy="scroll" data-target=".left-nav">
+  
+<header class="jumbotron">
+  <div class="container">
+    <h1>KAOS Documentation</h1>
+    <p class="lead">The <em>javadoc</em> for KAOS models.</p>
+  </div>
+</header>
+
     <div class="container">
     @RenderBody()
     </div>
+   
   </body>
 </html>
