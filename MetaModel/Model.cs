@@ -542,7 +542,8 @@ namespace KAOSTools.MetaModel
     {
         None,
         Software,
-        Environment
+        Environment,
+        Malicious
     }
 
     /// <summary>

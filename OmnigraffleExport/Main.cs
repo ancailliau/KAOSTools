@@ -490,10 +490,16 @@ namespace KAOSTools.OmnigraffleExport
                     ShapedGraphic childGraphic;
                     if (!mapping[canvas].ContainsKey(obstacle.Identifier)) {
                         childGraphic = AddObstacle (canvas, obstacle);
+                        foreach (var assignment in obstacle.AgentAssignments) {
+                            AddAgentAssignements (canvas, assignment, childGraphic);
+                        }
+
                     } else {
                         childGraphic = mapping[canvas][obstacle.Identifier];
                     }
                     AddLine (canvas.GraphicsList, childGraphic, circle);
+
+
                 }
             }
 
@@ -502,7 +508,9 @@ namespace KAOSTools.OmnigraffleExport
             }
         }
 
-        static void AddAgentAssignements (Sheet canvas, AgentAssignment assignment, ShapedGraphic parentGraphic)
+        static void AddAgentAssignements (Sheet canvas, 
+                                          AgentAssignment assignment, 
+                                          ShapedGraphic parentGraphic)
         {
                 var circle = AddCircle (canvas.GraphicsList);
                 // We add the arrow to the canvas after the label, so that label is above the arrow
@@ -524,6 +532,7 @@ namespace KAOSTools.OmnigraffleExport
                     alternativeText.Line = new LineInfo (topArrow.ID);
                     canvas.GraphicsList.Add (alternativeText);
                 }
+
                 // Ad the arrow
                 canvas.GraphicsList.Add (topArrow);
                 foreach (var agent in assignment.Agents) {
@@ -845,10 +854,14 @@ namespace KAOSTools.OmnigraffleExport
             graphic.Style.Shadow.Draws = false;
             graphic.FitText = KAOSTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
             graphic.Flow = KAOSTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
+
             if (agent.Type == AgentType.Software)
                 graphic.Style.Fill.Color = new KAOSTools.OmnigraffleExport.Omnigraffle.Color (0.99607843137, 0.80392156862, 0.58039215686);
+            else if (agent.Type == AgentType.Malicious)
+                graphic.Style.Fill.Color = new KAOSTools.OmnigraffleExport.Omnigraffle.Color (1, 0.590278, 0.611992);
             else
                 graphic.Style.Fill.Color = new KAOSTools.OmnigraffleExport.Omnigraffle.Color (0.824276, 0.670259, 1);
+
             return graphic;
         }
 

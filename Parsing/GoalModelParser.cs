@@ -1160,7 +1160,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// AgentTypeAttribute := 'type' S ('software' / 'environment')
+		// AgentTypeAttribute := 'type' S ('software' / 'environment' / 'malicious')
 		private State DoParseAgentTypeAttributeRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -1171,7 +1171,8 @@ namespace KAOSTools.Parsing
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoChoice(s, r,
 				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "software");},
-				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "environment");});});
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "environment");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "malicious");});});
 			
 			if (_state.Parsed)
 			{

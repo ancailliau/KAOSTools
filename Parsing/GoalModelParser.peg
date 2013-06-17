@@ -158,7 +158,7 @@ IsA := 'is' S ( Entity / Name / Identifier )
     `value = BuildIsA(results);`
                                                                          
 
-AgentTypeAttribute := 'type' S ( 'software' / 'environment' )
+AgentTypeAttribute := 'type' S ( 'software' / 'environment' / 'malicious' )
     `value = BuildAgentTypeAttribute (results);`
     
 EntityTypeAttribute := 'type' S ( 'software' / 'environment' / 'shared' )

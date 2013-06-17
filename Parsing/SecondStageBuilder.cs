@@ -658,7 +658,17 @@ namespace KAOSTools.Parsing
 
         public void Handle (KAOSMetaModelElement element, ParsedAgentTypeAttribute attribute)
         {
-            Handle (element, attribute.Value == ParsedAgentType.Software ? AgentType.Software : AgentType.Environment, "Type");
+            if (attribute.Value == ParsedAgentType.Environment)
+                Handle (element, AgentType.Environment, "Type");
+
+            else if (attribute.Value == ParsedAgentType.Software)
+                Handle (element, AgentType.Software, "Type");
+
+            else if (attribute.Value == ParsedAgentType.Malicious)
+                Handle (element, AgentType.Malicious, "Type");
+
+            else 
+                throw new NotImplementedException ();
         }
 
         public void Handle (KAOSMetaModelElement element, ParsedEntityTypeAttribute attribute)

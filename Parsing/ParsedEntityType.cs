@@ -47,7 +47,7 @@ namespace KAOSTools.Parsing
     #region Enumerations
 
     public enum ParsedAgentType { 
-        None, Software, Environment
+        None, Software, Environment, Malicious
     }
 
     public enum ParsedEntityType {

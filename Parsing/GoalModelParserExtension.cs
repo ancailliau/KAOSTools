@@ -369,6 +369,8 @@ namespace KAOSTools.Parsing {
                 type = ParsedAgentType.Software;
             else if (results[1].Text == "environment") 
                 type = ParsedAgentType.Environment;
+            else if (results[1].Text == "malicious") 
+                type = ParsedAgentType.Malicious;
             else
                 type = ParsedAgentType.None;
             
