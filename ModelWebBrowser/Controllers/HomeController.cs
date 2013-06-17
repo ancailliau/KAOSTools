@@ -13,24 +13,61 @@ namespace ModelWebBrowser.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index (string example = "las.kaos")
+        private const string file = "../Examples/bcms/Z-whole-model.kaos";
+
+        private static ModelBuilder parser;
+        private static string code;
+        private static KAOSModel model;
+
+        static HomeController ()
         {
-            if (!System.IO.File.Exists(Path.Combine("Examples", example))) {
+            Console.WriteLine ("Init");
+
+            if (!System.IO.File.Exists(Path.Combine("Examples", file))) {
                 throw new FileNotFoundException ();
             }
 
-            var code = System.IO.File.ReadAllText (Path.Combine("Examples", example));
-            var parser = new ModelBuilder ();
+            code = System.IO.File.ReadAllText (Path.Combine("Examples", file));
+            parser = new ModelBuilder ();
 
-            var model = parser.Parse (code, Path.Combine("Examples", example));
+            model = parser.Parse (code, Path.Combine("Examples", file));
             model.GoalModel.IntegrateResolutions ();
 
-            return View (new IndexModel {
+            Console.WriteLine ("End of init");
+        }
+
+        public ActionResult Index ()
+        {
+            return RedirectToAction ("GoalModel");
+        }
+
+        public ActionResult GoalModel ()
+        {
+            return View (new KAOSModelPage {
                 Code = code,
                 Model = model,
                 Declarations = parser.Declarations
             });
         }
+
+        public ActionResult AgentModel ()
+        {
+            return View (new KAOSModelPage {
+                Code = code,
+                Model = model,
+                Declarations = parser.Declarations
+            });
+        }
+
+        public ActionResult ObjectModel ()
+        {
+            return View (new KAOSModelPage {
+                Code = code,
+                Model = model,
+                Declarations = parser.Declarations
+            });
+        }
+
     }
 }
 

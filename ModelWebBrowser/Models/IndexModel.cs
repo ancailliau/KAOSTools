@@ -5,7 +5,7 @@ using KAOSTools.Parsing;
 
 namespace ModelWebBrowser.Models
 {
-    public class IndexModel
+    public class KAOSModelPage
     {
         public string Code {
             get;
