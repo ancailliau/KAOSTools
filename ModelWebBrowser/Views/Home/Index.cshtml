@@ -504,7 +504,7 @@
       @if (string.IsNullOrEmpty(item.Definition)) {
         <p class="muted">Not specified</p>
       } else {
-        @item.Definition
+        @MarkdownHelper.CompileMarkdown(item.Definition)
       }
     </td>
   </tr>
