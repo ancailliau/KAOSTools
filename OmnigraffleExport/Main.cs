@@ -487,7 +487,12 @@ namespace KAOSTools.OmnigraffleExport
                 }
 
                 foreach (var obstacle in refinement.Obstacles.Reverse ()) {
-                    var childGraphic = AddObstacle (canvas, obstacle);
+                    ShapedGraphic childGraphic;
+                    if (!mapping[canvas].ContainsKey(obstacle.Identifier)) {
+                        childGraphic = AddObstacle (canvas, obstacle);
+                    } else {
+                        childGraphic = mapping[canvas][obstacle.Identifier];
+                    }
                     AddLine (canvas.GraphicsList, childGraphic, circle);
                 }
             }
