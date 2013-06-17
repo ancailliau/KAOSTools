@@ -707,7 +707,7 @@ namespace KAOSTools.OmnigraffleExport
             graphic.Style.Shadow.Draws = false;
             graphic.FitText = KAOSTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
             graphic.Flow = KAOSTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
-            graphic.Style.Fill.Color = new KAOSTools.OmnigraffleExport.Omnigraffle.Color (0.810871, 0.896814, 1);
+            graphic.Style.Fill.Color = new KAOSTools.OmnigraffleExport.Omnigraffle.Color (1, 234.0/255, 192.0/255);
             if (antigoal.Refinements.Count == 0)
                 graphic.Style.Stroke.Width = 2;
             return graphic;
