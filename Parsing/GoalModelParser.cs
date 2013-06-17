@@ -100,6 +100,7 @@ namespace KAOSTools.Parsing
 			m_nonterminals.Add("MultiplicityUpperBound", new ParseMethod[]{this.DoParseMultiplicityUpperBoundRule});
 			m_nonterminals.Add("Identifier", new ParseMethod[]{this.DoParseIdentifierRule});
 			m_nonterminals.Add("Name", new ParseMethod[]{this.DoParseNameRule});
+			m_nonterminals.Add("QuotedString", new ParseMethod[]{this.DoParseQuotedStringRule});
 			m_nonterminals.Add("String", new ParseMethod[]{this.DoParseStringRule});
 			m_nonterminals.Add("Float", new ParseMethod[]{this.DoParseFloatRule});
 			m_nonterminals.Add("Formula", new ParseMethod[]{this.DoParseFormulaRule});
@@ -923,7 +924,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// DefinitionAttribute := 'definition' S '"' String? '"'
+		// DefinitionAttribute := 'definition' S QuotedString
 		private State DoParseDefinitionAttributeRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -932,10 +933,7 @@ namespace KAOSTools.Parsing
 			_state = DoSequence(_state, results,
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "definition");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
-			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "\"");},
-			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 1,
-				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "String");});},
-			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "\"");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "QuotedString");});
 			
 			if (_state.Parsed)
 			{
@@ -1742,6 +1740,30 @@ namespace KAOSTools.Parsing
 			{
 				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
 				value = BuildName(results);
+				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+			}
+			
+			return _state;
+		}
+		
+		// QuotedString := '@'? '"' String? '"'
+		private State DoParseQuotedStringRule(State _state, List<Result> _outResults)
+		{
+			State _start = _state;
+			List<Result> results = new List<Result>();
+			
+			_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 1,
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "@");});},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "\"");},
+			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 1,
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "String");});},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "\"");});
+			
+			if (_state.Parsed)
+			{
+				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
+				value = BuildQuotedString(results);
 				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 			}
 			

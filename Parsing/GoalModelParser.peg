@@ -130,7 +130,7 @@ NameAttribute := 'name' S '"' String? '"'
 FormalSpecAttribute := 'formalspec' S Formula
     `value = BuildFormalSpecAttribute(results);`
     
-DefinitionAttribute := 'definition' S '"' String? '"' 
+DefinitionAttribute := 'definition' S QuotedString
     `value = BuildDefinitionAttribute(results);`
 
 RDSAttribute := 'rds' S Float 
@@ -246,6 +246,9 @@ Identifier := [a-zA-Z] [a-zA-Z0-9_-]*
 
 Name := '"' String '"' 
     `value = BuildName(results);`
+    
+QuotedString := '@'? '"' String? '"'
+    `value = BuildQuotedString(results);`
 
 String := ( ( '""' / [^"] )+ )
     `value = BuildString(results)` `expected = "string"`

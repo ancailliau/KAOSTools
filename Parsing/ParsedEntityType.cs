@@ -114,7 +114,7 @@ namespace KAOSTools.Parsing
 
     public class ParsedNameAttribute         : ParsedAttributeWithValue<string> {}
     public class ParsedIdentifierAttribute   : ParsedAttributeWithValue<string> {}
-    public class ParsedDefinitionAttribute   : ParsedAttributeWithValue<string> {}
+    public class ParsedDefinitionAttribute   : ParsedAttributeWithValue<ParsedString> {}
     public class ParsedSignatureAttribute    : ParsedAttributeWithValue<string> {}
 
     public class ParsedProbabilityAttribute  : ParsedAttributeWithValue<double> {}
@@ -234,6 +234,7 @@ namespace KAOSTools.Parsing
     
     public class ParsedString : ParsedElement
     {
+        public bool Verbatim { get; set; }
         public string Value { get; set; }
     }
 

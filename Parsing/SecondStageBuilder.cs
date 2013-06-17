@@ -704,7 +704,7 @@ namespace KAOSTools.Parsing
 
         public void Handle (KAOSMetaModelElement element, ParsedDefinitionAttribute definition)
         {
-            Handle (element, Sanitize (definition.Value), "Definition");
+            Handle (element, definition.Value.Verbatim ? definition.Value.Value : Sanitize (definition.Value.Value), "Definition");
         }
 
         public void Handle (KAOSMetaModelElement element, ParsedIdentifierAttribute identifier)

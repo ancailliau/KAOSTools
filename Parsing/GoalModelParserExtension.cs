@@ -211,8 +211,8 @@ namespace KAOSTools.Parsing {
 
         ParsedElement BuildDefinitionAttribute (List<Result> results)
         {
-            return BuildParsedAttributeWithValue<ParsedDefinitionAttribute> 
-                (results, results.Count == 3 ? "" : results[2].Text);
+            return BuildParsedAttributeWithValue<ParsedDefinitionAttribute, ParsedString> 
+                (results, results[1].Value as ParsedString);
         }
 
         ParsedElement BuildRDS (List<Result> results)
@@ -566,6 +566,26 @@ namespace KAOSTools.Parsing {
                 Col = results[0].Col, 
                 Filename = m_file
             };
+        }
+
+        ParsedElement BuildQuotedString (List<Result> results)
+        {
+            if (results.Count == 2 | (results.Count == 3 && results[0].Text == "@")) { 
+                return new ParsedString () {
+                    Value = "",
+                    Line = results[0].Line,
+                    Col = results[0].Col,
+                    Filename = m_file
+                };
+            }
+
+            if (results.Count == 4) {
+                var val = results[2].Value as ParsedString;
+                val.Verbatim = true;
+                return val;
+            }
+
+            return results[1].Value;
         }
 
         ParsedElement BuildFloat (List<Result> results)
