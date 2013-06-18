@@ -100,17 +100,20 @@ namespace KAOSTools.ReportGenerator
               goals = from g in model.GoalModel.Goals.OrderBy (x => x.Name)
                       select new { id = g.Identifier,
                                    name = g.Name,
-                                   definition = g.Definition },
+                                   definition = g.Definition,
+                                   formalspec = FormalSpecHtmlExporter.ToHtmlString(g.FormalSpec) },
 
-              domain_properties = from g in model.GoalModel.DomainProperties.OrderBy (x => x.Name)
-                                  select new { id = g.Identifier,
-                                               name = g.Name,
-                                               definition = g.Definition },
+              domain_properties = from d in model.GoalModel.DomainProperties.OrderBy (x => x.Name)
+                                  select new { id = d.Identifier,
+                                               name = d.Name,
+                                               definition = d.Definition,
+                                               formalspec = FormalSpecHtmlExporter.ToHtmlString(d.FormalSpec) },
 
               domain_hypotheses = from g in model.GoalModel.DomainHypotheses.OrderBy (x => x.Name)
                                   select new { id = g.Identifier,
                                                name = g.Name,
-                                               definition = g.Definition },
+                                               definition = g.Definition,
+                                               formalspec = FormalSpecHtmlExporter.ToHtmlString(g.FormalSpec) },
 
               goal_refinements = GoalRefinements(),
 
@@ -121,7 +124,8 @@ namespace KAOSTools.ReportGenerator
               obstacles = from o in model.GoalModel.Obstacles.OrderBy (x => x.Name)
                           select new { id = o.Identifier,
                                        name = o.Name,
-                                       definition = o.Definition },
+                                       definition = o.Definition,
+                                       formalspec = FormalSpecHtmlExporter.ToHtmlString(o.FormalSpec) },
 
               obstacle_refinements = ObstacleRefinements(),
 
