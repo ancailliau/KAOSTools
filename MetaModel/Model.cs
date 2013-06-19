@@ -146,7 +146,7 @@ namespace KAOSTools.MetaModel
         /// Gets or sets the obstructions of the goal.
         /// </summary>
         /// <value>The obstruction.</value>
-        public ISet<Obstacle> Obstructions { get; set; }
+        public ISet<Obstruction> Obstructions { get; set; }
 
         /// <summary>
         /// Gets or sets the agents assignment for the goal.
@@ -163,7 +163,7 @@ namespace KAOSTools.MetaModel
         public Goal ()
         {
             Refinements = new HashSet<GoalRefinement> ();
-            Obstructions = new HashSet<Obstacle> ();
+            Obstructions = new HashSet<Obstruction> ();
             AgentAssignments = new HashSet<AgentAssignment> ();
             InSystems = new HashSet<AlternativeSystem>();
             Exceptions = new HashSet<GoalException> ();
@@ -784,6 +784,12 @@ namespace KAOSTools.MetaModel
     public class GoalAssumption : Assumption {}
     public class DomainHypothesisAssumption : Assumption {}
     public class ObstacleNegativeAssumption : Assumption {}
+
+    public class Obstruction : KAOSMetaModelElement {
+        public Obstacle ObstructingObstacle { get; set; }
+        public Obstruction ()
+        {}
+    }
 
     public class Resolution : KAOSMetaModelElement {
         public Goal ResolvingGoal { get; set; }

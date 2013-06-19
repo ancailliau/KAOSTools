@@ -112,7 +112,7 @@ namespace KAOSTools.MetaModel
             }
 
             foreach (var obstacle in goal.Obstructions) {
-                DownPropagate (goal, obstacle);
+                DownPropagate (goal, obstacle.ObstructingObstacle);
             }
         }
 

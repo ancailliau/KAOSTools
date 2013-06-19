@@ -302,7 +302,7 @@ namespace KAOSTools.Parsing
                 if (!Get (obstructedBy.Value, out obstacle)) {
                     obstacle = Create<Obstacle> (obstructedBy.Value);
                 }
-                element.Obstructions.Add (obstacle);
+                element.Obstructions.Add (new Obstruction { ObstructingObstacle = obstacle });
                     
             } else if (obstructedBy.Value is ParsedObstacle) {
                 element.Obstructions.Add (fsb.BuildElementWithKeys (obstructedBy.Value));

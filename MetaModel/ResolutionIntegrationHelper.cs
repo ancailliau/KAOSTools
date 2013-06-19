@@ -8,7 +8,7 @@ namespace KAOSTools.MetaModel
         public static void IntegrateResolutions (this GoalModel model) {
             foreach (var goal in model.ObstructedGoals) {
                 foreach (var obstacle in goal.Obstructions) {
-                    RecursiveIntegration (goal, obstacle);
+                    RecursiveIntegration (goal, obstacle.ObstructingObstacle);
                 }
             }
         }
@@ -91,7 +91,7 @@ namespace KAOSTools.MetaModel
             }
 
             foreach (var obstacle in goal.Obstructions) {
-                Propagate (assumption, obstacle);
+                Propagate (assumption, obstacle.ObstructingObstacle);
             }
         }
 

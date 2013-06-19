@@ -132,9 +132,9 @@ namespace KAOSTools.ReportGenerator
               obstacle_refinement_children = ObstacleRefinementChildren(),
 
               obstructions = from g in model.GoalModel.Goals.OrderBy (x => x.Name)
-                             from o in g.Obstructions.OrderBy (x => x.Name)
+                             from o in g.Obstructions.OrderBy (x => x.ObstructingObstacle.Name)
                                select new { goal     = g.Identifier,
-                                            obstacle = o.Identifier },
+                                            obstacle = o.ObstructingObstacle.Identifier },
 
               resolutions = from o in model.GoalModel.Obstacles.OrderBy (x => x.Name)
                               from r in o.Resolutions.OrderBy (x => x.ResolvingGoal.Name)

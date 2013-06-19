@@ -242,7 +242,7 @@ namespace KAOSTools.DotExporter
 
             foreach (var g in model.ObstructedGoals) {
                 foreach (var o in g.Obstructions) {
-                    ExportObstruction (g, o);
+                    ExportObstruction (g, o.ObstructingObstacle);
                 }
             }
             
@@ -252,7 +252,7 @@ namespace KAOSTools.DotExporter
 
             foreach (var g in model.ObstructedGoals) {
                 foreach (var o in g.Obstructions) {
-                    ExportRefinementRecursively (o);
+                    ExportRefinementRecursively (o.ObstructingObstacle);
                 }
             }
 

@@ -221,9 +221,9 @@ namespace KAOSTools.OmnigraffleExport
                 mapping.Add (obstacleCanvas, new Dictionary<string, KAOSTools.OmnigraffleExport.Omnigraffle.ShapedGraphic> ());
 
                 var goalGraphic = AddGoal (obstacleCanvas, obstructedGoal);
-                foreach (var obstacle in obstructedGoal.Obstructions) {
-                    RecursiveExportObstacle (obstacleCanvas, obstacle, true);
-                    AddSharpBackCrossArrow (obstacleCanvas.GraphicsList, mapping [obstacleCanvas] [obstacle.Identifier], goalGraphic);
+                foreach (var resolution in obstructedGoal.Obstructions) {
+                    RecursiveExportObstacle (obstacleCanvas, resolution.ObstructingObstacle, true);
+                    AddSharpBackCrossArrow (obstacleCanvas.GraphicsList, mapping [obstacleCanvas] [resolution.Identifier], goalGraphic);
                 }
 
                 document.Canvas.Add (obstacleCanvas);
@@ -264,11 +264,11 @@ namespace KAOSTools.OmnigraffleExport
             }
 
             foreach (var goal in model.ObstructedGoals) {
-                foreach (var obstacle in goal.Obstructions) {
-                    if (!mapping[goalCanvas].ContainsKey(obstacle.Identifier)) {
-                        AddObstacle (goalCanvas, obstacle);
+                foreach (var resolution in goal.Obstructions) {
+                    if (!mapping[goalCanvas].ContainsKey(resolution.Identifier)) {
+                        AddObstacle (goalCanvas, resolution.ObstructingObstacle);
                     }
-                    AddSharpBackCrossArrow (goalCanvas.GraphicsList, mapping [goalCanvas] [obstacle.Identifier], mapping [goalCanvas] [goal.Identifier]);
+                    AddSharpBackCrossArrow (goalCanvas.GraphicsList, mapping [goalCanvas] [resolution.Identifier], mapping [goalCanvas] [goal.Identifier]);
                 }
             }
 
