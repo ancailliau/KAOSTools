@@ -57,9 +57,9 @@ namespace KAOSTools.Utils
 
             if (model != null) {
                 var h = new AlternativeHelpers();
-                h.ComputeInAlternatives (model.GoalModel);
+                h.ComputeInAlternatives (model);
 
-                model.GoalModel.IntegrateResolutions ();
+                model.IntegrateResolutions ();
             }
         }
         

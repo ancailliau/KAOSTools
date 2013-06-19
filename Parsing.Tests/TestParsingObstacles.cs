@@ -28,7 +28,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestIdentifier (string input, string expectedIdentifier)
         {
             var model = parser.Parse (input);
-            model.GoalModel.Obstacles.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
+            model.Obstacles.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
         }
         
         [TestCase(@"declare obstacle
@@ -62,7 +62,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestName (string input, string expectedName)
         {
             var model = parser.Parse (input);
-            model.GoalModel.Obstacles
+            model.Obstacles
                 .Where (x => x.Name == expectedName)
                 .ShallBeSingle ();
         }
@@ -85,9 +85,9 @@ namespace KAOSTools.Parsing.Tests
             
             var model = parser.Parse (input);
             
-            model.GoalModel.Obstacles.Count.ShallEqual (2);
-            model.GoalModel.Obstacles.ShallContain (x => x.Identifier == "test");
-            model.GoalModel.Obstacles.ShallContain (x => x.Identifier == "test2");
+            model.Obstacles.Count().ShallEqual (2);
+            model.Obstacles.ShallContain (x => x.Identifier == "test");
+            model.Obstacles.ShallContain (x => x.Identifier == "test2");
         }
         
         [TestCase(@"declare obstacle 
@@ -106,11 +106,11 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var obstacle = model.GoalModel.Obstacles
+            var obstacle = model.Obstacles
                 .ShallContain (x => x.Identifier == "test")
                     .ShallBeSingle ();
             
-            obstacle.Refinements
+            obstacle.Refinements()
                 .ShallContain (x => x.Subobstacles.Select(y => y.Identifier)
                                .OnlyContains ( new string [] { "child1" , "child2" }));
         }
@@ -129,13 +129,13 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var obstacle = model.GoalModel.Obstacles
+            var obstacle = model.Obstacles
                 .ShallContain (x => x.Identifier == "test")
                     .ShallBeSingle ();
             
-            obstacle.Refinements.ShallContain (x => x.Subobstacles.Select(y => y.Identifier)
+            obstacle.Refinements().ShallContain (x => x.Subobstacles.Select(y => y.Identifier)
                                                               .OnlyContains ( new string [] { "child1" , "child2" }));
-            obstacle.Refinements.ShallContain (x => x.Subobstacles.Select(y => y.Identifier)
+            obstacle.Refinements().ShallContain (x => x.Subobstacles.Select(y => y.Identifier)
                                                               .OnlyContains ( new string [] { "child3" , "child4" }));
         }
         
@@ -156,19 +156,19 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var test = model.GoalModel.Obstacles
+            var test = model.Obstacles
                 .ShallContain (x => x.Identifier == "test")
                     .ShallBeSingle ();
             
-            test.Refinements
+            test.Refinements()
                 .ShallContain (x => x.Subobstacles.Select(y => y.Identifier)
                                .OnlyContains ( new string [] { "child1" , "child2" }));
             
-            var child1 = model.GoalModel.Obstacles
+            var child1 = model.Obstacles
                 .ShallContain (x => x.Identifier == "child1")
                     .ShallBeSingle ();
             
-            child1.Refinements
+            child1.Refinements()
                 .ShallContain (x => x.Subobstacles.Select(y => y.Identifier)
                                .OnlyContains ( new string [] { "child3" , "child4" }));
         }
@@ -191,8 +191,8 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var test = model.GoalModel.Obstacles.ShallContain (x => x.Identifier == "test").ShallBeSingle ();
-            test.Refinements.ShallBeSingle ().DomainProperties.Select (x => x.Identifier).ShallOnlyContain (new string [] { "domprop" });
+            var test = model.Obstacles.ShallContain (x => x.Identifier == "test").ShallBeSingle ();
+            test.Refinements().ShallBeSingle ().DomainProperties.Select (x => x.Identifier).ShallOnlyContain (new string [] { "domprop" });
         }
 
         [TestCase(@"declare obstacle
@@ -213,8 +213,8 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var test = model.GoalModel.Obstacles.ShallContain (x => x.Identifier == "test").ShallBeSingle ();
-            var refinement = test.Refinements.ShallBeSingle ();
+            var test = model.Obstacles.ShallContain (x => x.Identifier == "test").ShallBeSingle ();
+            var refinement = test.Refinements().ShallBeSingle ();
 
             refinement.DomainHypotheses.Select (x => x.Identifier).ShallOnlyContain (new string [] { "domhyp" });
         }
@@ -240,11 +240,11 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var goal = model.GoalModel.Obstacles
+            var goal = model.Obstacles
                 .ShallContain (x => x.Identifier == "test")
                     .ShallBeSingle ();
             
-            goal.Refinements
+            goal.Refinements()
                 .ShallContain (x => x.Subobstacles.Select(y => y.Name)
                                .OnlyContains ( new string [] { "child1" , "child2" }));
         }
@@ -270,17 +270,17 @@ namespace KAOSTools.Parsing.Tests
             
             var model = parser.Parse (input);
             
-            var obstacle = model.GoalModel.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var obstacle = model.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
             obstacle.Name.ShallEqual ("new name");
             obstacle.Definition.ShallEqual ("new definition");
 
-            obstacle.Refinements.ShallContain (y => y.Subobstacles.Select (x => x.Identifier)
+            obstacle.Refinements().ShallContain (y => y.Subobstacles.Select (x => x.Identifier)
                                            .OnlyContains (new string[] { "old_child1", "old_child2" }));
             
-            obstacle.Refinements.ShallContain (y => y.Subobstacles.Select (x => x.Identifier)
+            obstacle.Refinements().ShallContain (y => y.Subobstacles.Select (x => x.Identifier)
                                            .OnlyContains (new string[] { "new_child1", "new_child2" }));
             
-            obstacle.Resolutions
+            obstacle.Resolutions()
                 .Select (x => x.ResolvingGoal.Identifier)
                     .ShallOnlyContain (new string[] { "new_goal", "old_goal" });
         }
@@ -303,8 +303,9 @@ namespace KAOSTools.Parsing.Tests
         public void TestObstruction (string input)
         {
             var model = parser.Parse (input);
-            var test = model.GoalModel.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
-            test.Obstructions.Select (x => x.Identifier).ShallOnlyContain (new string[] { "obstacle_1", "obstacle_2" });
+            var test = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+
+            test.Obstructions().Select (x => x.Obstacle.Identifier).ShallOnlyContain (new string[] { "obstacle_1", "obstacle_2" });
         }
         
         [TestCase(@"declare obstacle
@@ -325,8 +326,8 @@ namespace KAOSTools.Parsing.Tests
         public void TestResolution (string input)
         {
             var model = parser.Parse (input);
-            var test = model.GoalModel.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
-            test.Resolutions.Select (x => x.ResolvingGoal.Identifier).ShallOnlyContain (new string[] { "goal_1", "goal_2" });
+            var test = model.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
+            test.Resolutions().Select (x => x.ResolvingGoal.Identifier).ShallOnlyContain (new string[] { "goal_1", "goal_2" });
         }
 
         [TestCase(@"declare goal id obstructedgoal obstructedby test end
@@ -337,14 +338,14 @@ namespace KAOSTools.Parsing.Tests
         public void TestResolutionPattern (string input)
         {
             var model = parser.Parse (input);
-            model.GoalModel.IntegrateResolutions ();
+            model.IntegrateResolutions ();
 
-            var test = model.GoalModel.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
-            var resolution = test.Resolutions.Single ();
+            var test = model.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var resolution = test.Resolutions().Single ();
             resolution.ResolvingGoal.Identifier.ShallEqual ("goal");
             resolution.ResolutionPattern.ShallEqual (ResolutionPattern.ObstaclePrevention);
 
-            var obstructedGoal = model.GoalModel.Goals.Single (x => x.Identifier == "obstructedgoal");
+            var obstructedGoal = model.Goals.Single (x => x.Identifier == "obstructedgoal");
             var e = obstructedGoal.Assumptions.Single ();
             e.Implicit.ShallBeTrue ();
             Assert.AreEqual ("goal", e.Assumed.Identifier);
@@ -358,17 +359,17 @@ namespace KAOSTools.Parsing.Tests
         public void TestResolutionPatternWithAnchor (string input)
         {
             var model = parser.Parse (input);
-            model.GoalModel.IntegrateResolutions ();
+            model.IntegrateResolutions ();
 
-            var test = model.GoalModel.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
-            var resolution = test.Resolutions.Single ();
+            var test = model.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var resolution = test.Resolutions().Single ();
             resolution.ResolvingGoal.Identifier.ShallEqual ("goal");
             resolution.ResolutionPattern.ShallEqual (ResolutionPattern.ObstacleWeakMitigation);
             (resolution.Parameters.First() as Goal).Identifier.ShallEqual ("anchor");
 
-            Console.WriteLine (string.Join(",", model.GoalModel.Goals.Select(x => x.Identifier + "("+ x.Exceptions.Count + ")")));
+            Console.WriteLine (string.Join(",", model.Goals.Select(x => x.Identifier + "("+ x.Exceptions.Count + ")")));
 
-            var obstructedGoal = model.GoalModel.Goals.Single (x => x.Identifier == "anchor");
+            var obstructedGoal = model.Goals.Single (x => x.Identifier == "anchor");
             var e = obstructedGoal.Exceptions.Single ();
             e.Implicit.ShallBeTrue ();
             e.ResolvedObstacle.Identifier.ShallEqual ("test");
@@ -387,7 +388,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestProbability (string input, double expected)
         {
             var model = parser.Parse (input);
-            model.GoalModel.Obstacles.ShallContain (x => x.Identifier == "test").ShallBeSingle ().EPS.ShallEqual (expected);
+            model.Obstacles.ShallContain (x => x.Identifier == "test").ShallBeSingle ().EPS.ShallEqual (expected);
         }
     }
 }

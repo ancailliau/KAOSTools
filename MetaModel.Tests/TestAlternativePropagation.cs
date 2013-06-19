@@ -41,8 +41,8 @@ namespace KAOSTools.MetaModel.Tests
             model.Systems.Add (alt1);
             model.Systems.Add (alt2);
 
-            rootG.Refinements.Add (new GoalRefinement (G1, G2, G3) { SystemReference = alt1 });
-            rootG.Refinements.Add (new GoalRefinement (G3, G4) { SystemReference = alt2 });
+            rootG.Refinements().Add (new GoalRefinement (G1, G2, G3) { SystemReference = alt1 });
+            rootG.Refinements().Add (new GoalRefinement (G3, G4) { SystemReference = alt2 });
 
             var h = new AlternativeHelpers(); h.ComputeInAlternatives (model);
 

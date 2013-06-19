@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using ShallTests;
+using KAOSTools.MetaModel;
 
 namespace KAOSTools.Parsing.Tests
 {
@@ -21,7 +22,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestTypeOfAgent (string input, KAOSTools.MetaModel.AgentType type)
         {
             var model = parser.Parse (input);
-            model.GoalModel.Agents
+            model.Agents
                 .Where (x => x.Type == type)
                 .ShallBeSingle ();
         }
@@ -41,7 +42,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestIdentifier (string input, string identifier)
         {
             var model = parser.Parse (input);
-            model.GoalModel.Agents
+            model.Agents
                 .Where (x => x.Identifier == identifier)
                 .ShallBeSingle ();
         }
@@ -77,7 +78,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestName (string input, string expectedName)
         {
             var model = parser.Parse (input);
-            model.GoalModel.Agents
+            model.Agents
                 .Where (x => x.Name == expectedName)
                 .ShallBeSingle ();
         }
@@ -108,7 +109,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestDefinition (string input, string expectedDescription)
         {
             var model = parser.Parse (input);
-            model.GoalModel.Agents
+            model.Agents
                 .Where (x => x.Identifier == "test")
                 .ShallBeSuchThat (x => x.Definition == expectedDescription);
         }
@@ -136,9 +137,9 @@ namespace KAOSTools.Parsing.Tests
         public void TestObstacleAssignedTo (string input)
         {
             var model = parser.Parse (input);
-            model.GoalModel.Obstacles
-                .Where (x => x.Identifier == "obstacle" & x.AgentAssignments.Count() == 1)
-                    .SelectMany (x => x.AgentAssignments)
+            model.Obstacles
+                .Where (x => x.Identifier == "obstacle" & x.AgentAssignments().Count() == 1)
+                    .SelectMany (x => x.AgentAssignments())
                     .SelectMany (x => x.Agents)
                     .ShallBeSingle ()
                     .ShallBeSuchThat (x => x.Identifier == "agent");
@@ -157,9 +158,9 @@ namespace KAOSTools.Parsing.Tests
         public void TestAssignedTo (string input)
         {
             var model = parser.Parse (input);
-            model.GoalModel.Goals
-                .Where (x => x.Identifier == "goal" & x.AgentAssignments.Count() == 1)
-                .SelectMany (x => x.AgentAssignments)
+            model.Goals
+                .Where (x => x.Identifier == "goal" & x.AgentAssignments().Count() == 1)
+                .SelectMany (x => x.AgentAssignments())
                 .SelectMany (x => x.Agents)
                 .ShallBeSingle ()
                 .ShallBeSuchThat (x => x.Identifier == "agent");
@@ -187,9 +188,9 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
 
-            model.GoalModel.Goals
+            model.Goals
                 .Where (x => x.Identifier == "goal")
-                .SelectMany (x => x.AgentAssignments)
+                .SelectMany (x => x.AgentAssignments())
                 .SelectMany (x => x.Agents)
                 .Select (x => x.Identifier)
                 .ShallOnlyContain (new string[] { "agent1", "agent2" });
@@ -203,7 +204,7 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var agent = model.GoalModel.Agents.Single (x => x.Identifier == "agent1");
+            var agent = model.Agents.Single (x => x.Identifier == "agent1");
             agent.Implicit.ShallBeTrue ();
         }
     }

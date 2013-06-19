@@ -5,20 +5,20 @@ namespace KAOSTools.MetaModel
 {
     public static class ResolutionIntegrationHelper
     {
-        public static void IntegrateResolutions (this GoalModel model) {
-            foreach (var goal in model.ObstructedGoals) {
-                foreach (var obstacle in goal.Obstructions) {
-                    RecursiveIntegration (goal, obstacle.ObstructingObstacle);
+        public static void IntegrateResolutions (this KAOSModel model) {
+            foreach (var goal in model.ObstructedGoals()) {
+                foreach (var obstacle in goal.Obstructions()) {
+                    RecursiveIntegration (goal, obstacle.Obstacle);
                 }
             }
         }
 
         static void RecursiveIntegration (Goal obstructedGoal, Obstacle obstacle) {
-            foreach (var resolution in obstacle.Resolutions) {
+            foreach (var resolution in obstacle.Resolutions()) {
                 Integrate (obstructedGoal, obstacle, resolution);
             }
 
-            foreach (var subobstacle in obstacle.Refinements.SelectMany (x => x.Subobstacles)) {
+            foreach (var subobstacle in obstacle.Refinements().SelectMany (x => x.Subobstacles)) {
                 RecursiveIntegration (obstructedGoal, subobstacle);
             }
         }
@@ -73,7 +73,7 @@ namespace KAOSTools.MetaModel
                     Implicit = true
                 });
 
-                foreach (var subgoal in anchor.Refinements.SelectMany(x => x.Subgoals)) {
+                foreach (var subgoal in anchor.Refinements().SelectMany(x => x.Subgoals)) {
                     var assumption = new ObstacleNegativeAssumption {
                         Assumed = obstacle,
                         Implicit = true
@@ -86,12 +86,12 @@ namespace KAOSTools.MetaModel
         static void Propagate (Assumption assumption, Goal goal) {
             goal.Assumptions.Add (assumption);
 
-            foreach (var children in goal.Refinements.SelectMany (x => x.Subgoals)) {
+            foreach (var children in goal.Refinements().SelectMany (x => x.Subgoals)) {
                 Propagate (assumption, children);
             }
 
-            foreach (var obstacle in goal.Obstructions) {
-                Propagate (assumption, obstacle.ObstructingObstacle);
+            foreach (var obstacle in goal.Obstructions()) {
+                Propagate (assumption, obstacle.Obstacle);
             }
         }
 
@@ -102,11 +102,11 @@ namespace KAOSTools.MetaModel
                 return;
             }
 
-            foreach (var children in obstacle.Refinements.SelectMany (x => x.Subobstacles)) {
+            foreach (var children in obstacle.Refinements().SelectMany (x => x.Subobstacles)) {
                 Propagate (assumption, children);
             }
 
-            foreach (var resolution in obstacle.Resolutions) {
+            foreach (var resolution in obstacle.Resolutions()) {
                 Propagate (assumption, resolution.ResolvingGoal);
             }
         }

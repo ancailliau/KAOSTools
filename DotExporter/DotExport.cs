@@ -67,7 +67,7 @@ namespace KAOSTools.DotExporter
                 name.Replace (" ", @"\n", midspace, 1);
             }
             writer.WriteLine (@"""{0}"" [shape=polygon,skew=-.1,label=""{1}"",style=filled,fillcolor=""#ffa9ad"",penwidth={2},fontname=""Arial"",fontsize=10,margin=""-.2,0""];", 
-                              o.Identifier, name, o.Refinements.Count == 0 ? 2 : 1);
+                              o.Identifier, name, o.Refinements().Count == 0 ? 2 : 1);
         }
 
         public void ExportResponsibility (Goal g, AgentAssignment assignement)
@@ -152,7 +152,7 @@ namespace KAOSTools.DotExporter
 
         public void ExportRefinementRecursively (Obstacle o, bool exportObstacle = false) {
 
-            if (o.Refinements.Count > 0) {
+            if (o.Refinements().Count > 0) {
                 writer.WriteLine ();
                 writer.WriteLine ("# Refinement for obstacle '{0}'", o.Name);
                 writer.WriteLine ();
@@ -171,7 +171,7 @@ namespace KAOSTools.DotExporter
 
         public void ExportRefinementRecursively (Goal g) {
 
-            if (g.Refinements.Count > 0) {
+            if (g.Refinements().Count > 0) {
                 writer.WriteLine ();
                 writer.WriteLine ("# Refinement for goal '{0}'", g.Name);
                 writer.WriteLine ();
@@ -232,7 +232,7 @@ namespace KAOSTools.DotExporter
             writer.WriteLine ();
             writer.WriteLine ("## REFINEMENTS");
 
-            foreach (var g in model.RootGoals) {
+            foreach (var g in model.RootGoals()) {
                 ExportRefinementRecursively (g);
             }
             
@@ -240,7 +240,7 @@ namespace KAOSTools.DotExporter
             writer.WriteLine ();
             writer.WriteLine ("## OBSTRUCTIONS");
 
-            foreach (var g in model.ObstructedGoals) {
+            foreach (var g in model.ObstructedGoals()) {
                 foreach (var o in g.Obstructions) {
                     ExportObstruction (g, o.ObstructingObstacle);
                 }
@@ -250,7 +250,7 @@ namespace KAOSTools.DotExporter
             writer.WriteLine ();
             writer.WriteLine ("## OBSTACLE REFINEMENTS");
 
-            foreach (var g in model.ObstructedGoals) {
+            foreach (var g in model.ObstructedGoals()) {
                 foreach (var o in g.Obstructions) {
                     ExportRefinementRecursively (o.ObstructingObstacle);
                 }

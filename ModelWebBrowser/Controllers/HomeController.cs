@@ -31,7 +31,7 @@ namespace ModelWebBrowser.Controllers
             parser = new ModelBuilder ();
 
             model = parser.Parse (code, Path.Combine("Examples", file));
-            model.GoalModel.IntegrateResolutions ();
+            model.IntegrateResolutions ();
 
             Console.WriteLine ("End of init");
         }

@@ -42,17 +42,17 @@ namespace KAOSTools.OmnigraffleExport
 
             var document   = new Omnigraffle.Document ();
 
-            ExportIdealGoalModel (model.GoalModel, document);
-            ExportAntiGoalModel (model.GoalModel, document);
-            ExportExceptions (model.GoalModel, document);
-            ExportObstructedGoalModel (model.GoalModel, document);
-            ExportObstacles (model.GoalModel, document);
-            ExportResolutionsGoalModel (model.GoalModel, document);
-            ExportResponsibilities (model.GoalModel, document);
+            ExportIdealGoalModel (model, document);
+            ExportAntiGoalModel (model, document);
+            ExportExceptions (model, document);
+            ExportObstructedGoalModel (model, document);
+            ExportObstacles (model, document);
+            ExportResolutionsGoalModel (model, document);
+            ExportResponsibilities (model, document);
             ExportObjectModel (model, document);
 
             if (experimental)
-                ExportExperimentalDiagrams (model.GoalModel, document);
+                ExportExperimentalDiagrams (model, document);
 
             if (string.IsNullOrEmpty (filename)) 
                 OmniGraffleGenerator.Export (document, Console.Out);
@@ -215,7 +215,7 @@ namespace KAOSTools.OmnigraffleExport
 
         static void ExportObstacles (GoalModel model, KAOSTools.OmnigraffleExport.Omnigraffle.Document document)
         {
-            foreach (var obstructedGoal in model.ObstructedGoals) {
+            foreach (var obstructedGoal in model.ObstructedGoals()) {
                 var obstacleCanvas = new Omnigraffle.Sheet (1, string.Format ("Obstacles to {0}", obstructedGoal.Name));
                 obstacleCanvas.LayoutInfo.HierarchicalOrientation = Omnigraffle.HierarchicalOrientation.BottomTop;
                 mapping.Add (obstacleCanvas, new Dictionary<string, KAOSTools.OmnigraffleExport.Omnigraffle.ShapedGraphic> ());
@@ -235,7 +235,7 @@ namespace KAOSTools.OmnigraffleExport
             var goalCanvas = new Omnigraffle.Sheet (1, "Ideal Goal Model");
             goalCanvas.LayoutInfo.HierarchicalOrientation = Omnigraffle.HierarchicalOrientation.BottomTop;
             mapping.Add (goalCanvas, new Dictionary<string, KAOSTools.OmnigraffleExport.Omnigraffle.ShapedGraphic> ());
-            foreach (var goal in model.RootGoals) {
+            foreach (var goal in model.RootGoals()) {
                 RecursiveExportGoal (goalCanvas, goal);
             }
 
@@ -259,11 +259,11 @@ namespace KAOSTools.OmnigraffleExport
             var goalCanvas = new Omnigraffle.Sheet (1, "Obstructed Goal Model");
             goalCanvas.LayoutInfo.HierarchicalOrientation = Omnigraffle.HierarchicalOrientation.BottomTop;
             mapping.Add (goalCanvas, new Dictionary<string, KAOSTools.OmnigraffleExport.Omnigraffle.ShapedGraphic> ());
-            foreach (var goal in model.RootGoals) {
+            foreach (var goal in model.RootGoals()) {
                 RecursiveExportGoal (goalCanvas, goal);
             }
 
-            foreach (var goal in model.ObstructedGoals) {
+            foreach (var goal in model.ObstructedGoals()) {
                 foreach (var resolution in goal.Obstructions) {
                     if (!mapping[goalCanvas].ContainsKey(resolution.Identifier)) {
                         AddObstacle (goalCanvas, resolution.ObstructingObstacle);
@@ -387,7 +387,7 @@ namespace KAOSTools.OmnigraffleExport
            
             var parentGraphic = AddGoal (canvas, goal);
             
-            foreach (var refinement in goal.Refinements.Reverse ()) {
+            foreach (var refinement in goal.Refinements().Reverse ()) {
                 var circle = AddCircle (canvas.GraphicsList);
 
                 // We add the arrow to the canvas after the label, so that label is above the arrow
@@ -443,7 +443,7 @@ namespace KAOSTools.OmnigraffleExport
 
             var parentGraphic = AddAntiGoal (canvas, goal);
 
-            foreach (var refinement in goal.Refinements.Reverse ()) {
+            foreach (var refinement in goal.Refinements().Reverse ()) {
                 var circle = AddCircle (canvas.GraphicsList);
 
                 // We add the arrow to the canvas after the label, so that label is above the arrow
@@ -717,7 +717,7 @@ namespace KAOSTools.OmnigraffleExport
             graphic.FitText = KAOSTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
             graphic.Flow = KAOSTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
             graphic.Style.Fill.Color = new KAOSTools.OmnigraffleExport.Omnigraffle.Color (1, 234.0/255, 192.0/255);
-            if (antigoal.Refinements.Count == 0)
+            if (antigoal.Refinements().Count == 0)
                 graphic.Style.Stroke.Width = 2;
             return graphic;
         }
@@ -746,7 +746,7 @@ namespace KAOSTools.OmnigraffleExport
             graphic.FitText = KAOSTools.OmnigraffleExport.Omnigraffle.FitText.Vertical;
             graphic.Flow = KAOSTools.OmnigraffleExport.Omnigraffle.Flow.Resize;
             graphic.Style.Fill.Color = new KAOSTools.OmnigraffleExport.Omnigraffle.Color (1, 0.590278, 0.611992);
-            if (obstacle.Refinements.Count == 0)
+            if (obstacle.Refinements().Count == 0)
                 graphic.Style.Stroke.Width = 2;
             return graphic;
         }

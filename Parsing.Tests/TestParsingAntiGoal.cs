@@ -27,7 +27,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestIdentifier (string input, string expectedIdentifier)
         {
             var model = parser.Parse (input);
-            model.GoalModel.AntiGoals.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
+            model.AntiGoals.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
         }
 
         [TestCase(@"declare antigoal
@@ -66,7 +66,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestName (string input, string expectedName)
         {
             var model = parser.Parse (input);
-            model.GoalModel.AntiGoals
+            model.AntiGoals
                 .Where (x => x.Name == expectedName)
                     .ShallBeSingle ();
         }
@@ -98,7 +98,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestDefinition (string input, string expectedDefinition)
         {
             var model = parser.Parse (input);
-            var g = model.GoalModel.AntiGoals.Single (x => x.Identifier == "test");
+            var g = model.AntiGoals.Single (x => x.Identifier == "test");
             g.Definition.ShallEqual (expectedDefinition);
         }
 
@@ -140,18 +140,18 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var goal = model.GoalModel.AntiGoals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var goal = model.AntiGoals.Where (x => x.Identifier == "test").ShallBeSingle ();
             goal.Name.ShallEqual ("new name");
             goal.Definition.ShallEqual ("new definition");
 
-            goal.Refinements.ShallContain (y => y.SubAntiGoals.Select (x => x.Identifier)
+            goal.Refinements().ShallContain (y => y.SubAntiGoals.Select (x => x.Identifier)
                 .OnlyContains (new string[] { "old_child1", "old_child2" }));
 
-            goal.Refinements.ShallContain (y => y.SubAntiGoals.Select (x => x.Identifier)
+            goal.Refinements().ShallContain (y => y.SubAntiGoals.Select (x => x.Identifier)
                 .OnlyContains (new string[] { "new_child1", "new_child2" }));
 
 
-            goal.AgentAssignments
+            goal.AgentAssignments()
                 .SelectMany (x => x.Agents)
                 .Select (x => x.Identifier)
                 .ShallOnlyContain (new string[] { "new_agent", "old_agent" });
@@ -165,9 +165,9 @@ namespace KAOSTools.Parsing.Tests
 
             var model = parser.Parse (input);
 
-            model.GoalModel.AntiGoals.Count.ShallEqual (2);
-            model.GoalModel.AntiGoals.ShallContain (x => x.Identifier == "test");
-            model.GoalModel.AntiGoals.ShallContain (x => x.Identifier == "test2");
+            model.AntiGoals.Count().ShallEqual (2);
+            model.AntiGoals.ShallContain (x => x.Identifier == "test");
+            model.AntiGoals.ShallContain (x => x.Identifier == "test2");
         }
             
         [TestCase(@"declare antigoal 
@@ -178,8 +178,8 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var goal = model.GoalModel.AntiGoals.Single (x => x.Identifier == "test");
-            var refinement = goal.Refinements.Single ();
+            var goal = model.AntiGoals.Single (x => x.Identifier == "test");
+            var refinement = goal.Refinements().Single ();
             foreach (var item in refinement.SubAntiGoals) {
                 item.Implicit.ShallBeTrue ();
             }
@@ -201,11 +201,11 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
 
-            var goal = model.GoalModel.AntiGoals
+            var goal = model.AntiGoals
                 .ShallContain (x => x.Identifier == "test")
                 .ShallBeSingle ();
 
-            goal.Refinements
+            goal.Refinements()
                 .ShallContain (x => x.SubAntiGoals.Select(y => y.Identifier)
                                               .OnlyContains ( new string [] { "child1" , "child2" }));
         }
@@ -228,8 +228,8 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
 
-            var test = model.GoalModel.AntiGoals.ShallContain (x => x.Identifier == "test").ShallBeSingle ();
-            test.Refinements.ShallBeSingle ().DomainProperties.Select (x => x.Identifier).ShallOnlyContain (new string [] { "domprop" });
+            var test = model.AntiGoals.ShallContain (x => x.Identifier == "test").ShallBeSingle ();
+            test.Refinements().ShallBeSingle ().DomainProperties.Select (x => x.Identifier).ShallOnlyContain (new string [] { "domprop" });
         }
 
         
@@ -251,8 +251,8 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
 
-            var test = model.GoalModel.AntiGoals.ShallContain (x => x.Identifier == "test").ShallBeSingle ();
-            test.Refinements.ShallBeSingle ().Obstacles.Select (x => x.Identifier).ShallOnlyContain (new string [] { "obstacle" });
+            var test = model.AntiGoals.ShallContain (x => x.Identifier == "test").ShallBeSingle ();
+            test.Refinements().ShallBeSingle ().Obstacles.Select (x => x.Identifier).ShallOnlyContain (new string [] { "obstacle" });
         }
 
         
@@ -274,8 +274,8 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var test = model.GoalModel.AntiGoals.ShallContain (x => x.Identifier == "test").ShallBeSingle ();
-            test.Refinements.ShallBeSingle ().DomainHypotheses.Select (x => x.Identifier).ShallOnlyContain (new string [] { "domhyp" });
+            var test = model.AntiGoals.ShallContain (x => x.Identifier == "test").ShallBeSingle ();
+            test.Refinements().ShallBeSingle ().DomainHypotheses.Select (x => x.Identifier).ShallOnlyContain (new string [] { "domhyp" });
         }
             
         [TestCase(@"declare antigoal 
@@ -299,11 +299,11 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var goal = model.GoalModel.AntiGoals
+            var goal = model.AntiGoals
                 .ShallContain (x => x.Identifier == "test")
                     .ShallBeSingle ();
             
-            goal.Refinements
+            goal.Refinements()
                 .ShallContain (x => x.SubAntiGoals.Select(y => y.Name)
                                .OnlyContains ( new string [] { "child1" , "child2" }));
         }

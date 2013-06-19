@@ -19,14 +19,14 @@
     
     <table class="table table-striped table-bordered">
       <tr><th>Name</th><th>Definition</th></tr>
-      @foreach (var g in Model.Model.GoalModel.Agents) {
+      @foreach (var g in Model.Model.Agents) {
         @Summary(g);
       }
     </table>
     
     <h3>Agents details</h3>
     
-    @foreach (var g in Model.Model.GoalModel.Agents) {
+    @foreach (var g in Model.Model.Agents) {
       <h4 id="@g.Identifier">
         @g.FriendlyName
         
@@ -186,11 +186,11 @@
 }
 
 @helper Refinements (dynamic g) {
-  if (g.Refinements.Count > 0) {
+  if (g.Refinements().Count > 0) {
       <dt>Refined&nbsp;by</dt>
       <dd>
       @foreach (var r in g.Refinements) {
-        if (r.SystemReference != null | g.Refinements.Count > 1) {
+        if (r.SystemReference != null | g.Refinements().Count > 1) {
           <p><strong>Alternative refinement</strong> @(r.SystemReference != null ? "(" + r.SystemReference.FriendlyName + ")" : "")</p>
         }
         <ul>
@@ -210,11 +210,11 @@
 }
 
 @helper AntigoalRefinements (dynamic g) {
-  if (g.Refinements.Count > 0) {
+  if (g.Refinements().Count > 0) {
       <dt>Refined&nbsp;by</dt>
       <dd>
       @foreach (var r in g.Refinements) {
-        if (r.SystemReference != null | g.Refinements.Count > 1) {
+        if (r.SystemReference != null | g.Refinements().Count > 1) {
           <p><strong>Alternative refinement</strong> @(r.SystemReference != null ? "(" + r.SystemReference.FriendlyName + ")" : "")</p>
         }
         <ul>
@@ -238,8 +238,8 @@
 
 
 @helper ObstacleRefinements (dynamic g) {
-  if (g.Refinements.Count > 0) {
-    <dt>@(g.Refinements.Count > 1 ? "Refinements" : "Refinement")</dt>
+  if (g.Refinements().Count > 0) {
+    <dt>@(g.Refinements().Count > 1 ? "Refinements" : "Refinement")</dt>
     <dd>
     @foreach (var r in g.Refinements) {
       <p><strong>Alternative refinement</strong></p>
@@ -305,7 +305,7 @@
 }
 
 @helper ParentGoals (dynamic g) {
-  var parents = Model.Model.GoalModel.Goals.Where (x => x.Refinements.Count(y => y.Subgoals.Contains(g)) > 0);
+  var parents = Model.Model.Goals.Where (x => x.Refinements().Count(y => y.Subgoals.Contains(g)) > 0);
   if (parents.Count() > 0) {
     <dt>Parents</dt>
     <dd><ul>
@@ -317,7 +317,7 @@
 }
 
 @helper Resolving (dynamic g) {
-  var obstacles = Model.Model.GoalModel.Obstacles.Where (x => x.Resolutions.Count(y => y.ResolvingGoal == g) > 0);
+  var obstacles = Model.Model.Obstacles.Where (x => x.Resolutions.Count(y => y.ResolvingGoal == g) > 0);
   if (obstacles.Count() > 0) {
     <dt>Resolving</dt>
     <dd><ul>
@@ -329,7 +329,7 @@
 }
 
 @helper ObstructedGoals (dynamic g) {
-  var goals = Model.Model.GoalModel.Goals.Where (x => x.Obstructions.Contains(g));
+  var goals = Model.Model.Goals.Where (x => x.Obstructions.Contains(g));
   if (goals.Count() > 0) {
     <dt>Obstructed goals</dt>
     <dd><ul>
@@ -486,7 +486,7 @@
 }
 
 @helper AssignedGoals (Agent g) {
-  var goals = Model.Model.GoalModel.Goals.Where (x => x.AgentAssignments.Count(y => y.Agents.Contains (g)) > 0);
+  var goals = Model.Model.Goals.Where (x => x.AgentAssignments.Count(y => y.Agents.Contains (g)) > 0);
   if (goals.Count() > 0) {
     <dt>Assigned goals</dt>
     <dd><ul>

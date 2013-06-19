@@ -6,6 +6,7 @@ using KAOSTools.Parsing;
 using System.Net;
 using System.IO;
 using ShallTests;
+using KAOSTools.MetaModel;
 
 namespace KAOSTools.Parsing.Tests
 {
@@ -40,8 +41,8 @@ namespace KAOSTools.Parsing.Tests
             var model = parser.Parse (input, "./Examples/include.kaos");
             
             Assert.IsNotNull (model);
-            Assert.IsNotEmpty (model.GoalModel.Goals.First ().Name);
-            Assert.IsNotEmpty (model.GoalModel.Goals.First ().Definition);
+            Assert.IsNotEmpty (model.Goals.First ().Name);
+            Assert.IsNotEmpty (model.Goals.First ().Definition);
         }
 
         [Test()]
@@ -52,19 +53,19 @@ namespace KAOSTools.Parsing.Tests
             
             Assert.IsNotNull (model);
 
-            Assert.AreEqual (2, model.GoalModel.Goals.Count);
-            Assert.AreEqual (1, model.GoalModel.DomainProperties.Count);
+            Assert.AreEqual (2, model.Goals.Count());
+            Assert.AreEqual (1, model.DomainProperties.Count());
 
-            Assert.AreEqual (2, model.GoalModel.RootGoals.First ().Refinements.Count);
+            Assert.AreEqual (2, model.RootGoals().First ().Refinements().Count());
             
-            model.GoalModel.RootGoals
-                .SelectMany (x => x.Refinements)
+            model.RootGoals()
+                .SelectMany (x => x.Refinements())
                 .SelectMany (r => r.DomainProperties)
                 .Select (d => d.Identifier)
                 .ShallContain ("driver_now_route");
 
-            model.GoalModel.RootGoals
-                .SelectMany (x => x.Refinements)
+            model.RootGoals()
+                .SelectMany (x => x.Refinements())
                 .SelectMany (r => r.Subgoals)
                 .Select (d => d.Identifier)
                 .ShallContain ("achieve_destination_reached_if_gps_support");

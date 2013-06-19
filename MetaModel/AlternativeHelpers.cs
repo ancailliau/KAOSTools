@@ -6,31 +6,31 @@ namespace KAOSTools.MetaModel
 {
     public class AlternativeHelpers
     {
-        private GoalModel model;
+        private KAOSModel model;
 
-        public void ComputeInAlternatives (GoalModel model)
+        public void ComputeInAlternatives (KAOSModel model)
         {
             this.model = model;
 
-            foreach (var goal in model.RootGoals) {
-                goal.InSystems = new HashSet<AlternativeSystem> (model.Systems);
+            foreach (var goal in model.RootGoals()) {
+                goal.InSystems = new HashSet<AlternativeSystem> (model.AlternativeSystems);
                 DownPropagate (goal);
             }
 
-            foreach (var g in model.RootGoals)
+            foreach (var g in model.RootGoals())
                 Simplify (g);
         }
 
         private void Simplify (Goal g) {
             g.InSystems = Simplify (g.InSystems);
-            foreach (var refinement in g.Refinements) {
+            foreach (var refinement in g.Refinements()) {
                 refinement.InSystems = Simplify(refinement.InSystems);
                 foreach (var child in refinement.Subgoals) {
                     Simplify (child);
                 }
             }
 
-            foreach (var assignement in g.AgentAssignments) {
+            foreach (var assignement in g.AgentAssignments()) {
                 assignement.InSystems = Simplify (assignement.InSystems);
                 foreach (var agent in assignement.Agents) {
                     agent.InSystems = Simplify (agent.InSystems);
@@ -41,7 +41,7 @@ namespace KAOSTools.MetaModel
         private ISet<AlternativeSystem> Simplify (ISet<AlternativeSystem> systems)
         {
             var result = new HashSet<AlternativeSystem> (systems);
-            foreach (var s in model.Systems) {
+            foreach (var s in model.AlternativeSystems) {
                 bool contains_all = true;
                 foreach (var ss in s.Alternatives) {
                     if (!result.Contains(ss)) {
@@ -103,16 +103,16 @@ namespace KAOSTools.MetaModel
 
         void DownPropagate (Goal goal) 
         {
-            foreach (var childRefinement in goal.Refinements) {
+            foreach (var childRefinement in goal.Refinements()) {
                 DownPropagate (goal, childRefinement);
             }
 
-            foreach (var agent in goal.AgentAssignments) {
+            foreach (var agent in goal.AgentAssignments()) {
                 DownPropagate (goal, agent);
             }
 
-            foreach (var obstacle in goal.Obstructions) {
-                DownPropagate (goal, obstacle.ObstructingObstacle);
+            foreach (var obstacle in goal.Obstructions()) {
+                DownPropagate (goal, obstacle.Obstacle);
             }
         }
 
@@ -177,11 +177,11 @@ namespace KAOSTools.MetaModel
 
         void DownPropagate (Obstacle obstacle)
         {
-            foreach (var childRefinement in obstacle.Refinements) {
+            foreach (var childRefinement in obstacle.Refinements()) {
                 DownPropagate (obstacle, childRefinement);
             }
 
-            foreach (var resolution in obstacle.Resolutions) {
+            foreach (var resolution in obstacle.Resolutions()) {
                 DownPropagate (obstacle, resolution.ResolvingGoal);
             }
         }

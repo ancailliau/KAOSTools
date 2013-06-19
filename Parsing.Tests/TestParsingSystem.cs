@@ -3,6 +3,7 @@ using System.Linq;
 using NUnit.Framework;
 using KAOSTools.Parsing;
 using ShallTests;
+using KAOSTools.MetaModel;
 
 namespace KAOSTools.Parsing.Tests
 {
@@ -26,7 +27,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestIdentifier (string input, string expectedIdentifier)
         {
             var model = parser.Parse (input);
-            model.GoalModel.Systems.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
+            model.AlternativeSystems.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
         }
         
         [TestCase(@"declare system id   end")]
@@ -52,7 +53,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestName (string input, string expectedName)
         {
             var model = parser.Parse (input);
-            model.GoalModel.Systems
+            model.AlternativeSystems
                 .Where (x => x.Name == expectedName)
                     .ShallBeSingle ();
         }
@@ -105,7 +106,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestOverride (string input)
         {
             var model = parser.Parse (input);
-            model.GoalModel.Systems.Count.ShallEqual (1);
+            model.AlternativeSystems.Count().ShallEqual (1);
         }
            
         [TestCase(@"declare system id test  end
@@ -113,8 +114,8 @@ namespace KAOSTools.Parsing.Tests
         public void TestMultiple (string input)
         {
             var model = parser.Parse (input);
-            model.GoalModel.Systems.ShallContain (x => x.Identifier == "test");
-            model.GoalModel.Systems.ShallContain (x => x.Identifier == "test2");
+            model.AlternativeSystems.ShallContain (x => x.Identifier == "test");
+            model.AlternativeSystems.ShallContain (x => x.Identifier == "test2");
         }
 
         
@@ -146,21 +147,21 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            model.GoalModel.Systems.Select (x => x.Name)
+            model.AlternativeSystems.Select (x => x.Name)
                 .ShallOnlyContain (new string[] { "system 1" , "system 2", "system 3" });
             
-            var goalTest = model.GoalModel.Goals
+            var goalTest = model.Goals
                 .ShallContain (x => x.Identifier == "test")
                     .ShallBeSingle ();
             
-            goalTest.Refinements.Select (x => x.SystemReference).Select (x => x.Name)
+            goalTest.Refinements().Select (x => x.SystemReference).Select (x => x.Name)
                 .ShallOnlyContain (new string[] { "system 1" , "system 2" });
             
-            var goalTest2 = model.GoalModel.Goals
+            var goalTest2 = model.Goals
                 .ShallContain (x => x.Identifier == "test2")
                     .ShallBeSingle ();
             
-            goalTest2.Refinements.Select (x => x.SystemReference).Select (x => x.Name)
+            goalTest2.Refinements().Select (x => x.SystemReference).Select (x => x.Name)
                 .ShallOnlyContain (new string[] { "system 3" });
         }
 
@@ -178,21 +179,21 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            model.GoalModel.Systems.Select (x => x.Identifier)
+            model.AlternativeSystems.Select (x => x.Identifier)
                 .ShallOnlyContain (new string[] { "alt1" , "alt2", "alt3" });
             
-            var goalTest = model.GoalModel.Goals
+            var goalTest = model.Goals
                 .ShallContain (x => x.Identifier == "test")
                     .ShallBeSingle ();
             
-            goalTest.Refinements.Select (x => x.SystemReference).Select (x => x.Identifier)
+            goalTest.Refinements().Select (x => x.SystemReference).Select (x => x.Identifier)
                 .ShallOnlyContain (new string[] { "alt1" , "alt2" });
             
-            var goalTest2 = model.GoalModel.Goals
+            var goalTest2 = model.Goals
                 .ShallContain (x => x.Identifier == "test2")
                     .ShallBeSingle ();
             
-            goalTest2.Refinements.Select (x => x.SystemReference).Select (x => x.Identifier)
+            goalTest2.Refinements().Select (x => x.SystemReference).Select (x => x.Identifier)
                 .ShallOnlyContain (new string[] { "alt3" });
         }
 
@@ -215,10 +216,10 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
 
-            model.GoalModel.Systems.Count.ShallEqual (3);
-            model.GoalModel.RootSystems.Count.ShallEqual (1);
+            model.AlternativeSystems.Count().ShallEqual (3);
+            model.RootSystems().Count.ShallEqual (1);
 
-            var root = model.GoalModel.RootSystems.Single ();
+            var root = model.RootSystems().Single ();
             root.Alternatives.Select (a => a.Identifier).ShallOnlyContain (new string[] { "sys1", "sys2" });
         }
     }

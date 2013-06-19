@@ -274,7 +274,7 @@ namespace KAOSTools.RefinementChecker
         }
 
         public ProofObligationGenerator (GoalModel model)
-            : this(model, model.RootGoals, model.ObstructedGoals)
+            : this(model, model.RootGoals(), model.ObstructedGoals())
         {}
     }
 }

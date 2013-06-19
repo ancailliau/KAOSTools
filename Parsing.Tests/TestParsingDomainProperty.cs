@@ -27,7 +27,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestIdentifier (string input, string expectedIdentifier)
         {
             var model = parser.Parse (input);
-            model.GoalModel.DomainProperties.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
+            model.DomainProperties.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
         }
         
         [TestCase(@"declare domainproperty id   end")]
@@ -53,7 +53,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestName (string input, string expectedName)
         {
             var model = parser.Parse (input);
-            model.GoalModel.DomainProperties
+            model.DomainProperties
                 .Where (x => x.Name == expectedName)
                     .ShallBeSingle ();
         }
@@ -92,7 +92,7 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var domprop = model.GoalModel.DomainProperties.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var domprop = model.DomainProperties.Where (x => x.Identifier == "test").ShallBeSingle ();
             domprop.Name.ShallEqual ("new name");
             domprop.Definition.ShallEqual ("new definition");
         }
@@ -104,8 +104,8 @@ namespace KAOSTools.Parsing.Tests
         public void TestMultiple (string input)
         {
             var model = parser.Parse (input);
-            model.GoalModel.DomainProperties.ShallContain (x => x.Identifier == "test");
-            model.GoalModel.DomainProperties.ShallContain (x => x.Identifier == "test2");
+            model.DomainProperties.ShallContain (x => x.Identifier == "test");
+            model.DomainProperties.ShallContain (x => x.Identifier == "test2");
         }
 
         [TestCase(@"declare domprop id test probability 0.95 end", 0.95)]
@@ -119,7 +119,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestProbability (string input, double expected)
         {
             var model = parser.Parse (input);
-            model.GoalModel.DomainProperties.ShallContain (x => x.Identifier == "test").ShallBeSingle ().EPS.ShallEqual (expected);
+            model.DomainProperties.ShallContain (x => x.Identifier == "test").ShallBeSingle ().EPS.ShallEqual (expected);
         }
 
     }

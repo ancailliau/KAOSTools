@@ -37,6 +37,7 @@ namespace KAOSTools.Parsing
         public void BuildElement (ParsedElementWithAttributes element)
         {
             var e = GetElement (element);
+
             if (e == null) 
                 throw new InvalidOperationException (string.Format ("Element '{0}' was not pre-built.", element));
 
@@ -191,7 +192,8 @@ namespace KAOSTools.Parsing
                                                                   element.GetType().Name));
             }
 
-            var resolution = new Resolution {
+            var resolution = new Resolution (model) {
+                Obstacle = element,
                 ResolvingGoal = goal
             };
 
@@ -234,13 +236,13 @@ namespace KAOSTools.Parsing
                 }
             }
 
-            element.Resolutions.Add (resolution);
+            model.Add (resolution);
 
         }
 
         public void Handle (Entity element, ParsedAttributeAttribute attribute)
         {
-            var e = new KAOSTools.MetaModel.Attribute ();
+            var e = new KAOSTools.MetaModel.Attribute (model);
 
             Handle (e, new ParsedNameAttribute() { 
                 Value = attribute.Name
@@ -259,7 +261,7 @@ namespace KAOSTools.Parsing
 
         public void Handle (Entity element, ParsedAttributeDeclaration attribute)
         {
-            var e = new KAOSTools.MetaModel.Attribute ();
+            var e = new KAOSTools.MetaModel.Attribute (model);
 
             foreach (dynamic attr in attribute.Attributes) {
                 Handle (e, attr);
@@ -302,11 +304,18 @@ namespace KAOSTools.Parsing
                 if (!Get (obstructedBy.Value, out obstacle)) {
                     obstacle = Create<Obstacle> (obstructedBy.Value);
                 }
-                element.Obstructions.Add (new Obstruction { ObstructingObstacle = obstacle });
+                model.Add (new Obstruction (model) { 
+                    ObstructedGoal = element, 
+                    Obstacle = obstacle
+                });
                     
             } else if (obstructedBy.Value is ParsedObstacle) {
-                element.Obstructions.Add (fsb.BuildElementWithKeys (obstructedBy.Value));
+                model.Add (new Obstruction (model) {
+                    ObstructedGoal = element,
+                    Obstacle = fsb.BuildElementWithKeys (obstructedBy.Value)
+                });
                 BuildElement (obstructedBy.Value);
+
             } else {
                 
                 // TODO use string.Format
@@ -343,30 +352,9 @@ namespace KAOSTools.Parsing
 
         public void Handle (Goal element, ParsedAssignedToAttribute assignedTo)
         {
-            AddAssignement (element, assignedTo);
-        }
-        
-        public void Handle (AntiGoal element, ParsedAssignedToAttribute assignedTo)
-        {
-            AddAssignement (element, assignedTo);
-        }
-        
-        public void Handle (Obstacle element, ParsedAssignedToAttribute assignedTo)
-        {
-            AddAssignement (element, assignedTo);
-        }
+            var assignment = new GoalAgentAssignment (model);
+            assignment.Goal = element;
 
-        private void AddAssignement (dynamic element, ParsedAssignedToAttribute assignedTo)
-        {
-            if (!(element is Goal | element is AntiGoal | element is Obstacle)) {
-                throw new NotImplementedException (
-                    "'" + assignedTo.GetType().Name 
-                    + "' is not supported on '" 
-                    + element.GetType().Name + "'");
-            }
-
-            var assignment = new AgentAssignment ();
-            
             if (assignedTo.SystemIdentifier != null) {
                 AlternativeSystem alternative;
                 if (!Get (assignedTo.SystemIdentifier, out alternative)) {
@@ -374,7 +362,7 @@ namespace KAOSTools.Parsing
                 }
                 assignment.SystemReference = alternative;
             }
-            
+
             foreach (var child in assignedTo.Values) {
                 if (child is IdentifierExpression | child is NameExpression) {
                     Agent agent;
@@ -382,13 +370,13 @@ namespace KAOSTools.Parsing
                         agent = Create<Agent> (child);
                     }
                     assignment.Agents.Add (agent);
-                    
+
                 } else if (child is ParsedAgent) {
                     assignment.Agents.Add (fsb.BuildElementWithKeys (child));
                     BuildElement (child);
 
                 } else {
-                    
+
                     // TODO use string.Format
                     throw new NotImplementedException (
                         "'" + child.GetType().Name 
@@ -397,14 +385,95 @@ namespace KAOSTools.Parsing
                         + element.GetType().Name + "'");
                 }
             }
-            
+
             if (!assignment.IsEmpty)
-                element.AgentAssignments.Add (assignment);
+                model.Add (assignment);
+        }
+        
+        public void Handle (AntiGoal element, ParsedAssignedToAttribute assignedTo)
+        {
+            var assignment = new AntiGoalAgentAssignment (model);
+            assignment.AntiGoal = element;
+
+            if (assignedTo.SystemIdentifier != null) {
+                AlternativeSystem alternative;
+                if (!Get (assignedTo.SystemIdentifier, out alternative)) {
+                    alternative = Create<AlternativeSystem> (assignedTo.SystemIdentifier);
+                }
+                assignment.SystemReference = alternative;
+            }
+
+            foreach (var child in assignedTo.Values) {
+                if (child is IdentifierExpression | child is NameExpression) {
+                    Agent agent;
+                    if (!Get (child, out agent)) {
+                        agent = Create<Agent> (child);
+                    }
+                    assignment.Agents.Add (agent);
+
+                } else if (child is ParsedAgent) {
+                    assignment.Agents.Add (fsb.BuildElementWithKeys (child));
+                    BuildElement (child);
+
+                } else {
+
+                    // TODO use string.Format
+                    throw new NotImplementedException (
+                        "'" + child.GetType().Name 
+                        + "' is not supported in '" 
+                        + assignedTo.GetType().Name + "' on '" 
+                        + element.GetType().Name + "'");
+                }
+            }
+
+            if (!assignment.IsEmpty)
+                model.Add (assignment);
+        }
+
+        private void Handle (Obstacle element, ParsedAssignedToAttribute assignedTo)
+        {
+            var assignment = new ObstacleAgentAssignment (model);
+            assignment.Obstacle = element;
+
+            if (assignedTo.SystemIdentifier != null) {
+                AlternativeSystem alternative;
+                if (!Get (assignedTo.SystemIdentifier, out alternative)) {
+                    alternative = Create<AlternativeSystem> (assignedTo.SystemIdentifier);
+                }
+                assignment.SystemReference = alternative;
+            }
+
+            foreach (var child in assignedTo.Values) {
+                if (child is IdentifierExpression | child is NameExpression) {
+                    Agent agent;
+                    if (!Get (child, out agent)) {
+                        agent = Create<Agent> (child);
+                    }
+                    assignment.Agents.Add (agent);
+
+                } else if (child is ParsedAgent) {
+                    assignment.Agents.Add (fsb.BuildElementWithKeys (child));
+                    BuildElement (child);
+
+                } else {
+
+                    // TODO use string.Format
+                    throw new NotImplementedException (
+                        "'" + child.GetType().Name 
+                        + "' is not supported in '" 
+                        + assignedTo.GetType().Name + "' on '" 
+                        + element.GetType().Name + "'");
+                }
+            }
+
+            if (!assignment.IsEmpty)
+                model.Add (assignment);
         }
 
         public void Handle (Goal element, ParsedRefinedByAttribute refinedBy)
         {
-            var refinement = new GoalRefinement ();
+            var refinement = new GoalRefinement (model);
+            refinement.ParentGoal = element;
 
             if (refinedBy.SystemIdentifier != null) {
                 AlternativeSystem alternative;
@@ -490,12 +559,13 @@ namespace KAOSTools.Parsing
             }
 
             if (!refinement.IsEmpty)
-                element.Refinements.Add (refinement);
+                model.Add (refinement);
         }
 
         public void Handle (AntiGoal element, ParsedRefinedByAntiGoalAttribute refinedBy)
         {
-            var refinement = new AntiGoalRefinement ();
+            var refinement = new AntiGoalRefinement (model);
+            refinement.ParentAntiGoal = element;
 
             if (refinedBy.SystemIdentifier != null) {
                 AlternativeSystem alternative;
@@ -559,12 +629,13 @@ namespace KAOSTools.Parsing
             }
 
             if (!refinement.IsEmpty)
-                element.Refinements.Add (refinement);
+                model.Add (refinement);
         }
 
         public void Handle (Obstacle element, ParsedRefinedByAttribute refinedBy)
         {
-            var refinement = new ObstacleRefinement ();
+            var refinement = new ObstacleRefinement (model);
+            refinement.ParentObstacle = element;
             
             foreach (var child in refinedBy.Values) {
                 if (child is IdentifierExpression | child is NameExpression) {
@@ -610,7 +681,7 @@ namespace KAOSTools.Parsing
             }
             
             if (!refinement.IsEmpty)
-                element.Refinements.Add (refinement);
+                model.Add (refinement);
         }
         
         public void Handle (Entity element, ParsedIsAAttribute attribute)
@@ -653,7 +724,7 @@ namespace KAOSTools.Parsing
                                                                   element.GetType().Name));
             }
 
-            element.Links.Add (new Link (entity, attribute.Multiplicity));
+            element.Links.Add (new Link (model) { Target = entity, Multiplicity = attribute.Multiplicity });
         }
 
         public void Handle (KAOSMetaModelElement element, ParsedAgentTypeAttribute attribute)

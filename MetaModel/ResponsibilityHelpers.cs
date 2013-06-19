@@ -6,10 +6,10 @@ namespace KAOSTools.MetaModel
 {
     public static class ResponsibilityHelpers {
         
-        public static ResponsibilityNode GetResponsibilities (this GoalModel model) 
+        public static ResponsibilityNode GetResponsibilities (this KAOSModel model) 
         {
             var node = new ResponsibilityNode (null);
-            foreach (var rootGoal in model.RootGoals) {
+            foreach (var rootGoal in model.RootGoals()) {
                 RecursiveGetResponsibilities (node, rootGoal);
             }
             
@@ -100,16 +100,16 @@ namespace KAOSTools.MetaModel
         
         private static void RecursiveGetResponsibilities (ResponsibilityNode current, Goal goal)
         {
-            var hasAlternatives = (goal.Refinements.Count + goal.AgentAssignments.Count) > 1;
+            var hasAlternatives = (goal.Refinements().Count() + goal.AgentAssignments().Count()) > 1;
             
             if (hasAlternatives) {
-                foreach (var refinement in goal.Refinements) {
+                foreach (var refinement in goal.Refinements()) {
                     var newNode = new ResponsibilityNode (current);
                     foreach (var childGoal in refinement.Subgoals) 
                         RecursiveGetResponsibilities (newNode, childGoal);
                 }
                 
-                foreach (var assignment in goal.AgentAssignments) {
+                foreach (var assignment in goal.AgentAssignments()) {
                     foreach (var agent in assignment.Agents) {
                         var newNode = new ResponsibilityNode (current);
                         
@@ -120,12 +120,12 @@ namespace KAOSTools.MetaModel
                 }
                 
             } else {
-                foreach (var refinement in goal.Refinements) {
+                foreach (var refinement in goal.Refinements()) {
                     foreach (var childGoal in refinement.Subgoals) 
                         RecursiveGetResponsibilities (current, childGoal);
                 }
                 
-                foreach (var assignment in goal.AgentAssignments) {
+                foreach (var assignment in goal.AgentAssignments()) {
                     foreach (var agent in assignment.Agents) {
                         if (!current.Responsibility.ContainsKey(agent))
                             current.Responsibility.Add (agent, new List<Goal> ());

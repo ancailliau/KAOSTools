@@ -20,7 +20,7 @@ namespace KAOSTools.DotExporter
 
             Init (args);
 
-            var exporter = new DotExport (model.GoalModel, 
+            var exporter = new DotExport (model, 
                                           !string.IsNullOrEmpty (modelFilename) ? new StreamWriter (modelFilename) : Console.Out);
 
             exporter.ExportModel ();

@@ -37,7 +37,7 @@ namespace KAOSTools.ReportGenerator
         }
 
         public static Object ObstacleRefinements() {
-          var tuples = from g in model.GoalModel.Obstacles
+          var tuples = from g in model.Obstacles
                          from r in g.Refinements
                            select new { id = r.Identifier,
                                         parent = g.Identifier };
@@ -45,17 +45,17 @@ namespace KAOSTools.ReportGenerator
         }
 
         public static Object ObstacleRefinementChildren(){
-          var grgc = from g in model.GoalModel.Obstacles
+          var grgc = from g in model.Obstacles
                        from r in g.Refinements
                          from sg in r.Subobstacles
                            select new { refinement = r.Identifier,
                                         child = sg.Identifier };
-          var grpc = from g in model.GoalModel.Obstacles
+          var grpc = from g in model.Obstacles
                        from r in g.Refinements
                          from d in r.DomainProperties
                            select new { refinement = r.Identifier,
                                         child = d.Identifier };
-          var grhc = from g in model.GoalModel.Obstacles
+          var grhc = from g in model.Obstacles
                        from r in g.Refinements
                          from d in r.DomainHypotheses
                            select new { refinement = r.Identifier,
@@ -64,7 +64,7 @@ namespace KAOSTools.ReportGenerator
         }
 
         public static Object GoalRefinements() {
-          var tuples = from g in model.GoalModel.Goals
+          var tuples = from g in model.Goals
                          from r in g.Refinements
                            select new { id = r.Identifier,
                                         parent = g.Identifier };
@@ -72,17 +72,17 @@ namespace KAOSTools.ReportGenerator
         }
 
         public static Object GoalRefinementChildren(){
-          var grgc = from g in model.GoalModel.Goals
+          var grgc = from g in model.Goals
                        from r in g.Refinements
                          from sg in r.Subgoals
                            select new { refinement = r.Identifier,
                                         child = sg.Identifier };
-          var grpc = from g in model.GoalModel.Goals
+          var grpc = from g in model.Goals
                        from r in g.Refinements
                          from d in r.DomainProperties
                            select new { refinement = r.Identifier,
                                         child = d.Identifier };
-          var grhc = from g in model.GoalModel.Goals
+          var grhc = from g in model.Goals
                        from r in g.Refinements
                          from d in r.DomainHypotheses
                            select new { refinement = r.Identifier,
@@ -97,19 +97,19 @@ namespace KAOSTools.ReportGenerator
             var dbvalue = new
             {
               // IDEAL GOAL MODEL
-              goals = from g in model.GoalModel.Goals.OrderBy (x => x.Name)
+              goals = from g in model.Goals.OrderBy (x => x.Name)
                       select new { id = g.Identifier,
                                    name = g.Name,
                                    definition = g.Definition,
                                    formalspec = FormalSpecHtmlExporter.ToHtmlString(g.FormalSpec) },
 
-              domain_properties = from d in model.GoalModel.DomainProperties.OrderBy (x => x.Name)
+              domain_properties = from d in model.DomainProperties.OrderBy (x => x.Name)
                                   select new { id = d.Identifier,
                                                name = d.Name,
                                                definition = d.Definition,
                                                formalspec = FormalSpecHtmlExporter.ToHtmlString(d.FormalSpec) },
 
-              domain_hypotheses = from g in model.GoalModel.DomainHypotheses.OrderBy (x => x.Name)
+              domain_hypotheses = from g in model.DomainHypotheses.OrderBy (x => x.Name)
                                   select new { id = g.Identifier,
                                                name = g.Name,
                                                definition = g.Definition,
@@ -121,7 +121,7 @@ namespace KAOSTools.ReportGenerator
 
               // OBSTACLE ANALYSIS
 
-              obstacles = from o in model.GoalModel.Obstacles.OrderBy (x => x.Name)
+              obstacles = from o in model.Obstacles.OrderBy (x => x.Name)
                           select new { id = o.Identifier,
                                        name = o.Name,
                                        definition = o.Definition,
@@ -131,25 +131,25 @@ namespace KAOSTools.ReportGenerator
 
               obstacle_refinement_children = ObstacleRefinementChildren(),
 
-              obstructions = from g in model.GoalModel.Goals.OrderBy (x => x.Name)
+              obstructions = from g in model.Goals.OrderBy (x => x.Name)
                              from o in g.Obstructions.OrderBy (x => x.ObstructingObstacle.Name)
                                select new { goal     = g.Identifier,
                                             obstacle = o.ObstructingObstacle.Identifier },
 
-              resolutions = from o in model.GoalModel.Obstacles.OrderBy (x => x.Name)
+              resolutions = from o in model.Obstacles.OrderBy (x => x.Name)
                               from r in o.Resolutions.OrderBy (x => x.ResolvingGoal.Name)
                                 select new { obstacle = o.Identifier,
                                                  goal = r.ResolvingGoal.Identifier },
 
               // AGENT MODEL
 
-              agents = from a in model.GoalModel.Agents.OrderBy (x => x.Name)
+              agents = from a in model.Agents.OrderBy (x => x.Name)
                        select new { id = a.Identifier,
                                     name = a.Name,
                                     definition = a.Definition,
                                     type = Enum.GetName(typeof(MetaModel.AgentType), a.Type).ToLower() },
 
-              assignments = from g in model.GoalModel.Goals
+              assignments = from g in model.Goals
                               from aa in g.AgentAssignments
                                 from a in aa.Agents
                                   select new {     id = aa.Identifier,

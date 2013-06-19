@@ -41,8 +41,8 @@ namespace KAOSTools.Parsing
             TSB.BuildElement (elements);
 
             // Ensure that there is at least one alternative system
-            if (model.GoalModel.Systems.Count == 0)
-                model.GoalModel.Systems.Add (new AlternativeSystem {
+            if (model.AlternativeSystems.Count() == 0)
+                model.Add (new AlternativeSystem (model) {
                     Name = "Default",
                     Definition = "Default alternative"
                 });

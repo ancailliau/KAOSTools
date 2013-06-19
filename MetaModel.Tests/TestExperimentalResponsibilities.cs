@@ -34,7 +34,7 @@ end
             var parser = new ModelBuilder ();
             var model = parser.Parse (input);
 
-            var responsibilities = model.GoalModel.GetResponsibilities ();
+            var responsibilities = model.GetResponsibilities ();
             printresponsibilities2(responsibilities, 0);
         }
         
@@ -70,7 +70,7 @@ end
             var parser = new ModelBuilder ();
             var model = parser.Parse (input);
 
-            var responsibilities = model.GoalModel.GetResponsibilities ();
+            var responsibilities = model.GetResponsibilities ();
             printresponsibilities2(responsibilities, 0);
         }
         
@@ -116,7 +116,7 @@ end
             var parser = new ModelBuilder ();
             var model = parser.Parse (input);
 
-            var responsibilities = model.GoalModel.GetResponsibilities ();
+            var responsibilities = model.GetResponsibilities ();
             printresponsibilities2(responsibilities, 0);
         }
         
@@ -162,7 +162,7 @@ end
             var parser = new ModelBuilder ();
             var model = parser.Parse (input);
 
-            var responsibilities = model.GoalModel.GetResponsibilities ();
+            var responsibilities = model.GetResponsibilities ();
             printresponsibilities2(responsibilities, 0);
         }
         
@@ -204,7 +204,7 @@ end
             var parser = new ModelBuilder ();
             var model = parser.Parse (input);
             
-            var responsibilities = model.GoalModel.GetResponsibilities ();
+            var responsibilities = model.GetResponsibilities ();
             printresponsibilities2(responsibilities, 0);
         }
 

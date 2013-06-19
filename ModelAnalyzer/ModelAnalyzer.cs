@@ -45,13 +45,13 @@ namespace KAOSTools.ModelAnalyzer
             results = new List<CheckResult>();
 
             CheckImplicit (model);
-            CheckUnassignedLeafGoals (model.GoalModel);
-            CheckGoalWithSimilarNames (model.GoalModel, levensteinThreshold);
-            CheckMissingDefinition (model.GoalModel);
-            CheckIncompatibleSystems (model.GoalModel);
+            CheckUnassignedLeafGoals (model);
+            CheckGoalWithSimilarNames (model, levensteinThreshold);
+            CheckMissingDefinition (model);
+            CheckIncompatibleSystems (model);
 
             if (show_formal)
-                DisplayMissingFormalSpec (model.GoalModel);
+                DisplayMissingFormalSpec (model);
 
             if (format == ExportFormat.Console)
                 ConsoleWriter.Output (results);
@@ -116,7 +116,7 @@ namespace KAOSTools.ModelAnalyzer
         static void CheckUnassignedLeafGoals (GoalModel model)
         {
             var unassignedLeafGoals = from g in model.Goals 
-                where g.AgentAssignments.Count == 0 & g.Refinements.Count == 0 select g;
+                where g.AgentAssignments.Count == 0 & g.Refinements().Count == 0 select g;
 
             foreach (var item in unassignedLeafGoals) {
                 AddWarning (string.Format ("Goal '{0}' is not refined or assigned.", item.FriendlyName));
@@ -194,37 +194,37 @@ namespace KAOSTools.ModelAnalyzer
         }
 
         static void ForAllGoals (Action<Goal> action) {
-            foreach (var goal in model.GoalModel.Goals) {
+            foreach (var goal in model.Goals) {
                 action(goal);
             }
         }
 
         static void ForAllObstacles (Action<Obstacle> action) {
-            foreach (var obstacle in model.GoalModel.Obstacles) {
+            foreach (var obstacle in model.Obstacles) {
                 action(obstacle);
             }
         }
         
         static void ForAllDomainProperties (Action<DomainProperty> action) {
-            foreach (var domprop in model.GoalModel.DomainProperties) {
+            foreach (var domprop in model.DomainProperties) {
                 action(domprop);
             }
         }
 
         static void ForAllDomainHypotheses (Action<DomainHypothesis> action) {
-            foreach (var domhyp in model.GoalModel.DomainHypotheses) {
+            foreach (var domhyp in model.DomainHypotheses) {
                 action(domhyp);
             }
         }
 
         static void ForAllAgents (Action<Agent> action) {
-            foreach (var agent in model.GoalModel.Agents) {
+            foreach (var agent in model.Agents) {
                 action(agent);
             }
         }
 
         static void ForAllSystems (Action<AlternativeSystem> action) {
-            foreach (var system in model.GoalModel.Systems) {
+            foreach (var system in model.Systems) {
                 action(system);
             }
         }

@@ -75,88 +75,10 @@ namespace KAOSTools.Parsing
             identifier = (expr as ParsedIdentifierAttribute).Value;
             return true;
         }
-
-        protected IEnumerable<dynamic> GetCollection (ParsedElementWithAttributes element)
-        {
-            if (element is ParsedPredicate)
-                return model.Predicates;
-            
-            if (element is ParsedSystem)
-                return model.GoalModel.Systems;
-            
-            if (element is ParsedGoal)
-                return model.GoalModel.Goals;
-            
-            if (element is ParsedAntiGoal)
-                return model.GoalModel.AntiGoals;
-
-            if (element is ParsedDomainProperty)
-                return model.GoalModel.DomainProperties;
-            
-            if (element is ParsedDomainHypothesis)
-                return model.GoalModel.DomainHypotheses;
-            
-            if (element is ParsedObstacle)
-                return model.GoalModel.Obstacles;
-            
-            if (element is ParsedAssociation)
-                return model.Relations;
-            
-            if (element is ParsedGivenType)
-                return model.GivenTypes;
-            
-            if (element is ParsedAgent)
-                return model.GoalModel.Agents;
-            
-            if (element is ParsedEntity)
-                return model.Entities;
-            
-            throw new NotImplementedException (string.Format ("Collection inference not implemented for '{0}'",
-                                                              element.GetType ()));
-        }
-
-        protected ISet<T> GetCollection<T> ()
-        {
-            if (typeof(T) == typeof(Predicate))
-                return (ISet<T>) model.Predicates;
-            
-            if (typeof(T) == typeof(AlternativeSystem))
-                return (ISet<T>) model.GoalModel.Systems;
-            
-            if (typeof(T) == typeof(Goal))
-                return (ISet<T>) model.GoalModel.Goals;
-            
-            if (typeof(T) == typeof(AntiGoal))
-                return (ISet<T>) model.GoalModel.AntiGoals;
-
-            if (typeof(T) == typeof(DomainProperty))
-                return (ISet<T>) model.GoalModel.DomainProperties;
-            
-            if (typeof(T) == typeof(DomainHypothesis))
-                return (ISet<T>) model.GoalModel.DomainHypotheses;
-            
-            if (typeof(T) == typeof(Obstacle))
-                return (ISet<T>) model.GoalModel.Obstacles;
-            
-            if (typeof(T) == typeof(Relation))
-                return (ISet<T>) model.Relations;
-            
-            if (typeof(T) == typeof(GivenType))
-                return (ISet<T>) model.GivenTypes;
-            
-            if (typeof(T) == typeof(Agent))
-                return (ISet<T>) model.GoalModel.Agents;
-            
-            if (typeof(T) == typeof(Entity))
-                return (ISet<T>) model.Entities;
-            
-            throw new NotImplementedException (string.Format ("Collection inference not implemented for '{0}'",
-                                                              typeof(T).Name));
-        }
         
         protected dynamic GetByIdentifier (ParsedElementWithAttributes element, string identifier)
         {
-            return GetCollection (element).SingleOrDefault (e => e.Identifier == identifier);
+            return model.Elements.SingleOrDefault (e => e.Identifier == identifier);
         }
         
         protected dynamic GetByName (ParsedElementWithAttributes element, string name)
@@ -173,12 +95,11 @@ namespace KAOSTools.Parsing
                                string propertyName, 
                                string propertyValue)
         {
-            return GetCollection (element).SingleOrDefault (e => { 
+            return model.Elements.SingleOrDefault (e => { 
                 var property = e.GetType ().GetProperty (propertyName);
                 if (property == null)
-                    throw new InvalidOperationException (string.Format ("'{0}' has no property '{1}'",
-                                                                        e.GetType (), propertyName));
-                return property.GetValue(e, null) == propertyValue;
+                    return false;
+                return ((string) property.GetValue(e, null)) == propertyValue;
             });
         }
         
@@ -206,12 +127,11 @@ namespace KAOSTools.Parsing
             where T : KAOSMetaModelElement
         {
             Func<T, bool> predicate = e => (string) e.GetType ().GetProperty (property).GetValue (e, null) == value;
-            if (GetCollection<T> ().Any (predicate)) {
-                element = GetCollection<T> ().Single (predicate);
+            element = model.Elements.Where (x => x is T).Cast<T>().SingleOrDefault (predicate);
+
+            if (element != null)
                 return true;
-            }
-            
-            element = null;
+
             return false;
         }
 
@@ -248,34 +168,33 @@ namespace KAOSTools.Parsing
         #region Create helpers
 
         protected T Create<T> (IdentifierExpression identifier)
-            where T : KAOSMetaModelElement, new() 
+            where T : KAOSMetaModelElement
         {
-            var system = new T () {
-                Implicit = true,
-                Identifier = identifier.Value
-            };
+            var t = (T) Activator.CreateInstance (typeof(T), new Object[] { model });
+
+            t.Implicit = true;
+            t.Identifier = identifier.Value;
             
-            GetCollection<T> ().Add (system);
-            declarations.Add (system, new List<Declaration> {
+            model.Add (t);
+            declarations.Add (t, new List<Declaration> {
                 new Declaration (identifier.Line, identifier.Col, identifier.Filename, relativePath, DeclarationType.Reference)
             });
             
-            return system;
+            return t;
         }
 
         protected T Create<T> (NameExpression name)
-            where T : KAOSMetaModelElement, new() 
+            where T : KAOSMetaModelElement
         {
-            var t = new T () {
-                Implicit = true
-            };
+            var t = (T) Activator.CreateInstance (typeof(T), new Object[] { model });
+            t.Implicit = true;
 
             if (typeof(T).GetProperty ("Name") == null)
                 throw new InvalidOperationException (string.Format ("'{0}' has no property 'Name'", typeof(T).Name));
 
             typeof(T).GetProperty ("Name").SetValue (t, name.Value, null);
 
-            GetCollection<T> ().Add (t);
+            model.Add (t);
             declarations.Add (t, new List<Declaration> {
                 new Declaration (name.Line, name.Col, name.Filename, relativePath, DeclarationType.Reference)
             });

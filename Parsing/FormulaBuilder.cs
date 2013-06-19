@@ -296,13 +296,13 @@ namespace KAOSTools.Parsing
 
             if (type == null) {
                 if (idOrName is NameExpression)
-                    type = new Entity { Name = idOrName.Value, Implicit = true };
+                    type = new Entity (model) { Name = idOrName.Value, Implicit = true };
                 else if (idOrName is IdentifierExpression)
-                    type = new Entity { Identifier = idOrName.Value, Implicit = true };
+                    type = new Entity (model) { Identifier = idOrName.Value, Implicit = true };
                 else 
                     throw new NotImplementedException ();
 
-                model.Entities.Add (type);
+                model.Add (type);
 
                 Declarations.Add (type, new List<Declaration> () {
                     new Declaration (idOrName.Line, idOrName.Col, idOrName.Filename, relativePath, DeclarationType.Reference)
@@ -322,7 +322,7 @@ namespace KAOSTools.Parsing
                 if (pref.AttributeSignature is NameExpression) {
                     var attribute = entity.Attributes.SingleOrDefault (x => x.Name == pref.AttributeSignature.Value);
                     if (attribute == null) {
-                        attribute = new KAOSTools.MetaModel.Attribute () { Name = pref.AttributeSignature.Value, Implicit = true } ;
+                        attribute = new KAOSTools.MetaModel.Attribute (model) { Name = pref.AttributeSignature.Value, Implicit = true } ;
                         entity.Attributes.Add (attribute);
 
                         Declarations.Add (attribute, new List<Declaration> () {
@@ -338,7 +338,7 @@ namespace KAOSTools.Parsing
                 } else if (pref.AttributeSignature is IdentifierExpression) {
                     var attribute = entity.Attributes.SingleOrDefault (x => x.Identifier == pref.AttributeSignature.Value);
                     if (attribute == null) {
-                        attribute = new KAOSTools.MetaModel.Attribute () { Identifier = pref.AttributeSignature.Value, Implicit = true } ;
+                        attribute = new KAOSTools.MetaModel.Attribute (model) { Identifier = pref.AttributeSignature.Value, Implicit = true } ;
                         entity.Attributes.Add (attribute);
 
                         Declarations.Add (attribute, new List<Declaration> () {
@@ -364,10 +364,10 @@ namespace KAOSTools.Parsing
 
             Relation type;
             if (identifierOrName is NameExpression) {
-                type = model.Entities.SingleOrDefault (t => t.GetType() == typeof(Relation) & t.Name == identifierOrName.Value) as Relation;
+                type = model.Relations.SingleOrDefault (t => t.Name == identifierOrName.Value);
 
             } else if (identifierOrName is IdentifierExpression) {
-                type = model.Entities.SingleOrDefault (t => t.GetType() == typeof(Relation) & t.Identifier == identifierOrName.Value) as Relation;
+                type = model.Relations.SingleOrDefault (t => t.Identifier == identifierOrName.Value);
 
             } else {
                 throw new NotImplementedException ();
@@ -375,16 +375,16 @@ namespace KAOSTools.Parsing
             
             if (type == null) {
                 if (identifierOrName is NameExpression) {
-                    type = new Relation() { Name = identifierOrName.Value, Implicit = true };
+                    type = new Relation(model) { Name = identifierOrName.Value, Implicit = true };
                 } else if (identifierOrName is IdentifierExpression) {
-                    type = new Relation() { Identifier = identifierOrName.Value, Implicit = true };
+                    type = new Relation(model) { Identifier = identifierOrName.Value, Implicit = true };
                 }
 
                 foreach (var arg in rel.Variables) {
-                    type.Links.Add (new Link(declarations[arg]));
+                    type.Links.Add (new Link(model) { Target = declarations[arg] });
                 }
 
-                model.Entities.Add (type);
+                model.Add (type);
 
                 Declarations.Add (type, new List<Declaration> () {
                     new Declaration (identifierOrName.Line, identifierOrName.Col, identifierOrName.Filename, relativePath, DeclarationType.Reference)
@@ -422,9 +422,9 @@ namespace KAOSTools.Parsing
 
             if (predicate == null) {
                 if (idOrName is NameExpression)
-                    predicate = new Predicate() { Name = idOrName.Value, Implicit = true };
+                    predicate = new Predicate(model) { Name = idOrName.Value, Implicit = true };
                 else if (idOrName is IdentifierExpression)
-                    predicate = new Predicate() { Identifier = idOrName.Value, Implicit = true };
+                    predicate = new Predicate(model) { Identifier = idOrName.Value, Implicit = true };
                 else
                     throw new NotImplementedException ();
 
@@ -432,7 +432,7 @@ namespace KAOSTools.Parsing
                     predicate.Arguments.Add (new PredicateArgument() { Name = arg, Type = declarations[arg] });
                 }
 
-                model.Predicates.Add (predicate);
+                model.Add (predicate);
                 Declarations.Add (predicate, new List<Declaration> () {
                     new Declaration (idOrName.Line, idOrName.Col, idOrName.Filename, relativePath, DeclarationType.Reference)
                 });
