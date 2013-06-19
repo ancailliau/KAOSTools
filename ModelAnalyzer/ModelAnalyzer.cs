@@ -45,7 +45,7 @@ namespace KAOSTools.ModelAnalyzer
             results = new List<CheckResult>();
 
             CheckImplicit (model);
-            CheckUnassignedLeafGoals (model);
+            CheckUnassignedLeafGoals() (model);
             CheckGoalWithSimilarNames (model, levensteinThreshold);
             CheckMissingDefinition (model);
             CheckIncompatibleSystems (model);
@@ -70,13 +70,13 @@ namespace KAOSTools.ModelAnalyzer
 
         static void CheckIncompatibleSystems (GoalModel model)
         {
-            ForAllGoals (x => {
+            ForAllGoals() (x => {
                 if (x.InSystems.Count() == 0) {
                     AddWarning (string.Format ("Goal '{0}' appears in no alternative system.", x.FriendlyName));
                 }
             });
 
-            ForAllGoals (g => {
+            ForAllGoals() (g => {
                 foreach (var ag in g.AgentAssignments) {
                     if (ag.InSystems.Count() == 0) {
                         AddWarning (string.Format ("The assignment of goal '{0}' to agent(s) {1} is incompatible. Goal appears only in {2} alternative systems.", 
@@ -113,12 +113,12 @@ namespace KAOSTools.ModelAnalyzer
             });
         }
 
-        static void CheckUnassignedLeafGoals (GoalModel model)
+        static void CheckUnassignedLeafGoals() (GoalModel model)
         {
-            var unassignedLeafGoals = from g in model.Goals 
+            var unassignedLeafGoals() = from g in model.Goals() 
                 where g.AgentAssignments.Count == 0 & g.Refinements().Count == 0 select g;
 
-            foreach (var item in unassignedLeafGoals) {
+            foreach (var item in unassignedLeafGoals()) {
                 AddWarning (string.Format ("Goal '{0}' is not refined or assigned.", item.FriendlyName));
             }
         }
@@ -126,11 +126,11 @@ namespace KAOSTools.ModelAnalyzer
         static void CheckGoalWithSimilarNames (GoalModel model, int levensteinThreshold)
         {
             /* TODO
-            var duplicateGoals = from g1 in model.Goals 
-                where (from g2 in model.Goals where g2 != g1 && g2.Name == g1.Name select g2).Count () > 0 
+            var duplicateGoals() = from g1 in model.Goals() 
+                where (from g2 in model.Goals() where g2 != g1 && g2.Name == g1.Name select g2).Count () > 0 
                 select g1;
 
-            foreach (var item in duplicateGoals) {
+            foreach (var item in duplicateGoals()) {
                 WriteKO (item.FriendlyName + " is a potential duplicated item.");
             }
             */
@@ -181,7 +181,7 @@ namespace KAOSTools.ModelAnalyzer
         #region ForAll... helpers 
         
         static void ForAllKAOSElement (Action<KAOSMetaModelElement> action) {
-            ForAllGoals (action);
+            ForAllGoals() (action);
             ForAllObstacles (action);
             ForAllDomainProperties (action);
             ForAllDomainHypotheses (action);
@@ -193,8 +193,8 @@ namespace KAOSTools.ModelAnalyzer
             ForAllTypes (action);
         }
 
-        static void ForAllGoals (Action<Goal> action) {
-            foreach (var goal in model.Goals) {
+        static void ForAllGoals() (Action<Goal> action) {
+            foreach (var goal in model.Goals()) {
                 action(goal);
             }
         }

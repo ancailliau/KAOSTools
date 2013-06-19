@@ -41,8 +41,8 @@ namespace KAOSTools.Parsing.Tests
             var model = parser.Parse (input, "./Examples/include.kaos");
             
             Assert.IsNotNull (model);
-            Assert.IsNotEmpty (model.Goals.First ().Name);
-            Assert.IsNotEmpty (model.Goals.First ().Definition);
+            Assert.IsNotEmpty (model.Goals().First ().Name);
+            Assert.IsNotEmpty (model.Goals().First ().Definition);
         }
 
         [Test()]
@@ -53,8 +53,8 @@ namespace KAOSTools.Parsing.Tests
             
             Assert.IsNotNull (model);
 
-            Assert.AreEqual (2, model.Goals.Count());
-            Assert.AreEqual (1, model.DomainProperties.Count());
+            Assert.AreEqual (2, model.Goals().Count());
+            Assert.AreEqual (1, model.DomainProperties().Count());
 
             Assert.AreEqual (2, model.RootGoals().First ().Refinements().Count());
             

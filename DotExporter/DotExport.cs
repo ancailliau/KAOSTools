@@ -191,7 +191,7 @@ namespace KAOSTools.DotExporter
             writer.WriteLine ("## GOALS");
             writer.WriteLine ();
 
-            foreach (var g in model.Goals) {
+            foreach (var g in model.Goals()) {
                 ExportGoal (g);
             }
 
@@ -218,7 +218,7 @@ namespace KAOSTools.DotExporter
             writer.WriteLine ("## RESPONSIBILITY");
             writer.WriteLine ();
 
-            foreach (var g in model.Goals) {
+            foreach (var g in model.Goals()) {
                 if (g.AgentAssignments.Count > 0) {
                     foreach (var assignment in g.AgentAssignments) {
                         foreach (var agent in assignment.Agents) {
@@ -232,7 +232,7 @@ namespace KAOSTools.DotExporter
             writer.WriteLine ();
             writer.WriteLine ("## REFINEMENTS");
 
-            foreach (var g in model.RootGoals()) {
+            foreach (var g in model.RootGoals()()) {
                 ExportRefinementRecursively (g);
             }
             
@@ -240,7 +240,7 @@ namespace KAOSTools.DotExporter
             writer.WriteLine ();
             writer.WriteLine ("## OBSTRUCTIONS");
 
-            foreach (var g in model.ObstructedGoals()) {
+            foreach (var g in model.ObstructedGoals()()) {
                 foreach (var o in g.Obstructions) {
                     ExportObstruction (g, o.ObstructingObstacle);
                 }
@@ -250,7 +250,7 @@ namespace KAOSTools.DotExporter
             writer.WriteLine ();
             writer.WriteLine ("## OBSTACLE REFINEMENTS");
 
-            foreach (var g in model.ObstructedGoals()) {
+            foreach (var g in model.ObstructedGoals()()) {
                 foreach (var o in g.Obstructions) {
                     ExportRefinementRecursively (o.ObstructingObstacle);
                 }

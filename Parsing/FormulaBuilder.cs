@@ -288,9 +288,9 @@ namespace KAOSTools.Parsing
         Entity GetOrCreateEntity (dynamic idOrName) {
             Entity type;
             if (idOrName is NameExpression)
-                type = model.Entities.SingleOrDefault (t => t.Name == idOrName.Value);
+                type = model.Entities().SingleOrDefault (t => t.Name == idOrName.Value);
             else if (idOrName is IdentifierExpression)
-                type = model.Entities.SingleOrDefault (t => t.Identifier == idOrName.Value);
+                type = model.Entities().SingleOrDefault (t => t.Identifier == idOrName.Value);
             else 
                 throw new NotImplementedException ();
 
@@ -364,10 +364,10 @@ namespace KAOSTools.Parsing
 
             Relation type;
             if (identifierOrName is NameExpression) {
-                type = model.Relations.SingleOrDefault (t => t.Name == identifierOrName.Value);
+                type = model.Relations().SingleOrDefault (t => t.Name == identifierOrName.Value);
 
             } else if (identifierOrName is IdentifierExpression) {
-                type = model.Relations.SingleOrDefault (t => t.Identifier == identifierOrName.Value);
+                type = model.Relations().SingleOrDefault (t => t.Identifier == identifierOrName.Value);
 
             } else {
                 throw new NotImplementedException ();
@@ -414,9 +414,9 @@ namespace KAOSTools.Parsing
             var idOrName = parsedPred.PredicateSignature;
             Predicate predicate;
             if (idOrName is NameExpression)
-                predicate = model.Predicates.SingleOrDefault (t => t.Name == idOrName.Value);
+                predicate = model.Predicates().SingleOrDefault (t => t.Name == idOrName.Value);
             else if (idOrName is IdentifierExpression)
-                predicate = model.Predicates.SingleOrDefault (t => t.Identifier == idOrName.Value);
+                predicate = model.Predicates().SingleOrDefault (t => t.Identifier == idOrName.Value);
             else
                 throw new NotImplementedException (idOrName.GetType().Name + " is not yet supported");
 

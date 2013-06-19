@@ -28,7 +28,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestIdentifier (string input, string expectedIdentifier)
         {
             var model = parser.Parse (input);
-            model.Obstacles.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
+            model.Obstacles().Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
         }
         
         [TestCase(@"declare obstacle
@@ -62,7 +62,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestName (string input, string expectedName)
         {
             var model = parser.Parse (input);
-            model.Obstacles
+            model.Obstacles()
                 .Where (x => x.Name == expectedName)
                 .ShallBeSingle ();
         }
@@ -85,9 +85,9 @@ namespace KAOSTools.Parsing.Tests
             
             var model = parser.Parse (input);
             
-            model.Obstacles.Count().ShallEqual (2);
-            model.Obstacles.ShallContain (x => x.Identifier == "test");
-            model.Obstacles.ShallContain (x => x.Identifier == "test2");
+            model.Obstacles().Count().ShallEqual (2);
+            model.Obstacles().ShallContain (x => x.Identifier == "test");
+            model.Obstacles().ShallContain (x => x.Identifier == "test2");
         }
         
         [TestCase(@"declare obstacle 
@@ -106,7 +106,7 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var obstacle = model.Obstacles
+            var obstacle = model.Obstacles()
                 .ShallContain (x => x.Identifier == "test")
                     .ShallBeSingle ();
             
@@ -129,7 +129,7 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var obstacle = model.Obstacles
+            var obstacle = model.Obstacles()
                 .ShallContain (x => x.Identifier == "test")
                     .ShallBeSingle ();
             
@@ -156,7 +156,7 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var test = model.Obstacles
+            var test = model.Obstacles()
                 .ShallContain (x => x.Identifier == "test")
                     .ShallBeSingle ();
             
@@ -164,7 +164,7 @@ namespace KAOSTools.Parsing.Tests
                 .ShallContain (x => x.Subobstacles.Select(y => y.Identifier)
                                .OnlyContains ( new string [] { "child1" , "child2" }));
             
-            var child1 = model.Obstacles
+            var child1 = model.Obstacles()
                 .ShallContain (x => x.Identifier == "child1")
                     .ShallBeSingle ();
             
@@ -191,7 +191,7 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var test = model.Obstacles.ShallContain (x => x.Identifier == "test").ShallBeSingle ();
+            var test = model.Obstacles().ShallContain (x => x.Identifier == "test").ShallBeSingle ();
             test.Refinements().ShallBeSingle ().DomainProperties.Select (x => x.Identifier).ShallOnlyContain (new string [] { "domprop" });
         }
 
@@ -213,7 +213,7 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var test = model.Obstacles.ShallContain (x => x.Identifier == "test").ShallBeSingle ();
+            var test = model.Obstacles().ShallContain (x => x.Identifier == "test").ShallBeSingle ();
             var refinement = test.Refinements().ShallBeSingle ();
 
             refinement.DomainHypotheses.Select (x => x.Identifier).ShallOnlyContain (new string [] { "domhyp" });
@@ -240,7 +240,7 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var goal = model.Obstacles
+            var goal = model.Obstacles()
                 .ShallContain (x => x.Identifier == "test")
                     .ShallBeSingle ();
             
@@ -270,7 +270,7 @@ namespace KAOSTools.Parsing.Tests
             
             var model = parser.Parse (input);
             
-            var obstacle = model.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var obstacle = model.Obstacles().Where (x => x.Identifier == "test").ShallBeSingle ();
             obstacle.Name.ShallEqual ("new name");
             obstacle.Definition.ShallEqual ("new definition");
 
@@ -303,7 +303,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestObstruction (string input)
         {
             var model = parser.Parse (input);
-            var test = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var test = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
 
             test.Obstructions().Select (x => x.Obstacle.Identifier).ShallOnlyContain (new string[] { "obstacle_1", "obstacle_2" });
         }
@@ -326,7 +326,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestResolution (string input)
         {
             var model = parser.Parse (input);
-            var test = model.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var test = model.Obstacles().Where (x => x.Identifier == "test").ShallBeSingle ();
             test.Resolutions().Select (x => x.ResolvingGoal.Identifier).ShallOnlyContain (new string[] { "goal_1", "goal_2" });
         }
 
@@ -340,12 +340,12 @@ namespace KAOSTools.Parsing.Tests
             var model = parser.Parse (input);
             model.IntegrateResolutions ();
 
-            var test = model.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var test = model.Obstacles().Where (x => x.Identifier == "test").ShallBeSingle ();
             var resolution = test.Resolutions().Single ();
             resolution.ResolvingGoal.Identifier.ShallEqual ("goal");
             resolution.ResolutionPattern.ShallEqual (ResolutionPattern.ObstaclePrevention);
 
-            var obstructedGoal = model.Goals.Single (x => x.Identifier == "obstructedgoal");
+            var obstructedGoal = model.Goals().Single (x => x.Identifier == "obstructedgoal");
             var e = obstructedGoal.Assumptions.Single ();
             e.Implicit.ShallBeTrue ();
             Assert.AreEqual ("goal", e.Assumed.Identifier);
@@ -361,15 +361,15 @@ namespace KAOSTools.Parsing.Tests
             var model = parser.Parse (input);
             model.IntegrateResolutions ();
 
-            var test = model.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var test = model.Obstacles().Where (x => x.Identifier == "test").ShallBeSingle ();
             var resolution = test.Resolutions().Single ();
             resolution.ResolvingGoal.Identifier.ShallEqual ("goal");
             resolution.ResolutionPattern.ShallEqual (ResolutionPattern.ObstacleWeakMitigation);
             (resolution.Parameters.First() as Goal).Identifier.ShallEqual ("anchor");
 
-            Console.WriteLine (string.Join(",", model.Goals.Select(x => x.Identifier + "("+ x.Exceptions.Count + ")")));
+            Console.WriteLine (string.Join(",", model.Goals().Select(x => x.Identifier + "("+ x.Exceptions.Count + ")")));
 
-            var obstructedGoal = model.Goals.Single (x => x.Identifier == "anchor");
+            var obstructedGoal = model.Goals().Single (x => x.Identifier == "anchor");
             var e = obstructedGoal.Exceptions.Single ();
             e.Implicit.ShallBeTrue ();
             e.ResolvedObstacle.Identifier.ShallEqual ("test");
@@ -388,7 +388,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestProbability (string input, double expected)
         {
             var model = parser.Parse (input);
-            model.Obstacles.ShallContain (x => x.Identifier == "test").ShallBeSingle ().EPS.ShallEqual (expected);
+            model.Obstacles().ShallContain (x => x.Identifier == "test").ShallBeSingle ().EPS.ShallEqual (expected);
         }
     }
 }

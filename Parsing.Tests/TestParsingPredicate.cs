@@ -27,7 +27,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestIdentifier (string input, string expectedIdentifier)
         {
             var model = parser.Parse (input);
-            model.Predicates.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
+            model.Predicates().Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
         }
         
         [TestCase(@"declare predicate
@@ -61,7 +61,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestName (string input, string expectedName)
         {
             var model = parser.Parse (input);
-            model.Predicates.Where (x => x.Name == expectedName)
+            model.Predicates().Where (x => x.Name == expectedName)
                     .ShallBeSingle ();
         }
 
@@ -104,7 +104,7 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var predicate = model.Predicates.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var predicate = model.Predicates().Where (x => x.Identifier == "test").ShallBeSingle ();
             predicate.Name.ShallEqual ("new name");
             predicate.Definition.ShallEqual ("new definition");
         }
@@ -129,12 +129,12 @@ namespace KAOSTools.Parsing.Tests
         public void TestArgument (string input)
         {
             var model = parser.Parse (input);
-            var predicate = model.Predicates.Single (x => x.Name == "Test");
+            var predicate = model.Predicates().Single (x => x.Name == "Test");
 
             predicate.Arguments.Select (x => x.Name).ShallOnlyContain (new string[] { "c" });
             predicate.Arguments.Select (x => x.Type).Select (x => x.Name).ShallOnlyContain (new string[] { "MyType" });
 
-            model.Entities.Select (x => x.Name).ShallOnlyContain (new string[] { "MyType" });
+            model.Entities().Select (x => x.Name).ShallOnlyContain (new string[] { "MyType" });
         }
         
         [TestCase(@"declare predicate
@@ -145,9 +145,9 @@ namespace KAOSTools.Parsing.Tests
         public void TestFormalSpec (string input)
         {
             var model = parser.Parse (input);
-            var predicate = model.Predicates.Single (x => x.Name == "Test");
+            var predicate = model.Predicates().Single (x => x.Name == "Test");
             
-            var entity = model.Entities.Single (x => x.Name == "MyType");
+            var entity = model.Entities().Single (x => x.Name == "MyType");
             var attribute = entity.Attributes.Single (x => x.Name == "MyAttribute");
 
             ((AttributeReference) predicate.FormalSpec).Variable.ShallEqual ("c");

@@ -27,7 +27,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestIdentifier (string input, string expectedIdentifier)
         {
             var model = parser.Parse (input);
-            model.DomainHypotheses.Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
+            model.DomainHypotheses().Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
         }
         
         [TestCase(@"declare domainhypothesis id   end")]
@@ -53,7 +53,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestName (string input, string expectedName)
         {
             var model = parser.Parse (input);
-            model.DomainHypotheses
+            model.DomainHypotheses()
                 .Where (x => x.Name == expectedName)
                     .ShallBeSingle ();
         }
@@ -92,7 +92,7 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var domhyp = model.DomainHypotheses.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var domhyp = model.DomainHypotheses().Where (x => x.Identifier == "test").ShallBeSingle ();
             domhyp.Name.ShallEqual ("new name");
             domhyp.Definition.ShallEqual ("new definition");
         }
@@ -104,8 +104,8 @@ namespace KAOSTools.Parsing.Tests
         public void TestMultiple (string input)
         {
             var model = parser.Parse (input);
-            model.DomainHypotheses.ShallContain (x => x.Identifier == "test");
-            model.DomainHypotheses.ShallContain (x => x.Identifier == "test2");
+            model.DomainHypotheses().ShallContain (x => x.Identifier == "test");
+            model.DomainHypotheses().ShallContain (x => x.Identifier == "test2");
         }
 
         [TestCase(@"declare goal id g refinedby test end
@@ -114,7 +114,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestRefinementWithDomainHypothesis (string input)
         {
             var model = parser.Parse (input);
-            var g = model.Goals.Single (x => x.Identifier == "g");
+            var g = model.Goals().Single (x => x.Identifier == "g");
             g.Refinements().ShallBeSingle ().DomainHypotheses.Select (x => x.Identifier).ShallOnlyContain (new string[] { "test" });
         }
 

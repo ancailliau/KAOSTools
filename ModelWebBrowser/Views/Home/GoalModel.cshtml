@@ -9,25 +9,25 @@
     
   <div class="span9">
   
-    <!-- Goals -->
+    <!-- Goals() -->
     
     <div class="section-header" style="margin-top: -25px;" id="goals">
-    <h2>Goals</h2>
+    <h2>Goals()</h2>
     </div>
     
-    <h3>Goals summary</h3>
+    <h3>Goals() summary</h3>
     
     <table class="table table-striped table-bordered">
       <tr><th>Name</th><th>Definition</th></tr>
-      @foreach (var g in Model.Model.Goals) {
+      @foreach (var g in Model.Model.Goals()) {
         @Summary(g);
       }
     </table>
     
-    <h3>Goals details</h3>
+    <h3>Goals() details</h3>
    
-    @foreach (var g in Model.Model.Goals) {
-      var isRoot = Model.Model.Goals.Count (x => x.Refinements().Count (y => y.Subgoals.Contains (g)) > 0) == 0;
+    @foreach (var g in Model.Model.Goals()) {
+      var isRoot = Model.Model.Goals().Count (x => x.Refinements().Count (y => y.Subgoals.Contains (g)) > 0) == 0;
       var isResolvingGoal = Model.Model.Obstacles.Count (x => x.Resolutions.Count (y => y.ResolvingGoal == g) > 0) > 0;
       
       <h4 id="@g.Identifier">
@@ -55,7 +55,7 @@
       </table>
       
       <dl>
-        @ParentGoals(g)
+        @ParentGoals()(g)
         @Refinements(g)
         @AgentAssignments(g)
         @Obstructions(g)
@@ -70,7 +70,7 @@
       <hr class="spacer" />
     }
     
-    <!-- / Goals -->
+    <!-- / Goals() -->
     
     <!-- Anti-goals -->
        
@@ -82,14 +82,14 @@
     
     <table class="table table-striped table-bordered">
       <tr><th>Name</th><th>Definition</th></tr>
-      @foreach (var g in Model.Model.AntiGoals) {
+      @foreach (var g in Model.Model.AntiGoals()) {
         @Summary(g);
       }
     </table>
     
     <h3>Anti-goals details</h3>
    
-    @foreach (var g in Model.Model.AntiGoals) {
+    @foreach (var g in Model.Model.AntiGoals()) {
       @Title(g)
       
       <table class="table table-striped table-bordered">
@@ -155,7 +155,7 @@
       <dl>
         @ObstacleRefinements(g)
         @Resolutions(g)
-        @ObstructedGoals(g)
+        @ObstructedGoals()(g)
         @AgentAssignments(g)
         @SourceReference(g)
       </dl>
@@ -399,7 +399,7 @@
           <p><strong>Alternative refinement</strong> @(r.SystemReference != null ? "(" + r.SystemReference.FriendlyName + ")" : "")</p>
         }
         <ul>
-          @foreach (var g2 in r.SubAntiGoals) {
+          @foreach (var g2 in r.SubAntiGoals()) {
             <li><a href="#@g2.Identifier">@g2.FriendlyName</a></li>
           }
           @foreach (var g2 in r.Obstacles) {
@@ -485,8 +485,8 @@
   }
 }
 
-@helper ParentGoals (dynamic g) {
-  var parents = Model.Model.Goals.Where (x => x.Refinements().Count(y => y.Subgoals.Contains(g)) > 0);
+@helper ParentGoals() (dynamic g) {
+  var parents = Model.Model.Goals().Where (x => x.Refinements().Count(y => y.Subgoals.Contains(g)) > 0);
   if (parents.Count() > 0) {
     <dt>Parents</dt>
     <dd><ul>
@@ -509,8 +509,8 @@
   }
 }
 
-@helper ObstructedGoals (dynamic g) {
-  var goals = Model.Model.Goals.Where (x => x.Obstructions.Contains(g));
+@helper ObstructedGoals() (dynamic g) {
+  var goals = Model.Model.Goals().Where (x => x.Obstructions.Contains(g));
   if (goals.Count() > 0) {
     <dt>Obstructed goals</dt>
     <dd><ul>
@@ -666,8 +666,8 @@
   }
 }
 
-@helper AssignedGoals (Agent g) {
-  var goals = Model.Model.Goals.Where (x => x.AgentAssignments.Count(y => y.Agents.Contains (g)) > 0);
+@helper AssignedGoals() (Agent g) {
+  var goals = Model.Model.Goals().Where (x => x.AgentAssignments.Count(y => y.Agents.Contains (g)) > 0);
   if (goals.Count() > 0) {
     <dt>Assigned goals</dt>
     <dd><ul>

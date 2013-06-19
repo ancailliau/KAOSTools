@@ -1,4 +1,4 @@
-#region Goals 
+#region Goals() 
 
 declare goal
   id on_scene_when_reported

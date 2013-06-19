@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using ShallTests;
+using KAOSTools.MetaModel;
 
 namespace KAOSTools.Parsing.Tests
 {
@@ -25,7 +26,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestIdentifier (string input, string identifier)
         {
             var model = parser.Parse (input);
-            model.GivenTypes
+            model.GivenTypes()
                 .Where (x => x.Identifier == identifier)
                 .ShallBeSingle ();
         }
@@ -61,7 +62,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestName (string input, string expectedName)
         {
             var model = parser.Parse (input);
-            model.GivenTypes
+            model.GivenTypes()
                 .Where (x => x.Name == expectedName)
                 .ShallBeSingle ();
         }
@@ -92,7 +93,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestDefinition (string input, string expectedDescription)
         {
             var model = parser.Parse (input);
-            model.GivenTypes
+            model.GivenTypes()
                 .Where (x => x.Identifier == "test")
                 .ShallBeSuchThat (x => x.Definition == expectedDescription);
         }
@@ -115,7 +116,7 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             
-            var agent = model.GivenTypes.Single (x => x.Identifier == "type1");
+            var agent = model.GivenTypes().Single (x => x.Identifier == "type1");
             agent.Implicit.ShallBeTrue ();
         }
     }

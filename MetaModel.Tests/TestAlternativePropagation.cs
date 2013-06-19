@@ -20,16 +20,16 @@ namespace KAOSTools.MetaModel.Tests
             var ag4 = new Agent ();
 
             var rootG = new Goal() { Name = "G" };
-            model.Goals.Add (rootG);
+            model.Goals().Add (rootG);
 
             var G1 = new Goal() { Name = "G1" };
             var G2 = new Goal() { Name = "G2" };
             var G3 = new Goal() { Name = "G3" };
             var G4 = new Goal() { Name = "G4" };
-            model.Goals.Add (G1);
-            model.Goals.Add (G2);
-            model.Goals.Add (G3);
-            model.Goals.Add (G4);
+            model.Goals().Add (G1);
+            model.Goals().Add (G2);
+            model.Goals().Add (G3);
+            model.Goals().Add (G4);
 
             G1.AgentAssignments.Add (new AgentAssignment (ag1));
             G2.AgentAssignments.Add (new AgentAssignment (ag2));

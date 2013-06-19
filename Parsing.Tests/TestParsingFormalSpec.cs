@@ -23,7 +23,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestForAll (string input, string[] variables)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = root.FormalSpec as Forall;
 
             Assert.NotNull (expression);
@@ -31,7 +31,7 @@ namespace KAOSTools.Parsing.Tests
             expression.Declarations.Select(x => x.Name).ShallOnlyContain (variables);
             Assert.NotNull (expression.Enclosed);
             
-            model.Entities.Count (x => x.Identifier == "Ambulance").ShallEqual (1);
+            model.Entities().Count (x => x.Identifier == "Ambulance").ShallEqual (1);
         }
 
         [TestCase(@"declare goal
@@ -45,7 +45,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestExists (string input, string[] variables)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = root.FormalSpec as Exists;
 
             Assert.NotNull (expression);
@@ -53,7 +53,7 @@ namespace KAOSTools.Parsing.Tests
             expression.Declarations.Select(x => x.Name).ShallOnlyContain (variables);
             Assert.NotNull (expression.Enclosed);
 
-            model.Entities.Count (x => x.Identifier == "Ambulance").ShallEqual (1);
+            model.Entities().Count (x => x.Identifier == "Ambulance").ShallEqual (1);
         }
 
         [TestCase(@"declare goal
@@ -63,7 +63,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestStrongImply (string input)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = root.FormalSpec as StrongImply;
 
             Assert.NotNull (expression);
@@ -78,7 +78,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestImplication (string input)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = root.FormalSpec as Imply;
 
             Assert.NotNull (expression);
@@ -93,7 +93,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestEquivalence (string input)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = root.FormalSpec as Equivalence;
 
             Assert.NotNull (expression);
@@ -108,7 +108,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestUntil (string input)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = root.FormalSpec as Until;
             
             Assert.NotNull (expression, root.FormalSpec.GetType() + " is not expected");
@@ -123,7 +123,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestRelease (string input)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = root.FormalSpec as Release;
 
             Assert.NotNull (expression, root.FormalSpec.GetType() + " is not expected");
@@ -138,7 +138,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestUnless (string input)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = root.FormalSpec as Unless;
             
             Assert.NotNull (expression, root.FormalSpec.GetType() + " is not expected");
@@ -153,7 +153,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestAnd (string input)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = root.FormalSpec as And;
 
             Assert.NotNull (expression, root.FormalSpec.GetType() + " is not expected");
@@ -168,7 +168,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestOr (string input)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = root.FormalSpec as Or;
 
             Assert.NotNull (expression, root.FormalSpec.GetType() + " is not expected");
@@ -183,7 +183,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestNot (string input)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = root.FormalSpec as Not;
 
             Assert.NotNull (expression, root.FormalSpec.GetType() + " is not expected");
@@ -197,7 +197,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestNext (string input)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = root.FormalSpec as Next;
 
             Assert.NotNull (expression, root.FormalSpec.GetType() + " is not expected");
@@ -215,7 +215,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestEventually (string input)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = root.FormalSpec as Eventually;
 
             Assert.NotNull (expression, root.FormalSpec.GetType() + " is not expected");
@@ -233,7 +233,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestGlobally (string input)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = root.FormalSpec as Globally;
 
             Assert.NotNull (expression, root.FormalSpec.GetType() + " is not expected");
@@ -263,7 +263,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestEventuallyTimeBound (string input, TimeComparator comparator)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
 
             var implication = root.FormalSpec as StrongImply;
             Assert.NotNull (implication);
@@ -298,7 +298,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestGloballyTimeBound (string input, TimeComparator comparator)
         {
             var model = parser.Parse (input);
-            var root = model.Obstacles.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Obstacles().Where (x => x.Identifier == "test").ShallBeSingle ();
             
             var sooner_or_later = root.FormalSpec as Eventually;
             Assert.NotNull (sooner_or_later);
@@ -321,7 +321,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestPredicateReference (string input, string id, string name)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "goal").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "goal").ShallBeSingle ();
             var predicateReference = root.FormalSpec as PredicateReference;
 
             if (id != null)
@@ -330,7 +330,7 @@ namespace KAOSTools.Parsing.Tests
             if (name != null)
                 Assert.AreEqual (name, predicateReference.Predicate.Name);
             
-            model.Predicates.Count().ShallEqual(1);
+            model.Predicates().Count().ShallEqual(1);
         }
 
         [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . \"Predicate\"(arg1) end", null, "Predicate")]
@@ -338,7 +338,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestPredicateReferenceWithParameters (string input, string id, string name)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var predicateReference = (root.FormalSpec as Exists).Enclosed as PredicateReference;
 
             if (id != null)
@@ -349,7 +349,7 @@ namespace KAOSTools.Parsing.Tests
 
             predicateReference.ActualArguments.ShallOnlyContain (new string[] {"arg1"});
             
-            model.Predicates.Count().ShallEqual(1);
+            model.Predicates().Count().ShallEqual(1);
         }
 
         [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . (arg1) in \"Predicate\" end", null, "Predicate")]
@@ -357,7 +357,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestRelationReferenceWithParameters (string input, string id, string name)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = (root.FormalSpec as Exists).Enclosed as RelationReference;
 
             if (id != null)
@@ -368,7 +368,7 @@ namespace KAOSTools.Parsing.Tests
 
             expression.ActualArguments.ShallOnlyContain (new string[] {"arg1"});
 
-            model.Relations.Count().ShallEqual(1);
+            model.Relations().Count().ShallEqual(1);
         }
 
         [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" end", null, "Test")]
@@ -376,7 +376,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestAttributeReference (string input, string id, string name)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = (root.FormalSpec as Exists).Enclosed as AttributeReference;
 
             Assert.NotNull (expression);
@@ -387,7 +387,7 @@ namespace KAOSTools.Parsing.Tests
             if (name != null)
                 Assert.AreEqual (name, expression.Attribute.Name);
 
-            model.Entities.Single (x => x.Name == "Type").Attributes.Count().ShallEqual(1);
+            model.Entities().Single (x => x.Name == "Type").Attributes.Count().ShallEqual(1);
         }
         
         [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" == 0.5 end", 
@@ -411,7 +411,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestComparisonPredicateNumeric (string input, ComparisonCriteria criteria, double value)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = (root.FormalSpec as Exists).Enclosed as ComparisonPredicate;
 
             Assert.NotNull (expression);
@@ -439,7 +439,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestComparisonPredicateString (string input, ComparisonCriteria criteria, string value)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = (root.FormalSpec as Exists).Enclosed as ComparisonPredicate;
 
             Assert.NotNull (expression);
@@ -456,7 +456,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestComparisonPredicateBool (string input, ComparisonCriteria criteria, bool value)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = (root.FormalSpec as Exists).Enclosed as ComparisonPredicate;
 
             Assert.NotNull (expression);
@@ -474,7 +474,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestComparisonVariable (string input, ComparisonCriteria criteria)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = (root.FormalSpec as Exists).Enclosed as ComparisonPredicate;
 
             Assert.NotNull (expression);
@@ -493,7 +493,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestComparisonPredicateReverse (string input, ComparisonCriteria criteria)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = (root.FormalSpec as Exists).Enclosed as ComparisonPredicate;
 
             Assert.NotNull (expression);
@@ -506,7 +506,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestComparisonPredicateOtherAttribute (string input, ComparisonCriteria criteria)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = (root.FormalSpec as Exists).Enclosed as ComparisonPredicate;
 
             Assert.NotNull (expression);
@@ -522,7 +522,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestComparisonPredicateOtherPredicate (string input, ComparisonCriteria criteria)
         {
             var model = parser.Parse (input);
-            var root = model.Goals.Where (x => x.Identifier == "test").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = (root.FormalSpec as Exists).Enclosed as ComparisonPredicate;
 
             Assert.NotNull (expression);

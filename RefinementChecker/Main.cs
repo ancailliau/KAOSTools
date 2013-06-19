@@ -41,7 +41,7 @@ namespace KAOSTools.RefinementChecker
                     var obstructedGoalNames = obstacles.Split (',');
                     foreach (var untrimmedName in obstructedGoalNames) {
                         var name = untrimmedName.Trim ();
-                        var goals = model.Goals.Where (x => x.Name == name);
+                        var goals = model.Goals().Where (x => x.Name == name);
                         g.AddRange (goals);
                     }
 

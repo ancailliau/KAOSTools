@@ -26,7 +26,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestIdentifier (string input, string identifier)
         {
             var model = parser.Parse (input);
-            model.Entities
+            model.Entities()
                 .Where (x => x.Identifier == identifier)
                 .ShallBeSingle ();
         }
@@ -37,7 +37,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestObject (string input, string identifier)
         {
             var model = parser.Parse (input);
-            model.Entities
+            model.Entities()
                 .Where (x => x.Identifier == identifier)
                     .ShallBeSingle ();
         }
@@ -73,7 +73,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestName (string input, string expectedName)
         {
             var model = parser.Parse (input);
-            model.Entities
+            model.Entities()
                 .Where (x => x.Name == expectedName)
                 .ShallBeSingle ();
         }
@@ -104,7 +104,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestDefinition (string input, string expectedDescription)
         {
             var model = parser.Parse (input);
-            model.Entities
+            model.Entities()
                 .Where (x => x.Identifier == "test")
                 .ShallBeSuchThat (x => x.Definition == expectedDescription);
         }
@@ -153,7 +153,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestAttribute (string input, string[] attributes)
         {
             var model = parser.Parse (input);
-            var entity = model.Entities.Single (x => x.Identifier == "test");
+            var entity = model.Entities().Single (x => x.Identifier == "test");
             entity.Attributes.Select (x => x.Name).ShallOnlyContain (attributes);
         }
         
@@ -196,10 +196,10 @@ namespace KAOSTools.Parsing.Tests
         public void TestIsA (string input, bool implicitParent)
         {
             var model = parser.Parse (input);
-            var entity1 = model.Entities.Single (x => x.Identifier == "test");
+            var entity1 = model.Entities().Single (x => x.Identifier == "test");
             entity1.Parents.Select (x => x.Identifier).ShallOnlyContain (new string[] { "test2" });
 
-            var parentEntity = model.Entities.Single (x => x.Identifier == "test2");
+            var parentEntity = model.Entities().Single (x => x.Identifier == "test2");
             parentEntity.Implicit.ShallEqual (implicitParent);
         }
 
@@ -214,7 +214,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestEntityType (string input, EntityType type)
         {
             var model = parser.Parse (input);
-            var entity = model.Entities.Single (x => x.Identifier == "test");
+            var entity = model.Entities().Single (x => x.Identifier == "test");
             entity.Type.ShallEqual (type);
         }
     }

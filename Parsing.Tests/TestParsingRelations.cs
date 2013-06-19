@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using ShallTests;
+using KAOSTools.MetaModel;
 
 namespace KAOSTools.Parsing.Tests
 {
@@ -25,7 +26,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestIdentifier (string input, string identifier)
         {
             var model = parser.Parse (input);
-            model.Relations
+            model.Relations()
                 .Where (x => x.Identifier == identifier)
                 .ShallBeSingle ();
         }
@@ -36,7 +37,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestAssociation (string input, string identifier)
         {
             var model = parser.Parse (input);
-            model.Relations
+            model.Relations()
                 .Where (x => x.Identifier == identifier)
                     .ShallBeSingle ();
         }
@@ -72,7 +73,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestName (string input, string expectedName)
         {
             var model = parser.Parse (input);
-            model.Relations
+            model.Relations()
                 .Where (x => x.Name == expectedName)
                 .ShallBeSingle ();
         }
@@ -103,7 +104,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestDefinition (string input, string expectedDescription)
         {
             var model = parser.Parse (input);
-            model.Relations
+            model.Relations()
                 .Where (x => x.Identifier == "test")
                 .ShallBeSuchThat (x => x.Definition == expectedDescription);
         }
@@ -144,7 +145,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestAttribute (string input, string[] attributes)
         {
             var model = parser.Parse (input);
-            var relation = model.Relations.Single (x => x.Identifier == "test");
+            var relation = model.Relations().Single (x => x.Identifier == "test");
             relation.Attributes.Select (x => x.Name).ShallOnlyContain (attributes);
         }
         
@@ -180,7 +181,7 @@ namespace KAOSTools.Parsing.Tests
         public void TestLink (string input)
         {
             var model = parser.Parse (input);
-            var relation1 = model.Relations.Single (x => x.Identifier == "test");
+            var relation1 = model.Relations().Single (x => x.Identifier == "test");
 
             relation1.Links.Select (x => x.Target.Identifier).ShallOnlyContain (new string[] { "entity1", "entity2" });
         }

@@ -13,7 +13,7 @@ namespace KAOSTools.MetaModel
             this.model = model;
 
             foreach (var goal in model.RootGoals()) {
-                goal.InSystems = new HashSet<AlternativeSystem> (model.AlternativeSystems);
+                goal.InSystems = new HashSet<AlternativeSystem> (model.AlternativeSystems());
                 DownPropagate (goal);
             }
 
@@ -41,7 +41,7 @@ namespace KAOSTools.MetaModel
         private ISet<AlternativeSystem> Simplify (ISet<AlternativeSystem> systems)
         {
             var result = new HashSet<AlternativeSystem> (systems);
-            foreach (var s in model.AlternativeSystems) {
+            foreach (var s in model.AlternativeSystems()) {
                 bool contains_all = true;
                 foreach (var ss in s.Alternatives) {
                     if (!result.Contains(ss)) {

@@ -242,7 +242,7 @@ namespace KAOSTools.RefinementChecker
             get { return list; }
         }
 
-        public ProofObligationGenerator (GoalModel model, IEnumerable<Goal> goals, IEnumerable<Goal> obstructedGoals)
+        public ProofObligationGenerator (GoalModel model, IEnumerable<Goal> goals, IEnumerable<Goal> obstructedGoals())
         {
             this.model = model;
             this.list = new List<ProofObligation> ();
@@ -268,13 +268,13 @@ namespace KAOSTools.RefinementChecker
                 foreach (var root in goals)
                     AddProofObligationsForGoal (root);
 
-            if (obstructedGoals != null)
-                foreach (var obstructedGoal in obstructedGoals)
+            if (obstructedGoals() != null)
+                foreach (var obstructedGoal in obstructedGoals())
                     AddProofObligationsForObstructedGoal (obstructedGoal);
         }
 
         public ProofObligationGenerator (GoalModel model)
-            : this(model, model.RootGoals(), model.ObstructedGoals())
+            : this(model, model.RootGoals()(), model.ObstructedGoals()())
         {}
     }
 }

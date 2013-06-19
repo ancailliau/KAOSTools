@@ -64,7 +64,7 @@ namespace KAOSTools.ReportGenerator
         }
 
         public static Object GoalRefinements() {
-          var tuples = from g in model.Goals
+          var tuples = from g in model.Goals()
                          from r in g.Refinements
                            select new { id = r.Identifier,
                                         parent = g.Identifier };
@@ -72,17 +72,17 @@ namespace KAOSTools.ReportGenerator
         }
 
         public static Object GoalRefinementChildren(){
-          var grgc = from g in model.Goals
+          var grgc = from g in model.Goals()
                        from r in g.Refinements
                          from sg in r.Subgoals
                            select new { refinement = r.Identifier,
                                         child = sg.Identifier };
-          var grpc = from g in model.Goals
+          var grpc = from g in model.Goals()
                        from r in g.Refinements
                          from d in r.DomainProperties
                            select new { refinement = r.Identifier,
                                         child = d.Identifier };
-          var grhc = from g in model.Goals
+          var grhc = from g in model.Goals()
                        from r in g.Refinements
                          from d in r.DomainHypotheses
                            select new { refinement = r.Identifier,
@@ -97,7 +97,7 @@ namespace KAOSTools.ReportGenerator
             var dbvalue = new
             {
               // IDEAL GOAL MODEL
-              goals = from g in model.Goals.OrderBy (x => x.Name)
+              goals = from g in model.Goals().OrderBy (x => x.Name)
                       select new { id = g.Identifier,
                                    name = g.Name,
                                    definition = g.Definition,
@@ -131,7 +131,7 @@ namespace KAOSTools.ReportGenerator
 
               obstacle_refinement_children = ObstacleRefinementChildren(),
 
-              obstructions = from g in model.Goals.OrderBy (x => x.Name)
+              obstructions = from g in model.Goals().OrderBy (x => x.Name)
                              from o in g.Obstructions.OrderBy (x => x.ObstructingObstacle.Name)
                                select new { goal     = g.Identifier,
                                             obstacle = o.ObstructingObstacle.Identifier },
@@ -149,7 +149,7 @@ namespace KAOSTools.ReportGenerator
                                     definition = a.Definition,
                                     type = Enum.GetName(typeof(MetaModel.AgentType), a.Type).ToLower() },
 
-              assignments = from g in model.Goals
+              assignments = from g in model.Goals()
                               from aa in g.AgentAssignments
                                 from a in aa.Agents
                                   select new {     id = aa.Identifier,
