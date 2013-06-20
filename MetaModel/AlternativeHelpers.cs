@@ -32,7 +32,7 @@ namespace KAOSTools.MetaModel
 
             foreach (var assignement in g.AgentAssignments()) {
                 assignement.InSystems = Simplify (assignement.InSystems);
-                foreach (var agent in assignement.Agents) {
+                foreach (var agent in assignement.Agents()) {
                     agent.InSystems = Simplify (agent.InSystems);
                 }
             }
@@ -91,7 +91,7 @@ namespace KAOSTools.MetaModel
                 assignment.InSystems.Add (s);
             }
 
-            foreach (var agent in assignment.Agents) {
+            foreach (var agent in assignment.Agents()) {
                 if (agent.InSystems == null)
                     agent.InSystems = new HashSet<AlternativeSystem> ();
                 

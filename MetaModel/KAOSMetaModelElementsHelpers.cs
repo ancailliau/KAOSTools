@@ -22,7 +22,7 @@ namespace KAOSTools.MetaModel
 
         public static IEnumerable<GoalAgentAssignment> AgentAssignments (this Goal goal) {
             return from assignement in goal.model.GoalAgentAssignments()
-                where assignement.Goal == goal
+                where assignement.GoalIdentifier == goal.Identifier
                     select assignement;
         }
 
@@ -44,7 +44,7 @@ namespace KAOSTools.MetaModel
 
         public static IEnumerable<AntiGoalAgentAssignment> AgentAssignments (this AntiGoal antiGoal) {
             return from assignement in antiGoal.model.AntiGoalAgentAssignments()
-                where assignement.AntiGoal == antiGoal
+                where assignement.AntiGoalIdentifier == antiGoal.Identifier
                     select assignement;
         }
 
@@ -78,7 +78,7 @@ namespace KAOSTools.MetaModel
 
         public static IEnumerable<ObstacleAgentAssignment> AgentAssignments (this Obstacle obstacle) {
             return from assignement in obstacle.model.ObstacleAgentAssignments()
-                where assignement.Obstacle == obstacle
+                where assignement.ObstacleIdentifier == obstacle.Identifier
                     select assignement;
         }
 
@@ -120,20 +120,41 @@ namespace KAOSTools.MetaModel
 
         public static IEnumerable<GoalAgentAssignment> AssignedGoals (this Agent agent) {
             return from assignements in agent.model.GoalAgentAssignments()
-                where assignements.Agents.Contains (agent)
+                where assignements.Agents().Contains (agent)
                     select assignements;
         }
         
         public static IEnumerable<ObstacleAgentAssignment> AssignedObstacles (this Agent agent) {
             return from assignements in agent.model.ObstacleAgentAssignments()
-                where assignements.Agents.Contains (agent)
+                where assignements.Agents().Contains (agent)
                     select assignements;
         }
         
         public static IEnumerable<AntiGoalAgentAssignment> AssignedAntiGoals (this Agent agent) {
             return from assignements in agent.model.AntiGoalAgentAssignments()
-                where assignements.Agents.Contains (agent)
+                where assignements.Agents().Contains (agent)
                     select assignements;
+        }
+
+        #endregion
+
+        #region Agent assignments
+
+        public static IEnumerable<Agent> Agents (this AgentAssignment agentAssignement) {
+            return agentAssignement.AgentIdentifiers
+                .Select(x => agentAssignement.model.Agents().SingleOrDefault(y => y.Identifier == x));
+        }
+        
+        public static Goal Goal (this GoalAgentAssignment goalAA) {
+            return goalAA.model.Goals().SingleOrDefault(y => y.Identifier == goalAA.GoalIdentifier);
+        }
+
+        public static Obstacle Obstacle (this ObstacleAgentAssignment obstacleAA) {
+            return obstacleAA.model.Obstacles().SingleOrDefault(y => y.Identifier == obstacleAA.ObstacleIdentifier);
+        }
+
+        public static AntiGoal AntiGoal (this AntiGoalAgentAssignment antiGoalAA) {
+            return antiGoalAA.model.AntiGoals().SingleOrDefault(y => y.Identifier == antiGoalAA.AntiGoalIdentifier);
         }
 
         #endregion

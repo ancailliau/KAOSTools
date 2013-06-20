@@ -140,7 +140,7 @@ namespace KAOSTools.Parsing.Tests
             model.Obstacles()
                 .Where (x => x.Identifier == "obstacle" & x.AgentAssignments().Count() == 1)
                     .SelectMany (x => x.AgentAssignments())
-                    .SelectMany (x => x.Agents)
+                    .SelectMany (x => x.Agents())
                     .ShallBeSingle ()
                     .ShallBeSuchThat (x => x.Identifier == "agent");
         }
@@ -161,7 +161,7 @@ namespace KAOSTools.Parsing.Tests
             model.Goals()
                 .Where (x => x.Identifier == "goal" & x.AgentAssignments().Count() == 1)
                 .SelectMany (x => x.AgentAssignments())
-                .SelectMany (x => x.Agents)
+                .SelectMany (x => x.Agents())
                 .ShallBeSingle ()
                 .ShallBeSuchThat (x => x.Identifier == "agent");
         }
@@ -191,7 +191,7 @@ namespace KAOSTools.Parsing.Tests
             model.Goals()
                 .Where (x => x.Identifier == "goal")
                 .SelectMany (x => x.AgentAssignments())
-                .SelectMany (x => x.Agents)
+                .SelectMany (x => x.Agents())
                 .Select (x => x.Identifier)
                 .ShallOnlyContain (new string[] { "agent1", "agent2" });
         }

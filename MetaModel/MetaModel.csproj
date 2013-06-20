@@ -53,6 +53,7 @@
     <Compile Include="KAOSModelHelpers.cs" />
     <Compile Include="KAOSMetaModelElements.cs" />
     <Compile Include="KAOSMetaModelElementsHelpers.cs" />
+    <Compile Include="KAOSFixPoints.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

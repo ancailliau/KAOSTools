@@ -353,7 +353,7 @@ namespace KAOSTools.Parsing
         public void Handle (Goal element, ParsedAssignedToAttribute assignedTo)
         {
             var assignment = new GoalAgentAssignment (model);
-            assignment.Goal = element;
+            assignment.GoalIdentifier = element.Identifier;
 
             if (assignedTo.SystemIdentifier != null) {
                 AlternativeSystem alternative;
@@ -369,10 +369,10 @@ namespace KAOSTools.Parsing
                     if (!Get (child, out agent)) {
                         agent = Create<Agent> (child);
                     }
-                    assignment.Agents.Add (agent);
+                    assignment.Add (agent);
 
                 } else if (child is ParsedAgent) {
-                    assignment.Agents.Add (fsb.BuildElementWithKeys (child));
+                    assignment.Add (fsb.BuildElementWithKeys (child));
                     BuildElement (child);
 
                 } else {
@@ -393,7 +393,7 @@ namespace KAOSTools.Parsing
         public void Handle (AntiGoal element, ParsedAssignedToAttribute assignedTo)
         {
             var assignment = new AntiGoalAgentAssignment (model);
-            assignment.AntiGoal = element;
+            assignment.AntiGoalIdentifier = element.Identifier;
 
             if (assignedTo.SystemIdentifier != null) {
                 AlternativeSystem alternative;
@@ -409,10 +409,10 @@ namespace KAOSTools.Parsing
                     if (!Get (child, out agent)) {
                         agent = Create<Agent> (child);
                     }
-                    assignment.Agents.Add (agent);
+                    assignment.Add (agent);
 
                 } else if (child is ParsedAgent) {
-                    assignment.Agents.Add (fsb.BuildElementWithKeys (child));
+                    assignment.Add (fsb.BuildElementWithKeys (child));
                     BuildElement (child);
 
                 } else {
@@ -433,7 +433,7 @@ namespace KAOSTools.Parsing
         private void Handle (Obstacle element, ParsedAssignedToAttribute assignedTo)
         {
             var assignment = new ObstacleAgentAssignment (model);
-            assignment.Obstacle = element;
+            assignment.ObstacleIdentifier = element.Identifier;
 
             if (assignedTo.SystemIdentifier != null) {
                 AlternativeSystem alternative;
@@ -449,10 +449,10 @@ namespace KAOSTools.Parsing
                     if (!Get (child, out agent)) {
                         agent = Create<Agent> (child);
                     }
-                    assignment.Agents.Add (agent);
+                    assignment.Add (agent);
 
                 } else if (child is ParsedAgent) {
-                    assignment.Agents.Add (fsb.BuildElementWithKeys (child));
+                    assignment.Add (fsb.BuildElementWithKeys (child));
                     BuildElement (child);
 
                 } else {

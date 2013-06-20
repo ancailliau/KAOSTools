@@ -159,7 +159,7 @@ namespace KAOSTools.Parsing.Tests
                 .ShallOnlyContain (new string[] { "new_obstacle", "old_obstacle" });
             
             goal.AgentAssignments()
-                .SelectMany (x => x.Agents)
+                .SelectMany (x => x.Agents())
                 .Select (x => x.Identifier)
                 .ShallOnlyContain (new string[] { "new_agent", "old_agent" });
         }

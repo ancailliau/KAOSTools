@@ -194,36 +194,42 @@ namespace KAOSTools.MetaModel
         Malicious
     }
 
+
     public abstract class AgentAssignment : KAOSMetaModelElement
     {
         public AlternativeSystem SystemReference { get; set; }
 
-        public IList<Agent> Agents { get; set; }
+        public ISet<string> AgentIdentifiers { get; set; }
 
         public bool IsEmpty {
             get {
-                return Agents.Count == 0;
+                return AgentIdentifiers.Count == 0;
             }
         }
 
         public AgentAssignment (KAOSModel model) : base (model)
         {
-            Agents = new List<Agent> ();
+            AgentIdentifiers = new HashSet<string> ();
+        }
+
+        public void Add (Agent agent)
+        {
+            this.AgentIdentifiers.Add (agent.Identifier);
         }
     }
 
     public class GoalAgentAssignment : AgentAssignment {
-        public Goal Goal { get; set ; }
+        public string GoalIdentifier { get; set ; }
         public GoalAgentAssignment  (KAOSModel model) : base (model) {}
     }
 
     public class ObstacleAgentAssignment : AgentAssignment {
-        public Obstacle Obstacle { get; set ; }
+        public string ObstacleIdentifier { get; set ; }
         public ObstacleAgentAssignment  (KAOSModel model) : base (model) {}
     }
 
     public class AntiGoalAgentAssignment : AgentAssignment {
-        public AntiGoal AntiGoal { get; set ; }
+        public string AntiGoalIdentifier { get; set ; }
         public AntiGoalAgentAssignment  (KAOSModel model) : base (model) {}
     }
 

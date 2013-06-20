@@ -33,5 +33,16 @@ namespace KAOSTools.MetaModel
             this._elements.Add (element.Identifier, element);
         }
     }
+
+    public class KAOSView : KAOSModel {
+    
+        public KAOSModel ParentModel { get; set; }
+
+        public KAOSView (KAOSModel model) : base()
+        {
+            this.ParentModel = model;
+        }
+
+    }
 }
 

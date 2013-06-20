@@ -110,7 +110,7 @@ namespace KAOSTools.MetaModel
                 }
                 
                 foreach (var assignment in goal.AgentAssignments()) {
-                    foreach (var agent in assignment.Agents) {
+                    foreach (var agent in assignment.Agents()) {
                         var newNode = new ResponsibilityNode (current);
                         
                         if (!newNode.Responsibility.ContainsKey(agent))
@@ -126,7 +126,7 @@ namespace KAOSTools.MetaModel
                 }
                 
                 foreach (var assignment in goal.AgentAssignments()) {
-                    foreach (var agent in assignment.Agents) {
+                    foreach (var agent in assignment.Agents()) {
                         if (!current.Responsibility.ContainsKey(agent))
                             current.Responsibility.Add (agent, new List<Goal> ());
                         current.Responsibility[agent].Add (goal);
