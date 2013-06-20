@@ -150,7 +150,6 @@ namespace KAOSTools.Parsing.Tests
             goal.Refinements().ShallContain (y => y.SubAntiGoals.Select (x => x.Identifier)
                 .OnlyContains (new string[] { "new_child1", "new_child2" }));
 
-
             goal.AgentAssignments()
                 .SelectMany (x => x.Agents())
                 .Select (x => x.Identifier)

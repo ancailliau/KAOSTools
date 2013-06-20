@@ -43,8 +43,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TestExperimentalResponsibilities.cs" />
-    <Compile Include="TestAlternativePropagation.cs" />
     <Compile Include="TestEntity.cs" />
+    <Compile Include="TestViews.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -60,5 +60,6 @@
   <ItemGroup>
     <None Include="TestBehaviorModel.cs" />
     <None Include="BehaviorHelpers.cs" />
+    <None Include="TestAlternativePropagation.cs" />
   </ItemGroup>
 </Project>

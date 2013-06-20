@@ -26,6 +26,8 @@ namespace KAOSTools.MetaModel
             this.model = model;
         }
 
+        public abstract KAOSMetaModelElement Copy ();
+
         public override bool Equals (object obj)
         {
             if (obj == null)
@@ -76,6 +78,21 @@ namespace KAOSTools.MetaModel
             Exceptions = new HashSet<GoalException> ();
             Assumptions = new HashSet<Assumption> ();
         }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            return new Goal (null) {
+                Identifier = Identifier,
+                Implicit = Implicit,
+                Name = Name,
+                Definition = Definition,
+                FormalSpec = FormalSpec,
+                CPS = CPS,
+                RDS = RDS,
+                Exceptions = new HashSet<GoalException> (Exceptions),
+                Assumptions = new HashSet<Assumption> (Assumptions)
+            };
+        }
     }
 
     public class AntiGoal : KAOSMetaModelElement
@@ -96,6 +113,11 @@ namespace KAOSTools.MetaModel
         public AntiGoal (KAOSModel model) : base(model)
         {
             InSystems = new HashSet<AlternativeSystem>();
+        }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            throw new NotImplementedException ();
         }
     }
 
@@ -123,6 +145,11 @@ namespace KAOSTools.MetaModel
         {
             Assumptions = new HashSet<Assumption> ();
         }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            throw new NotImplementedException ();
+        }
     }
 
     public class DomainHypothesis : KAOSMetaModelElement
@@ -145,6 +172,11 @@ namespace KAOSTools.MetaModel
         {
 
         }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            throw new NotImplementedException ();
+        }
     }
 
     public class DomainProperty : KAOSMetaModelElement
@@ -164,6 +196,11 @@ namespace KAOSTools.MetaModel
         public double EPS { get; set; }
 
         public DomainProperty (KAOSModel model) : base (model) {}
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            throw new NotImplementedException ();
+        }
     }
 
     public class Agent : KAOSMetaModelElement
@@ -183,6 +220,17 @@ namespace KAOSTools.MetaModel
         public Agent (KAOSModel model) : base(model)
         {
             Type = AgentType.None;
+        }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            return new Agent(null) {
+                Identifier = Identifier,
+                Implicit = Implicit,
+                Name = Name,
+                Definition = Definition,
+                Type = Type
+            };
         }
     }
 
@@ -221,16 +269,38 @@ namespace KAOSTools.MetaModel
     public class GoalAgentAssignment : AgentAssignment {
         public string GoalIdentifier { get; set ; }
         public GoalAgentAssignment  (KAOSModel model) : base (model) {}
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            var aa = new GoalAgentAssignment (null) {
+                Identifier = Identifier,
+                Implicit = Implicit,
+                GoalIdentifier = GoalIdentifier,
+                AgentIdentifiers = new HashSet<string> (AgentIdentifiers)
+            };
+
+            return aa;
+        }
     }
 
     public class ObstacleAgentAssignment : AgentAssignment {
         public string ObstacleIdentifier { get; set ; }
         public ObstacleAgentAssignment  (KAOSModel model) : base (model) {}
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            throw new NotImplementedException ();
+        }
     }
 
     public class AntiGoalAgentAssignment : AgentAssignment {
         public string AntiGoalIdentifier { get; set ; }
         public AntiGoalAgentAssignment  (KAOSModel model) : base (model) {}
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            throw new NotImplementedException ();
+        }
     }
 
     public class GoalRefinement : KAOSMetaModelElement
@@ -273,6 +343,11 @@ namespace KAOSTools.MetaModel
             foreach (var goal in goals)
                 Subgoals.Add (goal);
         }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            throw new NotImplementedException ();
+        }
     }
 
 
@@ -299,6 +374,11 @@ namespace KAOSTools.MetaModel
             Obstacles = new List<Obstacle> ();
             DomainProperties = new List<DomainProperty> ();
             DomainHypotheses = new List<DomainHypothesis> ();
+        }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            throw new NotImplementedException ();
         }
     }
 
@@ -333,17 +413,24 @@ namespace KAOSTools.MetaModel
             foreach (var obstacle in obstacles)
                 Subobstacles.Add (obstacle);
         }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            throw new NotImplementedException ();
+        }
     }
 
     public class GoalException {
         public bool Implicit { get; set; }
         public Obstacle ResolvedObstacle { get; set; }
         public Goal ResolvingGoal { get; set; }
+
     }
 
     public abstract class Assumption {
         public bool Implicit { get; set; }
         public dynamic Assumed { get; set; }
+
     }
 
     public class GoalAssumption : Assumption {}
@@ -355,6 +442,11 @@ namespace KAOSTools.MetaModel
         public Obstacle Obstacle { get; set; }
         public Obstruction (KAOSModel model) : base (model)
         {}
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            throw new NotImplementedException ();
+        }
     }
 
     public class Resolution : KAOSMetaModelElement {
@@ -366,6 +458,11 @@ namespace KAOSTools.MetaModel
         {
             ResolutionPattern = ResolutionPattern.None;
             Parameters = new List<dynamic> ();
+        }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            throw new NotImplementedException ();
         }
     }
 
@@ -430,6 +527,11 @@ namespace KAOSTools.MetaModel
             Type = EntityType.None;
             Parents = new HashSet<Entity> ();
         }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            throw new NotImplementedException ();
+        }
     }
 
     public class Attribute : KAOSMetaModelElement {
@@ -449,6 +551,11 @@ namespace KAOSTools.MetaModel
         {
             Derived = false;
         }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            throw new NotImplementedException ();
+        }
     }
 
     public class GivenType : KAOSMetaModelElement {
@@ -465,6 +572,11 @@ namespace KAOSTools.MetaModel
         public GivenType  (KAOSModel model) : base (model)
         {
             
+        }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            throw new NotImplementedException ();
         }
     }
 
@@ -483,6 +595,11 @@ namespace KAOSTools.MetaModel
         public string Multiplicity { get; set; }
         public Link  (KAOSModel model) : base (model)
         {}
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            throw new NotImplementedException ();
+        }
     }
 
     public enum EntityType {
@@ -509,6 +626,11 @@ namespace KAOSTools.MetaModel
         {
             Alternatives = new HashSet<AlternativeSystem> ();
         }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            throw new NotImplementedException ();
+        }
     }
 
     public class Predicate : KAOSMetaModelElement
@@ -530,6 +652,11 @@ namespace KAOSTools.MetaModel
         public Predicate  (KAOSModel model) : base (model)
         {
             Arguments = new List<PredicateArgument> ();
+        }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            throw new NotImplementedException ();
         }
     }
 

@@ -21,16 +21,17 @@ namespace KAOSTools.MetaModel
 
         public void Add (KAOSMetaModelElement element)
         {
-            if (element.model == null)
-                element.model = this;
+            var e = element;
+            if (e.model != this)
+                e = element.Copy ();
 
-            if (element.model != this)
-                throw new InvalidOperationException ("Cannot add element referencing a model in another model");
+            if (e.model == null)
+                e.model = this;
 
-            if (this._elements.ContainsKey(element.Identifier))
-                throw new InvalidOperationException ("Duplicated ID " + element.Identifier);
+            if (this._elements.ContainsKey(e.Identifier))
+                throw new InvalidOperationException ("Duplicated ID " + e.Identifier);
 
-            this._elements.Add (element.Identifier, element);
+            this._elements.Add (e.Identifier, e);
         }
     }
 
