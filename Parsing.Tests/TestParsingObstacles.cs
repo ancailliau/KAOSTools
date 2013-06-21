@@ -245,7 +245,7 @@ namespace KAOSTools.Parsing.Tests
                     .ShallBeSingle ();
             
             goal.Refinements()
-                .ShallContain (x => x.Subobstacles().Select(y => y.Name)
+                .ShallContain (x => x.SubObstacles().Select(y => y.Name)
                                .OnlyContains ( new string [] { "child1" , "child2" }));
         }
 

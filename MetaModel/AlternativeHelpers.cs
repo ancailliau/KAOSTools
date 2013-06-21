@@ -197,7 +197,7 @@ namespace KAOSTools.MetaModel
                 refinement.InSystems.Add (a);
             }
 
-            foreach (var child in refinement.Subobstacles()) {
+            foreach (var child in refinement.SubObstacles()) {
                 if (child.InSystems == null)
                     child.InSystems = new HashSet<AlternativeSystem> ();
 

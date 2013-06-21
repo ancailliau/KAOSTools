@@ -171,7 +171,7 @@ namespace KAOSTools.MetaModel
                 .Select(x => refinement.model.DomainProperties().SingleOrDefault(y => y.Identifier == x));
         }
 
-        public static IEnumerable<DomainHypothesis> DomainHypothesis (this GoalRefinement refinement) {
+        public static IEnumerable<DomainHypothesis> DomainHypotheses (this GoalRefinement refinement) {
             return refinement.DomainHypothesisIdentifiers
                 .Select(x => refinement.model.DomainHypotheses().SingleOrDefault(y => y.Identifier == x));
         }
@@ -198,7 +198,7 @@ namespace KAOSTools.MetaModel
                 .Select(x => refinement.model.DomainProperties().SingleOrDefault(y => y.Identifier == x));
         }
 
-        public static IEnumerable<DomainHypothesis> DomainHypothesis (this AntiGoalRefinement refinement) {
+        public static IEnumerable<DomainHypothesis> DomainHypotheses (this AntiGoalRefinement refinement) {
             return refinement.DomainHypothesisIdentifiers
                 .Select(x => refinement.model.DomainHypotheses().SingleOrDefault(y => y.Identifier == x));
         }
@@ -220,7 +220,7 @@ namespace KAOSTools.MetaModel
                 
         #region Obstacle refinement
 
-        public static IEnumerable<Obstacle> Subobstacles (this ObstacleRefinement refinement) {
+        public static IEnumerable<Obstacle> SubObstacles (this ObstacleRefinement refinement) {
             return refinement.SubobstacleIdentifiers
                 .Select(x => refinement.model.Obstacles().SingleOrDefault(y => y.Identifier == x));
         }
@@ -230,7 +230,7 @@ namespace KAOSTools.MetaModel
                 .Select(x => refinement.model.DomainProperties().SingleOrDefault(y => y.Identifier == x));
         }
 
-        public static IEnumerable<DomainHypothesis> DomainHypothesis (this ObstacleRefinement refinement) {
+        public static IEnumerable<DomainHypothesis> DomainHypotheses (this ObstacleRefinement refinement) {
             return refinement.DomainHypothesisIdentifiers
                 .Select(x => refinement.model.DomainHypotheses().SingleOrDefault(y => y.Identifier == x));
         }

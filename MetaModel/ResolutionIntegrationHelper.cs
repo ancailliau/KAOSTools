@@ -18,7 +18,7 @@ namespace KAOSTools.MetaModel
                 Integrate (obstructedGoal, obstacle, resolution);
             }
 
-            foreach (var subobstacle in obstacle.Refinements().SelectMany (x => x.Subobstacles())) {
+            foreach (var subobstacle in obstacle.Refinements().SelectMany (x => x.SubObstacles())) {
                 RecursiveIntegration (obstructedGoal, subobstacle);
             }
         }
@@ -102,7 +102,7 @@ namespace KAOSTools.MetaModel
                 return;
             }
 
-            foreach (var children in obstacle.Refinements().SelectMany (x => x.Subobstacles())) {
+            foreach (var children in obstacle.Refinements().SelectMany (x => x.SubObstacles())) {
                 Propagate (assumption, children);
             }
 
