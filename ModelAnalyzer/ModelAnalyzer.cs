@@ -45,7 +45,7 @@ namespace KAOSTools.ModelAnalyzer
             results = new List<CheckResult>();
 
             CheckImplicit (model);
-            CheckUnassignedLeafGoals() (model);
+            CheckUnassignedLeafGoals (model);
             CheckGoalWithSimilarNames (model, levensteinThreshold);
             CheckMissingDefinition (model);
             CheckIncompatibleSystems (model);
@@ -63,25 +63,25 @@ namespace KAOSTools.ModelAnalyzer
         {
             ForAllKAOSElement (x => {
                 if (x.Implicit) {
-                    AddWarning (string.Format ("{1} '{0}' is implicitely declared.", x.FriendlyName, x.ConceptName));
+                    AddWarning (string.Format ("{1} '{0}' is implicitely declared.", x.FriendlyName, x.GetType().Name));
                 }
             });
         }
 
-        static void CheckIncompatibleSystems (GoalModel model)
+        static void CheckIncompatibleSystems (KAOSModel model)
         {
-            ForAllGoals() (x => {
+            ForAllGoals (x => {
                 if (x.InSystems.Count() == 0) {
                     AddWarning (string.Format ("Goal '{0}' appears in no alternative system.", x.FriendlyName));
                 }
             });
 
-            ForAllGoals() (g => {
-                foreach (var ag in g.AgentAssignments) {
+            ForAllGoals (g => {
+                foreach (var ag in g.AgentAssignments()) {
                     if (ag.InSystems.Count() == 0) {
                         AddWarning (string.Format ("The assignment of goal '{0}' to agent(s) {1} is incompatible. Goal appears only in {2} alternative systems.", 
                                                 g.FriendlyName, 
-                                                string.Join (",", ag.Agents.Select (x => string.Format ("'{0}'", x.Name))),
+                                                string.Join (",", ag.Agents().Select (x => string.Format ("'{0}'", x.Name))),
                                                 (g.InSystems.Count == 0 ? "no" : string.Join (",", g.InSystems.Select (x => string.Format ("'{0}'", x.Name))))
                                                 ));
                     }
@@ -89,41 +89,41 @@ namespace KAOSTools.ModelAnalyzer
             });
         }
 
-        static void CheckMissingDefinition (GoalModel model)
+        static void CheckMissingDefinition (KAOSModel model)
         {
             ForAllKAOSElement (x => {
                 var propertyInfo = x.GetType ().GetProperty ("Definition");
                 if (propertyInfo != null) {
                     if (string.IsNullOrWhiteSpace ((string) propertyInfo.GetValue (x, null))) {
-                        AddWarning (string.Format ("{1} '{0}' has no definition.", x.FriendlyName, x.ConceptName));
+                        AddWarning (string.Format ("{1} '{0}' has no definition.", x.FriendlyName, x.GetType().Name));
                     }
                 }
             });
         }
 
-        static void DisplayMissingFormalSpec (GoalModel model)
+        static void DisplayMissingFormalSpec (KAOSModel model)
         {
             ForAllKAOSElement (x => {
                 var propertyInfo = x.GetType ().GetProperty ("FormalSpec");
                 if (propertyInfo != null) {
                     if (string.IsNullOrWhiteSpace ((string) propertyInfo.GetValue (x, null))) {
-                        AddWarning (string.Format ("{1} '{0}' has no formal specification.", x.FriendlyName, x.ConceptName));
+                        AddWarning (string.Format ("{1} '{0}' has no formal specification.", x.FriendlyName, x.GetType().Name));
                     }
                 }
             });
         }
 
-        static void CheckUnassignedLeafGoals() (GoalModel model)
+        static void CheckUnassignedLeafGoals (KAOSModel model)
         {
-            var unassignedLeafGoals() = from g in model.Goals() 
-                where g.AgentAssignments.Count == 0 & g.Refinements().Count == 0 select g;
+            var unassignedLeafGoals = from g in model.Goals() 
+                where g.AgentAssignments().Count() == 0 & g.Refinements().Count() == 0 select g;
 
-            foreach (var item in unassignedLeafGoals()) {
+            foreach (var item in unassignedLeafGoals) {
                 AddWarning (string.Format ("Goal '{0}' is not refined or assigned.", item.FriendlyName));
             }
         }
         
-        static void CheckGoalWithSimilarNames (GoalModel model, int levensteinThreshold)
+        static void CheckGoalWithSimilarNames (KAOSModel model, int levensteinThreshold)
         {
             /* TODO
             var duplicateGoals() = from g1 in model.Goals() 
@@ -181,7 +181,7 @@ namespace KAOSTools.ModelAnalyzer
         #region ForAll... helpers 
         
         static void ForAllKAOSElement (Action<KAOSMetaModelElement> action) {
-            ForAllGoals() (action);
+            ForAllGoals (action);
             ForAllObstacles (action);
             ForAllDomainProperties (action);
             ForAllDomainHypotheses (action);
@@ -193,62 +193,62 @@ namespace KAOSTools.ModelAnalyzer
             ForAllTypes (action);
         }
 
-        static void ForAllGoals() (Action<Goal> action) {
+        static void ForAllGoals (Action<Goal> action) {
             foreach (var goal in model.Goals()) {
                 action(goal);
             }
         }
 
         static void ForAllObstacles (Action<Obstacle> action) {
-            foreach (var obstacle in model.Obstacles) {
+            foreach (var obstacle in model.Obstacles()) {
                 action(obstacle);
             }
         }
         
         static void ForAllDomainProperties (Action<DomainProperty> action) {
-            foreach (var domprop in model.DomainProperties) {
+            foreach (var domprop in model.DomainProperties()) {
                 action(domprop);
             }
         }
 
         static void ForAllDomainHypotheses (Action<DomainHypothesis> action) {
-            foreach (var domhyp in model.DomainHypotheses) {
+            foreach (var domhyp in model.DomainHypotheses()) {
                 action(domhyp);
             }
         }
 
         static void ForAllAgents (Action<Agent> action) {
-            foreach (var agent in model.Agents) {
+            foreach (var agent in model.Agents()) {
                 action(agent);
             }
         }
 
         static void ForAllSystems (Action<AlternativeSystem> action) {
-            foreach (var system in model.Systems) {
+            foreach (var system in model.AlternativeSystems()) {
                 action(system);
             }
         }
         
         static void ForAllObjects (Action<Entity> action) {
-            foreach (var entity in model.Entities) {
+            foreach (var entity in model.Entities()) {
                 action(entity);
             }
         }
 
         static void ForAllAssociations (Action<Relation> action) {
-            foreach (var relation in model.Relations) {
+            foreach (var relation in model.Relations()) {
                 action(relation);
             }
         }
 
         static void ForAllPredicates (Action<Predicate> action) {
-            foreach (var predicate in model.Predicates) {
+            foreach (var predicate in model.Predicates()) {
                 action(predicate);
             }
         }
 
         static void ForAllTypes (Action<GivenType> action) {
-            foreach (var goal in model.GivenTypes) {
+            foreach (var goal in model.GivenTypes()) {
                 action(goal);
             }
         }
