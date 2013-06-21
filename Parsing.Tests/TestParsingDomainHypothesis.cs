@@ -115,7 +115,7 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             var g = model.Goals().Single (x => x.Identifier == "g");
-            g.Refinements().ShallBeSingle ().DomainHypotheses.Select (x => x.Identifier).ShallOnlyContain (new string[] { "test" });
+            g.Refinements().ShallBeSingle ().DomainHypothesisIdentifiers.ShallOnlyContain (new string[] { "test" });
         }
 
     }

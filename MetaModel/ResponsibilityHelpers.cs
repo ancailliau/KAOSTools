@@ -105,7 +105,7 @@ namespace KAOSTools.MetaModel
             if (hasAlternatives) {
                 foreach (var refinement in goal.Refinements()) {
                     var newNode = new ResponsibilityNode (current);
-                    foreach (var childGoal in refinement.Subgoals) 
+                    foreach (var childGoal in refinement.SubGoals()) 
                         RecursiveGetResponsibilities (newNode, childGoal);
                 }
                 
@@ -121,7 +121,7 @@ namespace KAOSTools.MetaModel
                 
             } else {
                 foreach (var refinement in goal.Refinements()) {
-                    foreach (var childGoal in refinement.Subgoals) 
+                    foreach (var childGoal in refinement.SubGoals()) 
                         RecursiveGetResponsibilities (current, childGoal);
                 }
                 

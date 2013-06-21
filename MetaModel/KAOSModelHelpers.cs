@@ -101,21 +101,21 @@ namespace KAOSTools.MetaModel
                 var goals = new HashSet<Goal> (model.Goals());
                 foreach (var goal in model.Goals())
                     foreach (var refinement in goal.Refinements()) 
-                        foreach (var child in refinement.Subgoals)
+                        foreach (var child in refinement.SubGoals())
                             goals.Remove (child);
                 foreach (var obstacle in model.Obstacles())
                     foreach (var resolution in obstacle.Resolutions())
-                        goals.Remove (resolution.ResolvingGoal);
+                        goals.Remove (resolution.ResolvingGoal());
                 return goals;
         }
 
-        public static ISet<AntiGoal> RootAntiGoals (this KAOSModel model) {
-            var rootAntiGoals = new HashSet<AntiGoal> (model.AntiGoals());
+        public static IEnumerable<AntiGoal> RootAntiGoals (this KAOSModel model) {
+            var rootAntiGoals = new HashSet<string> (model.AntiGoals().Select (x => x.Identifier));
             foreach (var goal in model.AntiGoals())
                 foreach (var refinement in goal.Refinements()) 
-                    foreach (var child in refinement.SubAntiGoals)
+                    foreach (var child in refinement.SubAntiGoalIdentifiers)
                         rootAntiGoals.Remove (child);
-            return rootAntiGoals;
+            return rootAntiGoals.Select (x => model.AntiGoals().SingleOrDefault (y => y.Identifier == x));
         }
 
         public static ISet<AlternativeSystem> RootSystems (this KAOSModel model) {

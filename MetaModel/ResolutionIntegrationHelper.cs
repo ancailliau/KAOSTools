@@ -8,7 +8,7 @@ namespace KAOSTools.MetaModel
         public static void IntegrateResolutions (this KAOSModel model) {
             foreach (var goal in model.ObstructedGoals()) {
                 foreach (var obstacle in goal.Obstructions()) {
-                    RecursiveIntegration (goal, obstacle.Obstacle);
+                    RecursiveIntegration (goal, obstacle.Obstacle());
                 }
             }
         }
@@ -18,7 +18,7 @@ namespace KAOSTools.MetaModel
                 Integrate (obstructedGoal, obstacle, resolution);
             }
 
-            foreach (var subobstacle in obstacle.Refinements().SelectMany (x => x.Subobstacles)) {
+            foreach (var subobstacle in obstacle.Refinements().SelectMany (x => x.Subobstacles())) {
                 RecursiveIntegration (obstructedGoal, subobstacle);
             }
         }
@@ -27,40 +27,40 @@ namespace KAOSTools.MetaModel
             if (resolution.ResolutionPattern == ResolutionPattern.GoalSubstitution) {
                 obstructedGoal.Exceptions.Add (new GoalException () {
                     ResolvedObstacle = obstacle,
-                    ResolvingGoal = resolution.ResolvingGoal,
+                    ResolvingGoal = resolution.ResolvingGoal(),
                     Implicit = true
                 });
 
             } else if (resolution.ResolutionPattern == ResolutionPattern.ObstaclePrevention) {
                 obstructedGoal.Assumptions.Add (new GoalAssumption () {
-                    Assumed = resolution.ResolvingGoal,
+                    Assumed = resolution.ResolvingGoal(),
                     Implicit = true
                 });
 
             } else if (resolution.ResolutionPattern == ResolutionPattern.ObstacleReduction) {
                 obstructedGoal.Assumptions.Add (new GoalAssumption () {
-                    Assumed = resolution.ResolvingGoal,
+                    Assumed = resolution.ResolvingGoal(),
                     Implicit = true
                 });
 
             } else if (resolution.ResolutionPattern == ResolutionPattern.GoalRestoration) {
                 obstructedGoal.Exceptions.Add (new GoalException () {
                     ResolvedObstacle = obstacle,
-                    ResolvingGoal = resolution.ResolvingGoal,
+                    ResolvingGoal = resolution.ResolvingGoal(),
                     Implicit = true
                 });
 
             } else if (resolution.ResolutionPattern == ResolutionPattern.GoalWeakening) {
                 obstructedGoal.Exceptions.Add (new GoalException () {
                     ResolvedObstacle = obstacle,
-                    ResolvingGoal = resolution.ResolvingGoal,
+                    ResolvingGoal = resolution.ResolvingGoal(),
                     Implicit = true
                 });
 
             } else if (resolution.ResolutionPattern == ResolutionPattern.ObstacleStrongMitigation) {
                 obstructedGoal.Exceptions.Add (new GoalException () {
                     ResolvedObstacle = obstacle,
-                    ResolvingGoal = resolution.ResolvingGoal,
+                    ResolvingGoal = resolution.ResolvingGoal(),
                     Implicit = true
                 });
 
@@ -69,11 +69,11 @@ namespace KAOSTools.MetaModel
 
                 anchor.Exceptions.Add (new GoalException () {
                     ResolvedObstacle = obstacle,
-                    ResolvingGoal = resolution.ResolvingGoal,
+                    ResolvingGoal = resolution.ResolvingGoal(),
                     Implicit = true
                 });
 
-                foreach (var subgoal in anchor.Refinements().SelectMany(x => x.Subgoals)) {
+                foreach (var subgoal in anchor.Refinements().SelectMany(x => x.SubGoals())) {
                     var assumption = new ObstacleNegativeAssumption {
                         Assumed = obstacle,
                         Implicit = true
@@ -86,12 +86,12 @@ namespace KAOSTools.MetaModel
         static void Propagate (Assumption assumption, Goal goal) {
             goal.Assumptions.Add (assumption);
 
-            foreach (var children in goal.Refinements().SelectMany (x => x.Subgoals)) {
+            foreach (var children in goal.Refinements().SelectMany (x => x.SubGoals())) {
                 Propagate (assumption, children);
             }
 
             foreach (var obstacle in goal.Obstructions()) {
-                Propagate (assumption, obstacle.Obstacle);
+                Propagate (assumption, obstacle.Obstacle());
             }
         }
 
@@ -102,12 +102,12 @@ namespace KAOSTools.MetaModel
                 return;
             }
 
-            foreach (var children in obstacle.Refinements().SelectMany (x => x.Subobstacles)) {
+            foreach (var children in obstacle.Refinements().SelectMany (x => x.Subobstacles())) {
                 Propagate (assumption, children);
             }
 
             foreach (var resolution in obstacle.Resolutions()) {
-                Propagate (assumption, resolution.ResolvingGoal);
+                Propagate (assumption, resolution.ResolvingGoal());
             }
         }
     }

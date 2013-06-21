@@ -51,6 +51,8 @@ namespace KAOSTools.MetaModel
 
     #region Goal Model
 
+    #region Meta entities
+
     public class Goal : KAOSMetaModelElement
     {
         public string Name { get; set; }
@@ -117,7 +119,13 @@ namespace KAOSTools.MetaModel
 
         public override KAOSMetaModelElement Copy ()
         {
-            throw new NotImplementedException ();
+            return new AntiGoal (null) {
+                Identifier = Identifier,
+                Implicit = Implicit,
+                Name = Name,
+                Definition = Definition,
+                FormalSpec = FormalSpec
+            };
         }
     }
 
@@ -148,7 +156,16 @@ namespace KAOSTools.MetaModel
 
         public override KAOSMetaModelElement Copy ()
         {
-            throw new NotImplementedException ();
+            return new Obstacle (null) {
+                Identifier = Identifier,
+                Implicit = Implicit,
+                Name = Name,
+                Definition = Definition,
+                FormalSpec = FormalSpec,
+                CPS = CPS,
+                EPS = EPS,
+                Assumptions = new HashSet<Assumption> (Assumptions)
+            };
         }
     }
 
@@ -175,7 +192,14 @@ namespace KAOSTools.MetaModel
 
         public override KAOSMetaModelElement Copy ()
         {
-            throw new NotImplementedException ();
+            return new DomainHypothesis (null) {
+                Identifier = Identifier,
+                Implicit = Implicit,
+                Name = Name,
+                Definition = Definition,
+                FormalSpec = FormalSpec,
+                EPS = EPS
+            };
         }
     }
 
@@ -199,7 +223,14 @@ namespace KAOSTools.MetaModel
 
         public override KAOSMetaModelElement Copy ()
         {
-            throw new NotImplementedException ();
+            return new DomainProperty (null) {
+                Identifier = Identifier,
+                Implicit = Implicit,
+                Name = Name,
+                Definition = Definition,
+                FormalSpec = FormalSpec,
+                EPS = EPS
+            };
         }
     }
 
@@ -242,6 +273,9 @@ namespace KAOSTools.MetaModel
         Malicious
     }
 
+    #endregion
+
+    #region Assignements
 
     public abstract class AgentAssignment : KAOSMetaModelElement
     {
@@ -272,14 +306,12 @@ namespace KAOSTools.MetaModel
 
         public override KAOSMetaModelElement Copy ()
         {
-            var aa = new GoalAgentAssignment (null) {
+            return new GoalAgentAssignment (null) {
                 Identifier = Identifier,
                 Implicit = Implicit,
                 GoalIdentifier = GoalIdentifier,
                 AgentIdentifiers = new HashSet<string> (AgentIdentifiers)
             };
-
-            return aa;
         }
     }
 
@@ -289,7 +321,12 @@ namespace KAOSTools.MetaModel
 
         public override KAOSMetaModelElement Copy ()
         {
-            throw new NotImplementedException ();
+            return new ObstacleAgentAssignment (null) {
+                Identifier = Identifier,
+                Implicit = Implicit,
+                ObstacleIdentifier = ObstacleIdentifier,
+                AgentIdentifiers = new HashSet<string> (AgentIdentifiers)
+            };
         }
     }
 
@@ -299,25 +336,34 @@ namespace KAOSTools.MetaModel
 
         public override KAOSMetaModelElement Copy ()
         {
-            throw new NotImplementedException ();
+            return new AntiGoalAgentAssignment (null) {
+                Identifier = Identifier,
+                Implicit = Implicit,
+                AntiGoalIdentifier = AntiGoalIdentifier,
+                AgentIdentifiers = new HashSet<string> (AgentIdentifiers)
+            };
         }
     }
 
+    #endregion
+
+    #region Refinements
+
     public class GoalRefinement : KAOSMetaModelElement
     {
-        public Goal ParentGoal { get; set; }
+        public string ParentGoalIdentifier { get; set; }
 
-        public AlternativeSystem SystemReference { get; set; }
+        public string SystemReferenceIdentifier { get; set; }
 
-        public IList<Goal> Subgoals { get; set; }
-
-        public IList<DomainProperty> DomainProperties { get; set; }
-
-        public IList<DomainHypothesis> DomainHypotheses { get; set; }
+        public ISet<string> SubGoalIdentifiers { get; set; }
+        public ISet<string> DomainPropertyIdentifiers { get; set; }
+        public ISet<string> DomainHypothesisIdentifiers { get; set; }
 
         public bool IsEmpty {
             get {
-                return Subgoals.Count + DomainProperties.Count + DomainHypotheses.Count == 0;
+                return SubGoalIdentifiers.Count 
+                    + DomainPropertyIdentifiers.Count 
+                    + DomainHypothesisIdentifiers.Count == 0;
             }
         }
 
@@ -326,143 +372,259 @@ namespace KAOSTools.MetaModel
 
         public GoalRefinement (KAOSModel model) : base (model)
         {
-            SystemReference = null;
-            Subgoals = new List<Goal> ();
-            DomainProperties = new List<DomainProperty> ();
-            DomainHypotheses = new List<DomainHypothesis> ();
+            SubGoalIdentifiers = new HashSet<string> ();
+            DomainPropertyIdentifiers = new HashSet<string> ();
+            DomainHypothesisIdentifiers = new HashSet<string> ();
+
             Parameters = new List<dynamic> ();
         }
 
         public GoalRefinement (KAOSModel model, Goal goal) : this (model)
         {
-            Subgoals.Add (goal);
+            SubGoalIdentifiers.Add (goal.Identifier);
         }
 
         public GoalRefinement (KAOSModel model, params Goal[] goals) : this (model)
         {
             foreach (var goal in goals)
-                Subgoals.Add (goal);
+                SubGoalIdentifiers.Add (goal.Identifier);
+        }
+
+        public void SetParentGoal (Goal element)
+        {
+            this.ParentGoalIdentifier = element.Identifier;
+        }
+
+        public void SetSystemReference (AlternativeSystem system)
+        {
+            this.SystemReferenceIdentifier = system.Identifier;
+        }
+
+        public void Add (Goal goal)
+        {
+            this.SubGoalIdentifiers.Add (goal.Identifier);
+        }
+        
+        public void Add (DomainProperty domProp)
+        {
+            this.DomainPropertyIdentifiers.Add (domProp.Identifier);
+        }
+        
+        public void Add (DomainHypothesis domHyp)
+        {
+            this.DomainHypothesisIdentifiers.Add (domHyp.Identifier);
         }
 
         public override KAOSMetaModelElement Copy ()
         {
-            throw new NotImplementedException ();
+            return new GoalRefinement (null) {
+                Identifier = Identifier,
+                Implicit = Implicit,
+                ParentGoalIdentifier = ParentGoalIdentifier,
+                SystemReferenceIdentifier = SystemReferenceIdentifier,
+                SubGoalIdentifiers = new HashSet<string> (SubGoalIdentifiers),
+                DomainPropertyIdentifiers = new HashSet<string> (DomainPropertyIdentifiers),
+                DomainHypothesisIdentifiers = new HashSet<string> (DomainHypothesisIdentifiers),
+                RefinementPattern = RefinementPattern,
+                Parameters = new List<dynamic> (Parameters)
+            };
         }
     }
 
-
     public class AntiGoalRefinement : KAOSMetaModelElement
     {
-        public AntiGoal ParentAntiGoal { get; set; }
-        public AlternativeSystem SystemReference { get; set; }
-        public IList<AntiGoal> SubAntiGoals { get; set; }
-        public IList<Obstacle> Obstacles { get; set; }
+        public string ParentAntiGoalIdentifier { get; set; }
+        public string SystemReferenceIdentifier { get; set; }
 
-        public IList<DomainProperty> DomainProperties { get; set; }
-        public IList<DomainHypothesis> DomainHypotheses { get; set; }
+        public ISet<string> SubAntiGoalIdentifiers { get; set; }
+        public ISet<string> ObstacleIdentifiers { get; set; }
+        public ISet<string> DomainPropertyIdentifiers { get; set; }
+        public ISet<string> DomainHypothesisIdentifiers { get; set; }
 
         public bool IsEmpty {
             get {
-                return SubAntiGoals.Count + Obstacles.Count 
-                    + DomainProperties.Count + DomainHypotheses.Count == 0;
+                return SubAntiGoalIdentifiers.Count + ObstacleIdentifiers.Count 
+                    + DomainPropertyIdentifiers.Count + DomainHypothesisIdentifiers.Count == 0;
             }
         }
 
         public AntiGoalRefinement (KAOSModel model) : base (model)
         {
-            SubAntiGoals = new List<AntiGoal> ();
-            Obstacles = new List<Obstacle> ();
-            DomainProperties = new List<DomainProperty> ();
-            DomainHypotheses = new List<DomainHypothesis> ();
+            SubAntiGoalIdentifiers = new HashSet<string> ();
+            ObstacleIdentifiers = new HashSet<string> ();
+            DomainPropertyIdentifiers = new HashSet<string> ();
+            DomainHypothesisIdentifiers = new HashSet<string> ();
+        }
+
+        public void SetParentAntiGoal (AntiGoal element)
+        {
+            this.ParentAntiGoalIdentifier = element.Identifier;
+        }
+
+        public void SetSystemReference (AlternativeSystem system)
+        {
+            this.SystemReferenceIdentifier = system.Identifier;
+        }
+
+        public void Add (Obstacle obstacle)
+        {
+            this.ObstacleIdentifiers.Add (obstacle.Identifier);
+        }
+
+        public void Add (AntiGoal antiGoal)
+        {
+            this.SubAntiGoalIdentifiers.Add (antiGoal.Identifier);
+        }
+
+        public void Add (DomainProperty domProp)
+        {
+            this.DomainPropertyIdentifiers.Add (domProp.Identifier);
+        }
+
+        public void Add (DomainHypothesis domHyp)
+        {
+            this.DomainHypothesisIdentifiers.Add (domHyp.Identifier);
         }
 
         public override KAOSMetaModelElement Copy ()
         {
-            throw new NotImplementedException ();
+            return new AntiGoalRefinement (null) {
+                Identifier = Identifier,
+                Implicit = Implicit,
+                ParentAntiGoalIdentifier = ParentAntiGoalIdentifier,
+                SystemReferenceIdentifier = SystemReferenceIdentifier,
+                SubAntiGoalIdentifiers = new HashSet<string> (SubAntiGoalIdentifiers),
+                ObstacleIdentifiers = new HashSet<string> (ObstacleIdentifiers),
+                DomainPropertyIdentifiers = new HashSet<string> (DomainPropertyIdentifiers),
+                DomainHypothesisIdentifiers = new HashSet<string> (DomainHypothesisIdentifiers)
+            };
         }
     }
 
     public class ObstacleRefinement : KAOSMetaModelElement
     {
-        public Obstacle ParentObstacle { get; set; }
-        public IList<Obstacle> Subobstacles { get; set; }
+        public string ParentObstacleIdentifier { get; set; }
 
-        public IList<DomainProperty> DomainProperties { get; set; }
-
-        public IList<DomainHypothesis> DomainHypotheses { get; set; }
+        public ISet<string> SubobstacleIdentifiers { get; set; }
+        public ISet<string> DomainPropertyIdentifiers { get; set; }
+        public ISet<string> DomainHypothesisIdentifiers { get; set; }
 
         public bool IsEmpty {
             get {
-                return Subobstacles.Count + DomainProperties.Count + DomainHypotheses.Count == 0;
+                return SubobstacleIdentifiers.Count + DomainPropertyIdentifiers.Count + DomainHypothesisIdentifiers.Count == 0;
             }
         }
         public ObstacleRefinement (KAOSModel model) : base (model)
         {
-            Subobstacles = new List<Obstacle> ();
-            DomainProperties = new List<DomainProperty> ();
-            DomainHypotheses = new List<DomainHypothesis> ();
+            SubobstacleIdentifiers = new HashSet<string> ();
+            DomainPropertyIdentifiers = new HashSet<string> ();
+            DomainHypothesisIdentifiers = new HashSet<string> ();
         }
 
         public ObstacleRefinement (KAOSModel model, Obstacle obstacle) : this (model)
         {
-            Subobstacles.Add (obstacle);
+            SubobstacleIdentifiers.Add (obstacle.Identifier);
         }
 
         public ObstacleRefinement (KAOSModel model, params Obstacle[] obstacles) : this (model)
         {
             foreach (var obstacle in obstacles)
-                Subobstacles.Add (obstacle);
+                SubobstacleIdentifiers.Add (obstacle.Identifier);
+        }
+
+        public void SetParentObstacle (Obstacle element)
+        {
+            this.ParentObstacleIdentifier = element.Identifier;
+        }
+
+        public void Add (Obstacle obstacle)
+        {
+            this.SubobstacleIdentifiers.Add (obstacle.Identifier);
+        }
+
+        public void Add (DomainProperty domProp)
+        {
+            this.DomainPropertyIdentifiers.Add (domProp.Identifier);
+        }
+
+        public void Add (DomainHypothesis domHyp)
+        {
+            this.DomainHypothesisIdentifiers.Add (domHyp.Identifier);
         }
 
         public override KAOSMetaModelElement Copy ()
         {
-            throw new NotImplementedException ();
+            return new ObstacleRefinement (null) {
+                Identifier = Identifier,
+                Implicit = Implicit,
+                ParentObstacleIdentifier = ParentObstacleIdentifier,
+                SubobstacleIdentifiers = new HashSet<string> (SubobstacleIdentifiers),
+                DomainPropertyIdentifiers = new HashSet<string> (DomainPropertyIdentifiers),
+                DomainHypothesisIdentifiers = new HashSet<string> (DomainHypothesisIdentifiers)
+            };
         }
     }
 
-    public class GoalException {
-        public bool Implicit { get; set; }
-        public Obstacle ResolvedObstacle { get; set; }
-        public Goal ResolvingGoal { get; set; }
+    #endregion
 
-    }
-
-    public abstract class Assumption {
-        public bool Implicit { get; set; }
-        public dynamic Assumed { get; set; }
-
-    }
-
-    public class GoalAssumption : Assumption {}
-    public class DomainHypothesisAssumption : Assumption {}
-    public class ObstacleNegativeAssumption : Assumption {}
+    #region Obstructions and resolutions
 
     public class Obstruction : KAOSMetaModelElement {
-        public Goal ObstructedGoal { get; set; }
-        public Obstacle Obstacle { get; set; }
-        public Obstruction (KAOSModel model) : base (model)
-        {}
+        public string ObstructedGoalIdentifier { get; set; }
+        public string ObstacleIdentifier { get; set; }
+
+        public Obstruction (KAOSModel model) : base (model) {}
+
+        public void SetObstructedGoal (Goal goal)
+        {
+            this.ObstructedGoalIdentifier = goal.Identifier;
+        }
+
+        public void SetObstacle (Obstacle obstacle)
+        {
+            this.ObstacleIdentifier = obstacle.Identifier;
+        }
 
         public override KAOSMetaModelElement Copy ()
         {
-            throw new NotImplementedException ();
+            return new Obstruction (null) {
+                ObstructedGoalIdentifier = ObstructedGoalIdentifier,
+                ObstacleIdentifier = ObstacleIdentifier
+            };
         }
     }
 
     public class Resolution : KAOSMetaModelElement {
-        public Obstacle Obstacle { get; set; }
-        public Goal ResolvingGoal { get; set; }
-        public List<dynamic> Parameters { get; set; }
+        public string ObstacleIdentifier { get; set; }
+        public string ResolvingGoalIdentifier { get; set; }
+
         public ResolutionPattern ResolutionPattern { get; set; }
+        public List<dynamic> Parameters { get; set; }
+
         public Resolution (KAOSModel model) : base (model)
         {
             ResolutionPattern = ResolutionPattern.None;
             Parameters = new List<dynamic> ();
         }
 
+        public void SetResolvingGoal (Goal goal)
+        {
+            this.ResolvingGoalIdentifier = goal.Identifier;
+        }
+
+        public void SetObstacle (Obstacle obstacle)
+        {
+            this.ObstacleIdentifier = obstacle.Identifier;
+        }
+
         public override KAOSMetaModelElement Copy ()
         {
-            throw new NotImplementedException ();
+            return new Resolution (null) {
+                ResolvingGoalIdentifier = ResolvingGoalIdentifier,
+                ObstacleIdentifier = ObstacleIdentifier,
+                ResolutionPattern = ResolutionPattern,
+                Parameters = new List<dynamic> (Parameters)
+            };
         }
     }
 
@@ -486,6 +648,29 @@ namespace KAOSTools.MetaModel
         Unmonitorability, 
         Uncontrollability
     }
+
+    #endregion
+
+    #region Exceptions and assumptions
+
+    public class GoalException {
+        public bool Implicit { get; set; }
+        public Obstacle ResolvedObstacle { get; set; }
+        public Goal ResolvingGoal { get; set; }
+
+    }
+
+    public abstract class Assumption {
+        public bool Implicit { get; set; }
+        public dynamic Assumed { get; set; }
+
+    }
+
+    public class GoalAssumption : Assumption {}
+    public class DomainHypothesisAssumption : Assumption {}
+    public class ObstacleNegativeAssumption : Assumption {}
+
+    #endregion
 
     #endregion
 

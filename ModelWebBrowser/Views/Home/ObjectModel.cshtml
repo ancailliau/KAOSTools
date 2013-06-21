@@ -361,7 +361,7 @@
           <p><strong>Alternative refinement</strong> @(r.SystemReference != null ? "(" + r.SystemReference.FriendlyName + ")" : "")</p>
         }
         <ul>
-          @foreach (var g2 in r.SubAntiGoals()) {
+          @foreach (var g2 in r.SubAntiGoals()()) {
             <li><a href="#@g2.Identifier">@g2.FriendlyName</a></li>
           }
           @foreach (var g2 in r.Obstacles) {

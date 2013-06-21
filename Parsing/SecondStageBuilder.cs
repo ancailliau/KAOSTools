@@ -192,10 +192,9 @@ namespace KAOSTools.Parsing
                                                                   element.GetType().Name));
             }
 
-            var resolution = new Resolution (model) {
-                Obstacle = element,
-                ResolvingGoal = goal
-            };
+            var resolution = new Resolution (model);
+            resolution.SetObstacle (element);
+            resolution.SetResolvingGoal (goal);
 
             if (resolvedBy.Pattern != null) {
                 if (resolvedBy.Pattern.Name == "substitution")
@@ -299,21 +298,18 @@ namespace KAOSTools.Parsing
 
         public void Handle (Goal element, ParsedObstructedByAttribute obstructedBy)
         {
+            var obstruction = new Obstruction (model);
+            obstruction.SetObstructedGoal (element);
+
             if (obstructedBy.Value is IdentifierExpression | obstructedBy.Value is NameExpression) {
                 Obstacle obstacle;
                 if (!Get (obstructedBy.Value, out obstacle)) {
                     obstacle = Create<Obstacle> (obstructedBy.Value);
                 }
-                model.Add (new Obstruction (model) { 
-                    ObstructedGoal = element, 
-                    Obstacle = obstacle
-                });
-                    
+                obstruction.SetObstacle (obstacle);
+
             } else if (obstructedBy.Value is ParsedObstacle) {
-                model.Add (new Obstruction (model) {
-                    ObstructedGoal = element,
-                    Obstacle = fsb.BuildElementWithKeys (obstructedBy.Value)
-                });
+                obstruction.SetObstacle (fsb.BuildElementWithKeys (obstructedBy.Value));
                 BuildElement (obstructedBy.Value);
 
             } else {
@@ -325,6 +321,8 @@ namespace KAOSTools.Parsing
                     + obstructedBy.GetType().Name + "' on '" 
                     + element.GetType().Name + "'");
             }
+
+            model.Add (obstruction);
         }
 
         public void Handle (AlternativeSystem element, ParsedAlternativeAttribute alternativeAttribute)
@@ -473,27 +471,27 @@ namespace KAOSTools.Parsing
         public void Handle (Goal element, ParsedRefinedByAttribute refinedBy)
         {
             var refinement = new GoalRefinement (model);
-            refinement.ParentGoal = element;
+            refinement.SetParentGoal(element);
 
             if (refinedBy.SystemIdentifier != null) {
                 AlternativeSystem alternative;
                 if (!Get<AlternativeSystem> (refinedBy.SystemIdentifier, out alternative)) {
                     alternative = Create<AlternativeSystem> (refinedBy.SystemIdentifier);
                 }
-                refinement.SystemReference = alternative;
+                refinement.SetSystemReference(alternative);
             }
 
             foreach (var child in refinedBy.Values) {
                 if (child is IdentifierExpression | child is NameExpression) {
                     DomainProperty domprop;
                     if (Get (child, out domprop)) {
-                        refinement.DomainProperties.Add (domprop);
+                        refinement.Add (domprop);
                         continue;
                     }
 
                     DomainHypothesis domhyp;
                     if (Get (child, out domhyp)) {
-                        refinement.DomainHypotheses.Add (domhyp);
+                        refinement.Add (domhyp);
                         continue;
                     }
 
@@ -501,18 +499,18 @@ namespace KAOSTools.Parsing
                     if (!Get (child, out goal)) {
                         goal = Create<Goal> (child);
                     }
-                    refinement.Subgoals.Add (goal);
+                    refinement.Add (goal);
 
                 } else if (child is ParsedGoal) {
-                    refinement.Subgoals.Add (fsb.BuildElementWithKeys (child));
+                    refinement.Add (fsb.BuildElementWithKeys (child));
                     BuildElement (child);
                     
                 } else if (child is ParsedDomainProperty) {
-                    refinement.DomainProperties.Add (fsb.BuildElementWithKeys (child));
+                    refinement.Add (fsb.BuildElementWithKeys (child));
                     BuildElement (child);
                     
                 } else if (child is ParsedDomainHypothesis) {
-                    refinement.DomainHypotheses.Add (fsb.BuildElementWithKeys (child));
+                    refinement.Add (fsb.BuildElementWithKeys (child));
                     BuildElement (child);
                 
                 } else {
@@ -565,33 +563,33 @@ namespace KAOSTools.Parsing
         public void Handle (AntiGoal element, ParsedRefinedByAntiGoalAttribute refinedBy)
         {
             var refinement = new AntiGoalRefinement (model);
-            refinement.ParentAntiGoal = element;
+            refinement.SetParentAntiGoal (element);
 
             if (refinedBy.SystemIdentifier != null) {
                 AlternativeSystem alternative;
                 if (!Get<AlternativeSystem> (refinedBy.SystemIdentifier, out alternative)) {
                     alternative = Create<AlternativeSystem> (refinedBy.SystemIdentifier);
                 }
-                refinement.SystemReference = alternative;
+                refinement.SetSystemReference (alternative);
             }
 
             foreach (var child in refinedBy.Values) {
                 if (child is IdentifierExpression | child is NameExpression) {
                     DomainProperty domprop;
                     if (Get (child, out domprop)) {
-                        refinement.DomainProperties.Add (domprop);
+                        refinement.Add (domprop);
                         continue;
                     }
 
                     DomainHypothesis domhyp;
                     if (Get (child, out domhyp)) {
-                        refinement.DomainHypotheses.Add (domhyp);
+                        refinement.Add (domhyp);
                         continue;
                     }
                     
                     Obstacle obstacle;
                     if (Get (child, out obstacle)) {
-                        refinement.Obstacles.Add (obstacle);
+                        refinement.Add (obstacle);
                         continue;
                     }
 
@@ -599,22 +597,22 @@ namespace KAOSTools.Parsing
                     if (!Get (child, out antigoal)) {
                         antigoal = Create<AntiGoal> (child);
                     }
-                    refinement.SubAntiGoals.Add (antigoal);
+                    refinement.Add (antigoal);
 
                 } else if (child is ParsedAntiGoal) {
-                    refinement.SubAntiGoals.Add (fsb.BuildElementWithKeys (child));
+                    refinement.Add (fsb.BuildElementWithKeys (child));
                     BuildElement (child);
 
                 } else if (child is ParsedObstacle) {
-                    refinement.Obstacles.Add (fsb.BuildElementWithKeys (child));
+                    refinement.Add (fsb.BuildElementWithKeys (child));
                     BuildElement (child);
 
                 } else if (child is ParsedDomainProperty) {
-                    refinement.DomainProperties.Add (fsb.BuildElementWithKeys (child));
+                    refinement.Add (fsb.BuildElementWithKeys (child));
                     BuildElement (child);
 
                 } else if (child is ParsedDomainHypothesis) {
-                    refinement.DomainHypotheses.Add (fsb.BuildElementWithKeys (child));
+                    refinement.Add (fsb.BuildElementWithKeys (child));
                     BuildElement (child);
 
                 } else {
@@ -635,19 +633,19 @@ namespace KAOSTools.Parsing
         public void Handle (Obstacle element, ParsedRefinedByAttribute refinedBy)
         {
             var refinement = new ObstacleRefinement (model);
-            refinement.ParentObstacle = element;
+            refinement.SetParentObstacle(element);
             
             foreach (var child in refinedBy.Values) {
                 if (child is IdentifierExpression | child is NameExpression) {
                     DomainProperty domprop;
                     if (Get (child, out domprop)) {
-                        refinement.DomainProperties.Add (domprop);
+                        refinement.Add (domprop);
                         continue;
                     }
                     
                     DomainHypothesis domhyp;
                     if (Get (child, out domhyp)) {
-                        refinement.DomainHypotheses.Add (domhyp);
+                        refinement.Add (domhyp);
                         continue;
                     }
                     
@@ -655,18 +653,18 @@ namespace KAOSTools.Parsing
                     if (!Get (child, out obstacle)) {
                         obstacle = Create<Obstacle> (child);
                     }
-                    refinement.Subobstacles.Add (obstacle);
+                    refinement.Add (obstacle);
                     
                 } else if (child is ParsedObstacle) {
-                    refinement.Subobstacles.Add (fsb.BuildElementWithKeys (child));
+                    refinement.Add (fsb.BuildElementWithKeys (child));
                     BuildElement (child);
                     
                 } else if (child is ParsedDomainProperty) {
-                    refinement.DomainProperties.Add (fsb.BuildElementWithKeys (child));
+                    refinement.Add (fsb.BuildElementWithKeys (child));
                     BuildElement (child);
                     
                 } else if (child is ParsedDomainHypothesis) {
-                    refinement.DomainHypotheses.Add (fsb.BuildElementWithKeys (child));
+                    refinement.Add (fsb.BuildElementWithKeys (child));
                     BuildElement (child);
                     
                 } else {

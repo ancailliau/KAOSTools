@@ -470,7 +470,7 @@ namespace KAOSTools.OmnigraffleExport
                 // Ad the arrow
                 canvas.GraphicsList.Add (topArrow);
 
-                foreach (var child in refinement.SubAntiGoals().Reverse ()) {
+                foreach (var child in refinement.SubAntiGoals()().Reverse ()) {
                     RecursiveExportAntiGoal (canvas, child);
                     var childGraphic = mapping[canvas][child.Identifier];
                     AddLine (canvas.GraphicsList, childGraphic, circle);

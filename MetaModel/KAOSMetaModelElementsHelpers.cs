@@ -10,13 +10,13 @@ namespace KAOSTools.MetaModel
 
         public static IEnumerable<GoalRefinement> Refinements (this Goal goal) {
             return from refinement in goal.model.GoalRefinements()
-                where refinement.ParentGoal == goal
+                where refinement.ParentGoalIdentifier == goal.Identifier
                     select refinement;
         }
 
         public static IEnumerable<Obstruction> Obstructions (this Goal goal) {
             return from obstruction in goal.model.Obstructions()
-                where obstruction.ObstructedGoal == goal
+                where obstruction.ObstructedGoalIdentifier == goal.Identifier
                     select obstruction;
         }
 
@@ -28,17 +28,17 @@ namespace KAOSTools.MetaModel
 
         public static IEnumerable<GoalRefinement> ParentRefinements (this Goal goal) {
             return from refinement in goal.model.GoalRefinements()
-                where refinement.Subgoals.Contains(goal)
+                where refinement.SubGoalIdentifiers.Contains(goal.Identifier)
                     select refinement;
         }
 
         #endregion
 
-        #region AntiGoals()
+        #region Anti-goals
 
         public static IEnumerable<AntiGoalRefinement> Refinements (this AntiGoal antiGoal) {
             return from refinement in antiGoal.model.AntiGoalRefinements()
-                where refinement.ParentAntiGoal == antiGoal
+                where refinement.ParentAntiGoalIdentifier == antiGoal.Identifier
                     select refinement;
         }
 
@@ -50,7 +50,7 @@ namespace KAOSTools.MetaModel
 
         public static IEnumerable<AntiGoalRefinement> ParentRefinements (this AntiGoal antiGoal) {
             return from refinement in antiGoal.model.AntiGoalRefinements()
-                where refinement.SubAntiGoals.Contains(antiGoal)
+                where refinement.SubAntiGoalIdentifiers.Contains(antiGoal.Identifier)
                     select refinement;
         }
 
@@ -60,19 +60,19 @@ namespace KAOSTools.MetaModel
 
         public static IEnumerable<ObstacleRefinement> Refinements (this Obstacle obstacle) {
             return from refinement in obstacle.model.ObstacleRefinements()
-                where refinement.ParentObstacle == obstacle
+                where refinement.ParentObstacleIdentifier == obstacle.Identifier
                     select refinement;
         }
         
         public static IEnumerable<ObstacleRefinement> ParentRefinements (this Obstacle obstacle) {
             return from refinement in obstacle.model.ObstacleRefinements()
-                where refinement.Subobstacles.Contains(obstacle)
+                where refinement.SubobstacleIdentifiers.Contains(obstacle.Identifier)
                     select refinement;
         }
 
         public static IEnumerable<Resolution> Resolutions (this Obstacle obstacle) {
             return from resolution in obstacle.model.Resolutions()
-                where resolution.Obstacle == obstacle
+                where resolution.ObstacleIdentifier == obstacle.Identifier
                     select resolution;
         }
 
@@ -88,13 +88,13 @@ namespace KAOSTools.MetaModel
 
         public static IEnumerable<ObstacleRefinement> ObstacleRefinements (this DomainProperty domProp) {
             return from refinement in domProp.model.ObstacleRefinements()
-                where refinement.DomainProperties.Contains (domProp)
+                where refinement.DomainPropertyIdentifiers.Contains (domProp.Identifier)
                     select refinement;
         }
 
         public static IEnumerable<GoalRefinement> GoalRefinements (this DomainProperty domProp) {
             return from refinement in domProp.model.GoalRefinements()
-                where refinement.DomainProperties.Contains (domProp)
+                where refinement.DomainPropertyIdentifiers.Contains (domProp.Identifier)
                     select refinement;
         }
 
@@ -104,13 +104,13 @@ namespace KAOSTools.MetaModel
 
         public static IEnumerable<ObstacleRefinement> ObstacleRefinements (this DomainHypothesis domHyp) {
             return from refinement in domHyp.model.ObstacleRefinements()
-                where refinement.DomainHypotheses.Contains (domHyp)
+                where refinement.DomainHypothesisIdentifiers.Contains (domHyp.Identifier)
                     select refinement;
         }
 
         public static IEnumerable<GoalRefinement> GoalRefinements (this DomainHypothesis domHyp) {
             return from refinement in domHyp.model.GoalRefinements()
-                where refinement.DomainHypotheses.Contains (domHyp)
+                where refinement.DomainHypothesisIdentifiers.Contains (domHyp.Identifier)
                     select refinement;
         }
 
@@ -155,6 +155,112 @@ namespace KAOSTools.MetaModel
 
         public static AntiGoal AntiGoal (this AntiGoalAgentAssignment antiGoalAA) {
             return antiGoalAA.model.AntiGoals().SingleOrDefault(y => y.Identifier == antiGoalAA.AntiGoalIdentifier);
+        }
+
+        #endregion
+
+        #region Goal refinement
+
+        public static IEnumerable<Goal> SubGoals (this GoalRefinement refinement) {
+            return refinement.SubGoalIdentifiers
+                .Select(x => refinement.model.Goals().SingleOrDefault(y => y.Identifier == x));
+        }
+        
+        public static IEnumerable<DomainProperty> DomainProperties (this GoalRefinement refinement) {
+            return refinement.DomainPropertyIdentifiers
+                .Select(x => refinement.model.DomainProperties().SingleOrDefault(y => y.Identifier == x));
+        }
+
+        public static IEnumerable<DomainHypothesis> DomainHypothesis (this GoalRefinement refinement) {
+            return refinement.DomainHypothesisIdentifiers
+                .Select(x => refinement.model.DomainHypotheses().SingleOrDefault(y => y.Identifier == x));
+        }
+
+        public static Goal ParentGoal (this GoalRefinement refinement) {
+            return refinement.model.Goals().SingleOrDefault(y => y.Identifier == refinement.ParentGoalIdentifier);
+        }
+        
+        public static AlternativeSystem SystemReference (this GoalRefinement refinement) {
+            return refinement.model.AlternativeSystems().SingleOrDefault(y => y.Identifier == refinement.SystemReferenceIdentifier);
+        }
+
+        #endregion
+
+        #region Anti Goal refinement
+
+        public static IEnumerable<AntiGoal> SubAntiGoals (this AntiGoalRefinement refinement) {
+            return refinement.SubAntiGoalIdentifiers
+                .Select(x => refinement.model.AntiGoals().SingleOrDefault(y => y.Identifier == x));
+        }
+
+        public static IEnumerable<DomainProperty> DomainProperties (this AntiGoalRefinement refinement) {
+            return refinement.DomainPropertyIdentifiers
+                .Select(x => refinement.model.DomainProperties().SingleOrDefault(y => y.Identifier == x));
+        }
+
+        public static IEnumerable<DomainHypothesis> DomainHypothesis (this AntiGoalRefinement refinement) {
+            return refinement.DomainHypothesisIdentifiers
+                .Select(x => refinement.model.DomainHypotheses().SingleOrDefault(y => y.Identifier == x));
+        }
+
+        public static IEnumerable<Obstacle> Obstacles (this AntiGoalRefinement refinement) {
+            return refinement.ObstacleIdentifiers
+                .Select(x => refinement.model.Obstacles().SingleOrDefault(y => y.Identifier == x));
+        }
+
+        public static AntiGoal ParentAntiGoal (this AntiGoalRefinement refinement) {
+            return refinement.model.AntiGoals().SingleOrDefault(y => y.Identifier == refinement.ParentAntiGoalIdentifier);
+        }
+
+        public static AlternativeSystem SystemReference (this AntiGoalRefinement refinement) {
+            return refinement.model.AlternativeSystems().SingleOrDefault(y => y.Identifier == refinement.SystemReferenceIdentifier);
+        }
+
+        #endregion
+                
+        #region Obstacle refinement
+
+        public static IEnumerable<Obstacle> Subobstacles (this ObstacleRefinement refinement) {
+            return refinement.SubobstacleIdentifiers
+                .Select(x => refinement.model.Obstacles().SingleOrDefault(y => y.Identifier == x));
+        }
+
+        public static IEnumerable<DomainProperty> DomainProperties (this ObstacleRefinement refinement) {
+            return refinement.DomainPropertyIdentifiers
+                .Select(x => refinement.model.DomainProperties().SingleOrDefault(y => y.Identifier == x));
+        }
+
+        public static IEnumerable<DomainHypothesis> DomainHypothesis (this ObstacleRefinement refinement) {
+            return refinement.DomainHypothesisIdentifiers
+                .Select(x => refinement.model.DomainHypotheses().SingleOrDefault(y => y.Identifier == x));
+        }
+
+        public static Obstacle ParentObstacle (this ObstacleRefinement refinement) {
+            return refinement.model.Obstacles().SingleOrDefault(y => y.Identifier == refinement.ParentObstacleIdentifier);
+        }
+
+        #endregion
+    
+        #region Resolution
+                
+        public static Goal ResolvingGoal (this Resolution resolution) {
+            return resolution.model.Goals().SingleOrDefault(y => y.Identifier == resolution.ResolvingGoalIdentifier);
+        }
+        
+        public static Obstacle Obstacle (this Resolution resolution) {
+            return resolution.model.Obstacles().SingleOrDefault(y => y.Identifier == resolution.ObstacleIdentifier);
+        }
+
+        #endregion
+
+        #region Obstruction
+        
+        public static Goal ObstructedGoal (this Obstruction obstruction) {
+            return obstruction.model.Goals().SingleOrDefault(y => y.Identifier == obstruction.ObstructedGoalIdentifier);
+        }
+
+        public static Obstacle Obstacle (this Obstruction obstruction) {
+            return obstruction.model.Obstacles().SingleOrDefault(y => y.Identifier == obstruction.ObstacleIdentifier);
         }
 
         #endregion

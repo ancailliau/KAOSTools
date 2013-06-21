@@ -25,7 +25,7 @@ namespace KAOSTools.MetaModel
             g.InSystems = Simplify (g.InSystems);
             foreach (var refinement in g.Refinements()) {
                 refinement.InSystems = Simplify(refinement.InSystems);
-                foreach (var child in refinement.Subgoals) {
+                foreach (var child in refinement.SubGoals()) {
                     Simplify (child);
                 }
             }
@@ -112,15 +112,15 @@ namespace KAOSTools.MetaModel
             }
 
             foreach (var obstacle in goal.Obstructions()) {
-                DownPropagate (goal, obstacle.Obstacle);
+                DownPropagate (goal, obstacle.Obstacle());
             }
         }
 
         private void DownPropagate (Goal parent, GoalRefinement refinement)
         {
             IList<AlternativeSystem> alternatives_to_add;
-            if (refinement.SystemReference != null) {
-                var alternatives_to_filter_on = GetAllSubsystems(new HashSet<AlternativeSystem> (), refinement.SystemReference);
+            if (refinement.SystemReference() != null) {
+                var alternatives_to_filter_on = GetAllSubsystems(new HashSet<AlternativeSystem> (), refinement.SystemReference());
                 alternatives_to_add = new List<AlternativeSystem> (parent.InSystems.Where(r => alternatives_to_filter_on.Contains(r)));
             
             } else {
@@ -134,7 +134,7 @@ namespace KAOSTools.MetaModel
                 refinement.InSystems.Add (a);
             }
 
-            foreach (var child in refinement.Subgoals) {
+            foreach (var child in refinement.SubGoals()) {
                 if (child.InSystems == null)
                     child.InSystems = new HashSet<AlternativeSystem> ();
 
@@ -182,7 +182,7 @@ namespace KAOSTools.MetaModel
             }
 
             foreach (var resolution in obstacle.Resolutions()) {
-                DownPropagate (obstacle, resolution.ResolvingGoal);
+                DownPropagate (obstacle, resolution.ResolvingGoal());
             }
         }
 
@@ -197,7 +197,7 @@ namespace KAOSTools.MetaModel
                 refinement.InSystems.Add (a);
             }
 
-            foreach (var child in refinement.Subobstacles) {
+            foreach (var child in refinement.Subobstacles()) {
                 if (child.InSystems == null)
                     child.InSystems = new HashSet<AlternativeSystem> ();
 
