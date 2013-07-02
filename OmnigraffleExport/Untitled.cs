@@ -372,18 +372,15 @@ namespace KAOSTools.OmnigraffleExport
         public void Render (GoalRefinement refinement)
         {
             var circle = GetCircle ();
-            sheet.GraphicsList.Add (circle);
-            if (!shapes.ContainsKey(refinement.ParentGoalIdentifier))
-                return;
+            Add (refinement.Identifier, circle);
 
-            var parentGraphic = shapes[refinement.ParentGoalIdentifier].First ();
-
-            var topArrow = GetFilledArrow (circle, parentGraphic);
-
-            if (refinement.SystemReferenceIdentifier != null)
-                AddText (topArrow, refinement.SystemReference().FriendlyName);
-            
-            sheet.GraphicsList.Add (topArrow);
+            if (shapes.ContainsKey(refinement.ParentGoalIdentifier)) {
+                var parentGraphic = shapes[refinement.ParentGoalIdentifier].First ();
+                var topArrow = GetFilledArrow (circle, parentGraphic);
+                if (refinement.SystemReferenceIdentifier != null)
+                    AddText (topArrow, refinement.SystemReference().FriendlyName);
+                sheet.GraphicsList.Add (topArrow);
+            }
 
             foreach (var child in refinement.SubGoalIdentifiers) {
                 if (!shapes.ContainsKey(child))
@@ -398,15 +395,15 @@ namespace KAOSTools.OmnigraffleExport
         public void Render (AntiGoalRefinement refinement)
         {
             var circle = GetCircle ();
-            sheet.GraphicsList.Add (circle);
-            if (!shapes.ContainsKey(refinement.ParentAntiGoalIdentifier))
-                return;
-
-            var parentGraphic = shapes[refinement.ParentAntiGoalIdentifier].First ();
-
-            var topArrow = GetFilledArrow (circle, parentGraphic);
-
-            sheet.GraphicsList.Add (topArrow);
+            Add (refinement.Identifier, circle);
+            
+            if (shapes.ContainsKey(refinement.ParentGoalIdentifier)) {
+                var parentGraphic = shapes[refinement.ParentGoalIdentifier].First ();
+                var topArrow = GetFilledArrow (circle, parentGraphic);
+                if (refinement.SystemReferenceIdentifier != null)
+                    AddText (topArrow, refinement.SystemReference().FriendlyName);
+                sheet.GraphicsList.Add (topArrow);
+            }
 
             foreach (var child in refinement.SubAntiGoalIdentifiers) {
                 if (!shapes.ContainsKey(child))
@@ -421,15 +418,15 @@ namespace KAOSTools.OmnigraffleExport
         public void Render (ObstacleRefinement refinement)
         {
             var circle = GetCircle ();
-            sheet.GraphicsList.Add (circle);
-            if (!shapes.ContainsKey(refinement.ParentObstacleIdentifier))
-                return;
-
-            var parentGraphic = shapes[refinement.ParentObstacleIdentifier].First ();
-
-            var topArrow = GetFilledArrow (circle, parentGraphic);
-
-            sheet.GraphicsList.Add (topArrow);
+            Add (refinement.Identifier, circle);
+            
+            if (shapes.ContainsKey(refinement.ParentGoalIdentifier)) {
+                var parentGraphic = shapes[refinement.ParentGoalIdentifier].First ();
+                var topArrow = GetFilledArrow (circle, parentGraphic);
+                if (refinement.SystemReferenceIdentifier != null)
+                    AddText (topArrow, refinement.SystemReference().FriendlyName);
+                sheet.GraphicsList.Add (topArrow);
+            }
 
             foreach (var child in refinement.SubobstacleIdentifiers) {
                 if (!shapes.ContainsKey(child))
@@ -444,15 +441,13 @@ namespace KAOSTools.OmnigraffleExport
         public void Render (GoalAgentAssignment assignment)
         {
             var circle = GetCircle ();
-            sheet.GraphicsList.Add (circle);
-            if (!shapes.ContainsKey(assignment.GoalIdentifier))
-                return;
+            Add (assignment.Identifier, circle);
 
-            var parentGraphic = shapes[assignment.GoalIdentifier].First ();
-
-            var topArrow = GetFilledArrow (circle, parentGraphic);
-
-            sheet.GraphicsList.Add (topArrow);
+            if (shapes.ContainsKey(assignment.GoalIdentifier)) {
+                var parentGraphic = shapes[assignment.GoalIdentifier].First ();
+                var topArrow = GetFilledArrow (circle, parentGraphic);
+                sheet.GraphicsList.Add (topArrow);
+            }
 
             foreach (var child in assignment.AgentIdentifiers) {
                 if (!shapes.ContainsKey(child))
@@ -467,15 +462,13 @@ namespace KAOSTools.OmnigraffleExport
         public void Render (AntiGoalAgentAssignment assignment)
         {
             var circle = GetCircle ();
-            sheet.GraphicsList.Add (circle);
-            if (!shapes.ContainsKey(assignment.AntiGoalIdentifier))
-                return;
-
-            var parentGraphic = shapes[assignment.AntiGoalIdentifier].First ();
-
-            var topArrow = GetFilledArrow (circle, parentGraphic);
-
-            sheet.GraphicsList.Add (topArrow);
+            Add (assignment.Identifier, circle);
+            
+            if (shapes.ContainsKey(assignment.GoalIdentifier)) {
+                var parentGraphic = shapes[assignment.GoalIdentifier].First ();
+                var topArrow = GetFilledArrow (circle, parentGraphic);
+                sheet.GraphicsList.Add (topArrow);
+            }
 
             foreach (var child in assignment.AgentIdentifiers) {
                 if (!shapes.ContainsKey(child))
@@ -490,15 +483,13 @@ namespace KAOSTools.OmnigraffleExport
         public void Render (ObstacleAgentAssignment assignment)
         {
             var circle = GetCircle ();
-            sheet.GraphicsList.Add (circle);
-            if (!shapes.ContainsKey(assignment.ObstacleIdentifier))
-                return;
-
-            var parentGraphic = shapes[assignment.ObstacleIdentifier].First ();
-
-            var topArrow = GetFilledArrow (circle, parentGraphic);
-
-            sheet.GraphicsList.Add (topArrow);
+            Add (assignment.Identifier, circle);
+            
+            if (shapes.ContainsKey(assignment.GoalIdentifier)) {
+                var parentGraphic = shapes[assignment.GoalIdentifier].First ();
+                var topArrow = GetFilledArrow (circle, parentGraphic);
+                sheet.GraphicsList.Add (topArrow);
+            }
 
             foreach (var child in assignment.AgentIdentifiers) {
                 if (!shapes.ContainsKey(child))
@@ -522,7 +513,7 @@ namespace KAOSTools.OmnigraffleExport
             var goalGraphic = shapes [resolution.ResolvingGoalIdentifier].First ();
 
             var topArrow = GetSharpBackCrossArrow (goalGraphic, obstacleGraphic);
-            sheet.GraphicsList.Add (topArrow);
+            Add (resolution.Identifier, topArrow);
         }
 
         public void Render (Obstruction obstruction)
@@ -537,7 +528,7 @@ namespace KAOSTools.OmnigraffleExport
             var goalGraphic = shapes [obstruction.ObstructedGoalIdentifier].First ();
 
             var topArrow = GetSharpBackCrossArrow (obstacleGraphic, goalGraphic);
-            sheet.GraphicsList.Add (topArrow);
+            Add (obstruction.Identifier, topArrow);
         }
     }
 }
