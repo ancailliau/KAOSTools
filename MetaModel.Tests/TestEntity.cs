@@ -28,9 +28,6 @@ end
 ";
             var parser = new ModelBuilder ();
             var model = parser.Parse (input);
-            
-            var e = model.Entities().Single(x => x.Identifier == "child_1");
-            Console.WriteLine (string.Join(",", e.Ancestors.Select(x => x.FriendlyName)));
         }
     }
 }

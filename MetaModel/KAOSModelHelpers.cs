@@ -81,6 +81,10 @@ namespace KAOSTools.MetaModel
         public static IEnumerable<Predicate> Predicates (this KAOSModel model) {
                 return model.Elements.Where (x => x is Predicate).Cast<Predicate>();
         }
+        
+        public static IEnumerable<Attribute> Attributes (this KAOSModel model) {
+            return model.Elements.Where (x => x is Attribute).Cast<Attribute>();
+        }
 
         public static IEnumerable<Entity> Entities (this KAOSModel model) {
                 return model.Elements.Where (x => x is Entity & !(x is Relation)).Cast<Entity>();

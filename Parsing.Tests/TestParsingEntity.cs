@@ -154,7 +154,7 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             var entity = model.Entities().Single (x => x.Identifier == "test");
-            entity.Attributes.Select (x => x.Name).ShallOnlyContain (attributes);
+            entity.Attributes().Select (x => x.Name).ShallOnlyContain (attributes);
         }
         
         [TestCase(@"declare entity
@@ -197,7 +197,7 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             var entity1 = model.Entities().Single (x => x.Identifier == "test");
-            entity1.Parents.Select (x => x.Identifier).ShallOnlyContain (new string[] { "test2" });
+            entity1.ParentIdentifiers.ShallOnlyContain (new string[] { "test2" });
 
             var parentEntity = model.Entities().Single (x => x.Identifier == "test2");
             parentEntity.Implicit.ShallEqual (implicitParent);

@@ -146,7 +146,7 @@ namespace KAOSTools.Parsing.Tests
         {
             var model = parser.Parse (input);
             var relation = model.Relations().Single (x => x.Identifier == "test");
-            relation.Attributes.Select (x => x.Name).ShallOnlyContain (attributes);
+            relation.Attributes().Select (x => x.Name).ShallOnlyContain (attributes);
         }
         
         [TestCase(@"declare relation

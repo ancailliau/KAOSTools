@@ -686,36 +686,36 @@ namespace KAOSTools.MetaModel
         }
 
         public string Definition { get; set; }
-        public ISet<Attribute> Attributes { get; set; }
         public EntityType Type { get; set; }
 
-        public ISet<Entity> Parents { get; set; }
-
-        public ISet<Entity> Ancestors
-        {
-            get
-            {
-                var ancestors = new HashSet<Entity>();
-                ancestors.Add(this);
-                foreach (var parent in Parents) {
-                    foreach (var a in parent.Ancestors) {
-                        ancestors.Add (a);
-                    }
-                }
-                return ancestors;
-            }
-        }
+        public ISet<string> AttributeIdentifiers { get; set; }
+        public ISet<string> ParentIdentifiers { get; set; }
 
         public Entity (KAOSModel model) : base (model)
         {
-            Attributes = new HashSet<Attribute> ();
-            Type = EntityType.None;
-            Parents = new HashSet<Entity> ();
+            AttributeIdentifiers = new HashSet<string> ();
+            ParentIdentifiers    = new HashSet<string> ();
+        }
+
+        public void AddParent (Entity parent)
+        {
+            ParentIdentifiers.Add (parent.Identifier);
+        }
+
+        public void AddAttribute (Attribute attribute)
+        {
+            AttributeIdentifiers.Add (attribute.Identifier);
         }
 
         public override KAOSMetaModelElement Copy ()
         {
-            throw new NotImplementedException ();
+            return new Entity (model) {
+                Name = Name,
+                Definition = Definition,
+                Type = Type,
+                AttributeIdentifiers = new HashSet<string> (AttributeIdentifiers),
+                ParentIdentifiers = new HashSet<string> (ParentIdentifiers)
+            };
         }
     }
 
@@ -730,16 +730,26 @@ namespace KAOSTools.MetaModel
             }
         }
 
-        public GivenType Type { get; set; }
+        public string TypeIdentifier { get; set; }
 
         public Attribute (KAOSModel model) : base (model)
         {
             Derived = false;
         }
 
+        public void SetType (GivenType givenType)
+        {
+            TypeIdentifier = givenType.Identifier;
+        }
+
         public override KAOSMetaModelElement Copy ()
         {
-            throw new NotImplementedException ();
+            return new Attribute (model) {
+                Derived = Derived,
+                Name = Name,
+                Definition = Definition,
+                TypeIdentifier = TypeIdentifier
+            };
         }
     }
 

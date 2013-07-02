@@ -320,10 +320,10 @@ namespace KAOSTools.Parsing
         KAOSTools.MetaModel.Attribute GetOrCreateAttribute (ParsedAttributeReferenceExpression pref, KAOSTools.MetaModel.Entity entity) {
             if (entity != null) {
                 if (pref.AttributeSignature is NameExpression) {
-                    var attribute = entity.Attributes.SingleOrDefault (x => x.Name == pref.AttributeSignature.Value);
+                    var attribute = entity.Attributes().SingleOrDefault (x => x.Name == pref.AttributeSignature.Value);
                     if (attribute == null) {
                         attribute = new KAOSTools.MetaModel.Attribute (model) { Name = pref.AttributeSignature.Value, Implicit = true } ;
-                        entity.Attributes.Add (attribute);
+                        entity.AddAttribute (attribute);
 
                         Declarations.Add (attribute, new List<Declaration> () {
                             new Declaration (pref.Line, pref.Col, pref.Filename, relativePath, DeclarationType.Reference)
@@ -336,10 +336,10 @@ namespace KAOSTools.Parsing
                     return attribute;
 
                 } else if (pref.AttributeSignature is IdentifierExpression) {
-                    var attribute = entity.Attributes.SingleOrDefault (x => x.Identifier == pref.AttributeSignature.Value);
+                    var attribute = entity.Attributes().SingleOrDefault (x => x.Identifier == pref.AttributeSignature.Value);
                     if (attribute == null) {
                         attribute = new KAOSTools.MetaModel.Attribute (model) { Identifier = pref.AttributeSignature.Value, Implicit = true } ;
-                        entity.Attributes.Add (attribute);
+                        entity.AddAttribute (attribute);
 
                         Declarations.Add (attribute, new List<Declaration> () {
                             new Declaration (pref.Line, pref.Col, pref.Filename, relativePath, DeclarationType.Reference)
@@ -447,7 +447,7 @@ namespace KAOSTools.Parsing
                     if (predicate.Arguments.Count > 0) {
                         for (int i = 0; i < parsedPred.ActualArguments.Count; i++) {
                             var parsedArg = parsedPred.ActualArguments[i];
-                            if (!declarations[parsedArg].Ancestors.Contains(predicate.Arguments[i].Type)) {
+                            if (!declarations[parsedArg].Ancestors().Contains(predicate.Arguments[i].Type)) {
                                 throw new BuilderException ("Predicate '" + idOrName + "' arguments mismatch. " +
                                                             "Argument '" + parsedArg + "' is type '" + declarations[parsedArg].FriendlyName + "' " +
                                                             "but type '" + predicate.Arguments[i].Type.FriendlyName + "' is expected. Make sure that you do not mix names and identifiers.",

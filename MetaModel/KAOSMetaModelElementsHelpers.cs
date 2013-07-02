@@ -264,6 +264,39 @@ namespace KAOSTools.MetaModel
         }
 
         #endregion
+
+        #region Entity
+        
+        public static IEnumerable<Entity> Parents (this Entity entity) {
+            return entity.ParentIdentifiers.Select 
+                (x => entity.model.Entities().SingleOrDefault(y => y.Identifier == x));
+        }
+        
+        public static IEnumerable<Attribute> Attributes (this Entity entity) {
+            return entity.AttributeIdentifiers.Select (x => 
+                                                       entity.model.Attributes().SingleOrDefault(y => y.Identifier == x));
+        }
+
+        public static ISet<Entity> Ancestors (this Entity entity) {
+            var ancestors = new HashSet<Entity>();
+            ancestors.Add(entity.model.Entities().SingleOrDefault (x => x.Identifier == entity.Identifier));
+            foreach (var parent in entity.Parents()) {
+                foreach (var a in parent.Ancestors()) {
+                    ancestors.Add (a);
+                }
+            }
+            return ancestors;
+        }
+
+        #endregion
+
+        #region Entity
+
+        public static GivenType Type (this Attribute attribute) {
+            return attribute.model.GivenTypes().SingleOrDefault(y => y.Identifier == attribute.TypeIdentifier);
+        }
+
+        #endregion
     }
 }
 

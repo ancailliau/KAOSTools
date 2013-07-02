@@ -387,7 +387,7 @@ namespace KAOSTools.Parsing.Tests
             if (name != null)
                 Assert.AreEqual (name, expression.Attribute.Name);
 
-            model.Entities().Single (x => x.Name == "Type").Attributes.Count().ShallEqual(1);
+            model.Entities().Single (x => x.Name == "Type").AttributeIdentifiers.Count().ShallEqual(1);
         }
         
         [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" == 0.5 end", 

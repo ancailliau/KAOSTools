@@ -96,7 +96,7 @@ namespace KAOSTools.Parsing
                 } 
 
                 // if a type was already declared, it shall be the same (or an ancestor)
-                else if (!arg_type.Ancestors.Contains(predicate.Arguments[currentPosition].Type)) {
+                else if (!arg_type.Ancestors().Contains(predicate.Arguments[currentPosition].Type)) {
                     throw new BuilderException (string.Format ("Argument at index {0} does not match. Actual has identifier '{1}' and name '{2}' but expected has identifier '{3}' and name '{4}'. Check that you don't mix name and identifier references on implicit declarations.", 
                                                                currentPosition, 
                                                                predicate.Arguments [currentPosition].Type.Identifier, 

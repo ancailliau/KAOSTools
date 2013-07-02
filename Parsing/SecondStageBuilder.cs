@@ -251,7 +251,7 @@ namespace KAOSTools.Parsing
                 Value = attribute.Type
             });
 
-            element.Attributes.Add (e);
+            element.AddAttribute (e);
 
             declarations.Add (e, new List<Declaration> {
                 new Declaration (attribute.Line, attribute.Col, attribute.Filename, relativePath, DeclarationType.Declaration)
@@ -266,7 +266,7 @@ namespace KAOSTools.Parsing
                 Handle (e, attr);
             }
 
-            element.Attributes.Add (e);
+            element.AddAttribute (e);
 
             declarations.Add (e, new List<Declaration> {
                 new Declaration (attribute.Line, attribute.Col, attribute.Filename, relativePath, DeclarationType.Declaration)
@@ -293,7 +293,7 @@ namespace KAOSTools.Parsing
                 }
             }
 
-            element.Type = givenType;
+            element.SetType(givenType);
         }
 
         public void Handle (Goal element, ParsedObstructedByAttribute obstructedBy)
@@ -689,10 +689,10 @@ namespace KAOSTools.Parsing
                 if (!Get (attribute.Value, out entity)) {
                     entity = Create<Entity> (attribute.Value);
                 }
-                element.Parents.Add (entity);
+                element.AddParent (entity);
                 
             } else if (attribute.Value is ParsedEntity) {
-                element.Parents.Add (fsb.BuildElementWithKeys (attribute.Value));
+                element.AddParent (fsb.BuildElementWithKeys (attribute.Value));
                 BuildElement (attribute.Value);
                 
             } else {

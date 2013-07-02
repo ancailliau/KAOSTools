@@ -83,7 +83,7 @@ namespace KAOSTools.OmnigraffleExport
             }
 
             foreach (var e in model.Entities().Where (x => x.GetType() != typeof(Relation))) {
-                foreach (var p in e.Parents) {
+                foreach (var p in e.Parents()) {
                     var line = AddLine (canvas.GraphicsList, 
                                         objMapping[e.Identifier], 
                                         objMapping[p.Identifier]);
@@ -120,7 +120,7 @@ namespace KAOSTools.OmnigraffleExport
                     canvas.GraphicsList.Add (alternativeText);
                     canvas.GraphicsList.Add (line);
 
-                    if (e.Attributes.Count > 0) {
+                    if (e.AttributeIdentifiers.Count > 0) {
                         var attr = RenderAttributes (e);
                         var attr_line = AddLine (canvas.GraphicsList, alternativeText, attr, true);
                         attr_line.Style.Stroke.Pattern = StrokePattern.Dashed;
@@ -949,10 +949,10 @@ namespace KAOSTools.OmnigraffleExport
             string text = @"";
 
             text = string.Join (@"\par ", 
-                                entity.Attributes.Select(attr => 
+                                entity.Attributes().Select(attr => 
                                      GetRtfUnicodeEscapedString((attr.Derived ? "/" : "-") 
                                        + " " + attr.FriendlyName 
-                                       + (attr.Type != null ? ": " + (!string.IsNullOrEmpty(attr.Type.Name) ? attr.Type.Name : attr.Type.Identifier) : ""))));
+                                       + attr.FriendlyName)));
 
             graphic.Text = new Omnigraffle.TextInfo (text) {
                 Alignement = KAOSTools.OmnigraffleExport.Omnigraffle.TextAlignement.Left,

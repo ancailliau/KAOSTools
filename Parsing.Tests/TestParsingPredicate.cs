@@ -148,11 +148,11 @@ namespace KAOSTools.Parsing.Tests
             var predicate = model.Predicates().Single (x => x.Name == "Test");
             
             var entity = model.Entities().Single (x => x.Name == "MyType");
-            var attribute = entity.Attributes.Single (x => x.Name == "MyAttribute");
+            var attribute = entity.Attributes().Single (x => x.Name == "MyAttribute");
 
             ((AttributeReference) predicate.FormalSpec).Variable.ShallEqual ("c");
             ((AttributeReference) predicate.FormalSpec).Entity.ShallEqual (entity);
-            ((AttributeReference) predicate.FormalSpec).Attribute.ShallEqual (attribute);
+            ((AttributeReference) predicate.FormalSpec).Attribute.Identifier.ShallEqual (attribute);
         }
     }
 }
