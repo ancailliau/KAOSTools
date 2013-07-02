@@ -42,6 +42,12 @@ namespace KAOSTools.OmnigraffleExport
 
             var document   = new Omnigraffle.Document ();
 
+            var canvas = new Omnigraffle.Sheet (1, string.Format ("Model"));
+            var u = new Untitled (canvas);
+            u.Render (model);
+            document.Canvas.Add (canvas);
+
+            /*
             ExportIdealGoalModel (model, document);
             ExportAntiGoalModel (model, document);
             ExportExceptions (model, document);
@@ -53,6 +59,7 @@ namespace KAOSTools.OmnigraffleExport
 
             if (experimental)
                 ExportExperimentalDiagrams (model, document);
+            */
 
             if (string.IsNullOrEmpty (filename)) 
                 OmniGraffleGenerator.Export (document, Console.Out);
