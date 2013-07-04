@@ -320,7 +320,7 @@ namespace KAOSTools.OmnigraffleExport.Omnigraffle
     }
 
     public enum Shape {
-        Bezier, Rectangle, Circle
+        Bezier, Rectangle, Circle, Cloud
     }
 
     public class ShapeData {

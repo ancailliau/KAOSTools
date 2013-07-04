@@ -115,7 +115,7 @@ namespace KAOSTools.Parsing
             
             if (GetSignature (element, out signature))
                 return GetBySignature (element, signature);
-            
+
             throw new InvalidOperationException (string.Format (
                 "Element '{0}' has no identifier, no name, no signature.", element));
         }

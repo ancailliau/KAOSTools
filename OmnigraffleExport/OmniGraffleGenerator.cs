@@ -331,6 +331,8 @@ namespace KAOSTools.OmnigraffleExport
                 shape.Value = "Rectangle";
             else if (graphic.Shape == Omnigraffle.Shape.Circle)
                 shape.Value = "Circle";
+            else if (graphic.Shape == Omnigraffle.Shape.Cloud)
+                shape.Value = "Cloud";
             else
                 throw new NotImplementedException ();
 

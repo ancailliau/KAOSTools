@@ -204,6 +204,12 @@ namespace KAOSTools.Parsing.Tests
                         id test
                         refinedby declare goal id child1 end, declare goal id child2 end
                     end")]
+        [TestCase(@"declare goal 
+                        id test
+                        refinedby declare
+                                      children child1, child2
+                                  end
+                    end")]
         public void TestRefinement (string input)
         {
             var model = parser.Parse (input);
@@ -212,9 +218,8 @@ namespace KAOSTools.Parsing.Tests
                 .ShallContain (x => x.Identifier == "test")
                 .ShallBeSingle ();
 
-            goal.Refinements()
-                .ShallContain (x => x.SubGoalIdentifiers
-                                              .OnlyContains ( new string [] { "child1" , "child2" }));
+            var refinement = goal.Refinements().Single ();
+            refinement.SubGoalIdentifiers.ShallOnlyContain ( new string [] { "child1" , "child2" });
         }
 
         [TestCase(@"declare goal 
@@ -265,6 +270,12 @@ namespace KAOSTools.Parsing.Tests
                         id         test
                         refinedby  test2, declare domainproperty id domprop name ""domprop"" end
                     end")]
+        [TestCase(@"declare goal 
+                        id test
+                        refinedby declare
+                                      children test2, declare domainproperty id domprop name ""domprop"" end
+                                  end
+                    end")]
         public void TestRefinementWithDomainProperty (string input)
         {
             var model = parser.Parse (input);
@@ -287,6 +298,12 @@ namespace KAOSTools.Parsing.Tests
         [TestCase(@"declare goal
                         id         test
                         refinedby  test2, declare domhyp id domhyp name ""domhyp"" end
+                    end")]
+        [TestCase(@"declare goal
+                        id         test
+                        refinedby  declare 
+                                       children test2, declare domhyp id domhyp name ""domhyp"" end
+                                   end
                     end")]
         public void TestRefinementWithDomainHypothesis (string input)
         {
@@ -332,7 +349,21 @@ namespace KAOSTools.Parsing.Tests
                     end", RefinementPattern.Milestone)]
         [TestCase(@"declare goal 
                         id test
+                        refinedby declare 
+                                      pattern milestone
+                                      children goal1, goal2
+                                  end
+                    end", RefinementPattern.Milestone)]
+        [TestCase(@"declare goal 
+                        id test
                         refinedby(case[.5]) goal1, goal2
+                    end", RefinementPattern.Case)]
+        [TestCase(@"declare goal 
+                        id test
+                        refinedby declare 
+                                      pattern case[.5]
+                                      children goal1, goal2
+                                  end
                     end", RefinementPattern.Case)]
         [TestCase(@"declare goal 
                         id test
@@ -340,7 +371,21 @@ namespace KAOSTools.Parsing.Tests
                     end", RefinementPattern.IntroduceGuard)]
         [TestCase(@"declare goal 
                         id test
+                        refinedby declare 
+                                      pattern introduce_guard
+                                      children goal1, goal2
+                                  end
+                    end", RefinementPattern.IntroduceGuard)]
+        [TestCase(@"declare goal 
+                        id test
                         refinedby(divide_and_conquer) goal1, goal2
+                    end", RefinementPattern.DivideAndConquer)]
+        [TestCase(@"declare goal 
+                        id test
+                        refinedby declare 
+                                      pattern divide_and_conquer
+                                      children goal1, goal2
+                                  end
                     end", RefinementPattern.DivideAndConquer)]
         [TestCase(@"declare goal 
                         id test
@@ -348,7 +393,21 @@ namespace KAOSTools.Parsing.Tests
                     end", RefinementPattern.Unmonitorability)]
         [TestCase(@"declare goal 
                         id test
+                        refinedby declare 
+                                      pattern unmonitorability
+                                      children goal1, goal2
+                                  end
+                    end", RefinementPattern.Unmonitorability)]
+        [TestCase(@"declare goal 
+                        id test
                         refinedby(uncontrollability) goal1, goal2
+                    end", RefinementPattern.Uncontrollability)]
+        [TestCase(@"declare goal 
+                        id test
+                        refinedby declare 
+                                      pattern uncontrollability
+                                      children goal1, goal2
+                                  end
                     end", RefinementPattern.Uncontrollability)]
         public void TestRefinementPatterns (string input, RefinementPattern pattern)
         {

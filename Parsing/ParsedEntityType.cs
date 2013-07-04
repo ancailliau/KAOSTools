@@ -62,6 +62,7 @@ namespace KAOSTools.Parsing
     public class ParsedSystem               : ParsedElementWithAttributes {}
     public class ParsedGoal                 : ParsedElementWithAttributes {}
     public class ParsedAntiGoal             : ParsedElementWithAttributes {}
+    public class ParsedSoftGoal             : ParsedElementWithAttributes {}
     public class ParsedDomainProperty       : ParsedElementWithAttributes {}
     public class ParsedDomainHypothesis     : ParsedElementWithAttributes {}
     public class ParsedObstacle             : ParsedElementWithAttributes {}
@@ -69,6 +70,7 @@ namespace KAOSTools.Parsing
     public class ParsedGivenType            : ParsedElementWithAttributes {}
     public class ParsedAgent                : ParsedElementWithAttributes {}
     public class ParsedAttributeDeclaration : ParsedElementWithAttributes {}
+    public class ParsedGoalRefinement       : ParsedElementWithAttributes {}
 
     public class ParsedEntity : ParsedElementWithAttributes
     {
@@ -100,6 +102,7 @@ namespace KAOSTools.Parsing
     }
 
     public class ParsedAssignedToAttribute : ParsedAttributeWithElementsAndSystemIdentifier {}
+    public class ParsedGoalRefinementChildrenAttribute : ParsedAttributeWithElements {}
 
     public class ParsedIsAAttribute                  : ParsedAttributeWithValue<dynamic> {}
     public class ParsedObstructedByAttribute         : ParsedAttributeWithValue<dynamic> {}
@@ -108,6 +111,8 @@ namespace KAOSTools.Parsing
     public class ParsedNegativeAssumptionAttribute   : ParsedAttributeWithValue<dynamic> {}
     public class ParsedAttributeEntityTypeAttribute  : ParsedAttributeWithValue<dynamic> {}
     public class ParsedDerivedAttribute              : ParsedAttributeWithValue<dynamic> {}
+    public class ParsedSysRefAttribute               : ParsedAttributeWithValue<dynamic> {}
+    public class ParsedPatternAttribute              : ParsedAttributeWithValue<ParsedRefinementPattern> {}
 
     public class ParsedAgentTypeAttribute    : ParsedAttributeWithValue<ParsedAgentType>  {}
     public class ParsedEntityTypeAttribute   : ParsedAttributeWithValue<ParsedEntityType> {}

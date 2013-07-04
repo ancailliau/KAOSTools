@@ -9,7 +9,7 @@ namespace KAOSTools.OmnigraffleExport
 {
     public class Untitled
     {
-        private IDictionary<string, IList<ShapedGraphic>> shapes;
+        private IDictionary<string, IList<Graphic>> shapes;
         private Sheet sheet;
 
         private static int _i = 1;
@@ -22,13 +22,13 @@ namespace KAOSTools.OmnigraffleExport
         public Untitled (Sheet sheet)
         {
             this.sheet = sheet;
-            this.shapes = new Dictionary<string, IList<ShapedGraphic>> ();
+            this.shapes = new Dictionary<string, IList<Graphic>> ();
         }
 
-        private void Add (string key, ShapedGraphic graphic)
+        private void Add (string key, Graphic graphic)
         {
             if (!this.shapes.ContainsKey (key)) {
-                this.shapes.Add (key, new List<ShapedGraphic> ());
+                this.shapes.Add (key, new List<Graphic> ());
             }
             this.shapes[key].Add (graphic);
 
@@ -140,6 +140,14 @@ namespace KAOSTools.OmnigraffleExport
             graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (-0.5, 0));
             graphic.ShapeData.UnitPoints.Add (new KAOSTools.OmnigraffleExport.Omnigraffle.Point (-0.45, -0.5));
 
+            return graphic;
+        }
+
+        private ShapedGraphic GetCloud ()
+        {
+            var graphic = new ShapedGraphic (NextId, 
+                                             Omnigraffle.Shape.Cloud, 
+                                             50, 50, 175, 70);
             return graphic;
         }
         
@@ -293,6 +301,19 @@ namespace KAOSTools.OmnigraffleExport
             Add (key, graphic);
         }
 
+        private void AddCloud (string key,
+                               string text,
+                               int lineWidth,
+                               double red, double green, double blue)
+        {
+            var graphic = GetCloud ();
+            AddText (graphic, text);
+            SetFillColor (graphic, red, green, blue);
+            SetStrokeWidth (graphic, lineWidth);
+
+            Add (key, graphic);
+        }
+
         public void Render (KAOSModel model) 
         {
             foreach (dynamic e in model.Elements) {
@@ -322,6 +343,12 @@ namespace KAOSTools.OmnigraffleExport
             else
                 AddParallelogram (goal.Identifier, goal.FriendlyName, 
                                   lineWidth, 0.810871, 0.896814, 1);
+        }
+
+        public void Render (SoftGoal softGoal)
+        {
+            AddCloud (softGoal.Identifier, softGoal.FriendlyName, 
+                      1, 1, 1, 1);
         }
 
         public void Render (AntiGoal antigoal)
@@ -397,8 +424,8 @@ namespace KAOSTools.OmnigraffleExport
             var circle = GetCircle ();
             Add (refinement.Identifier, circle);
             
-            if (shapes.ContainsKey(refinement.ParentGoalIdentifier)) {
-                var parentGraphic = shapes[refinement.ParentGoalIdentifier].First ();
+            if (shapes.ContainsKey(refinement.ParentAntiGoalIdentifier)) {
+                var parentGraphic = shapes[refinement.ParentAntiGoalIdentifier].First ();
                 var topArrow = GetFilledArrow (circle, parentGraphic);
                 if (refinement.SystemReferenceIdentifier != null)
                     AddText (topArrow, refinement.SystemReference().FriendlyName);
@@ -420,11 +447,9 @@ namespace KAOSTools.OmnigraffleExport
             var circle = GetCircle ();
             Add (refinement.Identifier, circle);
             
-            if (shapes.ContainsKey(refinement.ParentGoalIdentifier)) {
-                var parentGraphic = shapes[refinement.ParentGoalIdentifier].First ();
+            if (shapes.ContainsKey(refinement.ParentObstacleIdentifier)) {
+                var parentGraphic = shapes[refinement.ParentObstacleIdentifier].First ();
                 var topArrow = GetFilledArrow (circle, parentGraphic);
-                if (refinement.SystemReferenceIdentifier != null)
-                    AddText (topArrow, refinement.SystemReference().FriendlyName);
                 sheet.GraphicsList.Add (topArrow);
             }
 
@@ -464,8 +489,8 @@ namespace KAOSTools.OmnigraffleExport
             var circle = GetCircle ();
             Add (assignment.Identifier, circle);
             
-            if (shapes.ContainsKey(assignment.GoalIdentifier)) {
-                var parentGraphic = shapes[assignment.GoalIdentifier].First ();
+            if (shapes.ContainsKey(assignment.AntiGoalIdentifier)) {
+                var parentGraphic = shapes[assignment.AntiGoalIdentifier].First ();
                 var topArrow = GetFilledArrow (circle, parentGraphic);
                 sheet.GraphicsList.Add (topArrow);
             }
@@ -485,8 +510,8 @@ namespace KAOSTools.OmnigraffleExport
             var circle = GetCircle ();
             Add (assignment.Identifier, circle);
             
-            if (shapes.ContainsKey(assignment.GoalIdentifier)) {
-                var parentGraphic = shapes[assignment.GoalIdentifier].First ();
+            if (shapes.ContainsKey(assignment.ObstacleIdentifier)) {
+                var parentGraphic = shapes[assignment.ObstacleIdentifier].First ();
                 var topArrow = GetFilledArrow (circle, parentGraphic);
                 sheet.GraphicsList.Add (topArrow);
             }

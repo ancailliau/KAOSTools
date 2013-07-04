@@ -129,6 +129,34 @@ namespace KAOSTools.MetaModel
         }
     }
 
+    public class SoftGoal : KAOSMetaModelElement
+    {
+        public string Name { get; set; }
+
+        public override string FriendlyName {
+            get {
+                return string.IsNullOrEmpty(Name) ? Identifier : Name;
+            }
+        }
+
+        public string Definition { get; set; }
+
+        public SoftGoal (KAOSModel model) : base(model)
+        {
+            InSystems = new HashSet<AlternativeSystem>();
+        }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            return new SoftGoal (null) {
+                Identifier = Identifier,
+                Implicit = Implicit,
+                Name = Name,
+                Definition = Definition
+            };
+        }
+    }
+
     public class Obstacle : KAOSMetaModelElement
     {
         public string Name { get; set; }
@@ -588,6 +616,8 @@ namespace KAOSTools.MetaModel
         public override KAOSMetaModelElement Copy ()
         {
             return new Obstruction (null) {
+                Identifier = Identifier,
+                Implicit = Implicit,
                 ObstructedGoalIdentifier = ObstructedGoalIdentifier,
                 ObstacleIdentifier = ObstacleIdentifier
             };
@@ -620,6 +650,8 @@ namespace KAOSTools.MetaModel
         public override KAOSMetaModelElement Copy ()
         {
             return new Resolution (null) {
+                Identifier = Identifier,
+                Implicit = Implicit,
                 ResolvingGoalIdentifier = ResolvingGoalIdentifier,
                 ObstacleIdentifier = ObstacleIdentifier,
                 ResolutionPattern = ResolutionPattern,
@@ -710,6 +742,8 @@ namespace KAOSTools.MetaModel
         public override KAOSMetaModelElement Copy ()
         {
             return new Entity (model) {
+                Identifier = Identifier,
+                Implicit = Implicit,
                 Name = Name,
                 Definition = Definition,
                 Type = Type,
@@ -745,6 +779,8 @@ namespace KAOSTools.MetaModel
         public override KAOSMetaModelElement Copy ()
         {
             return new Attribute (model) {
+                Identifier = Identifier,
+                Implicit = Implicit,
                 Derived = Derived,
                 Name = Name,
                 Definition = Definition,

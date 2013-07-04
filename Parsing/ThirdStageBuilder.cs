@@ -45,6 +45,11 @@ namespace KAOSTools.Parsing
             if (e == null) 
                 throw new InvalidOperationException (string.Format ("Element '{0}' was not pre-built.", element));
 
+            BuildElement (element, e);
+        }
+
+        public void BuildElement (ParsedElementWithAttributes element, dynamic e)
+        {
             foreach (dynamic attribute in element.Attributes) {
                 Handle (e, attribute);
             }

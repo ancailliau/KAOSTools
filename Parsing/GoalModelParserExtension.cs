@@ -74,6 +74,25 @@ namespace KAOSTools.Parsing {
             return t;
         }
 
+        ParsedElement BuildParsedElementWithAttributesInline<T> (List<Result> results)
+            where T: ParsedElementWithAttributes, new()
+        {
+            var t = new T () { 
+                Line = results[0].Line, 
+                Col = results[0].Col, 
+                Filename = m_file
+            };
+
+            if (results[0].Text == "override")
+                t.Override = true;
+
+            for (int i = 1; i < results.Count - 1; i++) {
+                t.Attributes.Add (results[i].Value);
+            }
+
+            return t;
+        }
+
         ParsedElement BuildPredicate (List<Result> results)
         {
             return BuildParsedElementWithAttributes<ParsedPredicate> (results);
@@ -94,6 +113,11 @@ namespace KAOSTools.Parsing {
             return BuildParsedElementWithAttributes<ParsedAntiGoal> (results);
         }
         
+        ParsedElement BuildSoftGoal (List<Result> results)
+        {
+            return BuildParsedElementWithAttributes<ParsedSoftGoal> (results);
+        }
+
         ParsedElement BuildDomainProperty (List<Result> results)
         {
             return BuildParsedElementWithAttributes<ParsedDomainProperty> (results);
@@ -134,6 +158,11 @@ namespace KAOSTools.Parsing {
             return BuildParsedElementWithAttributes<ParsedAttributeDeclaration> (results);
         }
 
+        ParsedElement BuildGoalRefinement (List<Result> results)
+        {
+            return BuildParsedElementWithAttributesInline<ParsedGoalRefinement> (results);
+        }
+
         #endregion
 
         #region Attributes
@@ -159,6 +188,22 @@ namespace KAOSTools.Parsing {
                 Col = results[0].Col, 
                 Filename = m_file
             };
+        }
+
+        ParsedElement BuildParsedAttributeWithElements<T> (List<Result> results)
+            where T: ParsedAttributeWithElements, new()
+        {
+            var t = new T () { 
+                Line = results[0].Line, 
+                Col = results[0].Col, 
+                Filename = m_file
+            };
+
+            for (int i = 1; i < results.Count; i = i + 2) {
+                t.Values.Add (results[i].Value);
+            }
+
+            return t;
         }
 
         ParsedElement BuildParsedAttributeWithElementsAndSystemIdentifier<T> (List<Result> results)
@@ -518,6 +563,25 @@ namespace KAOSTools.Parsing {
             return BuildParsedAttributeWithValue<ParsedAttributeEntityTypeAttribute,dynamic> 
                 (results, results[1].Value);
         }
+
+        ParsedElement BuildSysRefAttribute (List<Result> results)
+        {
+            return BuildParsedAttributeWithValue<ParsedSysRefAttribute,dynamic> 
+                (results, results[1].Value);
+        }
+
+        ParsedElement BuildGoalRefinementChildren (List<Result> results)
+        {
+            return BuildParsedAttributeWithElements<ParsedGoalRefinementChildrenAttribute> (results);
+        }
+        
+        ParsedElement BuildPatternAttribute (List<Result> results)
+        {
+            return BuildParsedAttributeWithValue<ParsedPatternAttribute,ParsedRefinementPattern> 
+                (results, (ParsedRefinementPattern) results[1].Value);
+        }
+
+
 
         #endregion
 

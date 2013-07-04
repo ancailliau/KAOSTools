@@ -7,7 +7,7 @@ debug =
 Start := S Elements S;
 
 Elements := 
-    ( ( System / Predicate / Goal / AntiGoal / DomProp / Obstacle / Agent / Import / DomHyp 
+    ( ( System / Predicate / Goal / AntiGoal / SoftGoal / DomProp / Obstacle / Agent / Import / DomHyp 
         / Entity / Type / Association ) S )*
     `value = BuildElements (results);`
 
@@ -33,6 +33,10 @@ AntiGoal :=
     ( 'declare' / 'override' ) S 'antigoal' S (AntiGoalAttribute S)* 'end'
     `value = BuildAntiGoal(results);`
     
+SoftGoal := 
+    ( 'declare' / 'override' ) S 'softgoal' S (SoftGoalAttribute S)* 'end'
+    `value = BuildSoftGoal(results);`
+    
 DomProp := 
     ( 'declare' / 'override' ) S ('domainproperty' / 'domprop' ) S (DomPropAttribute S)* 'end'
     `value = BuildDomainProperty(results);`
@@ -48,6 +52,10 @@ Agent :=
 DomHyp := 
     ( 'declare' / 'override' ) S ('domainhypothesis' / 'domhyp' ) S (DomHypAttribute S)* 'end'
     `value = BuildDomainHypothesis(results);`
+
+GoalRefinement := 
+    'declare' S (GoalRefinementAttribute S)* 'end'
+    `value = BuildGoalRefinement(results);`
 
 Entity := 
     ( 'declare' / 'override' ) S ( 'entity' / 'object' ) S (EntityAttribute S)* 'end'
@@ -76,6 +84,10 @@ AntiGoalAttribute :=
     ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByAntiGoal 
       / AssignedTo )
     `value = results[0].Value;`
+                                                                                                                                             
+SoftGoalAttribute := 
+    ( IdAttribute / NameAttribute / DefinitionAttribute )
+    `value = results[0].Value;`
     
 DomPropAttribute := 
     ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / Probability )
@@ -102,6 +114,11 @@ PredicateAttribute :=
 SystemAttribute := 
     ( IdAttribute / NameAttribute / DefinitionAttribute / AlternativeAttribute ) 
     `value = results[0].Value;`
+
+GoalRefinementAttribute := 
+    ( IdAttribute / NameAttribute / DefinitionAttribute / GoalRefinementChildren / PatternAttribute / SysRefAttribute ) 
+    `value = results[0].Value;`
+    
 
 EntityAttribute := 
     ( IdAttribute / NameAttribute / DefinitionAttribute / AttributeEntity / IsA / EntityTypeAttribute ) 
@@ -154,6 +171,13 @@ ResolvedBy := 'resolvedby' ( S '(' S ResolutionPattern S ')' )? S ( Goal / Name 
 AlternativeAttribute := 'alternative' S ( System / Name / Identifier ) 
     `value = BuildAlternativeAttribute(results);`
 
+SysRefAttribute := 'sysref' S ( System / Name / Identifier ) 
+    `value = BuildSysRefAttribute(results);`
+    
+PatternAttribute := 'pattern' S RefinementPattern
+    `value = BuildPatternAttribute(results);`
+    
+    
 IsA := 'is' S ( Entity / Name / Identifier )
     `value = BuildIsA(results);`
                                                                          
@@ -172,10 +196,20 @@ RefinedByObstacle :=
     `value = BuildRefinedBy(results);`
     
 RefinedByGoal := 
-    'refinedby' S (RefinedByPattern S)? (RefinedByAlternative S)?
+    ( 'refinedby' S 
+    	( GoalRefinement
+    	  / ( (RefinedByPattern S)? (RefinedByAlternative S)?
+    		( Goal / DomProp / DomHyp / Name / Identifier ) 
+    		(S ',' S ( Goal / DomProp / DomHyp / Name / Identifier ) )* )
+        )
+    )
+    `value = BuildRefinedBy(results);`
+    
+GoalRefinementChildren := 
+    'children' S 
     ( Goal / DomProp / DomHyp / Name / Identifier ) 
     (S ',' S ( Goal / DomProp / DomHyp / Name / Identifier ) )*
-    `value = BuildRefinedBy(results);`
+    `value = BuildGoalRefinementChildren(results);`
     
 RefinedByAntiGoal := 
     'refinedby' S (RefinedByAlternative S)?

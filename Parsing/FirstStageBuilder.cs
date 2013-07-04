@@ -33,6 +33,9 @@ namespace KAOSTools.Parsing
 
             if (element is ParsedAntiGoal)
                 return BuildKAOSElement<AntiGoal> (element);
+            
+            if (element is ParsedSoftGoal)
+                return BuildKAOSElement<SoftGoal> (element);
 
             if (element is ParsedDomainProperty)
                 return BuildKAOSElement<DomainProperty> (element);
@@ -60,6 +63,9 @@ namespace KAOSTools.Parsing
 
             if (element is ParsedAssociation)
                 return BuildKAOSElement<Relation> (element);
+            
+            if (element is ParsedGoalRefinement)
+                return BuildKAOSElement<GoalRefinement> (element);
 
             throw new BuilderException (string.Format ("'{0}' not supported", element.GetType ()),
                                         element.Filename, element.Line, element.Col);

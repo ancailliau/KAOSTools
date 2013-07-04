@@ -37,14 +37,20 @@ namespace KAOSTools.Parsing
         public void BuildElement (ParsedElementWithAttributes element)
         {
             var e = GetElement (element);
-
             if (e == null) 
                 throw new InvalidOperationException (string.Format ("Element '{0}' was not pre-built.", element));
 
+            BuildElement (element, e);
+        }
+
+        public void BuildElement (ParsedElementWithAttributes element, dynamic e)
+        {
             foreach (dynamic attribute in element.Attributes) {
+                Console.WriteLine ("Handle ({0}, {1})", e.GetType().Name, attribute.GetType().Name);
                 Handle (e, attribute);
             }
         }
+
 
         public void Handle (KAOSMetaModelElement element, object attribute)
         {
@@ -56,6 +62,85 @@ namespace KAOSTools.Parsing
         public void Handle (Predicate predicate, ParsedPredicateArgumentAttribute ppa)
         {
             // ignore
+        }
+
+        public void Handle (GoalRefinement element, 
+                            ParsedPatternAttribute pattern)
+        {
+            if (pattern.Value.Name == ParsedRefinementPatternName.Milestone) {
+                element.RefinementPattern = RefinementPattern.Milestone;
+            }
+
+            else if (pattern.Value.Name == ParsedRefinementPatternName.Case) {
+                element.RefinementPattern = RefinementPattern.Case;
+                var caseProbability = pattern.Value.Parameters.Single() as ParsedFloat;
+                element.Parameters.Add (caseProbability.Value);
+            }
+
+            else if (pattern.Value.Name == ParsedRefinementPatternName.IntroduceGuard) {
+                element.RefinementPattern = RefinementPattern.IntroduceGuard;
+            }
+
+            else if (pattern.Value.Name == ParsedRefinementPatternName.DivideAndConquer) { 
+                element.RefinementPattern = RefinementPattern.DivideAndConquer;
+            }
+
+            else if (pattern.Value.Name == ParsedRefinementPatternName.Uncontrollability) { 
+                element.RefinementPattern = RefinementPattern.Uncontrollability;
+            }
+
+            else if (pattern.Value.Name ==  ParsedRefinementPatternName.Unmonitorability) { 
+                element.RefinementPattern = RefinementPattern.Unmonitorability;
+            }
+
+            else {
+                throw new NotImplementedException ();
+            }
+        }
+        
+        public void Handle (GoalRefinement element, 
+                            ParsedGoalRefinementChildrenAttribute parsedAttribute)
+        {
+            Console.WriteLine (parsedAttribute.Values.Count );
+            foreach (var child in parsedAttribute.Values) {
+                if (child is IdentifierExpression | child is NameExpression) {
+                    DomainProperty domprop;
+                    if (Get (child, out domprop)) {
+                        element.Add (domprop);
+                        continue;
+                    }
+
+                    DomainHypothesis domhyp;
+                    if (Get (child, out domhyp)) {
+                        element.Add (domhyp);
+                        continue;
+                    }
+
+                    Goal goal;
+                    if (!Get (child, out goal)) {
+                        goal = Create<Goal> (child);
+                    }
+                    element.Add (goal);
+
+                } else if (child is ParsedGoal) {
+                    element.Add (fsb.BuildElementWithKeys (child));
+                    BuildElement (child);
+
+                } else if (child is ParsedDomainProperty) {
+                    element.Add (fsb.BuildElementWithKeys (child));
+                    BuildElement (child);
+
+                } else if (child is ParsedDomainHypothesis) {
+                    element.Add (fsb.BuildElementWithKeys (child));
+                    BuildElement (child);
+
+                } else {
+                    // TODO use string.Format
+                    throw new NotImplementedException (
+                        "'" + child.GetType().Name + "' is not supported in '" 
+                        + parsedAttribute.GetType().Name + "' on '" + element.GetType().Name + "'");
+                }
+            }
         }
 
         public void Handle (KAOSTools.MetaModel.Attribute attribute, ParsedDerivedAttribute parsedAttribute)
@@ -512,7 +597,18 @@ namespace KAOSTools.Parsing
                 } else if (child is ParsedDomainHypothesis) {
                     refinement.Add (fsb.BuildElementWithKeys (child));
                     BuildElement (child);
-                
+                    
+                } else if (child is ParsedGoalRefinement) {
+
+                    var goalRefinement = new GoalRefinement (model) { 
+                        ParentGoalIdentifier = element.Identifier
+                    };
+
+                    model.Add (goalRefinement);
+                    BuildElement (child, goalRefinement);
+
+                    return;
+
                 } else {
                     
                     // TODO use string.Format
