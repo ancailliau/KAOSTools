@@ -110,9 +110,8 @@ namespace KAOSTools.OmnigraffleExport
 
             var attribute = GetRectangle ();
             attribute.Bounds.TopLeft.Y += 20;
-
             attribute.Style.Shadow.Draws = false;
-
+            AddText (attribute, "", false, TextAlignement.Left);
 
             var grp = new Group (NextId);
             grp.Graphics.Add (graphic);

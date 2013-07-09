@@ -193,16 +193,27 @@ namespace KAOSTools.OmnigraffleExport
             if (!shapes.ContainsKey (attribute.EntityIdentifier)) 
                 return;
 
-            var entity = shapes[attribute.EntityIdentifier] as Group;
+            foreach (var entity in shapes[attribute.EntityIdentifier].Cast<Group>()) {
+                var text = @"";
 
-            var text = @"\ql\par ";
-            text += GetRtfUnicodeEscapedString((attribute.Derived ? "/ " : "- "));
-            text += GetRtfUnicodeEscapedString(attribute.FriendlyName);
-            text += !string.IsNullOrEmpty(attribute.TypeIdentifier) ? " : " + attribute.Type().FriendlyName : "";
+                if ((entity.Graphics[1] as ShapedGraphic).Text.Text.Length > 4)
+                    text+= @"\ql\par ";
 
-            (entity.Graphics[1] as ShapedGraphic).Text.Text += text;
+                text += GetRtfUnicodeEscapedString((attribute.Derived ? "/ " : "- "));
+                text += GetRtfUnicodeEscapedString(attribute.FriendlyName);
 
-            Console.WriteLine (text + "**");
+                Console.WriteLine ("***" + string.IsNullOrEmpty(attribute.TypeIdentifier) + "***");
+
+                if (!string.IsNullOrEmpty(attribute.TypeIdentifier))
+                    text += " : " + attribute.Type().FriendlyName;
+
+                Console.WriteLine ("*" + entity.Graphics[1].GetType() + "*");
+
+
+                (entity.Graphics[1] as ShapedGraphic).Text.Text += text;
+
+                Console.WriteLine (text + "**");
+            }
         }
 
     }
