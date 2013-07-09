@@ -49,6 +49,26 @@ namespace KAOSTools.OmnigraffleExport
                 var line = GetLine (childGraphic, circle);
                 sheet.GraphicsList.Add (line);
             }
+
+            foreach (var child in refinement.PositiveSoftGoalsIdentifiers) {
+                if (!shapes.ContainsKey(child))
+                    continue;
+
+                var childGraphic = shapes [child].First ();
+                var line = GetFilledArrow (circle, childGraphic, true);
+                AddText (line, @"Positive\par contribution");
+                sheet.GraphicsList.Add (line);
+            }
+
+            foreach (var child in refinement.NegativeSoftGoalsIdentifiers) {
+                if (!shapes.ContainsKey(child))
+                    continue;
+
+                var childGraphic = shapes [child].First ();
+                var line = GetFilledArrow (circle, childGraphic, true);
+                AddText (line, @"Negative\par contribution");
+                sheet.GraphicsList.Add (line);
+            }
         }
 
         public void Render (AntiGoalRefinement refinement)

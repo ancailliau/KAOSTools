@@ -388,6 +388,9 @@ namespace KAOSTools.MetaModel
             set;
         }
 
+        public ISet<string> PositiveSoftGoalsIdentifiers { get; set; }
+        public ISet<string> NegativeSoftGoalsIdentifiers { get; set; }
+
         public ISet<string> SubGoalIdentifiers { get; set; }
         public ISet<string> DomainPropertyIdentifiers { get; set; }
         public ISet<string> DomainHypothesisIdentifiers { get; set; }
@@ -408,6 +411,10 @@ namespace KAOSTools.MetaModel
             SubGoalIdentifiers = new HashSet<string> ();
             DomainPropertyIdentifiers = new HashSet<string> ();
             DomainHypothesisIdentifiers = new HashSet<string> ();
+
+            PositiveSoftGoalsIdentifiers = new HashSet<string> ();
+            NegativeSoftGoalsIdentifiers = new HashSet<string> ();
+
             IsComplete = false;
 
             Parameters = new List<dynamic> ();
@@ -447,6 +454,16 @@ namespace KAOSTools.MetaModel
         public void Add (DomainHypothesis domHyp)
         {
             this.DomainHypothesisIdentifiers.Add (domHyp.Identifier);
+        }
+
+        public void AddNegativeSoftGoal (SoftGoal goal)
+        {
+            this.NegativeSoftGoalsIdentifiers.Add (goal.Identifier);
+        }
+
+        public void AddPositiveSoftGoal (SoftGoal goal)
+        {
+            this.PositiveSoftGoalsIdentifiers.Add (goal.Identifier);
         }
 
         public override KAOSMetaModelElement Copy ()

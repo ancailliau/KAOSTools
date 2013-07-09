@@ -169,7 +169,7 @@ namespace KAOSTools.OmnigraffleExport
             return circle;
         }
 
-        protected LineGraphic GetLine (Graphic @from, Graphic to)
+        protected LineGraphic GetLine (Graphic @from, Graphic to, bool dashed = false)
         {
             var line = new Omnigraffle.LineGraphic (NextId);
             line.Head = new Omnigraffle.LineEndInfo (to.ID);
@@ -188,27 +188,31 @@ namespace KAOSTools.OmnigraffleExport
             }
 
             line.Style.Shadow.Draws = false;
+            
+            if (dashed)
+                line.Style.Stroke.Pattern = StrokePattern.Dashed;
 
             return line;
         }
 
-        protected LineGraphic GetArrow (Graphic @from, Graphic to)
+        protected LineGraphic GetArrow (Graphic @from, Graphic to, bool dashed = false)
         {
-            var line = GetLine (@from, to);
+            var line = GetLine (@from, to, dashed);
             line.Style.Stroke.HeadArrow = KAOSTools.OmnigraffleExport.Omnigraffle.Arrow.Arrow;
+
             return line;
         }
 
-        protected LineGraphic GetFilledArrow (Graphic @from, Graphic to)
+        protected LineGraphic GetFilledArrow (Graphic @from, Graphic to, bool dashed = false)
         {
-            var line = GetLine (@from, to);
+            var line = GetLine (@from, to, dashed);
             line.Style.Stroke.HeadArrow = KAOSTools.OmnigraffleExport.Omnigraffle.Arrow.FilledArrow;
             return line;
         }
 
-        protected LineGraphic GetSharpBackCrossArrow (Graphic @from, Graphic to)
+        protected LineGraphic GetSharpBackCrossArrow (Graphic @from, Graphic to, bool dashed = false)
         {
-            var line = GetLine (@from, to);
+            var line = GetLine (@from, to, dashed);
             line.Style.Stroke.TailArrow = KAOSTools.OmnigraffleExport.Omnigraffle.Arrow.SharpBackCross;
             return line;
         }

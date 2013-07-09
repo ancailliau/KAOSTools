@@ -581,6 +581,38 @@ namespace KAOSTools.Parsing {
                 (results, (ParsedRefinementPattern) results[1].Value);
         }
 
+        
+
+        ParsedElement BuildDerivedAttribute (List<Result> results) 
+        {
+            return BuildParsedAttributeWithValue<ParsedDerivedAttribute,dynamic> 
+                (results, null);
+        }
+
+        ParsedElement BuildIsCompleteAttribute (List<Result> results) 
+        {
+            return BuildParsedAttributeWithValue<ParsedIsComplete,bool> 
+                (results, results[1].Text == "yes" | results[1].Text == "true");
+        }
+
+        ParsedElement BuildSoftGoalContributionAttribute (List<Result> results) 
+        {
+            var attribute = new ParsedSoftGoalContributionAttribute () { 
+                Line = results[0].Line, 
+                Col = results[0].Col, 
+                Filename = m_file
+            };
+
+            int start = 1;
+            for (int i = start; i < results.Count; i = i + 3) {
+                attribute.Values.Add (new ParsedSoftGoalContribution { 
+                    SoftGoal = results[i+1].Value, 
+                    Contribution = results[i].Text == "+" ? ParsedContribution.Positive : ParsedContribution.Negative
+                });
+            }
+
+            return attribute;
+        }
 
 
         #endregion
@@ -661,19 +693,6 @@ namespace KAOSTools.Parsing {
                 Filename = m_file
             };
         }
-
-        ParsedElement BuildDerivedAttribute (List<Result> results) 
-        {
-            return BuildParsedAttributeWithValue<ParsedDerivedAttribute,dynamic> 
-                (results, null);
-        }
-
-        ParsedElement BuildIsCompleteAttribute (List<Result> results) 
-        {
-            return BuildParsedAttributeWithValue<ParsedIsComplete,bool> 
-                (results, results[1].Text == "yes" | results[1].Text == "true");
-        }
-
 
         #endregion
 

@@ -64,6 +64,42 @@ namespace KAOSTools.Parsing
         }
 
         public void Handle (GoalRefinement element, 
+                            ParsedSoftGoalContributionAttribute parsedAttribute)
+        {
+            foreach (var compositeChild in parsedAttribute.Values) {
+
+                var child = compositeChild.SoftGoal;
+                var contribution = (ParsedContribution) compositeChild.Contribution;
+
+                SoftGoal goal;
+
+                if (child is IdentifierExpression | child is NameExpression) {
+                    if (!Get (child, out goal)) {
+                        goal = Create<SoftGoal> (child);
+                    }
+
+                } else if (child is ParsedSoftGoal) {
+                    goal = fsb.BuildElementWithKeys (child) as SoftGoal;
+                    BuildElement (child);
+
+                } else {
+                    // TODO use string.Format
+                    throw new NotImplementedException (
+                        "'" + child.GetType().Name + "' is not supported in '" 
+                        + parsedAttribute.GetType().Name + "' on '" + element.GetType().Name + "'");
+                }
+
+                if (contribution == ParsedContribution.Negative) {
+                    element.AddNegativeSoftGoal (goal);
+                } else if (contribution == ParsedContribution.Positive) {
+                    element.AddPositiveSoftGoal (goal);
+                } else {
+                    throw new NotImplementedException ();
+                }
+            }
+        }
+
+        public void Handle (GoalRefinement element, 
                             ParsedPatternAttribute pattern)
         {
             if (pattern.Value.Name == ParsedRefinementPatternName.Milestone) {

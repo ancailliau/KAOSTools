@@ -444,6 +444,25 @@ namespace KAOSTools.Parsing.Tests
                 Assert.AreEqual(.5, probability);
             }
         }
+
+        [TestCase(@"declare goal 
+                        id test
+                        refinedby declare 
+                                      pattern uncontrollability
+                                      children goal1, goal2
+                                      contribute +soft1
+                                  end
+                    end")]
+        public void TestSoftGoalContribution (string input)
+        {
+            var model = parser.Parse (input);
+
+            var goal = model.Goals()
+                .ShallContain (x => x.Identifier == "test")
+                    .ShallBeSingle ();
+
+            var refinement = goal.Refinements().Single ();
+        }
         
         [TestCase(@"declare goal 
                         id test

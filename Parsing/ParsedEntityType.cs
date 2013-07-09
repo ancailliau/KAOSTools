@@ -101,6 +101,13 @@ namespace KAOSTools.Parsing
         public ParsedRefinementPattern RefinementPattern { get; set; }
     }
 
+    public class ParsedSoftGoalContributionAttribute  : ParsedAttributeWithElements {}
+    public class ParsedSoftGoalContribution {
+        public dynamic SoftGoal { get; set; }
+        public ParsedContribution Contribution { get; set; }
+    }
+    public enum ParsedContribution { Positive, Negative }
+
     public class ParsedAssignedToAttribute : ParsedAttributeWithElementsAndSystemIdentifier {}
     public class ParsedGoalRefinementChildrenAttribute : ParsedAttributeWithElements {}
 

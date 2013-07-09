@@ -117,7 +117,7 @@ SystemAttribute :=
 
 GoalRefinementAttribute := 
     ( IdAttribute / NameAttribute / DefinitionAttribute / GoalRefinementChildren 
-    / PatternAttribute / SysRefAttribute / IsCompleteAttribute ) 
+    / PatternAttribute / SysRefAttribute / IsCompleteAttribute / SoftGoalContributionAttribute ) 
     `value = results[0].Value;`
     
 
@@ -247,6 +247,11 @@ DerivedAttribute := 'derived'
 
 IsCompleteAttribute := 'iscomplete' S ( 'yes' / 'no' / 'true' / 'false' )
     `value = BuildIsCompleteAttribute(results);`
+
+SoftGoalContributionAttribute := 'contribute' S 
+	( ( '+' / '-' ) S ( SoftGoal / Name / Identifier ) )
+    (S ',' S ( ( '+' / '-' ) S ( SoftGoal / Name / Identifier ) ) )*
+    `value = BuildSoftGoalContributionAttribute(results);`
 
 # 
 

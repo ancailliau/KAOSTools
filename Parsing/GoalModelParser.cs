@@ -101,6 +101,7 @@ namespace KAOSTools.Parsing
 			m_nonterminals.Add("AttributeEntityTypeAttribute", new ParseMethod[]{this.DoParseAttributeEntityTypeAttributeRule});
 			m_nonterminals.Add("DerivedAttribute", new ParseMethod[]{this.DoParseDerivedAttributeRule});
 			m_nonterminals.Add("IsCompleteAttribute", new ParseMethod[]{this.DoParseIsCompleteAttributeRule});
+			m_nonterminals.Add("SoftGoalContributionAttribute", new ParseMethod[]{this.DoParseSoftGoalContributionAttributeRule});
 			m_nonterminals.Add("ResolutionPattern", new ParseMethod[]{this.DoParseResolutionPatternRule});
 			m_nonterminals.Add("RefinementPattern", new ParseMethod[]{this.DoParseRefinementPatternRule});
 			m_nonterminals.Add("Multiplicity", new ParseMethod[]{this.DoParseMultiplicityRule});
@@ -851,7 +852,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// GoalRefinementAttribute := IdAttribute / NameAttribute / DefinitionAttribute / GoalRefinementChildren / PatternAttribute / SysRefAttribute / IsCompleteAttribute
+		// GoalRefinementAttribute := IdAttribute / NameAttribute / DefinitionAttribute / GoalRefinementChildren / PatternAttribute / SysRefAttribute / IsCompleteAttribute / SoftGoalContributionAttribute
 		private State DoParseGoalRefinementAttributeRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -864,7 +865,8 @@ namespace KAOSTools.Parsing
 			delegate (State s, List<Result> r) {return DoParse(s, r, "GoalRefinementChildren");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "PatternAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "SysRefAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "IsCompleteAttribute");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "IsCompleteAttribute");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "SoftGoalContributionAttribute");});
 			
 			if (_state.Parsed)
 			{
@@ -1766,6 +1768,49 @@ namespace KAOSTools.Parsing
 			{
 				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
 				value = BuildIsCompleteAttribute(results);
+				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+			}
+			
+			return _state;
+		}
+		
+		// SoftGoalContributionAttribute := 'contribute' S (('+' / '-') S (SoftGoal / Name / Identifier)) (S ',' S (('+' / '-') S (SoftGoal / Name / Identifier)))*
+		private State DoParseSoftGoalContributionAttributeRule(State _state, List<Result> _outResults)
+		{
+			State _start = _state;
+			List<Result> results = new List<Result>();
+			
+			_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "contribute");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoSequence(s, r,
+				delegate (State s2, List<Result> r2) {return DoChoice(s2, r2,
+					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, "+");},
+					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, "-");});},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoChoice(s2, r2,
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "SoftGoal");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Name");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Identifier");});});},
+			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,
+				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
+					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, ",");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
+					delegate (State s3, List<Result> r3) {return DoSequence(s3, r3,
+						delegate (State s4, List<Result> r4) {return DoChoice(s4, r4,
+							delegate (State s5, List<Result> r5) {return DoParseLiteral(s5, r5, "+");},
+							delegate (State s5, List<Result> r5) {return DoParseLiteral(s5, r5, "-");});},
+						delegate (State s4, List<Result> r4) {return DoParse(s4, r4, "S");},
+						delegate (State s4, List<Result> r4) {return DoChoice(s4, r4,
+							delegate (State s5, List<Result> r5) {return DoParse(s5, r5, "SoftGoal");},
+							delegate (State s5, List<Result> r5) {return DoParse(s5, r5, "Name");},
+							delegate (State s5, List<Result> r5) {return DoParse(s5, r5, "Identifier");});});});});});
+			
+			if (_state.Parsed)
+			{
+				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
+				value = BuildSoftGoalContributionAttribute(results);
 				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 			}
 			
