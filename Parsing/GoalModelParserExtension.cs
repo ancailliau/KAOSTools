@@ -668,6 +668,13 @@ namespace KAOSTools.Parsing {
                 (results, null);
         }
 
+        ParsedElement BuildIsCompleteAttribute (List<Result> results) 
+        {
+            return BuildParsedAttributeWithValue<ParsedIsComplete,bool> 
+                (results, results[1].Text == "yes" | results[1].Text == "true");
+        }
+
+
         #endregion
 
         #region Formal spec

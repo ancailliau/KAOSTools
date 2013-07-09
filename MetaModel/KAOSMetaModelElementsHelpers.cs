@@ -273,8 +273,7 @@ namespace KAOSTools.MetaModel
         }
         
         public static IEnumerable<Attribute> Attributes (this Entity entity) {
-            return entity.AttributeIdentifiers.Select (x => 
-                                                       entity.model.Attributes().SingleOrDefault(y => y.Identifier == x));
+            return entity.model.Attributes().Where(x => x.EntityIdentifier == entity.Identifier);
         }
 
         public static ISet<Entity> Ancestors (this Entity entity) {

@@ -224,6 +224,25 @@ namespace KAOSTools.Parsing.Tests
 
         [TestCase(@"declare goal 
                         id test
+                        refinedby declare
+                                      children child1, child2
+                                      iscomplete yes
+                                  end
+                    end")]
+        public void TestCompleteRefinement (string input)
+        {
+            var model = parser.Parse (input);
+
+            var goal = model.Goals()
+                .ShallContain (x => x.Identifier == "test")
+                    .ShallBeSingle ();
+
+            var refinement = goal.Refinements().Single ();
+            refinement.IsComplete.ShallBeTrue();
+        }
+
+        [TestCase(@"declare goal 
+                        id test
                         refinedby child1, child2
                     end
                     declare goal id child1 refinedby child3, child4 end")]

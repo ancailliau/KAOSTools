@@ -152,7 +152,7 @@ namespace KAOSTools.Parsing.Tests
 
             ((AttributeReference) predicate.FormalSpec).Variable.ShallEqual ("c");
             ((AttributeReference) predicate.FormalSpec).Entity.ShallEqual (entity);
-            ((AttributeReference) predicate.FormalSpec).Attribute.Identifier.ShallEqual (attribute);
+            ((AttributeReference) predicate.FormalSpec).Attribute.Identifier.ShallEqual (attribute.Identifier);
         }
     }
 }

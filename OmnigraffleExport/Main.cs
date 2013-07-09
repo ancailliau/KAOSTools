@@ -43,8 +43,12 @@ namespace KAOSTools.OmnigraffleExport
             var document   = new Omnigraffle.Document ();
 
             var canvas = new Omnigraffle.Sheet (1, string.Format ("Model"));
-            var u = new Untitled (canvas);
+            var shapes = new Dictionary<string, IList<Graphic>> ();
+            var u = new Untitled (canvas, shapes);
+            var u2 = new Untitled2 (canvas, shapes);
             u.Render (model);
+            u2.Render (model);
+
             document.Canvas.Add (canvas);
 
             /*
@@ -120,7 +124,7 @@ namespace KAOSTools.OmnigraffleExport
                     canvas.GraphicsList.Add (alternativeText);
                     canvas.GraphicsList.Add (line);
 
-                    if (e.AttributeIdentifiers.Count > 0) {
+                    if (e.Attributes().Count() > 0) {
                         var attr = RenderAttributes (e);
                         var attr_line = AddLine (canvas.GraphicsList, alternativeText, attr, true);
                         attr_line.Style.Stroke.Pattern = StrokePattern.Dashed;

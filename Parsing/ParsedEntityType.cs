@@ -113,6 +113,7 @@ namespace KAOSTools.Parsing
     public class ParsedDerivedAttribute              : ParsedAttributeWithValue<dynamic> {}
     public class ParsedSysRefAttribute               : ParsedAttributeWithValue<dynamic> {}
     public class ParsedPatternAttribute              : ParsedAttributeWithValue<ParsedRefinementPattern> {}
+    public class ParsedIsComplete                    : ParsedAttributeWithValue<bool> {}
 
     public class ParsedAgentTypeAttribute    : ParsedAttributeWithValue<ParsedAgentType>  {}
     public class ParsedEntityTypeAttribute   : ParsedAttributeWithValue<ParsedEntityType> {}

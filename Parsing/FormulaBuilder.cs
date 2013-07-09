@@ -307,6 +307,7 @@ namespace KAOSTools.Parsing
                 Declarations.Add (type, new List<Declaration> () {
                     new Declaration (idOrName.Line, idOrName.Col, idOrName.Filename, relativePath, DeclarationType.Reference)
                 });
+
             } else {
                 Declarations[type].Add (
                     new Declaration (idOrName.Line, idOrName.Col, idOrName.Filename, relativePath, DeclarationType.Reference)
@@ -322,8 +323,12 @@ namespace KAOSTools.Parsing
                 if (pref.AttributeSignature is NameExpression) {
                     var attribute = entity.Attributes().SingleOrDefault (x => x.Name == pref.AttributeSignature.Value);
                     if (attribute == null) {
-                        attribute = new KAOSTools.MetaModel.Attribute (model) { Name = pref.AttributeSignature.Value, Implicit = true } ;
-                        entity.AddAttribute (attribute);
+                        attribute = new KAOSTools.MetaModel.Attribute (model) { 
+                            Name = pref.AttributeSignature.Value, 
+                            Implicit = true
+                        } ;
+                        attribute.SetEntity (entity);
+                        model.Add (attribute);
 
                         Declarations.Add (attribute, new List<Declaration> () {
                             new Declaration (pref.Line, pref.Col, pref.Filename, relativePath, DeclarationType.Reference)
@@ -336,10 +341,14 @@ namespace KAOSTools.Parsing
                     return attribute;
 
                 } else if (pref.AttributeSignature is IdentifierExpression) {
-                    var attribute = entity.Attributes().SingleOrDefault (x => x.Identifier == pref.AttributeSignature.Value);
+                    var attribute = entity.model.Attributes().SingleOrDefault (x => x.Identifier == entity.Identifier + "." +pref.AttributeSignature.Value);
                     if (attribute == null) {
-                        attribute = new KAOSTools.MetaModel.Attribute (model) { Identifier = pref.AttributeSignature.Value, Implicit = true } ;
-                        entity.AddAttribute (attribute);
+                        attribute = new KAOSTools.MetaModel.Attribute (model) { 
+                            Identifier = entity.Identifier + "." + pref.AttributeSignature.Value, 
+                            Implicit = true
+                        } ;
+                        attribute.SetEntity (entity);
+                        model.Add (attribute);
 
                         Declarations.Add (attribute, new List<Declaration> () {
                             new Declaration (pref.Line, pref.Col, pref.Filename, relativePath, DeclarationType.Reference)

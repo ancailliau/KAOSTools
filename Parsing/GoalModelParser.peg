@@ -116,7 +116,8 @@ SystemAttribute :=
     `value = results[0].Value;`
 
 GoalRefinementAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / GoalRefinementChildren / PatternAttribute / SysRefAttribute ) 
+    ( IdAttribute / NameAttribute / DefinitionAttribute / GoalRefinementChildren 
+    / PatternAttribute / SysRefAttribute / IsCompleteAttribute ) 
     `value = results[0].Value;`
     
 
@@ -243,6 +244,9 @@ AttributeEntityTypeAttribute := 'type' S ( Type / Name / Identifier )
 
 DerivedAttribute := 'derived'
     `value = BuildDerivedAttribute(results);`
+
+IsCompleteAttribute := 'iscomplete' S ( 'yes' / 'no' / 'true' / 'false' )
+    `value = BuildIsCompleteAttribute(results);`
 
 # 
 

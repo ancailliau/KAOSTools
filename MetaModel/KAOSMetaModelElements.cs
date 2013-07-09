@@ -383,6 +383,11 @@ namespace KAOSTools.MetaModel
 
         public string SystemReferenceIdentifier { get; set; }
 
+        public bool IsComplete {
+            get;
+            set;
+        }
+
         public ISet<string> SubGoalIdentifiers { get; set; }
         public ISet<string> DomainPropertyIdentifiers { get; set; }
         public ISet<string> DomainHypothesisIdentifiers { get; set; }
@@ -403,6 +408,7 @@ namespace KAOSTools.MetaModel
             SubGoalIdentifiers = new HashSet<string> ();
             DomainPropertyIdentifiers = new HashSet<string> ();
             DomainHypothesisIdentifiers = new HashSet<string> ();
+            IsComplete = false;
 
             Parameters = new List<dynamic> ();
         }
@@ -720,23 +726,16 @@ namespace KAOSTools.MetaModel
         public string Definition { get; set; }
         public EntityType Type { get; set; }
 
-        public ISet<string> AttributeIdentifiers { get; set; }
         public ISet<string> ParentIdentifiers { get; set; }
 
         public Entity (KAOSModel model) : base (model)
         {
-            AttributeIdentifiers = new HashSet<string> ();
             ParentIdentifiers    = new HashSet<string> ();
         }
 
         public void AddParent (Entity parent)
         {
             ParentIdentifiers.Add (parent.Identifier);
-        }
-
-        public void AddAttribute (Attribute attribute)
-        {
-            AttributeIdentifiers.Add (attribute.Identifier);
         }
 
         public override KAOSMetaModelElement Copy ()
@@ -747,7 +746,6 @@ namespace KAOSTools.MetaModel
                 Name = Name,
                 Definition = Definition,
                 Type = Type,
-                AttributeIdentifiers = new HashSet<string> (AttributeIdentifiers),
                 ParentIdentifiers = new HashSet<string> (ParentIdentifiers)
             };
         }
@@ -757,6 +755,11 @@ namespace KAOSTools.MetaModel
         public bool Derived { get; set; }
         public string Name { get; set; }
         public string Definition { get; set; }
+
+        public string EntityIdentifier {
+            get;
+            set;
+        }
 
         public override string FriendlyName {
             get {
@@ -769,6 +772,11 @@ namespace KAOSTools.MetaModel
         public Attribute (KAOSModel model) : base (model)
         {
             Derived = false;
+        }
+        
+        public void SetEntity (Entity entity)
+        {
+            EntityIdentifier = entity.Identifier;
         }
 
         public void SetType (GivenType givenType)

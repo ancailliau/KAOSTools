@@ -90,12 +90,28 @@ namespace KAOSTools.MetaModel
                 return model.Elements.Where (x => x is Entity & !(x is Relation)).Cast<Entity>();
         }
 
+        public static IEnumerable<Entity> Entities (this KAOSModel model, Predicate<Entity> pred) {
+            return model.Elements.Where (x => (x is Entity & !(x is Relation)) && pred(x as Entity)).Cast<Entity>();
+        }
+
+        public static Entity Entity (this KAOSModel model, Predicate<Entity> pred) {
+            return model.Elements.SingleOrDefault (x => (x is Entity & !(x is Relation)) && pred(x as Entity)) as Entity;
+        }
+
         public static IEnumerable<Relation> Relations (this KAOSModel model) {
                 return model.Elements.Where (x => x is Relation).Cast<Relation>();
         }
 
         public static IEnumerable<GivenType> GivenTypes (this KAOSModel model) {
-                return model.Elements.Where (x => x is GivenType).Cast<GivenType>();
+            return model.Elements.Where (x => x is GivenType).Cast<GivenType>();
+        }
+
+        public static IEnumerable<GivenType> GivenTypes (this KAOSModel model, Predicate<GivenType> pred) {
+                return model.Elements.Where (x => x is GivenType && pred(x as GivenType)).Cast<GivenType>();
+        }
+        
+        public static GivenType GivenType (this KAOSModel model, Predicate<GivenType> pred) {
+            return model.Elements.SingleOrDefault (x => x is GivenType && pred(x as GivenType)) as GivenType;
         }
 
         #endregion

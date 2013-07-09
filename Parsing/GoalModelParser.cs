@@ -100,6 +100,7 @@ namespace KAOSTools.Parsing
 			m_nonterminals.Add("Link", new ParseMethod[]{this.DoParseLinkRule});
 			m_nonterminals.Add("AttributeEntityTypeAttribute", new ParseMethod[]{this.DoParseAttributeEntityTypeAttributeRule});
 			m_nonterminals.Add("DerivedAttribute", new ParseMethod[]{this.DoParseDerivedAttributeRule});
+			m_nonterminals.Add("IsCompleteAttribute", new ParseMethod[]{this.DoParseIsCompleteAttributeRule});
 			m_nonterminals.Add("ResolutionPattern", new ParseMethod[]{this.DoParseResolutionPatternRule});
 			m_nonterminals.Add("RefinementPattern", new ParseMethod[]{this.DoParseRefinementPatternRule});
 			m_nonterminals.Add("Multiplicity", new ParseMethod[]{this.DoParseMultiplicityRule});
@@ -850,7 +851,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// GoalRefinementAttribute := IdAttribute / NameAttribute / DefinitionAttribute / GoalRefinementChildren / PatternAttribute / SysRefAttribute
+		// GoalRefinementAttribute := IdAttribute / NameAttribute / DefinitionAttribute / GoalRefinementChildren / PatternAttribute / SysRefAttribute / IsCompleteAttribute
 		private State DoParseGoalRefinementAttributeRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -862,7 +863,8 @@ namespace KAOSTools.Parsing
 			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "GoalRefinementChildren");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "PatternAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "SysRefAttribute");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "SysRefAttribute");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "IsCompleteAttribute");});
 			
 			if (_state.Parsed)
 			{
@@ -1739,6 +1741,31 @@ namespace KAOSTools.Parsing
 			{
 				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
 				value = BuildDerivedAttribute(results);
+				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+			}
+			
+			return _state;
+		}
+		
+		// IsCompleteAttribute := 'iscomplete' S ('yes' / 'no' / 'true' / 'false')
+		private State DoParseIsCompleteAttributeRule(State _state, List<Result> _outResults)
+		{
+			State _start = _state;
+			List<Result> results = new List<Result>();
+			
+			_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "iscomplete");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoChoice(s, r,
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "yes");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "no");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "true");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "false");});});
+			
+			if (_state.Parsed)
+			{
+				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
+				value = BuildIsCompleteAttribute(results);
 				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 			}
 			

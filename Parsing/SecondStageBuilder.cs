@@ -46,7 +46,6 @@ namespace KAOSTools.Parsing
         public void BuildElement (ParsedElementWithAttributes element, dynamic e)
         {
             foreach (dynamic attribute in element.Attributes) {
-                Console.WriteLine ("Handle ({0}, {1})", e.GetType().Name, attribute.GetType().Name);
                 Handle (e, attribute);
             }
         }
@@ -101,7 +100,6 @@ namespace KAOSTools.Parsing
         public void Handle (GoalRefinement element, 
                             ParsedGoalRefinementChildrenAttribute parsedAttribute)
         {
-            Console.WriteLine (parsedAttribute.Values.Count );
             foreach (var child in parsedAttribute.Values) {
                 if (child is IdentifierExpression | child is NameExpression) {
                     DomainProperty domprop;
@@ -141,6 +139,12 @@ namespace KAOSTools.Parsing
                         + parsedAttribute.GetType().Name + "' on '" + element.GetType().Name + "'");
                 }
             }
+        }
+
+        public void Handle (GoalRefinement element, 
+                            ParsedIsComplete parsedAttribute)
+        {
+            element.IsComplete = parsedAttribute.Value;
         }
 
         public void Handle (KAOSTools.MetaModel.Attribute attribute, ParsedDerivedAttribute parsedAttribute)
@@ -326,39 +330,43 @@ namespace KAOSTools.Parsing
 
         public void Handle (Entity element, ParsedAttributeAttribute attribute)
         {
-            var e = new KAOSTools.MetaModel.Attribute (model);
+            var a = new KAOSTools.MetaModel.Attribute (model);
 
-            Handle (e, new ParsedNameAttribute() { 
+            Handle (a, new ParsedNameAttribute() { 
                 Value = attribute.Name
             });
 
-            Handle (e, new ParsedAttributeEntityTypeAttribute() { 
+            Handle (a, new ParsedAttributeEntityTypeAttribute() { 
                 Value = attribute.Type
             });
 
-            element.AddAttribute (e);
+            a.SetEntity (element);
+            model.Add (a);
 
-            declarations.Add (e, new List<Declaration> {
+            declarations.Add (a, new List<Declaration> {
                 new Declaration (attribute.Line, attribute.Col, attribute.Filename, relativePath, DeclarationType.Declaration)
             });
         }
 
         public void Handle (Entity element, ParsedAttributeDeclaration attribute)
         {
-            var e = new KAOSTools.MetaModel.Attribute (model);
+            var a = new KAOSTools.MetaModel.Attribute (model);
+            a.SetEntity (element);
 
             foreach (dynamic attr in attribute.Attributes) {
-                Handle (e, attr);
+                Handle (a, attr);
             }
 
-            element.AddAttribute (e);
+            model.Add (a);
 
-            declarations.Add (e, new List<Declaration> {
+            declarations.Add (a, new List<Declaration> {
                 new Declaration (attribute.Line, attribute.Col, attribute.Filename, relativePath, DeclarationType.Declaration)
             });
         }
 
-        public void Handle (KAOSTools.MetaModel.Attribute element, ParsedAttributeEntityTypeAttribute attribute) {
+        public void Handle (KAOSTools.MetaModel.Attribute element, 
+                            ParsedAttributeEntityTypeAttribute attribute) {
+
             GivenType givenType = null;
             if (attribute.Value != null) {
                 if (attribute.Value is IdentifierExpression | attribute.Value is NameExpression) {
@@ -378,7 +386,8 @@ namespace KAOSTools.Parsing
                 }
             }
 
-            element.SetType(givenType);
+            if (givenType != null)
+                element.SetType(givenType);
         }
 
         public void Handle (Goal element, ParsedObstructedByAttribute obstructedBy)
@@ -870,6 +879,11 @@ namespace KAOSTools.Parsing
         public void Handle (KAOSMetaModelElement element, ParsedDefinitionAttribute definition)
         {
             Handle (element, definition.Value.Verbatim ? definition.Value.Value : Sanitize (definition.Value.Value), "Definition");
+        }
+
+        public void Handle (KAOSTools.MetaModel.Attribute element, ParsedIdentifierAttribute identifier)
+        {
+            Handle (element, element.EntityIdentifier + "." + identifier.Value, "Identifier");
         }
 
         public void Handle (KAOSMetaModelElement element, ParsedIdentifierAttribute identifier)

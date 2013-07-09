@@ -382,12 +382,13 @@ namespace KAOSTools.Parsing.Tests
             Assert.NotNull (expression);
 
             if (id != null)
-                Assert.AreEqual (id, expression.Attribute.Identifier);
+                Assert.AreEqual (model.Entity(x => x.Name == "Type").Identifier + "." + id, expression.Attribute.Identifier);
 
             if (name != null)
                 Assert.AreEqual (name, expression.Attribute.Name);
 
-            model.Entities().Single (x => x.Name == "Type").AttributeIdentifiers.Count().ShallEqual(1);
+            var entity = model.Entities().Single (x => x.Name == "Type");
+            model.Attributes().Where (x => x.EntityIdentifier == entity.Identifier).Count().ShallEqual(1);
         }
         
         [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" == 0.5 end", 
