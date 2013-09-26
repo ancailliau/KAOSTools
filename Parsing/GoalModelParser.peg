@@ -77,42 +77,42 @@ Attribute :=
                                                                                                                                                                                                          
 GoalAttribute := 
     ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByGoal 
-      / ObstructedBy / AssignedTo / RDSAttribute / ExceptionAttribute / AssumptionAttribute )
+      / ObstructedBy / AssignedTo / RDSAttribute / ExceptionAttribute / AssumptionAttribute / CustomAttribute )
     `value = results[0].Value;`            
                                                                                                                                                                   
 AntiGoalAttribute := 
     ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByAntiGoal 
-      / AssignedTo )
+      / AssignedTo / CustomAttribute)
     `value = results[0].Value;`
                                                                                                                                              
 SoftGoalAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute )
+    ( IdAttribute / NameAttribute / DefinitionAttribute / CustomAttribute)
     `value = results[0].Value;`
     
 DomPropAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / Probability )
+    ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / Probability / CustomAttribute)
     `value = results[0].Value;`
     
 DomHypAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute )
+    ( IdAttribute / NameAttribute / DefinitionAttribute / CustomAttribute)
     `value = results[0].Value;`
 
 ObstacleAttribute := 
     ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByObstacle 
-      / ResolvedBy / Probability / AssignedTo )
+      / ResolvedBy / Probability / AssignedTo / CustomAttribute)
     `value = results[0].Value;`
 
 AgentAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / AgentTypeAttribute )
+    ( IdAttribute / NameAttribute / DefinitionAttribute / AgentTypeAttribute / CustomAttribute)
     `value = results[0].Value;`
                                                                          
 PredicateAttribute := 
     ( IdAttribute / NameAttribute / DefinitionAttribute / Argument 
-      / FormalSpecAttribute ) 
+      / FormalSpecAttribute / CustomAttribute) 
     `value = results[0].Value;`
 
 SystemAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / AlternativeAttribute ) 
+    ( IdAttribute / NameAttribute / DefinitionAttribute / AlternativeAttribute / CustomAttribute ) 
     `value = results[0].Value;`
 
 GoalRefinementAttribute := 
@@ -139,6 +139,9 @@ AttributeAttribute :=
     
 # Attributes
 
+CustomAttribute := '$' Identifier S '"' String? '"'
+    `value = BuildCustomAttribute(results);`
+    
 IdAttribute := 'id' S Identifier
     `value = BuildIdentifierAttribute(results);`
 
@@ -263,7 +266,7 @@ ResolutionPattern :=
     
 RefinementPattern := 
 	( 'milestone' 
-	/ ( 'case' S '[' S ( Float ) S ']' ) 
+	/ ( 'case' S '[' S ( Float ( S ',' S ( Float ))* ) S ']' ) 
 	/ 'introduce_guard' 
 	/ 'divide_and_conquer' 
 	/ 'unmonitorability' 

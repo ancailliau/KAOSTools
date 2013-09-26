@@ -130,6 +130,10 @@ namespace KAOSTools.Parsing
     public class ParsedDefinitionAttribute   : ParsedAttributeWithValue<ParsedString> {}
     public class ParsedSignatureAttribute    : ParsedAttributeWithValue<string> {}
 
+    public class ParsedCustomAttribute         : ParsedAttributeWithValue<string> {
+        public string Key { get; set; }
+    }
+
     public class ParsedProbabilityAttribute  : ParsedAttributeWithValue<double> {}
     public class ParsedRDSAttribute          : ParsedAttributeWithValue<double> {}
 

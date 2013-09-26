@@ -63,6 +63,11 @@ namespace KAOSTools.Parsing
             // ignore
         }
 
+        public void Handle (KAOSMetaModelElement element, ParsedCustomAttribute attribute)
+        {
+            element.CustomData.Add (attribute.Key, attribute.Value);
+        }
+
         public void Handle (GoalRefinement element, 
                             ParsedSoftGoalContributionAttribute parsedAttribute)
         {
@@ -108,8 +113,9 @@ namespace KAOSTools.Parsing
 
             else if (pattern.Value.Name == ParsedRefinementPatternName.Case) {
                 element.RefinementPattern = RefinementPattern.Case;
-                var caseProbability = pattern.Value.Parameters.Single() as ParsedFloat;
-                element.Parameters.Add (caseProbability.Value);
+                foreach (var p in pattern.Value.Parameters) {
+                    element.Parameters.Add ((p as ParsedFloat).Value);    
+                }
             }
 
             else if (pattern.Value.Name == ParsedRefinementPatternName.IntroduceGuard) {
@@ -672,8 +678,9 @@ namespace KAOSTools.Parsing
 
                 else if (refinedBy.RefinementPattern.Name == ParsedRefinementPatternName.Case) {
                     refinement.RefinementPattern = RefinementPattern.Case;
-                    var caseProbability = refinedBy.RefinementPattern.Parameters.Single() as ParsedFloat;
-                    refinement.Parameters.Add (caseProbability.Value);
+                    foreach (var p in refinedBy.RefinementPattern.Parameters) {
+                        refinement.Parameters.Add ((p as ParsedFloat).Value);    
+                    }
                 }
 
                 else if (refinedBy.RefinementPattern.Name == ParsedRefinementPatternName.IntroduceGuard) {

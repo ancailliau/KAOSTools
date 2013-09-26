@@ -167,19 +167,19 @@ namespace KAOSTools.Parsing {
 
         #region Attributes
 
-        ParsedElement BuildParsedAttributeWithValue<T1> (List<Result> results, string value)
+        T1 BuildParsedAttributeWithValue<T1> (List<Result> results, string value)
             where T1: ParsedAttributeWithValue<string>, new()
         {
             return BuildParsedAttributeWithValue<T1, string> (results, value);
         }
 
-        ParsedElement BuildParsedAttributeWithValue<T1> (List<Result> results, double value)
+        T1 BuildParsedAttributeWithValue<T1> (List<Result> results, double value)
             where T1: ParsedAttributeWithValue<double>, new()
         {
             return BuildParsedAttributeWithValue<T1, double> (results, value);
         }
 
-        ParsedElement BuildParsedAttributeWithValue<T1,T2> (List<Result> results, T2 value)
+        T1 BuildParsedAttributeWithValue<T1,T2> (List<Result> results, T2 value)
             where T1: ParsedAttributeWithValue<T2>, new()
         {
             return new T1 { 
@@ -228,6 +228,14 @@ namespace KAOSTools.Parsing {
             }
             
             return t;
+        }
+
+
+        ParsedElement BuildCustomAttribute (List<Result> results)
+        {
+            var parsedElement = BuildParsedAttributeWithValue<ParsedCustomAttribute> (results, results.Count == 4 ? "" : results[3].Text);
+            parsedElement.Key = results [1].Text;
+            return parsedElement;
         }
 
         ParsedElement BuildIdentifierAttribute (List<Result> results)
@@ -326,7 +334,9 @@ namespace KAOSTools.Parsing {
                 parsedRefinementPattern = new ParsedRefinementPattern { 
                     Name = ParsedRefinementPatternName.Case 
                 } ;
-                parsedRefinementPattern.Parameters.Add (results[2].Value);
+                for (int i = 2; i < results.Count - 1; i=i+2) {
+                    parsedRefinementPattern.Parameters.Add (results[i].Value);
+                }
             }
 
             else if (results[0].Text == "introduce_guard") {

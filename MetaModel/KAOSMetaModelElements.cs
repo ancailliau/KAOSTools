@@ -20,10 +20,16 @@ namespace KAOSTools.MetaModel
 
         public KAOSModel model;
 
+        public IDictionary<string,string> CustomData {
+            get;
+            set;
+        }
+
         public KAOSMetaModelElement (KAOSModel model)
         {
             this.Identifier = Guid.NewGuid ().ToString ();
             this.model = model;
+            this.CustomData = new Dictionary<string,string> ();
         }
 
         public abstract KAOSMetaModelElement Copy ();

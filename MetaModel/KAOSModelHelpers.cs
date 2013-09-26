@@ -12,6 +12,18 @@ namespace KAOSTools.MetaModel
                 return model.Elements.Where (x => x is Goal).Cast<Goal>();
         }
 
+        public static IEnumerable<Goal> Goals (this KAOSModel model, Predicate<Goal> pred) {
+            return model.Elements.Where (x => x is Goal && pred (x as Goal)).Cast<Goal>();
+        }
+
+        public static Goal Goal (this KAOSModel model) {
+            return (Goal) model.Elements.SingleOrDefault (x => x is Goal);
+        }
+
+        public static Goal Goal (this KAOSModel model, Predicate<Goal> pred) {
+            return (Goal) model.Elements.SingleOrDefault (x => x is Goal && pred (x as Goal));
+        }
+
         public static IEnumerable<AntiGoal> AntiGoals (this KAOSModel model) {
                 return model.Elements.Where (x => x is AntiGoal).Cast<AntiGoal>();
         }
@@ -19,6 +31,18 @@ namespace KAOSTools.MetaModel
         public static IEnumerable<Obstacle> Obstacles (this KAOSModel model) {
                 return model.Elements.Where (x => x is Obstacle).Cast<Obstacle>();
         }
+        public static IEnumerable<Obstacle> Obstacles (this KAOSModel model, Predicate<Obstacle> pred) {
+            return model.Elements.Where (x => x is Obstacle && pred (x as Obstacle)).Cast<Obstacle>();
+        }
+
+        public static Obstacle Obstacle (this KAOSModel model) {
+            return (Obstacle) model.Elements.SingleOrDefault (x => x is Obstacle);
+        }
+
+        public static Obstacle Obstacle (this KAOSModel model, Predicate<Obstacle> pred) {
+            return (Obstacle) model.Elements.SingleOrDefault (x => x is Obstacle && pred (x as Obstacle));
+        }
+
 
         public static IEnumerable<DomainProperty> DomainProperties (this KAOSModel model) {
                 return model.Elements.Where (x => x is DomainProperty).Cast<DomainProperty>();

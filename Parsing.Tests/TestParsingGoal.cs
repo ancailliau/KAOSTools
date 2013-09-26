@@ -527,6 +527,17 @@ namespace KAOSTools.Parsing.Tests
             model.Goals().ShallContain (x => x.Identifier == "test").ShallBeSingle ().RDS.ShallEqual (expected);
         }
 
+        [TestCase(@"declare goal
+                        id test
+                        $custom ""My string""
+                    end", "test")]
+        public void TestCustomAttribute (string input, string expectedIdentifier)
+        {
+            var model = parser.Parse (input);
+            var g = model.Goals(x => x.Identifier == expectedIdentifier).ShallBeSingle ();
+            g.CustomData.Count.ShallEqual (1);
+            g.CustomData["custom"].ShallEqual("My string");
+        }
     }
 
 }

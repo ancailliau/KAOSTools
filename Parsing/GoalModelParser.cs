@@ -72,6 +72,7 @@ namespace KAOSTools.Parsing
 			m_nonterminals.Add("TypeAttribute", new ParseMethod[]{this.DoParseTypeAttributeRule});
 			m_nonterminals.Add("AssociationAttribute", new ParseMethod[]{this.DoParseAssociationAttributeRule});
 			m_nonterminals.Add("AttributeAttribute", new ParseMethod[]{this.DoParseAttributeAttributeRule});
+			m_nonterminals.Add("CustomAttribute", new ParseMethod[]{this.DoParseCustomAttributeRule});
 			m_nonterminals.Add("IdAttribute", new ParseMethod[]{this.DoParseIdAttributeRule});
 			m_nonterminals.Add("NameAttribute", new ParseMethod[]{this.DoParseNameAttributeRule});
 			m_nonterminals.Add("FormalSpecAttribute", new ParseMethod[]{this.DoParseFormalSpecAttributeRule});
@@ -642,7 +643,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// GoalAttribute := IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByGoal / ObstructedBy / AssignedTo / RDSAttribute / ExceptionAttribute / AssumptionAttribute
+		// GoalAttribute := IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByGoal / ObstructedBy / AssignedTo / RDSAttribute / ExceptionAttribute / AssumptionAttribute / CustomAttribute
 		private State DoParseGoalAttributeRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -658,7 +659,8 @@ namespace KAOSTools.Parsing
 			delegate (State s, List<Result> r) {return DoParse(s, r, "AssignedTo");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "RDSAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "ExceptionAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "AssumptionAttribute");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "AssumptionAttribute");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "CustomAttribute");});
 			
 			if (_state.Parsed)
 			{
@@ -670,7 +672,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// AntiGoalAttribute := IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByAntiGoal / AssignedTo
+		// AntiGoalAttribute := IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByAntiGoal / AssignedTo / CustomAttribute
 		private State DoParseAntiGoalAttributeRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -682,7 +684,8 @@ namespace KAOSTools.Parsing
 			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpecAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "RefinedByAntiGoal");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "AssignedTo");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "AssignedTo");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "CustomAttribute");});
 			
 			if (_state.Parsed)
 			{
@@ -694,7 +697,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// SoftGoalAttribute := IdAttribute / NameAttribute / DefinitionAttribute
+		// SoftGoalAttribute := IdAttribute / NameAttribute / DefinitionAttribute / CustomAttribute
 		private State DoParseSoftGoalAttributeRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -703,7 +706,8 @@ namespace KAOSTools.Parsing
 			_state = DoChoice(_state, results,
 			delegate (State s, List<Result> r) {return DoParse(s, r, "IdAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "CustomAttribute");});
 			
 			if (_state.Parsed)
 			{
@@ -715,7 +719,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// DomPropAttribute := IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / Probability
+		// DomPropAttribute := IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / Probability / CustomAttribute
 		private State DoParseDomPropAttributeRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -726,7 +730,8 @@ namespace KAOSTools.Parsing
 			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpecAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Probability");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Probability");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "CustomAttribute");});
 			
 			if (_state.Parsed)
 			{
@@ -738,7 +743,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// DomHypAttribute := IdAttribute / NameAttribute / DefinitionAttribute
+		// DomHypAttribute := IdAttribute / NameAttribute / DefinitionAttribute / CustomAttribute
 		private State DoParseDomHypAttributeRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -747,7 +752,8 @@ namespace KAOSTools.Parsing
 			_state = DoChoice(_state, results,
 			delegate (State s, List<Result> r) {return DoParse(s, r, "IdAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "CustomAttribute");});
 			
 			if (_state.Parsed)
 			{
@@ -759,7 +765,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// ObstacleAttribute := IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByObstacle / ResolvedBy / Probability / AssignedTo
+		// ObstacleAttribute := IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByObstacle / ResolvedBy / Probability / AssignedTo / CustomAttribute
 		private State DoParseObstacleAttributeRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -773,7 +779,8 @@ namespace KAOSTools.Parsing
 			delegate (State s, List<Result> r) {return DoParse(s, r, "RefinedByObstacle");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "ResolvedBy");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Probability");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "AssignedTo");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "AssignedTo");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "CustomAttribute");});
 			
 			if (_state.Parsed)
 			{
@@ -785,7 +792,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// AgentAttribute := IdAttribute / NameAttribute / DefinitionAttribute / AgentTypeAttribute
+		// AgentAttribute := IdAttribute / NameAttribute / DefinitionAttribute / AgentTypeAttribute / CustomAttribute
 		private State DoParseAgentAttributeRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -795,7 +802,8 @@ namespace KAOSTools.Parsing
 			delegate (State s, List<Result> r) {return DoParse(s, r, "IdAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "AgentTypeAttribute");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "AgentTypeAttribute");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "CustomAttribute");});
 			
 			if (_state.Parsed)
 			{
@@ -807,7 +815,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// PredicateAttribute := IdAttribute / NameAttribute / DefinitionAttribute / Argument / FormalSpecAttribute
+		// PredicateAttribute := IdAttribute / NameAttribute / DefinitionAttribute / Argument / FormalSpecAttribute / CustomAttribute
 		private State DoParsePredicateAttributeRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -818,7 +826,8 @@ namespace KAOSTools.Parsing
 			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Argument");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpecAttribute");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpecAttribute");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "CustomAttribute");});
 			
 			if (_state.Parsed)
 			{
@@ -830,7 +839,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// SystemAttribute := IdAttribute / NameAttribute / DefinitionAttribute / AlternativeAttribute
+		// SystemAttribute := IdAttribute / NameAttribute / DefinitionAttribute / AlternativeAttribute / CustomAttribute
 		private State DoParseSystemAttributeRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -840,7 +849,8 @@ namespace KAOSTools.Parsing
 			delegate (State s, List<Result> r) {return DoParse(s, r, "IdAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "AlternativeAttribute");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "AlternativeAttribute");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "CustomAttribute");});
 			
 			if (_state.Parsed)
 			{
@@ -963,6 +973,31 @@ namespace KAOSTools.Parsing
 			{
 				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
 				value = results[0].Value;
+				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+			}
+			
+			return _state;
+		}
+		
+		// CustomAttribute := '$' Identifier S '"' String? '"'
+		private State DoParseCustomAttributeRule(State _state, List<Result> _outResults)
+		{
+			State _start = _state;
+			List<Result> results = new List<Result>();
+			
+			_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "$");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Identifier");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "\"");},
+			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 1,
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "String");});},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "\"");});
+			
+			if (_state.Parsed)
+			{
+				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
+				value = BuildCustomAttribute(results);
 				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 			}
 			
@@ -1865,7 +1900,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// RefinementPattern := 'milestone' / ('case' S '[' S Float S ']') / 'introduce_guard' / 'divide_and_conquer' / 'unmonitorability' / 'uncontrollability'
+		// RefinementPattern := 'milestone' / ('case' S '[' S (Float (S ',' S Float)*) S ']') / 'introduce_guard' / 'divide_and_conquer' / 'unmonitorability' / 'uncontrollability'
 		private State DoParseRefinementPatternRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -1878,7 +1913,14 @@ namespace KAOSTools.Parsing
 				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
 				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "[");},
 				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
-				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Float");},
+				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Float");},
+					delegate (State s3, List<Result> r3) {return DoRepetition(s3, r3, 0, 2147483647,
+						delegate (State s4, List<Result> r4) {return DoSequence(s4, r4,
+							delegate (State s5, List<Result> r5) {return DoParse(s5, r5, "S");},
+							delegate (State s5, List<Result> r5) {return DoParseLiteral(s5, r5, ",");},
+							delegate (State s5, List<Result> r5) {return DoParse(s5, r5, "S");},
+							delegate (State s5, List<Result> r5) {return DoParse(s5, r5, "Float");});});});},
 				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
 				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "]");});},
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "introduce_guard");},
