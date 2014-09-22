@@ -57,7 +57,10 @@ namespace KAOSTools.OmnigraffleExport.Omnigraffle
         public double                  CircoSeparation          { get; set; }
         public double                  DotRankSep               { get; set; }
         public LayoutEngine            LayoutEngine             { get; set; }
+
         public double                  NeatoSeparation          { get; set; }
+        public double                  NeatoLineLength          { get; set; }
+        public bool                    NeatoOverlap             { get; set; }
 
         public bool                    TwopiOverlap             { get; set; }
         public double                  TwopiSeparation          { get; set; }

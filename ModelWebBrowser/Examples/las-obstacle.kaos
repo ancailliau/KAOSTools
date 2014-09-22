@@ -1,0 +1,75 @@
+override goal
+  id at_station_encoded
+  obstructedby at_station_not_encoded
+end
+
+  declare obstacle
+    id at_station_not_encoded
+    formalspec sooner-or-later exists amb : Ambulance . 
+                AmbulanceAtStation(amb) 
+                and always, for strictly more than 2 minutes,
+                    not AtStationButtonPressed(amb)
+              
+    refinedby at_station_encoding_forgotten
+    refinedby MDT_button_broken
+    refinedby at_station_encoded_too_late
+  end
+  
+    declare obstacle
+      id at_station_encoding_forgotten
+      formalspec sooner-or-later exists amb : Ambulance . 
+                  AmbulanceAtStation(amb) 
+                  and always, for strictly more than 2 minutes,
+                      AtStationButtonForgotten(amb)
+    end
+  
+    declare obstacle
+      id MDT_button_broken
+      formalspec sooner-or-later exists amb : Ambulance . 
+                  AmbulanceAtStation(amb) 
+                  and always, for strictly more than 2 minutes,
+                      AtStationButtonBroken(amb)
+    end
+  
+    declare obstacle
+      id at_station_encoded_too_late
+      formalspec sooner-or-later exists amb : Ambulance . 
+                  AmbulanceAtStation(amb) 
+                  and always, for strictly more than 2 minutes,
+                      not AtStationButtonPressed(amb)
+                  and sooner-or-later AtStationButtonPressed(amb)
+    end
+    
+override goal
+  id at_station_sent_when_encoded
+  obstructedby at_station_not_sent_when_encoded
+end
+
+  declare obstacle
+    id at_station_not_sent_when_encoded
+    refinedby no_signal_when_at_station_encoded
+    refinedby at_station_encoded_too_late
+  end
+
+override goal
+  id at_station_received_when_sent
+  obstructedby at_station_not_received_when_sent
+end
+
+  declare obstacle
+    id at_station_not_received_when_sent
+    refinedby message_integrity_compromised
+    refinedby at_station_message_received_too_late
+  end
+
+
+override goal
+  id at_station_known_when_received
+  obstructedby at_station_not_known_when_received
+end
+
+  declare obstacle
+    id at_station_not_known_when_received
+    refinedby at_station_known_too_late
+    refinedby at_station_message_corrupted
+  end

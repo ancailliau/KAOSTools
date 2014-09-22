@@ -67,7 +67,8 @@ end
           name "Achieve [Ambulance At Station Encoded]"
           formalspec forall amb : Ambulance . 
                       when AmbulanceAtStation(amb) 
-                      then sooner-or-later AtStationButtonPressed(amb)
+                      then sooner-or-later, in 2 minutes, 
+                           AtStationButtonPressed(amb)
           assignedto "Ambulance Staff"
         end
         
@@ -299,7 +300,7 @@ end
       formalspec sooner-or-later exists inc: Incident, amb: Ambulance . 
                    ( AmbulanceMobilized(amb, inc) 
                      and sooner-or-later, strictly before 10 minutes, 
-                       AmbulanceBrokenDown (amb, inc) before OnScene(amb, inc) )
+                       AmbulanceBrokenDown (amb, inc) before AmbulanceOnScene(amb, inc) )
       resolvedby(strong_mitigation) other_ambulance_on_scene_when_mobilized_and_broken
     end
     
@@ -311,7 +312,7 @@ end
         formalspec forall inc : Incident, amb : Ambulance . 
                     when AmbulanceMobilized(amb, inc) 
                      and sooner-or-later, strictly before 10 minutes, 
-                       AmbulanceBrokenDown (amb, inc) before OnScene(amb, inc)
+                       AmbulanceBrokenDown (amb, inc) before AmbulanceOnScene(amb, inc)
                     then sooner-or-later, before 20 minutes, 
                       exists otherAmb:Ambulance . otherAmb != amb 
                         and AmbulanceOnScene(otherAmb, inc)

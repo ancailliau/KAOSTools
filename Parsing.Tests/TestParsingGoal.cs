@@ -486,9 +486,9 @@ namespace KAOSTools.Parsing.Tests
                 .ShallContain (x => x.Identifier == "test")
                     .ShallBeSingle ();
 
-            var e = goal.Exceptions.ShallBeSingle ();
-            e.ResolvingGoal.Identifier.ShallEqual ("rg");
-            e.ResolvedObstacle.Identifier.ShallEqual ("o");
+            var e = goal.Exceptions().ShallBeSingle ();
+            e.ResolvingGoalIdentifier.ShallEqual ("rg");
+            e.ResolvedObstacleIdentifier.ShallEqual ("o");
         }
 
         
@@ -507,14 +507,15 @@ namespace KAOSTools.Parsing.Tests
                     end")]
         public void TestAssumption (string input)
         {
-            var model = parser.Parse (input);
+            /*var model = parser.Parse (input);
 
             var goal = model.Goals()
                 .ShallContain (x => x.Identifier == "test")
                     .ShallBeSingle ();
 
             var e = goal.Assumptions.ShallBeSingle ();
-            Assert.AreEqual ("rg", e.Assumed.Identifier);
+            Assert.AreEqual ("rg", e.Assumed.Identifier);*/
+            Assert.Fail ();
         }
 
         [TestCase(@"declare goal id test rds 0.95 end", 0.95)]

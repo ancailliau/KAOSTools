@@ -38,7 +38,7 @@ declare goal
   definition  "Sooner-or-later, ambulance shall be mobilized when allocated."
   formalspec  when ambulanceAllocated() then sooner-or-later ambulanceMobilized()
   
-  refinedby (case[.8])  
+  refinedby (case[.8,.2])  
   			  achieve_ambulance_mobilized_when_ambulance_allocated_on_road, 
               achieve_ambulance_mobilized_when_ambulance_allocated_at_station
 end

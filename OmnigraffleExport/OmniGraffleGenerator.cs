@@ -114,7 +114,10 @@ namespace KAOSTools.OmnigraffleExport
                 layoutInfo.Add ("circoMinDist", new PListReal (sheet.LayoutInfo.CircoMinDist));
                 layoutInfo.Add ("circoSeparation", new PListReal (sheet.LayoutInfo.CircoSeparation));
                 layoutInfo.Add ("dotRankSep", new PListReal (sheet.LayoutInfo.DotRankSep));
+
                 layoutInfo.Add ("neatoSeparation", new PListReal (sheet.LayoutInfo.NeatoSeparation));
+                layoutInfo.Add ("neatoLineLength", new PListReal (sheet.LayoutInfo.NeatoLineLength));
+                layoutInfo.Add ("neatoOverlap", new PListBool (sheet.LayoutInfo.NeatoOverlap));
 
                 layoutInfo.Add ("twopiOverlap", new PListBool (sheet.LayoutInfo.TwopiOverlap));
                 layoutInfo.Add ("twopiSeparation", new PListReal (sheet.LayoutInfo.TwopiSeparation));
@@ -355,9 +358,10 @@ namespace KAOSTools.OmnigraffleExport
             dict.Add ("Flow", flow);
 
             var wrap = new PListString ();
-            if (!graphic.Wrap)
+            if (!graphic.Wrap) {
                 wrap.Value = "NO";
-            dict.Add ("Wrap", wrap);
+                dict.Add ("Wrap", wrap);
+            }
 
             if (graphic.FontInfo != default (Omnigraffle.FontInfo)) {
                 dict.Add ("Font", ExportFont (graphic.FontInfo));

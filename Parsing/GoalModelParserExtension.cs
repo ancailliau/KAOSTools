@@ -33,6 +33,23 @@ namespace KAOSTools.Parsing {
             return attrs;
         }
 
+        ParsedElement ModelAttribute (List<Result> results)
+        {
+            if (results[0].Text == "@author") {
+                return new ModelAuthor { Value = results[2].Text };
+            }
+
+            if (results[0].Text == "@title") {
+                return new ModelTitle { Value = results[2].Text };
+            }
+
+            if (results[0].Text == "@version") {
+                return new ModelVersion { Value = results[2].Text };
+            }
+
+            throw new NotImplementedException ();
+        }
+
         ParsedElement Import (string file)
         {
             var filename = Path.Combine (Path.GetDirectoryName (m_file), file);
@@ -359,6 +376,11 @@ namespace KAOSTools.Parsing {
                     Name = ParsedRefinementPatternName.Uncontrollability } ;
             }
 
+            else if (results[0].Text == "redundant") {
+                parsedRefinementPattern = new ParsedRefinementPattern { 
+                    Name = ParsedRefinementPatternName.Redundant } ;
+            }
+
             else {
                 throw new NotImplementedException (results[0].Text);
             }
@@ -383,6 +405,9 @@ namespace KAOSTools.Parsing {
 
             if (results[0].Text == "weakening")
                 parsedRefinementPattern = new ParsedResolutionPattern { Name = "weakening" } ;
+
+            if (results[0].Text == "mitigation")
+                parsedRefinementPattern = new ParsedResolutionPattern { Name = "mitigation" } ;
 
             if (results[0].Text == "weak_mitigation")
                 parsedRefinementPattern = new ParsedResolutionPattern { Name = "weak_mitigation" } ;

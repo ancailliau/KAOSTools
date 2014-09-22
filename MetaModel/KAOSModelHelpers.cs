@@ -90,6 +90,18 @@ namespace KAOSTools.MetaModel
                 return model.Elements.Where (x => x is ObstacleAgentAssignment).Cast<ObstacleAgentAssignment>();
         }
 
+        public static IEnumerable<GoalException> Exceptions (this KAOSModel model) {
+            return model.Elements.Where (x => x is GoalException).Cast<GoalException>();
+        }
+
+        public static IEnumerable<GoalReplacement> Replacements (this KAOSModel model) {
+            return model.Elements.Where (x => x is GoalReplacement).Cast<GoalReplacement>();
+        }
+
+        public static IEnumerable<ObstacleAssumption> ObstacleAssumptions (this KAOSModel model) {
+            return model.Elements.Where (x => x is ObstacleAssumption).Cast<ObstacleAssumption>();
+        }
+
         #endregion
 
         #region Agent model
@@ -153,6 +165,10 @@ namespace KAOSTools.MetaModel
                 return goals;
         }
 
+        public static IEnumerable<Obstacle> RootObstacles (this KAOSModel model) {
+            return model.Obstructions ().Select ( x => x.Obstacle() );
+        }
+
         public static IEnumerable<AntiGoal> RootAntiGoals (this KAOSModel model) {
             var rootAntiGoals = new HashSet<string> (model.AntiGoals().Select (x => x.Identifier));
             foreach (var goal in model.AntiGoals())
@@ -172,11 +188,29 @@ namespace KAOSTools.MetaModel
         }
 
         public static IEnumerable<Goal> ObstructedGoals (this KAOSModel model) {
-                return from g in model.Goals() where g.Obstructions().Count() > 0 select g;
+            return from g in model.Obstructions() select g.ObstructedGoal ();
         }
 
         public static IEnumerable<Obstacle> ResolvedObstacles (this KAOSModel model) {
             return from o in model.Obstacles() where o.Resolutions().Count() > 0 select o;
+        }
+
+        public static IEnumerable<Obstacle> Obstacles (this Goal goal) {
+            return goal.Refinements ().SelectMany (x => x.SubGoals ().SelectMany (y => y.Obstacles ()))
+                    .Union (goal.Obstructions().SelectMany (x => x.Obstacles()));
+        }
+
+        public static IEnumerable<Obstacle> Obstacles (this Obstacle o) {
+            return o.Refinements ().SelectMany (x => x.SubObstacles().SelectMany (y => y.Obstacles ()))
+                    .Union (o.Resolutions().SelectMany (x => x.Obstacles()));
+        }
+
+        public static IEnumerable<Obstacle> Obstacles (this Obstruction o) {
+            return o.Obstacle().Obstacles ();
+        }
+
+        public static IEnumerable<Obstacle> Obstacles (this Resolution o) {
+            return o.ResolvingGoal ().Obstacles ();
         }
     }
 }

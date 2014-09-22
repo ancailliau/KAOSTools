@@ -13,7 +13,10 @@ namespace ModelWebBrowser.Controllers
 {
     public class HomeController : Controller
     {
-        private const string file = "../Examples/bcms/Z-whole-model.kaos";
+        // private const string file = "/Users/acailliau/Dropbox/PhD/2013/Dependent obstacles/carpooling.kaos";
+        // private const string file =  "../Examples/bcms/Z-whole-model.kaos";
+        // private const string file =  "/Users/acailliau/Dropbox/PhD/2014/Papers/RE14/examples.kaos";
+        private const string file =  "/Users/acailliau/Dropbox/PhD/2014/Papers/RE14/Models/las.kaos";
 
         private static ModelBuilder parser;
         private static string code;
@@ -38,7 +41,8 @@ namespace ModelWebBrowser.Controllers
 
         public ActionResult Index ()
         {
-            return RedirectToAction ("GoalModel");
+            return View();
+            //return RedirectToAction ("GoalModel");
         }
 
         public ActionResult GoalModel ()
@@ -49,7 +53,7 @@ namespace ModelWebBrowser.Controllers
                 Declarations = parser.Declarations
             });
         }
-
+        /*
         public ActionResult AgentModel ()
         {
             return View (new KAOSModelPage {
@@ -67,7 +71,7 @@ namespace ModelWebBrowser.Controllers
                 Declarations = parser.Declarations
             });
         }
-
+*/
     }
 }
 

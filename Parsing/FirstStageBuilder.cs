@@ -24,6 +24,24 @@ namespace KAOSTools.Parsing
             foreach (var element in elements.Values.Where (x => x is ParsedElementWithAttributes).Cast<ParsedElementWithAttributes>()) {
                 BuildElementWithKeys (element);
             }
+            foreach (var element in elements.Values.Where (x => x is ParsedModelAttribute).Cast<ParsedModelAttribute>()) {
+                BuildModelAttributes (element);
+            }
+        }
+
+
+        public void BuildModelAttributes (ParsedModelAttribute element)
+        {
+            if (element is ModelAuthor) {
+                model.Author = element.Value;
+            } else if (element is ModelTitle) {
+                model.Title = element.Value;
+            } else if (element is ModelVersion) {
+                model.Version = element.Value;
+            } else {
+                throw new BuilderException (string.Format ("'{0}' not supported", element.GetType ()),
+                    element.Filename, element.Line, element.Col);
+            }
         }
 
         public KAOSMetaModelElement BuildElementWithKeys (ParsedElementWithAttributes element)

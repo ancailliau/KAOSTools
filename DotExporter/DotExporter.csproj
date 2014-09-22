@@ -6,7 +6,7 @@
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{B868C8DA-65E4-4BF2-BAFA-3EEF9C84227F}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>KAOSTools.DotExporter</RootNamespace>
     <AssemblyName>KAOSTools.DotExporter</AssemblyName>
   </PropertyGroup>

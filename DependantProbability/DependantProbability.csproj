@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{50656D46-6CEA-4424-898A-F4199B72C115}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>DependantProbability</RootNamespace>
+    <AssemblyName>DependantProbability</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Externalconsole>true</Externalconsole>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Infer.Compiler">
+      <HintPath>Libraries\Infer.Compiler.dll</HintPath>
+    </Reference>
+    <Reference Include="Infer.Runtime">
+      <HintPath>Libraries\Infer.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Infer.Fun">
+      <HintPath>Libraries\Infer.Fun.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DomPropRef.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\BoolSimplify\BoolSimplify.csproj">
+      <Project>{134A7F58-A49C-42E1-8924-A58382A17D68}</Project>
+      <Name>BoolSimplify</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MetaModel\MetaModel.csproj">
+      <Project>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</Project>
+      <Name>MetaModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Parsing\Parsing.csproj">
+      <Project>{52C948A2-30AD-40A7-89A3-9D66B2FCDD9F}</Project>
+      <Name>Parsing</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

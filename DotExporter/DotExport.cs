@@ -11,18 +11,20 @@ namespace KAOSTools.DotExporter
         private readonly KAOSModel model;
         private readonly TextWriter writer;
 
-        public DotExport (KAOSModel model, TextWriter writer)
+        public DotExport (KAOSModel model, TextWriter writer, 
+            float margin = 0.2f, float nodesep = 0.1f, float ranksep = 0.3f)
         {
             this.model = model;
             this.writer = writer;
 
             writer.WriteLine ("digraph model {\n");
-            writer.WriteLine ("graph[margin=0.2, nodesep=0.1, ranksep=0.3];");
+            writer.WriteLine (string.Format ("graph[margin={0}, nodesep={1}, ranksep={2}];", 
+                              margin, nodesep, ranksep));
             writer.WriteLine ("edge[dir=back];");
             writer.WriteLine ();
         }
 
-        public void ExportGoal (Goal g)
+        public void ExportGoal (Goal g, bool bold = false)
         {
             bool assignedToSoftwareAgents = (from assignments in g.AgentAssignments()
                                              from agent in assignments.Agents()
@@ -30,11 +32,16 @@ namespace KAOSTools.DotExporter
             var name = new StringBuilder (g.FriendlyName);
             if (name.Length > 30) {
                 var midspace = g.Name.IndexOf (' ', (g.Name.Length / 3) - 1);
-                if (midspace > 0)
-                    name.Replace (" ", @"\n", midspace, 1);
+                if (midspace > 0) {
+                    if (bold) {
+                        name.Replace (" ", "<BR/>", midspace, 1);
+                    } else {
+                        name.Replace (" ", @"\n", midspace, 1);
+                    }
+                }
             }
-            writer.WriteLine (@"""{0}"" [shape=polygon,skew=.1,label=""{1}"",style=filled,fillcolor=""{2}"",penwidth={3},fontname=""Arial"",fontsize=10,margin=""-.2,0""];", 
-                              g.Identifier, name, 
+            writer.WriteLine (@"""{0}"" [shape=polygon,skew=.05,label={1},style=filled,fillcolor=""{2}"",penwidth={3},fontname=""HelveticaNeue"",fontsize=9,margin=""0,0""];", 
+                g.Identifier, bold ? "<<FONT COLOR=\"red\"><B>" + name + "</B></FONT>>" : "\"" + name + "\"", 
                               assignedToSoftwareAgents ? "#fff9c1" : "#d8ebfd", 
                               g.AgentAssignments().Count() > 0 ? 2 : 1);
         }
@@ -46,7 +53,7 @@ namespace KAOSTools.DotExporter
                 var midspace = domprop.Name.IndexOf (' ', (domprop.Name.Length / 2) - 1);
                 name.Replace (" ", @"\n", midspace, 1);
             }
-            writer.WriteLine (@"""{0}"" [shape=trapezium,label=""{1}"",style=filled,fillcolor=""{2}"",fontname=""Arial"",fontsize=10,margin=""-.2,0""];", 
+            writer.WriteLine (@"""{0}"" [shape=trapezium,label=""{1}"",style=filled,fillcolor=""{2}"",fontname=""HelveticaNeue"",fontsize=9,margin=""-.2,0""];", 
                               domprop.Identifier, name, "#e8fdcb");
         }
 
@@ -57,7 +64,7 @@ namespace KAOSTools.DotExporter
                 var midspace = domhyp.Name.IndexOf (' ', (domhyp.Name.Length / 2) - 1);
                 name.Replace (" ", @"\n", midspace, 1);
             }
-            writer.WriteLine (@"""{0}"" [shape=trapezium,label=""{1}"",style=filled,fillcolor=""{2}"",fontname=""Arial"",fontsize=10,margin=""-.2,0""];", 
+            writer.WriteLine (@"""{0}"" [shape=trapezium,label=""{1}"",style=filled,fillcolor=""{2}"",fontname=""HelveticaNeue"",fontsize=9,margin=""-.2,0""];", 
                               domhyp.Identifier, name, "#FFEFEF");
         }
 
@@ -68,11 +75,16 @@ namespace KAOSTools.DotExporter
                 var midspace = o.Name.IndexOf (' ', (o.Name.Length / 2) - 1);
                 name.Replace (" ", @"\n", midspace, 1);
             }
-            writer.WriteLine (@"""{0}"" [shape=polygon,skew=-.1,label=""{1}"",style=filled,fillcolor=""#ffa9ad"",penwidth={2},fontname=""Arial"",fontsize=10,margin=""-.2,0""];", 
+            writer.WriteLine (@"""{0}"" [shape=polygon,skew=-.1,label=""{1}"",style=filled,fillcolor=""#ffa9ad"",penwidth={2},fontname=""HelveticaNeue"",fontsize=9,margin=""-.2,0""];", 
                               o.Identifier, name, o.Refinements().Count() == 0 ? 2 : 1);
         }
 
-        public void ExportResponsibility (Goal g, AgentAssignment assignement)
+        public void ExportAgent (Agent g)
+        {
+            writer.WriteLine (@"""{0}"" [shape=hexagon,label=""{1}"",style=filled,fillcolor=""#dcbdfa"",fontname=""HelveticaNeue"",fontsize=9,margin=""0.1,-0.1""];", g.Identifier, g.Name);
+        }
+
+        public void ExportAssignment (Goal g, AgentAssignment assignement)
         {
             var tempGUID = Guid.NewGuid().ToString();
             writer.WriteLine (@"""{0}""[shape=circle,width=.1,fixedsize=true,label=""""];", tempGUID);
@@ -83,28 +95,33 @@ namespace KAOSTools.DotExporter
 
 
             foreach (var agent in assignement.Agents()) {
-                var tempGUID2 = Guid.NewGuid ().ToString ();
-                // agent shape
-                writer.WriteLine (@"""{0}"" [shape=hexagon,label=""{1}"",style=filled,fillcolor=""#dcbdfa"",fontname=""Arial"",fontsize=10,margin=""0.1,-0.1""];", tempGUID2, agent.Name);
                 writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=none];", 
                                   tempGUID, 
-                                  tempGUID2);
+                    agent.Identifier);
 
             }
         }
 
-        public void ExportObstruction (Goal g, Obstacle o)
+        public void ExportException (GoalException r)
+        {
+            writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=onormal,label=<<B>Except</B> {2}>,fontname=""HelveticaNeue"",fontsize=7,margin=""0.1,-0.1"",center=true,fillcolor=""#ffffff""];", 
+                r.ResolvingGoal().Identifier, 
+                r.AnchorGoal().Identifier,
+                r.Obstacle().FriendlyName);
+        }
+
+        public void ExportObstruction (Goal g, Obstruction o)
         {
             writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=onormaltee];", 
                               g.Identifier, 
-                              o.Identifier);
+                              o.Obstacle ().Identifier);
         }
         
-        public void ExportResolution (Obstacle o, Goal g)
+        public void ExportResolution (Obstacle o, Resolution g)
         {
             writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=onormaltee];", 
                               o.Identifier, 
-                              g.Identifier);
+                              g.ResolvingGoal().Identifier);
         }
 
         public void ExportRefinement (Goal parent, GoalRefinement refinement) {
@@ -113,7 +130,7 @@ namespace KAOSTools.DotExporter
             writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=onormal,label=""  {2}""];", 
                               parent.Identifier,
                               tempGUID,
-                              refinement.SystemReference().FriendlyName);
+                refinement.SystemReference() != null ? refinement.SystemReference().FriendlyName : string.Empty);
 
             foreach (var child in refinement.SubGoals()) {
                 writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=none];", 
@@ -220,6 +237,7 @@ namespace KAOSTools.DotExporter
             writer.WriteLine ("## RESPONSIBILITY");
             writer.WriteLine ();
 
+            /*
             foreach (var g in model.Goals()) {
                 if (g.AgentAssignments().Count() > 0) {
                     foreach (var assignment in g.AgentAssignments()) {
@@ -228,7 +246,7 @@ namespace KAOSTools.DotExporter
                         }
                     }
                 }
-            }
+            }*/
             
             
             writer.WriteLine ();
@@ -241,12 +259,13 @@ namespace KAOSTools.DotExporter
             
             writer.WriteLine ();
             writer.WriteLine ("## OBSTRUCTIONS");
-
+            /*
             foreach (var g in model.ObstructedGoals()) {
                 foreach (var o in g.Obstructions()) {
                     ExportObstruction (g, o.Obstacle());
                 }
             }
+            */
             
             
             writer.WriteLine ();
@@ -263,7 +282,7 @@ namespace KAOSTools.DotExporter
             
             foreach (var o in model.ResolvedObstacles()) {
                 foreach (var resolution in o.Resolutions()) {
-                    ExportResolution (o, resolution.ResolvingGoal());
+                    ExportResolution (o, resolution);
                 }
             }
 

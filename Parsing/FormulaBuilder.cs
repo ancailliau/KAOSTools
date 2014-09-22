@@ -318,7 +318,9 @@ namespace KAOSTools.Parsing
         }
         
         
-        KAOSTools.MetaModel.Attribute GetOrCreateAttribute (ParsedAttributeReferenceExpression pref, KAOSTools.MetaModel.Entity entity) {
+        KAOSTools.MetaModel.Attribute GetOrCreateAttribute (ParsedAttributeReferenceExpression pref, 
+            KAOSTools.MetaModel.Entity entity) {
+            Console.WriteLine (">> " + pref.AttributeSignature.Value + " <<");
             if (entity != null) {
                 if (pref.AttributeSignature is NameExpression) {
                     var attribute = entity.Attributes().SingleOrDefault (x => x.Name == pref.AttributeSignature.Value);

@@ -1,0 +1,184 @@
+﻿@model ReportGenerator.ViewModel
+@using KAOSTools.MetaModel
+@using ReportGenerator.Helpers
+@using System.IO
+
+@{
+    Layout = "Layout.cshtml";
+    ViewBag.Title = Model.Model.Title;
+    ViewBag.Author = Model.Model.Author;
+    ViewBag.Version = Model.Model.Version;
+}
+
+<div class="section-header">
+<h1>Domain Properties</h1>
+</div>
+
+<div class="subsection-header">
+    <h2>Domain property summary</h2>
+</div>
+
+  <ul>
+  @foreach (var g in Model.Model.DomainProperties().OrderBy (g => g.FriendlyName)) {
+    <li><a href="domprop.html#domprop-@g.Identifier">@g.FriendlyName</a></li>
+  }
+  </ul>
+
+
+<div class="subsection-header">
+    <h2>Domain property details</h2>
+</div>
+@{
+  int dgraphID = 0;
+}
+    @foreach (var g in Model.Model.DomainProperties ()) {
+      <h4 id="domprop-@g.Identifier">
+     
+        @g.FriendlyName
+        
+        <span style="float: right">
+        @if (g.Implicit) {
+          <span class="label label-warning">Implicit</span>
+        }
+        </span>
+      </h4>
+      
+      <table class="table table-striped table-bordered">
+        @Identifier(g)
+        @Name(g)
+        @Definition(g)
+        @FormalSpec(g)
+      </table>
+      
+      <dl>
+        @GoalRefinements(g)
+        @ObstacleRefinements(g)
+        @Source(g)
+      </dl>
+      
+      <div class="diagram" id="diagram-@g.Identifier">
+        <div></div>
+        <pre class="hidden"></pre>
+        <p class="caption">Partial goal model for <em>@g.FriendlyName</em>. (<a href="#" class="code">Show JSON</a>)</p>
+      </div>
+      
+      <script type="text/javascript">
+      
+        $(document).ready (function() {
+            $("#diagram-@g.Identifier pre").text(JSON.stringify(@JSONHelper.GetPartialDomPropDiagram(g), undefined, 2));
+            $("#diagram-@g.Identifier p.caption a.code").click (function () {
+                $("#diagram-@g.Identifier pre").toggleClass ('hidden');
+                if ($("#diagram-@g.Identifier p.caption a.code").text() == "Show JSON") {
+                    $("#diagram-@g.Identifier p.caption a.code").text("Hide JSON");
+                } else {
+                    $("#diagram-@g.Identifier p.caption a.code").text("Show JSON");
+                }
+                return false;
+            });
+            RenderGoalDiagram (@JSONHelper.GetPartialDomPropDiagram(g), "#diagram-@g.Identifier div");
+        });
+        
+      </script>
+      
+      <hr class="spacer" />
+      
+    }
+    
+@helper Identifier (dynamic item) {
+  <tr>
+    <th>Identifier</th>
+    <td>
+      <p><code>@item.Identifier</code></p>
+    </td>
+  </tr>
+}
+
+@helper Name (dynamic item) {
+  <tr>
+    <th>Name</th>
+    <td>
+      <p>@item.Name</p>
+    </td>
+  </tr>
+}
+
+@helper Definition (dynamic item) {
+  <tr>
+    <th>Definition</th>
+    <td>
+      @if (string.IsNullOrWhiteSpace(item.Definition)) {
+        <span class="text-muted">Not provided</span>
+      } else {
+        @MarkdownHelper.CompileMarkdown(item.Definition)
+      }
+    </td>
+  </tr>
+}
+
+@helper FormalSpec (dynamic item) {
+  if (item.FormalSpec != null) {
+    <tr>
+      <th>Formal&nbsp;specification</th>
+      <td>
+        <div class="formalspec"></div>
+      </td>
+    </tr>
+  }
+}
+
+@helper GoalRefinements (DomainProperty g) {
+  if (g.GoalRefinements().Count() > 0) {
+      <dt>In goal refinement</dt>
+      <dd>
+      @foreach (var r in g.GoalRefinements()) {
+        if (r.SystemReference() != null | g.GoalRefinements().Count() > 1) {
+          <p><strong>Alternative refinement</strong> @(r.SystemReference() != null ? "(" + r.SystemReference().FriendlyName + ")" : "")</p>
+        }
+        <p><a href="goals.html#goal-@r.ParentGoal().Identifier">@r.ParentGoal().FriendlyName</a></p>
+        <ul>
+          @foreach (var g2 in r.SubGoals()) {
+            <li><a href="goals.html#goal-@g2.Identifier">@g2.FriendlyName</a></li>
+          }
+          @foreach (var g2 in r.DomainProperties()) {
+            <li><a href="domprop.html#domprop-#@g2.Identifier">@g2.FriendlyName</a></li>
+          }
+          @foreach (var g2 in r.DomainHypotheses()) {
+            <li><a href="domhyp.html#domhyp-#@g2.Identifier">@g2.FriendlyName</a></li>
+          }
+        </ul>
+      }
+      </dd>
+  }
+}
+
+@helper ObstacleRefinements (DomainProperty g) {
+  if (g.ObstacleRefinements().Count() > 0) {
+      <dt>In obstacle refinement</dt>
+      <dd>
+      @foreach (var r in g.ObstacleRefinements()) {
+        <ul>
+          @foreach (var g2 in r.SubObstacles()) {
+            <li><a href="obstacles.html#obstacle-@g2.Identifier">@g2.FriendlyName</a></li>
+          }
+          @foreach (var g2 in r.DomainProperties()) {
+            <li><a href="domprops.html#domprop-#@g2.Identifier">@g2.FriendlyName</a></li>
+          }
+          @foreach (var g2 in r.DomainHypotheses()) {
+            <li><a href="domhyps.html#domhyp-#@g2.Identifier">@g2.FriendlyName</a></li>
+          }
+        </ul>
+      }
+      </dd>
+  }
+}
+
+@helper Source (KAOSMetaModelElement g) {
+  if (Model.Declarations.ContainsKey(g)) {
+    <dt>Defined in</dt>
+    <dd><ul>
+      @foreach (var o in Model.Declarations[g]) {
+        <li><code>@o.Filename</code> at line <code>@o.Line</code>, column <code>@o.Col</code></li>
+      }
+    </ul></dd>
+  }
+}

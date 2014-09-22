@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace KAOSTools.MetaModel
 {
+    [DataContract]
     public abstract class KAOSMetaModelElement
     {
+        [DataMember]
         public string Identifier { get; set; }
 
         public virtual string FriendlyName {
@@ -14,6 +17,7 @@ namespace KAOSTools.MetaModel
             }
         }
 
+        [DataMember]
         public bool Implicit { get; set; }
 
         public ISet<AlternativeSystem> InSystems { get; set; }
@@ -59,8 +63,10 @@ namespace KAOSTools.MetaModel
 
     #region Meta entities
 
+    [DataContract]
     public class Goal : KAOSMetaModelElement
     {
+        [DataMember]
         public string Name { get; set; }
 
         public override string FriendlyName {
@@ -69,6 +75,7 @@ namespace KAOSTools.MetaModel
             }
         }
 
+        [DataMember]
         public string Definition { get; set; }
 
         public Formula FormalSpec { get; set; }
@@ -77,14 +84,9 @@ namespace KAOSTools.MetaModel
 
         public double RDS { get; set; }
 
-        public ISet<GoalException> Exceptions { get; set; }
-        public ISet<Assumption> Assumptions { get; set; }
-
         public Goal (KAOSModel model) : base(model)
         {
             InSystems = new HashSet<AlternativeSystem>();
-            Exceptions = new HashSet<GoalException> ();
-            Assumptions = new HashSet<Assumption> ();
         }
 
         public override KAOSMetaModelElement Copy ()
@@ -97,8 +99,6 @@ namespace KAOSTools.MetaModel
                 FormalSpec = FormalSpec,
                 CPS = CPS,
                 RDS = RDS,
-                Exceptions = new HashSet<GoalException> (Exceptions),
-                Assumptions = new HashSet<Assumption> (Assumptions)
             };
         }
     }
@@ -163,8 +163,10 @@ namespace KAOSTools.MetaModel
         }
     }
 
+    [DataContract]
     public class Obstacle : KAOSMetaModelElement
     {
+        [DataMember]
         public string Name { get; set; }
 
         public override string FriendlyName {
@@ -173,6 +175,7 @@ namespace KAOSTools.MetaModel
             }
         }
 
+        [DataMember]
         public string Definition { get; set; }
 
         public Formula FormalSpec { get; set; }
@@ -181,11 +184,8 @@ namespace KAOSTools.MetaModel
 
         public double CPS { get; set; }
 
-        public ISet<Assumption> Assumptions { get; set; }
-
         public Obstacle (KAOSModel model) : base(model)
         {
-            Assumptions = new HashSet<Assumption> ();
         }
 
         public override KAOSMetaModelElement Copy ()
@@ -198,13 +198,14 @@ namespace KAOSTools.MetaModel
                 FormalSpec = FormalSpec,
                 CPS = CPS,
                 EPS = EPS,
-                Assumptions = new HashSet<Assumption> (Assumptions)
             };
         }
     }
 
+    [DataContract]
     public class DomainHypothesis : KAOSMetaModelElement
     { 
+        [DataMember]
         public string Name { get; set; }
 
         public override string FriendlyName {
@@ -213,6 +214,7 @@ namespace KAOSTools.MetaModel
             }
         }
 
+        [DataMember]
         public string Definition { get; set; }
 
         public Formula FormalSpec { get; set; }
@@ -237,8 +239,10 @@ namespace KAOSTools.MetaModel
         }
     }
 
+    [DataContract]
     public class DomainProperty : KAOSMetaModelElement
     { 
+        [DataMember]
         public string Name { get; set; }
 
         public override string FriendlyName {
@@ -247,6 +251,7 @@ namespace KAOSTools.MetaModel
             }
         }
 
+        [DataMember]
         public string Definition { get; set; }
 
         public Formula FormalSpec { get; set; }
@@ -268,8 +273,10 @@ namespace KAOSTools.MetaModel
         }
     }
 
+    [DataContract]
     public class Agent : KAOSMetaModelElement
     {
+        [DataMember]
         public string Name { get; set; }
 
         public override string FriendlyName {
@@ -278,8 +285,10 @@ namespace KAOSTools.MetaModel
             }
         }
 
+        [DataMember]
         public string Definition { get; set; }
 
+        [DataMember]
         public AgentType Type { get; set; }
 
         public Agent (KAOSModel model) : base(model)
@@ -311,11 +320,13 @@ namespace KAOSTools.MetaModel
 
     #region Assignements
 
+    [DataContract]
     public abstract class AgentAssignment : KAOSMetaModelElement
     {
         public AlternativeSystem SystemReference { get; set; }
 
-        public ISet<string> AgentIdentifiers { get; set; }
+        [DataMember]
+        public IList<string> AgentIdentifiers { get; set; }
 
         public bool IsEmpty {
             get {
@@ -325,7 +336,7 @@ namespace KAOSTools.MetaModel
 
         public AgentAssignment (KAOSModel model) : base (model)
         {
-            AgentIdentifiers = new HashSet<string> ();
+            AgentIdentifiers = new List<string> ();
         }
 
         public void Add (Agent agent)
@@ -334,7 +345,10 @@ namespace KAOSTools.MetaModel
         }
     }
 
+    [DataContract]
     public class GoalAgentAssignment : AgentAssignment {
+        
+        [DataMember]
         public string GoalIdentifier { get; set ; }
         public GoalAgentAssignment  (KAOSModel model) : base (model) {}
 
@@ -344,7 +358,7 @@ namespace KAOSTools.MetaModel
                 Identifier = Identifier,
                 Implicit = Implicit,
                 GoalIdentifier = GoalIdentifier,
-                AgentIdentifiers = new HashSet<string> (AgentIdentifiers)
+                AgentIdentifiers = new List<string> (AgentIdentifiers)
             };
         }
     }
@@ -359,7 +373,7 @@ namespace KAOSTools.MetaModel
                 Identifier = Identifier,
                 Implicit = Implicit,
                 ObstacleIdentifier = ObstacleIdentifier,
-                AgentIdentifiers = new HashSet<string> (AgentIdentifiers)
+                AgentIdentifiers = new List<string> (AgentIdentifiers)
             };
         }
     }
@@ -374,7 +388,7 @@ namespace KAOSTools.MetaModel
                 Identifier = Identifier,
                 Implicit = Implicit,
                 AntiGoalIdentifier = AntiGoalIdentifier,
-                AgentIdentifiers = new HashSet<string> (AgentIdentifiers)
+                AgentIdentifiers = new List<string> (AgentIdentifiers)
             };
         }
     }
@@ -383,8 +397,11 @@ namespace KAOSTools.MetaModel
 
     #region Refinements
 
+    [DataContract]
     public class GoalRefinement : KAOSMetaModelElement
     {
+        
+        [DataMember]
         public string ParentGoalIdentifier { get; set; }
 
         public string SystemReferenceIdentifier { get; set; }
@@ -397,8 +414,13 @@ namespace KAOSTools.MetaModel
         public ISet<string> PositiveSoftGoalsIdentifiers { get; set; }
         public ISet<string> NegativeSoftGoalsIdentifiers { get; set; }
 
-        public ISet<string> SubGoalIdentifiers { get; set; }
+        [DataMember]
+        public IList<string> SubGoalIdentifiers { get; set; }
+        
+        [DataMember]
         public ISet<string> DomainPropertyIdentifiers { get; set; }
+        
+        [DataMember]
         public ISet<string> DomainHypothesisIdentifiers { get; set; }
 
         public bool IsEmpty {
@@ -414,7 +436,7 @@ namespace KAOSTools.MetaModel
 
         public GoalRefinement (KAOSModel model) : base (model)
         {
-            SubGoalIdentifiers = new HashSet<string> ();
+            SubGoalIdentifiers = new List<string> ();
             DomainPropertyIdentifiers = new HashSet<string> ();
             DomainHypothesisIdentifiers = new HashSet<string> ();
 
@@ -462,6 +484,21 @@ namespace KAOSTools.MetaModel
             this.DomainHypothesisIdentifiers.Add (domHyp.Identifier);
         }
 
+        public void Remove (Goal goal)
+        {
+            this.SubGoalIdentifiers.Remove (goal.Identifier);
+        }
+
+        public void Remove (DomainProperty domProp)
+        {
+            this.DomainPropertyIdentifiers.Remove (domProp.Identifier);
+        }
+
+        public void Remove (DomainHypothesis domHyp)
+        {
+            this.DomainHypothesisIdentifiers.Remove (domHyp.Identifier);
+        }
+
         public void AddNegativeSoftGoal (SoftGoal goal)
         {
             this.NegativeSoftGoalsIdentifiers.Add (goal.Identifier);
@@ -479,7 +516,7 @@ namespace KAOSTools.MetaModel
                 Implicit = Implicit,
                 ParentGoalIdentifier = ParentGoalIdentifier,
                 SystemReferenceIdentifier = SystemReferenceIdentifier,
-                SubGoalIdentifiers = new HashSet<string> (SubGoalIdentifiers),
+                SubGoalIdentifiers = new List<string> (SubGoalIdentifiers),
                 DomainPropertyIdentifiers = new HashSet<string> (DomainPropertyIdentifiers),
                 DomainHypothesisIdentifiers = new HashSet<string> (DomainHypothesisIdentifiers),
                 RefinementPattern = RefinementPattern,
@@ -626,8 +663,13 @@ namespace KAOSTools.MetaModel
 
     #region Obstructions and resolutions
 
+    [DataContract]
     public class Obstruction : KAOSMetaModelElement {
+        
+        [DataMember]
         public string ObstructedGoalIdentifier { get; set; }
+        
+        [DataMember]
         public string ObstacleIdentifier { get; set; }
 
         public Obstruction (KAOSModel model) : base (model) {}
@@ -653,11 +695,18 @@ namespace KAOSTools.MetaModel
         }
     }
 
+    [DataContract]
     public class Resolution : KAOSMetaModelElement {
+        
+        [DataMember]
         public string ObstacleIdentifier { get; set; }
+        
+        [DataMember]
         public string ResolvingGoalIdentifier { get; set; }
 
+        [DataMember]
         public ResolutionPattern ResolutionPattern { get; set; }
+        
         public List<dynamic> Parameters { get; set; }
 
         public Resolution (KAOSModel model) : base (model)
@@ -696,6 +745,7 @@ namespace KAOSTools.MetaModel
         ObstacleReduction,
         GoalRestoration,
         GoalWeakening,
+        ObstacleMitigation,
         ObstacleWeakMitigation,
         ObstacleStrongMitigation
     }
@@ -707,29 +757,121 @@ namespace KAOSTools.MetaModel
         IntroduceGuard, 
         DivideAndConquer, 
         Unmonitorability, 
-        Uncontrollability
+        Uncontrollability,
+        Redundant
     }
 
     #endregion
 
     #region Exceptions and assumptions
 
-    public class GoalException {
-        public bool Implicit { get; set; }
-        public Obstacle ResolvedObstacle { get; set; }
-        public Goal ResolvingGoal { get; set; }
+    [DataContract]
+    public class GoalException : KAOSMetaModelElement {
+        public GoalException (KAOSModel model) : base (model)
+        {
+        }
+        
+        [DataMember]
+        public string AnchorGoalIdentifier { get; set; }
+        
+        [DataMember]
+        public string ResolvedObstacleIdentifier { get; set; }
+        
+        [DataMember]
+        public string ResolvingGoalIdentifier { get; set; }
+
+        public void SetAnchorGoal (Goal goal)
+        {
+            AnchorGoalIdentifier = goal.Identifier;
+        }
+
+        public void SetResolvingGoal (Goal goal)
+        {
+            ResolvingGoalIdentifier = goal.Identifier;
+        }
+
+        public void SetObstacle (Obstacle obstacle)
+        {
+            ResolvedObstacleIdentifier = obstacle.Identifier;
+        }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            return new GoalException (model) {
+                AnchorGoalIdentifier = AnchorGoalIdentifier,
+                ResolvingGoalIdentifier = ResolvingGoalIdentifier,
+                ResolvedObstacleIdentifier = ResolvedObstacleIdentifier,
+                Implicit = Implicit,
+                Identifier = Identifier
+            };
+        }
+    }
+
+    public class GoalReplacement : KAOSMetaModelElement {
+        public GoalReplacement (KAOSModel model) : base (model)
+        {
+        }
+        public string AnchorGoalIdentifier { get; set; }
+        public string ResolvedObstacleIdentifier { get; set; }
+        public string ResolvingGoalIdentifier { get; set; }
+
+        public void SetAnchorGoal (Goal goal)
+        {
+            AnchorGoalIdentifier = goal.Identifier;
+        }
+
+        public void SetResolvingGoal (Goal goal)
+        {
+            ResolvingGoalIdentifier = goal.Identifier;
+        }
+
+        public void SetObstacle (Obstacle obstacle)
+        {
+            ResolvedObstacleIdentifier = obstacle.Identifier;
+        }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            return new GoalReplacement (model) {
+                AnchorGoalIdentifier = AnchorGoalIdentifier,
+                ResolvingGoalIdentifier = ResolvingGoalIdentifier,
+                ResolvedObstacleIdentifier = ResolvedObstacleIdentifier,
+                Implicit = Implicit,
+                Identifier = Identifier
+            };
+        }
 
     }
 
-    public abstract class Assumption {
-        public bool Implicit { get; set; }
-        public dynamic Assumed { get; set; }
+
+    public class ObstacleAssumption : KAOSMetaModelElement {
+        public ObstacleAssumption (KAOSModel model) : base (model)
+        {
+        }
+        public string AnchorGoalIdentifier { get; set; }
+        public string ResolvedObstacleIdentifier { get; set; }
+
+        public void SetAnchorGoal (Goal goal)
+        {
+            AnchorGoalIdentifier = goal.Identifier;
+        }
+
+        public void SetObstacle (Obstacle obstacle)
+        {
+            ResolvedObstacleIdentifier = obstacle.Identifier;
+        }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            return new ObstacleAssumption (model) {
+                AnchorGoalIdentifier = AnchorGoalIdentifier,
+                ResolvedObstacleIdentifier = ResolvedObstacleIdentifier,
+                Implicit = Implicit,
+                Identifier = Identifier
+            };
+        }
 
     }
-
-    public class GoalAssumption : Assumption {}
-    public class DomainHypothesisAssumption : Assumption {}
-    public class ObstacleNegativeAssumption : Assumption {}
 
     #endregion
 

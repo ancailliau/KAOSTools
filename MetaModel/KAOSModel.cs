@@ -6,6 +6,10 @@ namespace KAOSTools.MetaModel
 {
     public class KAOSModel
     {
+        public string Author { get; set; }
+        public string Title { get; set; }
+        public string Version { get; set; }
+
         private Dictionary<string, KAOSMetaModelElement> _elements;
 
         public IEnumerable<KAOSMetaModelElement> Elements {
@@ -32,6 +36,12 @@ namespace KAOSTools.MetaModel
                 throw new InvalidOperationException ("Duplicated ID " + e.Identifier);
 
             this._elements.Add (e.Identifier, e);
+        }
+
+        public void Remove (KAOSMetaModelElement element)
+        {
+            if (this._elements.ContainsKey(element.Identifier))
+                this._elements.Remove (element.Identifier);
         }
     }
 

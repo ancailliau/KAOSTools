@@ -14,13 +14,13 @@ namespace KAOSTools.Utils
         protected static string filename;
         protected static KAOSModel model;
         protected static IDictionary<KAOSMetaModelElement, IList<Declaration>> declarations;
+        protected static List<string> reminderArgs;
 
         protected static void Init (string[] args)
         {
             bool show_help = false;
             options.Add ("h|help", "Show this message and exit", v => show_help = true);
             
-            List<string> reminderArgs;
             try {
                 reminderArgs = options.Parse (args);
                 
@@ -39,11 +39,6 @@ namespace KAOSTools.Utils
                 input = Console.In.ReadToEnd ();
 
             } else {
-                if (reminderArgs.Count > 1) {
-                    PrintError ("Please provide only one file");
-                    return;
-                }
-
                 if (!File.Exists (reminderArgs[0])) {
                     PrintError ("File `" + reminderArgs[0] + "` does not exists");
                     return;

@@ -8,6 +8,14 @@ namespace KAOSTools.Parsing
         public int Col { get; set; }
         public string Filename { get; set; }
     }
+
+    public class ParsedModelAttribute  : ParsedElement {
+        public string Value { get; set; }
+    }
+
+    public class ModelAuthor  : ParsedModelAttribute {}
+    public class ModelTitle   : ParsedModelAttribute {}
+    public class ModelVersion : ParsedModelAttribute {}
     
     public class ParsedElements : ParsedElement {
         public List<ParsedElement> Values     { get; set; }
@@ -172,7 +180,7 @@ namespace KAOSTools.Parsing
     }
 
     public enum ParsedRefinementPatternName {
-        None, Milestone, Case, IntroduceGuard, DivideAndConquer, Unmonitorability, Uncontrollability
+        None, Milestone, Case, IntroduceGuard, DivideAndConquer, Unmonitorability, Uncontrollability, Redundant
     }
 
 

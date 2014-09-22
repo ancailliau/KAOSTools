@@ -9,6 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>KAOSTools.Parsing.Tests</RootNamespace>
     <AssemblyName>KAOSTools.Parsing.Tests</AssemblyName>
+    <UseMSBuildEngine>False</UseMSBuildEngine>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -30,9 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="nunit.framework">
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="nunit.framework" />
     <Reference Include="System.Core" />
     <Reference Include="ShallTests">
       <HintPath>..\Libraries\ShallTests.dll</HintPath>

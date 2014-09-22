@@ -7,9 +7,15 @@ debug =
 Start := S Elements S;
 
 Elements := 
-    ( ( System / Predicate / Goal / AntiGoal / SoftGoal / DomProp / Obstacle / Agent / Import / DomHyp 
+    ( ( ModelAttribute / System / Predicate / Goal / AntiGoal / SoftGoal / DomProp / Obstacle / Agent / Import / DomHyp 
         / Entity / Type / Association ) S )*
     `value = BuildElements (results);`
+
+ModelAttribute :=
+    '@author' S '"' String '"' 
+    / '@title' S '"' String '"' 
+    / '@version' S '"' String '"' 
+    `value = ModelAttribute(results);`
 
 Import := 
     'import' S '"' String '"' 
@@ -260,7 +266,7 @@ SoftGoalContributionAttribute := 'contribute' S
 
 ResolutionPattern := 
 	( 'substitution' / 'prevention' / 'obstacle_reduction' / 'restoration'
-	  / 'weakening' / 'weak_mitigation' / 'strong_mitigation' )
+	  / 'weakening' / 'mitigation' / 'weak_mitigation' / 'strong_mitigation' )
 	  ( S '[' S ( DomHyp / Goal / Name / Identifier ) ( S ',' S ( DomHyp / Goal / Name / Identifier ))* S ']' )?
     `value = BuildResolutionPattern(results);`
     
@@ -270,7 +276,8 @@ RefinementPattern :=
 	/ 'introduce_guard' 
 	/ 'divide_and_conquer' 
 	/ 'unmonitorability' 
-	/ 'uncontrollability' )
+	/ 'uncontrollability'
+	/ 'redundant' )
     `value = BuildRefinementPattern(results);`
     
 # Expressions                                

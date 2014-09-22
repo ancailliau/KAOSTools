@@ -39,6 +39,10 @@ namespace KAOSTools.Parsing
                                                              element.GetType().Name));
         }
 
+        public void BuildElement (ParsedModelAttribute element)
+        {
+        }
+
         public void BuildElement (ParsedElementWithAttributes element)
         {
             var e = GetElement (element);

@@ -30,9 +30,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="nunit.framework">
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="nunit.framework" />
     <Reference Include="System.Core" />
     <Reference Include="ShallTests">
       <HintPath>..\Libraries\ShallTests.dll</HintPath>

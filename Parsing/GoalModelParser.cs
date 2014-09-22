@@ -43,6 +43,7 @@ namespace KAOSTools.Parsing
 		{
 			m_nonterminals.Add("Start", new ParseMethod[]{this.DoParseStartRule});
 			m_nonterminals.Add("Elements", new ParseMethod[]{this.DoParseElementsRule});
+			m_nonterminals.Add("ModelAttribute", new ParseMethod[]{this.DoParseModelAttributeRule});
 			m_nonterminals.Add("Import", new ParseMethod[]{this.DoParseImportRule});
 			m_nonterminals.Add("Predicate", new ParseMethod[]{this.DoParsePredicateRule});
 			m_nonterminals.Add("System", new ParseMethod[]{this.DoParseSystemRule});
@@ -176,7 +177,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// Elements := ((System / Predicate / Goal / AntiGoal / SoftGoal / DomProp / Obstacle / Agent / Import / DomHyp / Entity / Type / Association) S)*
+		// Elements := ((ModelAttribute / System / Predicate / Goal / AntiGoal / SoftGoal / DomProp / Obstacle / Agent / Import / DomHyp / Entity / Type / Association) S)*
 		private State DoParseElementsRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -185,6 +186,7 @@ namespace KAOSTools.Parsing
 			_state = DoRepetition(_state, results, 0, 2147483647,
 			delegate (State s, List<Result> r) {return DoSequence(s, r,
 				delegate (State s2, List<Result> r2) {return DoChoice(s2, r2,
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "ModelAttribute");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "System");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Predicate");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Goal");},
@@ -204,6 +206,42 @@ namespace KAOSTools.Parsing
 			{
 				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
 				value = BuildElements (results);
+				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+			}
+			
+			return _state;
+		}
+		
+		// ModelAttribute := ('@author' S '"' String '"') / ('@title' S '"' String '"') / ('@version' S '"' String '"')
+		private State DoParseModelAttributeRule(State _state, List<Result> _outResults)
+		{
+			State _start = _state;
+			List<Result> results = new List<Result>();
+			
+			_state = DoChoice(_state, results,
+			delegate (State s, List<Result> r) {return DoSequence(s, r,
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "@author");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "\"");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "String");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "\"");});},
+			delegate (State s, List<Result> r) {return DoSequence(s, r,
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "@title");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "\"");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "String");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "\"");});},
+			delegate (State s, List<Result> r) {return DoSequence(s, r,
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "@version");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "\"");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "String");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "\"");});});
+			
+			if (_state.Parsed)
+			{
+				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
+				value = ModelAttribute(results);
 				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 			}
 			
@@ -1852,7 +1890,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// ResolutionPattern := ('substitution' / 'prevention' / 'obstacle_reduction' / 'restoration' / 'weakening' / 'weak_mitigation' / 'strong_mitigation') (S '[' S (DomHyp / Goal / Name / Identifier) (S ',' S (DomHyp / Goal / Name / Identifier))* S ']')?
+		// ResolutionPattern := ('substitution' / 'prevention' / 'obstacle_reduction' / 'restoration' / 'weakening' / 'mitigation' / 'weak_mitigation' / 'strong_mitigation') (S '[' S (DomHyp / Goal / Name / Identifier) (S ',' S (DomHyp / Goal / Name / Identifier))* S ']')?
 		private State DoParseResolutionPatternRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -1865,6 +1903,7 @@ namespace KAOSTools.Parsing
 				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "obstacle_reduction");},
 				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "restoration");},
 				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "weakening");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "mitigation");},
 				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "weak_mitigation");},
 				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "strong_mitigation");});},
 			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 1,
@@ -1900,7 +1939,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// RefinementPattern := 'milestone' / ('case' S '[' S (Float (S ',' S Float)*) S ']') / 'introduce_guard' / 'divide_and_conquer' / 'unmonitorability' / 'uncontrollability'
+		// RefinementPattern := 'milestone' / ('case' S '[' S (Float (S ',' S Float)*) S ']') / 'introduce_guard' / 'divide_and_conquer' / 'unmonitorability' / 'uncontrollability' / 'redundant'
 		private State DoParseRefinementPatternRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -1926,7 +1965,8 @@ namespace KAOSTools.Parsing
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "introduce_guard");},
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "divide_and_conquer");},
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "unmonitorability");},
-			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "uncontrollability");});
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "uncontrollability");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "redundant");});
 			
 			if (_state.Parsed)
 			{

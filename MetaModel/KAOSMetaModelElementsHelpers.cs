@@ -20,6 +20,12 @@ namespace KAOSTools.MetaModel
                     select obstruction;
         }
 
+        public static IEnumerable<Resolution> Resolutions (this Goal goal) {
+            return from resolution in goal.model.Resolutions()
+                    where resolution.ResolvingGoalIdentifier == goal.Identifier
+                select resolution;
+        }
+
         public static IEnumerable<GoalAgentAssignment> AgentAssignments (this Goal goal) {
             return from assignement in goal.model.GoalAgentAssignments()
                 where assignement.GoalIdentifier == goal.Identifier
@@ -30,6 +36,25 @@ namespace KAOSTools.MetaModel
             return from refinement in goal.model.GoalRefinements()
                 where refinement.SubGoalIdentifiers.Contains(goal.Identifier)
                     select refinement;
+        }
+
+
+        public static IEnumerable<GoalException> Exceptions (this Goal goal) {
+            return from e in goal.model.Exceptions ()
+                    where e.AnchorGoalIdentifier == goal.Identifier
+                   select e;
+        }
+
+        public static IEnumerable<GoalReplacement> Replacements (this Goal goal) {
+            return from e in goal.model.Replacements ()
+                    where e.ResolvingGoalIdentifier == goal.Identifier
+                select e;
+        }
+
+        public static IEnumerable<ObstacleAssumption> Provided (this Goal goal) {
+            return from e in goal.model.ObstacleAssumptions ()
+                    where e.AnchorGoalIdentifier == goal.Identifier
+                select e;
         }
 
         #endregion
@@ -80,6 +105,12 @@ namespace KAOSTools.MetaModel
             return from assignement in obstacle.model.ObstacleAgentAssignments()
                 where assignement.ObstacleIdentifier == obstacle.Identifier
                     select assignement;
+        }
+        
+        public static IEnumerable<Obstruction> Obstructions (this Obstacle obstacle) {
+            return from obstruction in obstacle.model.Obstructions()
+                where obstruction.ObstacleIdentifier == obstacle.Identifier
+                    select obstruction;
         }
 
         #endregion
@@ -263,6 +294,41 @@ namespace KAOSTools.MetaModel
             return obstruction.model.Obstacles().SingleOrDefault(y => y.Identifier == obstruction.ObstacleIdentifier);
         }
 
+        #endregion
+
+        #region Exception
+
+        public static Goal AnchorGoal (this GoalException exception) {
+            return exception.model.Goals().SingleOrDefault(y => y.Identifier == exception.AnchorGoalIdentifier);
+        }
+
+        public static Goal ResolvingGoal (this GoalException exception) {
+            return exception.model.Goals().SingleOrDefault(y => y.Identifier == exception.ResolvingGoalIdentifier);
+        }
+
+        public static Obstacle Obstacle (this GoalException exception) {
+            return exception.model.Obstacles().SingleOrDefault(y => y.Identifier == exception.ResolvedObstacleIdentifier);
+        }
+
+        public static Goal AnchorGoal (this GoalReplacement exception) {
+            return exception.model.Goals().SingleOrDefault(y => y.Identifier == exception.AnchorGoalIdentifier);
+        }
+
+        public static Goal ResolvingGoal (this GoalReplacement exception) {
+            return exception.model.Goals().SingleOrDefault(y => y.Identifier == exception.ResolvingGoalIdentifier);
+        }
+
+        public static Obstacle Obstacle (this GoalReplacement exception) {
+            return exception.model.Obstacles().SingleOrDefault(y => y.Identifier == exception.ResolvedObstacleIdentifier);
+        }
+
+        public static Goal Anchor (this ObstacleAssumption exception) {
+            return exception.model.Goals().SingleOrDefault(y => y.Identifier == exception.AnchorGoalIdentifier);
+        }
+
+        public static Obstacle Obstacle (this ObstacleAssumption exception) {
+            return exception.model.Obstacles().SingleOrDefault(y => y.Identifier == exception.ResolvedObstacleIdentifier);
+        }
         #endregion
 
         #region Entity

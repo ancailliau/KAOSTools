@@ -1,5 +1,17 @@
 
 declare goal
+  id avoid_miners_drown
+  name "Avoid [Miners Drown]"
+  refinedby avoid_mine_flooded, miners_out_when_high_water
+end
+
+declare goal
+  id avoid_mine_flooded
+  name "Avoid [Mine Flooded]"
+  refinedby pump_on_when_high_water, pump_on_when_switch_on
+end
+
+declare goal
   id pump_on_when_high_water
   name "Immediate Achieve [Pump Switch On When High Water Signal On]"
   formalspec when HighWaterSignal() then next PumpSwitchOn()
@@ -12,6 +24,7 @@ end
     formalspec sooner-or-later ( HighWaterSignal() and PumpSwitchBroken() )
     resolvedby(prevention) avoid_switch_broken
     resolvedby(restoration) restore_pump_switch
+    resolvedby(weak_mitigation[avoid_miners_drown]) evacuate_miner_when_switch_broken
   end
   
     declare goal
@@ -23,6 +36,12 @@ end
     declare goal
       id restore_pump_switch
       name "Achieve [Pump Switch On When Pump Switch Broken And High Water Signal On]"
+      formalspec when HighWaterSignal() and PumpSwitchBroken() then sooner-or-later, before 2 minutes, PumpSwitchOn()
+    end
+    
+    declare goal
+      id evacuate_miner_when_switch_broken
+      name "Achieve [Miners Evacuated When Pump Switch Broken And High Water Signal On]"
       formalspec when HighWaterSignal() and PumpSwitchBroken() then sooner-or-later, before 2 minutes, PumpSwitchOn()
     end
 
@@ -147,6 +166,7 @@ declare goal
   name "Maintain [Pump On When Switch On]"
   formalspec when PumpSwitchOn() then PumpMotorOn()
   obstructedby pump_broken_when_switch_on
+  obstructedby power_outage
 end
 
   declare obstacle
@@ -160,6 +180,19 @@ end
       id avoid_motor_broken
       name "Avoid [Pump Motor Broken And Pump Motor Switch On]"
       formalspec when PumpSwitchOn() then not PumpMotorBroken()
+    end
+
+  declare obstacle
+    id power_outage
+    name "Power Outage And Pump Switch On"
+    formalspec sooner-or-later ( PumpSwitchOn() and not PowerAvailable() )
+    resolvedby(restoration) restore_power
+  end
+  
+    declare goal
+      id restore_power
+      name "Achieve [Power Restored When Outage]"
+      formalspec when not PowerAvailable() then sooner-or-later PowerAvailable()
     end
 
 declare goal

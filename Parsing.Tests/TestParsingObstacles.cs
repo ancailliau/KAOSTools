@@ -346,9 +346,10 @@ namespace KAOSTools.Parsing.Tests
             resolution.ResolutionPattern.ShallEqual (ResolutionPattern.ObstaclePrevention);
 
             var obstructedGoal = model.Goals().Single (x => x.Identifier == "obstructedgoal");
-            var e = obstructedGoal.Assumptions.Single ();
-            e.Implicit.ShallBeTrue ();
-            Assert.AreEqual ("goal", e.Assumed.Identifier);
+            //var e = obstructedGoal.Assumptions.Single ();
+            //e.Implicit.ShallBeTrue ();
+            //Assert.AreEqual ("goal", e.Assumed.Identifier);
+            Assert.Fail ();
         }
 
         [TestCase(@"declare goal id obstructedgoal obstructedby test end
@@ -367,13 +368,13 @@ namespace KAOSTools.Parsing.Tests
             resolution.ResolutionPattern.ShallEqual (ResolutionPattern.ObstacleWeakMitigation);
             (resolution.Parameters.First() as Goal).Identifier.ShallEqual ("anchor");
 
-            Console.WriteLine (string.Join(",", model.Goals().Select(x => x.Identifier + "("+ x.Exceptions.Count + ")")));
+            // Console.WriteLine (string.Join(",", model.Goals().Select(x => x.Identifier + "("+ x.Exceptions.Count + ")")));
 
             var obstructedGoal = model.Goals().Single (x => x.Identifier == "anchor");
-            var e = obstructedGoal.Exceptions.Single ();
+            var e = obstructedGoal.Exceptions().Single ();
             e.Implicit.ShallBeTrue ();
-            e.ResolvedObstacle.Identifier.ShallEqual ("test");
-            e.ResolvingGoal.Identifier.ShallEqual ("goal");
+            e.ResolvedObstacleIdentifier.ShallEqual ("test");
+            e.ResolvingGoalIdentifier.ShallEqual ("goal");
 
         }
 

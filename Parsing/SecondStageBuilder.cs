@@ -28,6 +28,10 @@ namespace KAOSTools.Parsing
             }
         }
 
+        public void BuildElement (ParsedModelAttribute element)
+        {
+        }
+
         public void BuildElement (ParsedElement element)
         {
             throw new NotImplementedException (string.Format("'{0}' is not yet supported", 
@@ -133,6 +137,10 @@ namespace KAOSTools.Parsing
             else if (pattern.Value.Name ==  ParsedRefinementPatternName.Unmonitorability) { 
                 element.RefinementPattern = RefinementPattern.Unmonitorability;
             }
+            
+            else if (pattern.Value.Name ==  ParsedRefinementPatternName.Redundant) { 
+                element.RefinementPattern = RefinementPattern.Redundant;
+            }
 
             else {
                 throw new NotImplementedException ();
@@ -234,74 +242,14 @@ namespace KAOSTools.Parsing
                                                                   element.GetType().Name));
             }
 
-            element.Exceptions.Add (new GoalException { 
-                ResolvingGoal = goal,
-                ResolvedObstacle = obstacle
-            });
+            var goalException = new GoalException (element.model);
+
+            goalException.SetObstacle (obstacle);
+            goalException.SetResolvingGoal (goal);
+
+            element.model.Add (goalException);
         }
 
-        public void Handle (Goal element, ParsedAssumptionAttribute assumption)
-        {
-            if (assumption.Value is IdentifierExpression | assumption.Value is NameExpression) {
-
-                DomainHypothesis domHyp;
-                if (Get (assumption.Value, out domHyp)) {
-                    element.Assumptions.Add (new DomainHypothesisAssumption {
-                        Assumed = domHyp
-                    });
-
-                } else {
-                    Goal goal;
-                    if (!Get (assumption.Value, out goal)) {
-                        goal = Create<Goal> (assumption.Value);
-                    }
-                    element.Assumptions.Add (new GoalAssumption {
-                        Assumed = goal
-                    });
-                }
-
-            } else if (assumption.Value is ParsedGoal) {
-                element.Assumptions.Add (new GoalAssumption {
-                    Assumed = fsb.BuildElementWithKeys (assumption.Value)
-                });
-                BuildElement (assumption.Value);
-                
-            } else if (assumption.Value is ParsedDomainHypothesis) {
-                element.Assumptions.Add (new DomainHypothesisAssumption {
-                    Assumed = fsb.BuildElementWithKeys (assumption.Value)
-                });
-                BuildElement (assumption.Value);
-
-            } else {
-                throw new NotImplementedException (string.Format ("'{0}' is not supported in '{1}' on '{2}'", 
-                                                                  assumption.Value.GetType().Name,
-                                                                  assumption.GetType().Name,
-                                                                  element.GetType().Name));
-            }
-        }
-
-        public void Handle (Goal element, ParsedNegativeAssumptionAttribute assumption)
-        {
-            if (assumption.Value is IdentifierExpression | assumption.Value is NameExpression) {
-                Obstacle obstacle;
-                if (!Get (assumption.Value, out obstacle)) {
-                    obstacle = Create<Obstacle> (assumption.Value);
-                }
-                element.Assumptions.Add (new ObstacleNegativeAssumption {
-                    Assumed = obstacle
-                });
-
-            } else if (assumption.Value is ParsedObstacle) {
-                element.Assumptions.Add (fsb.BuildElementWithKeys (assumption.Value));
-                BuildElement (assumption.Value);
-
-            } else {
-                throw new NotImplementedException (string.Format ("'{0}' is not supported in '{1}' on '{2}'", 
-                                                                  assumption.Value.GetType().Name,
-                                                                  assumption.GetType().Name,
-                                                                  element.GetType().Name));
-            }
-        }
 
         public void Handle (Obstacle element, ParsedResolvedByAttribute resolvedBy)
         {
@@ -342,6 +290,9 @@ namespace KAOSTools.Parsing
 
                 else if (resolvedBy.Pattern.Name == "weakening")
                     resolution.ResolutionPattern = ResolutionPattern.GoalWeakening;
+
+                else if (resolvedBy.Pattern.Name == "mitigation")
+                    resolution.ResolutionPattern = ResolutionPattern.ObstacleMitigation;
 
                 else if (resolvedBy.Pattern.Name == "weak_mitigation")
                     resolution.ResolutionPattern = ResolutionPattern.ObstacleWeakMitigation;
@@ -698,6 +649,11 @@ namespace KAOSTools.Parsing
                 else if (refinedBy.RefinementPattern.Name ==  ParsedRefinementPatternName.Unmonitorability) { 
                     refinement.RefinementPattern = RefinementPattern.Unmonitorability;
                 }
+
+                else if (refinedBy.RefinementPattern.Name ==  ParsedRefinementPatternName.Redundant) { 
+                    refinement.RefinementPattern = RefinementPattern.Redundant;
+                }
+
 
                 else {
                     throw new NotImplementedException ();
