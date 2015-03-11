@@ -569,6 +569,15 @@ namespace KAOSTools.OmnigraffleExport
                 var line = GetLine (childGraphic, circle);
                 sheet.GraphicsList.Add (line);
             }
+
+            foreach (var child in refinement.DomainHypothesisIdentifiers) {
+                if (!shapes.ContainsKey(child))
+                    continue;
+
+                var childGraphic = shapes [child].First ();
+                var line = GetLine (childGraphic, circle);
+                sheet.GraphicsList.Add (line);
+            }
         }
 
         protected void Render (GoalAgentAssignment assignment, bool createAgentShapes = false)

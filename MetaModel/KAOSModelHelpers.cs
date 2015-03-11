@@ -150,6 +150,23 @@ namespace KAOSTools.MetaModel
             return model.Elements.SingleOrDefault (x => x is GivenType && pred(x as GivenType)) as GivenType;
         }
 
+
+        public static IEnumerable<Calibration> CalibrationVariables (this KAOSModel model) {
+            return model.Elements.Where (x => x is Calibration).Cast<Calibration>();
+        }
+
+        public static IEnumerable<Calibration> CalibrationVariables (this KAOSModel model, Predicate<Calibration> pred) {
+            return model.Elements.Where (x => x is Calibration && pred(x as Calibration)).Cast<Calibration>();
+        }
+
+        public static IEnumerable<Expert> Experts (this KAOSModel model) {
+            return model.Elements.Where (x => x is Expert).Cast<Expert>();
+        }
+
+        public static IEnumerable<Expert> Experts (this KAOSModel model, Predicate<Expert> pred) {
+            return model.Elements.Where (x => x is Expert && pred(x as Expert)).Cast<Expert>();
+        }
+
         #endregion
 
 
@@ -211,6 +228,19 @@ namespace KAOSTools.MetaModel
 
         public static IEnumerable<Obstacle> Obstacles (this Resolution o) {
             return o.ResolvingGoal ().Obstacles ();
+        }
+
+
+        public static ISet<Obstacle> LeafObstacles (this KAOSModel model) {
+            var obstacles = new HashSet<Obstacle> (model.Obstacles());
+
+            foreach (var refinement in model.ObstacleRefinements ())
+                obstacles.Remove (refinement.ParentObstacle ());
+
+            foreach (var obstruction in model.Obstructions ())
+                obstacles.Remove (obstruction.Obstacle ());
+
+            return obstacles;
         }
     }
 }

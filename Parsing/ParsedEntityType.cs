@@ -10,13 +10,10 @@ namespace KAOSTools.Parsing
     }
 
     public class ParsedModelAttribute  : ParsedElement {
+        public string Name { get; set; }
         public string Value { get; set; }
     }
-
-    public class ModelAuthor  : ParsedModelAttribute {}
-    public class ModelTitle   : ParsedModelAttribute {}
-    public class ModelVersion : ParsedModelAttribute {}
-    
+        
     public class ParsedElements : ParsedElement {
         public List<ParsedElement> Values     { get; set; }
         public ParsedElements () {
@@ -80,6 +77,9 @@ namespace KAOSTools.Parsing
     public class ParsedAttributeDeclaration : ParsedElementWithAttributes {}
     public class ParsedGoalRefinement       : ParsedElementWithAttributes {}
 
+    public class ParsedExpert               : ParsedElementWithAttributes {}
+    public class ParsedCalibration          : ParsedElementWithAttributes {}
+
     public class ParsedEntity : ParsedElementWithAttributes
     {
         public ParsedEntityType EntityType { get; set; }
@@ -140,6 +140,12 @@ namespace KAOSTools.Parsing
 
     public class ParsedCustomAttribute         : ParsedAttributeWithValue<string> {
         public string Key { get; set; }
+    }
+
+
+    public class ParsedExpertProbabilityAttribute : ParsedAttribute {
+        public dynamic IdOrNAme  { get; set; }
+        public dynamic Estimate { get; set; }
     }
 
     public class ParsedProbabilityAttribute  : ParsedAttributeWithValue<double> {}
@@ -428,5 +434,37 @@ namespace KAOSTools.Parsing
         public ParsedTime Bound;
     }
 
+    public class ParsedUDistribution : ParsedElement {
+    }
+
+    public class ParsedUniformDistribution : ParsedUDistribution {
+        public float LowerBound;
+        public float UpperBound;
+    }
+
+    public class ParsedTriangularDistribution : ParsedUDistribution {
+        public float Min;
+        public float Max;
+        public float Mode;
+    }
+
+    public class ParsedPertDistribution : ParsedUDistribution {
+        public float Min;
+        public float Max;
+        public float Mode;
+    }
+
+    public class ParsedBetaDistribution : ParsedUDistribution {
+        public float Alpha;
+        public float Beta;
+    }
+
+    public class ParsedQuantileList : ParsedElement {
+        public List<double> Quantiles;
+        public ParsedQuantileList ()
+        {
+            Quantiles = new List<double> ();
+        }
+    }
 }
 

@@ -10,6 +10,11 @@ namespace KAOSTools.MetaModel
         public string Title { get; set; }
         public string Version { get; set; }
 
+        public Dictionary<string,string> Parameters {
+            get;
+            set;
+        }
+
         private Dictionary<string, KAOSMetaModelElement> _elements;
 
         public IEnumerable<KAOSMetaModelElement> Elements {
@@ -21,6 +26,7 @@ namespace KAOSTools.MetaModel
         public KAOSModel ()
         {
             this._elements = new Dictionary<string, KAOSMetaModelElement> ();
+            Parameters = new Dictionary<string, string> ();
         }
 
         public void Add (KAOSMetaModelElement element)

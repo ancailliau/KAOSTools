@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{DFAE4D76-E744-4F28-BFE6-7525C52AC6C2}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -52,6 +52,7 @@
     <Compile Include="AbstractDiagramGenerator.cs" />
     <Compile Include="ReplacementDiagramGenerator.cs" />
     <Compile Include="AssumptionDiagramGenerator.cs" />
+    <Compile Include="GoalAndObstacleModelGenerator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

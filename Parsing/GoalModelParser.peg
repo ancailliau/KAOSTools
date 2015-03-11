@@ -8,13 +8,11 @@ Start := S Elements S;
 
 Elements := 
     ( ( ModelAttribute / System / Predicate / Goal / AntiGoal / SoftGoal / DomProp / Obstacle / Agent / Import / DomHyp 
-        / Entity / Type / Association ) S )*
+        / Entity / Type / Association / Expert / Calibration ) S )*
     `value = BuildElements (results);`
 
 ModelAttribute :=
-    '@author' S '"' String '"' 
-    / '@title' S '"' String '"' 
-    / '@version' S '"' String '"' 
+    '@' ModelAttributeName S '"' String '"' 
     `value = ModelAttribute(results);`
 
 Import := 
@@ -78,7 +76,15 @@ Association :=
 Attribute := 
     ( 'declare' / 'override' ) S ( 'attribute' ) S (AttributeAttribute S)* 'end'
     `value = BuildAttribute(results);`
-    
+
+Expert := 
+    ( 'declare' / 'override' ) S 'expert' S (ExpertAttribute S)* 'end'
+    `value = BuildExpert(results);`
+
+Calibration := 
+    ( 'declare' / 'override' ) S 'calibration' S (CalibrationAttribute S)* 'end'
+    `value = BuildCalibration(results);`
+
 # Attribute collection
                                                                                                                                                                                                          
 GoalAttribute := 
@@ -96,16 +102,16 @@ SoftGoalAttribute :=
     `value = results[0].Value;`
     
 DomPropAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / Probability / CustomAttribute)
+    ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / ExpertProbability / Probability / CustomAttribute)
     `value = results[0].Value;`
     
 DomHypAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / CustomAttribute)
+    ( IdAttribute / NameAttribute / DefinitionAttribute / ExpertProbability / Probability / CustomAttribute )
     `value = results[0].Value;`
 
 ObstacleAttribute := 
     ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByObstacle 
-      / ResolvedBy / Probability / AssignedTo / CustomAttribute)
+      / ResolvedBy / ExpertProbability / Probability / AssignedTo / CustomAttribute)
     `value = results[0].Value;`
 
 AgentAttribute := 
@@ -142,6 +148,16 @@ AssociationAttribute :=
 AttributeAttribute :=
 	( IdAttribute / NameAttribute / DefinitionAttribute / AttributeEntityTypeAttribute / DerivedAttribute )
     `value = results[0].Value;`
+
+
+    
+ExpertAttribute :=
+	( IdAttribute / NameAttribute )
+    `value = results[0].Value;`
+        
+CalibrationAttribute :=
+	( IdAttribute / NameAttribute / ExpertProbability / Probability )
+    `value = results[0].Value;`
     
 # Attributes
 
@@ -160,11 +176,14 @@ FormalSpecAttribute := 'formalspec' S Formula
 DefinitionAttribute := 'definition' S QuotedString
     `value = BuildDefinitionAttribute(results);`
 
-RDSAttribute := 'rds' S Float 
+RDSAttribute := 'rds' S (Percentage / Float)
     `value = BuildRDS(results);`
 
-Probability := ('probability' / 'eps') S Float 
+Probability := ('probability' / 'eps') S ( Percentage / Float / UDistribution )
     `value = BuildProbability(results);`
+
+ExpertProbability := ('probability') ( S '[' S (Name / Identifier) S ']' ) S ( QuantileList / UDistribution )
+    `value = BuildExpertProbability(results);`
 
 ObstructedBy := 'obstructedby' S ( Obstacle / Name / Identifier ) 
     `value = BuildObstructedBy(results);`
@@ -447,11 +466,28 @@ Integer := [0-9]+
 Number := ( '.' [0-9]+ / [0-9]+ ( '.' [0-9]+ )? )
     `value = null` `expected = "number"`
 
+Percentage := Number '%'
+    `value = null` `expected = "percentage"`
+
 Variable := [a-z]+ [a-zA-Z0-9]*
     `value = null` `expected = "number"`
 
 Bool := 'true' / 'false'
     `value = null` `expected = "bool"`
+
+QuantileList := '(' S ( Percentage / Number ) ( S ',' S ( Percentage / Number ) )* S ')'
+    `value = BuildQuantileList(results);` `expected = "list of quantiles"`
+
+UDistribution := 
+    ( 'uniform' S '(' S Number S ',' S Number S ')' )
+    / ( 'triangular' S '(' S Number S ',' S Number S ',' S Number S ')' )
+    / ( 'pert' S '(' S Number S ',' S Number S ',' S Number S ')' )
+    / ( 'beta' S '(' S Number S ',' S Number S ')' )
+    `value = BuildUDistribution(results);` `expected = "uncertainty distribution"`
+
+
+ModelAttributeName := [a-zA-Z0-9\\._-]+
+    `value = null` `expected = "ModelAttributeName"`
 
 # Spaces and comments
 

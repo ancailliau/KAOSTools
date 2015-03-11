@@ -869,6 +869,85 @@ namespace KAOSTools.Parsing
         {
             Handle (element, attribute.Value, "EPS");
         }
+        
+        public void Handle (KAOSMetaModelElement element, ParsedExpertProbabilityAttribute attribute)
+        {
+            if (element is Obstacle) {
+
+                var o = (Obstacle)element;
+
+                /*
+            UncertaintyDistribution distribution;
+            if (attribute.Estimate is ParsedUniformDistribution) {
+                distribution = new UniformDistribution {
+                    LowerBound = (attribute.Value as ParsedUniformDistribution).LowerBound,
+                    UpperBound = (attribute.Value as ParsedUniformDistribution).UpperBound
+                };
+            } else if (attribute.Estimate is ParsedTriangularDistribution) {
+                distribution = new TriangularDistribution {
+                    Min = (attribute.Value as ParsedTriangularDistribution).Min,
+                    Mode = (attribute.Value as ParsedTriangularDistribution).Mode,
+                    Max = (attribute.Value as ParsedTriangularDistribution).Max
+                };
+            } else if (attribute.Estimate is ParsedPertDistribution) {
+                distribution = new PERTDistribution {
+                    Min = (attribute.Value as ParsedPertDistribution).Min,
+                    Mode = (attribute.Value as ParsedPertDistribution).Mode,
+                    Max = (attribute.Value as ParsedPertDistribution).Max
+                };
+            } else if (attribute.Estimate is ParsedBetaDistribution) {
+                distribution = new BetaDistribution {
+                    Alpha = (attribute.Value as ParsedBetaDistribution).Alpha,
+                    Beta = (attribute.Value as ParsedBetaDistribution).Beta
+                };
+            } else if (attribute.Estimate is ParsedQuantileList) {
+                distribution = new QuantileList {
+                    Quantiles = (attribute.Estimate as ParsedQuantileList).Quantiles
+                };
+            } else {
+                throw new NotImplementedException ();
+            }
+            */
+                var expertEstimates = o.ExpertEstimates ?? new Dictionary<Expert, QuantileList> ();
+
+                var child = attribute.IdOrNAme;
+                if (child is IdentifierExpression | child is NameExpression) {
+                    Expert expert;
+                    if (Get (child, out expert)) {
+                        expertEstimates.Add (expert, new QuantileList {
+                            Quantiles = (attribute.Estimate as ParsedQuantileList).Quantiles
+                        });
+                    }
+
+                } else {
+                    throw new NotImplementedException ();
+                }
+
+                Handle (element, expertEstimates, "ExpertEstimates");
+            } else if (element is Calibration) {
+
+                var o = (Calibration)element;
+                var expertEstimates = o.ExpertEstimates ?? new Dictionary<Expert, QuantileList> ();
+
+                var child = attribute.IdOrNAme;
+                if (child is IdentifierExpression | child is NameExpression) {
+                    Expert expert;
+                    if (Get (child, out expert)) {
+                        expertEstimates.Add (expert, new QuantileList {
+                            Quantiles = (attribute.Estimate as ParsedQuantileList).Quantiles
+                        });
+                    }
+
+                } else {
+                    throw new NotImplementedException ();
+                }
+
+                Handle (element, expertEstimates, "ExpertEstimates");
+
+            } else {
+                throw new NotSupportedException ();
+            }
+        }
 
         public void Handle (KAOSMetaModelElement element, ParsedNameAttribute name)
         {

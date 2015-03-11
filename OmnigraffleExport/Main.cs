@@ -46,12 +46,26 @@ namespace KAOSTools.OmnigraffleExport
             var canvas = new Omnigraffle.Sheet (1, string.Format ("Model"));
             var shapes = new Dictionary<string, IList<Graphic>> ();
 
+                Console.WriteLine ("<ul>");
+                foreach (var t in model.LeafObstacles ()) {
+                    Console.WriteLine ("<li>" + t.FriendlyName + "</li>");
+                }
+                Console.WriteLine ("</ul>");
+
             var u = new GoalModelGenerator (canvas, shapes);
                 u.Render (model);
                 // var u2 = new ObstacleDiagramGenerator (canvas, shapes);
                 // u2.Render (model);
 
             document.Canvas.Add (canvas);
+
+
+                var s2 = new Omnigraffle.Sheet (1, "Goal and Obstacle Model");
+                var u2 = new GoalAndObstacleModelGenerator (s2, new Dictionary<string, IList<Graphic>> ());
+                u2.Render (model);
+
+                document.Canvas.Add (s2);
+
 
                 int i = 0;
                 foreach (var o in model.Obstructions ().Select (x => x.Obstacle ())) {

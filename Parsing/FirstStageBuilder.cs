@@ -32,15 +32,23 @@ namespace KAOSTools.Parsing
 
         public void BuildModelAttributes (ParsedModelAttribute element)
         {
-            if (element is ModelAuthor) {
+            if (element.Name == "author") {
                 model.Author = element.Value;
-            } else if (element is ModelTitle) {
+            } else if (element.Name == "title") {
                 model.Title = element.Value;
-            } else if (element is ModelVersion) {
+            } else if (element.Name == "version") {
                 model.Version = element.Value;
             } else {
-                throw new BuilderException (string.Format ("'{0}' not supported", element.GetType ()),
-                    element.Filename, element.Line, element.Col);
+
+                if (model.Parameters.ContainsKey (element.Name)) {
+                    throw new BuilderException (string.Format ("'{0}' is already defined", element.Name),
+                        element.Filename, element.Line, element.Col);
+
+                } else {
+                    model.Parameters.Add (element.Name, element.Value);
+                }
+//                throw new BuilderException (string.Format ("'{0}' not supported", element.GetType ()),
+//                    element.Filename, element.Line, element.Col);
             }
         }
 
@@ -85,6 +93,12 @@ namespace KAOSTools.Parsing
             if (element is ParsedGoalRefinement)
                 return BuildKAOSElement<GoalRefinement> (element);
 
+            if (element is ParsedExpert)
+                return BuildKAOSElement<Expert> (element);
+
+            if (element is ParsedCalibration)
+                return BuildKAOSElement<Calibration> (element);
+
             throw new BuilderException (string.Format ("'{0}' not supported", element.GetType ()),
                                         element.Filename, element.Line, element.Col);
         }
@@ -115,7 +129,8 @@ namespace KAOSTools.Parsing
                 && typeof(T).GetProperty("Name").GetValue(e, null) as string == name;
 
             if (hasName & !hasNameProperty)
-                throw new InvalidOperationException("Attempt to set a name to '" + element.GetType () + "'.");
+                throw new InvalidOperationException("Attempt to set a name to '" + element.GetType () + "' " +
+                    "on line " + parsedElement.Line + " at column " + parsedElement.Col + " in file '" + parsedElement.Filename + "'");
 
             if (!hasIdentifier
                 && hasNameProperty 

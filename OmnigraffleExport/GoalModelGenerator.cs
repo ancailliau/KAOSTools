@@ -17,8 +17,12 @@ namespace KAOSTools.OmnigraffleExport
 
         public void Render (KAOSModel model) 
         {
-            foreach (var g in model.GoalRefinements ().SelectMany (x => x.SubGoals ().Union (new [] { x.ParentGoal () })).Distinct ()) {
-                Render (g);
+            var goalsInRefinements = model.GoalRefinements ().SelectMany (x => x.SubGoals ().Union (new[] {
+                x.ParentGoal ()
+            })).Distinct ();
+
+            foreach (var g in goalsInRefinements) {
+               Render (g);
             }
 
             foreach (var d in model.GoalRefinements ().SelectMany (x => x.DomainProperties()).Distinct ()) {

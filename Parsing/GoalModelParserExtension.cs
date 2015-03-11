@@ -35,19 +35,26 @@ namespace KAOSTools.Parsing {
 
         ParsedElement ModelAttribute (List<Result> results)
         {
+            /*
             if (results[0].Text == "@author") {
-                return new ModelAuthor { Value = results[2].Text };
+                return new ParsedModelAttribute { Value = results[2].Text };
             }
 
             if (results[0].Text == "@title") {
-                return new ModelTitle { Value = results[2].Text };
+                return new ParsedModelAttribute { Value = results[2].Text };
             }
 
             if (results[0].Text == "@version") {
-                return new ModelVersion { Value = results[2].Text };
-            }
+                return new ParsedModelAttribute { Value = results[2].Text };
+            }*/
 
-            throw new NotImplementedException ();
+//            Console.WriteLine ("<pre>");
+//            for (int i = 0; i < results.Count; i++) {
+//                Console.WriteLine (i + " : " + results[i].Text);
+//            }
+//            Console.WriteLine ("</pre>");
+
+            return new ParsedModelAttribute { Value = results[3].Text, Name = results[1].Text };
         }
 
         ParsedElement Import (string file)
@@ -180,6 +187,16 @@ namespace KAOSTools.Parsing {
             return BuildParsedElementWithAttributesInline<ParsedGoalRefinement> (results);
         }
 
+        ParsedElement BuildExpert (List<Result> results)
+        {
+            return BuildParsedElementWithAttributes<ParsedExpert> (results);
+        }
+
+        ParsedElement BuildCalibration (List<Result> results)
+        {
+            return BuildParsedElementWithAttributes<ParsedCalibration> (results);
+        }
+
         #endregion
 
         #region Attributes
@@ -287,14 +304,38 @@ namespace KAOSTools.Parsing {
 
         ParsedElement BuildRDS (List<Result> results)
         {
+            var r = results[1].Text;
+            var parsedNumber = 0d;
+            if (r.EndsWith ("%", StringComparison.Ordinal)) {
+                parsedNumber = double.Parse (r.Remove (r.Length - 1)) / 100d;
+            } else {
+                parsedNumber = double.Parse (results [1].Text);
+            }
+
             return BuildParsedAttributeWithValue<ParsedRDSAttribute> 
-                (results, double.Parse (results[1].Text));
+                (results, parsedNumber);
         }
         
         ParsedElement BuildProbability (List<Result> results)
         {
+            var r = results[1].Text;
+            var parsedNumber = 0d;
+            if (r.EndsWith ("%", StringComparison.Ordinal)) {
+                parsedNumber = double.Parse (r.Remove (r.Length - 1)) / 100d;
+            } else {
+                parsedNumber = double.Parse (results [1].Text);
+            }
+
             return BuildParsedAttributeWithValue<ParsedProbabilityAttribute> 
-                (results, double.Parse (results[1].Text));
+                (results, parsedNumber);
+        }
+        
+        ParsedElement BuildExpertProbability (List<Result> results)
+        {
+            return new ParsedExpertProbabilityAttribute () {
+                IdOrNAme = results [2].Value,
+                Estimate = results [4].Value
+            };
         }
 
         ParsedElement BuildObstructedBy (List<Result> results)
@@ -1076,5 +1117,50 @@ namespace KAOSTools.Parsing {
         }
 
         #endregion
+
+        ParsedElement BuildQuantileList (List<Result> results)
+        {
+            var ql = new ParsedQuantileList ();
+
+            for (int i = 1; i < results.Count - 1; i = i + 2) {
+                var r = results [i].Text;
+                if (r.EndsWith ("%")) {
+                    ql.Quantiles.Add (float.Parse (r.Remove (r.Length - 1)) / 100f);
+                } else {
+                    ql.Quantiles.Add (float.Parse (r));
+                }
+            }
+
+            return ql;
+        }
+
+        ParsedElement BuildUDistribution (List<Result> results)
+        {
+            if (results[0].Text == "uniform")
+               return new ParsedUniformDistribution { 
+                    LowerBound = float.Parse (results[2].Text), 
+                    UpperBound = float.Parse (results[4].Text)
+                };
+            else if (results[0].Text == "triangular")
+               return new ParsedTriangularDistribution { 
+                    Min = float.Parse (results[2].Text), 
+                    Mode = float.Parse (results[4].Text), 
+                    Max = float.Parse (results[6].Text)
+                };
+            else if (results[0].Text == "pert")
+               return new ParsedPertDistribution { 
+                    Min = float.Parse (results[2].Text), 
+                    Mode = float.Parse (results[4].Text), 
+                    Max = float.Parse (results[6].Text)
+                };
+            else if (results[0].Text == "beta")
+               return new ParsedBetaDistribution { 
+                    Alpha = float.Parse (results[2].Text), 
+                    Beta = float.Parse (results[4].Text)
+               };
+            else
+                throw new NotImplementedException ();
+        }
+
     }
 }

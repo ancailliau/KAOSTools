@@ -59,6 +59,8 @@ namespace KAOSTools.Parsing
 			m_nonterminals.Add("Type", new ParseMethod[]{this.DoParseTypeRule});
 			m_nonterminals.Add("Association", new ParseMethod[]{this.DoParseAssociationRule});
 			m_nonterminals.Add("Attribute", new ParseMethod[]{this.DoParseAttributeRule});
+			m_nonterminals.Add("Expert", new ParseMethod[]{this.DoParseExpertRule});
+			m_nonterminals.Add("Calibration", new ParseMethod[]{this.DoParseCalibrationRule});
 			m_nonterminals.Add("GoalAttribute", new ParseMethod[]{this.DoParseGoalAttributeRule});
 			m_nonterminals.Add("AntiGoalAttribute", new ParseMethod[]{this.DoParseAntiGoalAttributeRule});
 			m_nonterminals.Add("SoftGoalAttribute", new ParseMethod[]{this.DoParseSoftGoalAttributeRule});
@@ -73,6 +75,8 @@ namespace KAOSTools.Parsing
 			m_nonterminals.Add("TypeAttribute", new ParseMethod[]{this.DoParseTypeAttributeRule});
 			m_nonterminals.Add("AssociationAttribute", new ParseMethod[]{this.DoParseAssociationAttributeRule});
 			m_nonterminals.Add("AttributeAttribute", new ParseMethod[]{this.DoParseAttributeAttributeRule});
+			m_nonterminals.Add("ExpertAttribute", new ParseMethod[]{this.DoParseExpertAttributeRule});
+			m_nonterminals.Add("CalibrationAttribute", new ParseMethod[]{this.DoParseCalibrationAttributeRule});
 			m_nonterminals.Add("CustomAttribute", new ParseMethod[]{this.DoParseCustomAttributeRule});
 			m_nonterminals.Add("IdAttribute", new ParseMethod[]{this.DoParseIdAttributeRule});
 			m_nonterminals.Add("NameAttribute", new ParseMethod[]{this.DoParseNameAttributeRule});
@@ -80,6 +84,7 @@ namespace KAOSTools.Parsing
 			m_nonterminals.Add("DefinitionAttribute", new ParseMethod[]{this.DoParseDefinitionAttributeRule});
 			m_nonterminals.Add("RDSAttribute", new ParseMethod[]{this.DoParseRDSAttributeRule});
 			m_nonterminals.Add("Probability", new ParseMethod[]{this.DoParseProbabilityRule});
+			m_nonterminals.Add("ExpertProbability", new ParseMethod[]{this.DoParseExpertProbabilityRule});
 			m_nonterminals.Add("ObstructedBy", new ParseMethod[]{this.DoParseObstructedByRule});
 			m_nonterminals.Add("AssumptionAttribute", new ParseMethod[]{this.DoParseAssumptionAttributeRule});
 			m_nonterminals.Add("ExceptionAttribute", new ParseMethod[]{this.DoParseExceptionAttributeRule});
@@ -137,8 +142,12 @@ namespace KAOSTools.Parsing
 			m_nonterminals.Add("TimeUnit", new ParseMethod[]{this.DoParseTimeUnitRule});
 			m_nonterminals.Add("Integer", new ParseMethod[]{this.DoParseIntegerRule});
 			m_nonterminals.Add("Number", new ParseMethod[]{this.DoParseNumberRule});
+			m_nonterminals.Add("Percentage", new ParseMethod[]{this.DoParsePercentageRule});
 			m_nonterminals.Add("Variable", new ParseMethod[]{this.DoParseVariableRule});
 			m_nonterminals.Add("Bool", new ParseMethod[]{this.DoParseBoolRule});
+			m_nonterminals.Add("QuantileList", new ParseMethod[]{this.DoParseQuantileListRule});
+			m_nonterminals.Add("UDistribution", new ParseMethod[]{this.DoParseUDistributionRule});
+			m_nonterminals.Add("ModelAttributeName", new ParseMethod[]{this.DoParseModelAttributeNameRule});
 			m_nonterminals.Add("S", new ParseMethod[]{this.DoParseSRule});
 			m_nonterminals.Add("Space", new ParseMethod[]{this.DoParseSpaceRule});
 			m_nonterminals.Add("Comment", new ParseMethod[]{this.DoParseCommentRule});
@@ -177,7 +186,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// Elements := ((ModelAttribute / System / Predicate / Goal / AntiGoal / SoftGoal / DomProp / Obstacle / Agent / Import / DomHyp / Entity / Type / Association) S)*
+		// Elements := ((ModelAttribute / System / Predicate / Goal / AntiGoal / SoftGoal / DomProp / Obstacle / Agent / Import / DomHyp / Entity / Type / Association / Expert / Calibration) S)*
 		private State DoParseElementsRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -199,7 +208,9 @@ namespace KAOSTools.Parsing
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "DomHyp");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Entity");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Type");},
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Association");});},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Association");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Expert");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Calibration");});},
 				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");});});
 			
 			if (_state.Parsed)
@@ -212,31 +223,19 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// ModelAttribute := ('@author' S '"' String '"') / ('@title' S '"' String '"') / ('@version' S '"' String '"')
+		// ModelAttribute := '@' ModelAttributeName S '"' String '"'
 		private State DoParseModelAttributeRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
 			List<Result> results = new List<Result>();
 			
-			_state = DoChoice(_state, results,
-			delegate (State s, List<Result> r) {return DoSequence(s, r,
-				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "@author");},
-				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
-				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "\"");},
-				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "String");},
-				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "\"");});},
-			delegate (State s, List<Result> r) {return DoSequence(s, r,
-				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "@title");},
-				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
-				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "\"");},
-				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "String");},
-				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "\"");});},
-			delegate (State s, List<Result> r) {return DoSequence(s, r,
-				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "@version");},
-				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
-				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "\"");},
-				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "String");},
-				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "\"");});});
+			_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "@");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "ModelAttributeName");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "\"");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "String");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "\"");});
 			
 			if (_state.Parsed)
 			{
@@ -681,6 +680,64 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
+		// Expert := ('declare' / 'override') S 'expert' S (ExpertAttribute S)* 'end'
+		private State DoParseExpertRule(State _state, List<Result> _outResults)
+		{
+			State _start = _state;
+			List<Result> results = new List<Result>();
+			
+			_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoChoice(s, r,
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "declare");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "override");});},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "expert");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,
+				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "ExpertAttribute");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");});});},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "end");});
+			
+			if (_state.Parsed)
+			{
+				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
+				value = BuildExpert(results);
+				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+			}
+			
+			return _state;
+		}
+		
+		// Calibration := ('declare' / 'override') S 'calibration' S (CalibrationAttribute S)* 'end'
+		private State DoParseCalibrationRule(State _state, List<Result> _outResults)
+		{
+			State _start = _state;
+			List<Result> results = new List<Result>();
+			
+			_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoChoice(s, r,
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "declare");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "override");});},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "calibration");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,
+				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "CalibrationAttribute");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");});});},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "end");});
+			
+			if (_state.Parsed)
+			{
+				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
+				value = BuildCalibration(results);
+				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+			}
+			
+			return _state;
+		}
+		
 		// GoalAttribute := IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByGoal / ObstructedBy / AssignedTo / RDSAttribute / ExceptionAttribute / AssumptionAttribute / CustomAttribute
 		private State DoParseGoalAttributeRule(State _state, List<Result> _outResults)
 		{
@@ -757,7 +814,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// DomPropAttribute := IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / Probability / CustomAttribute
+		// DomPropAttribute := IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / ExpertProbability / Probability / CustomAttribute
 		private State DoParseDomPropAttributeRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -768,6 +825,7 @@ namespace KAOSTools.Parsing
 			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpecAttribute");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "ExpertProbability");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Probability");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "CustomAttribute");});
 			
@@ -781,7 +839,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// DomHypAttribute := IdAttribute / NameAttribute / DefinitionAttribute / CustomAttribute
+		// DomHypAttribute := IdAttribute / NameAttribute / DefinitionAttribute / ExpertProbability / Probability / CustomAttribute
 		private State DoParseDomHypAttributeRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -791,6 +849,8 @@ namespace KAOSTools.Parsing
 			delegate (State s, List<Result> r) {return DoParse(s, r, "IdAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "ExpertProbability");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Probability");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "CustomAttribute");});
 			
 			if (_state.Parsed)
@@ -803,7 +863,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// ObstacleAttribute := IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByObstacle / ResolvedBy / Probability / AssignedTo / CustomAttribute
+		// ObstacleAttribute := IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByObstacle / ResolvedBy / ExpertProbability / Probability / AssignedTo / CustomAttribute
 		private State DoParseObstacleAttributeRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -816,6 +876,7 @@ namespace KAOSTools.Parsing
 			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpecAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "RefinedByObstacle");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "ResolvedBy");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "ExpertProbability");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Probability");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "AssignedTo");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "CustomAttribute");});
@@ -1017,6 +1078,48 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
+		// ExpertAttribute := IdAttribute / NameAttribute
+		private State DoParseExpertAttributeRule(State _state, List<Result> _outResults)
+		{
+			State _start = _state;
+			List<Result> results = new List<Result>();
+			
+			_state = DoChoice(_state, results,
+			delegate (State s, List<Result> r) {return DoParse(s, r, "IdAttribute");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");});
+			
+			if (_state.Parsed)
+			{
+				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
+				value = results[0].Value;
+				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+			}
+			
+			return _state;
+		}
+		
+		// CalibrationAttribute := IdAttribute / NameAttribute / ExpertProbability / Probability
+		private State DoParseCalibrationAttributeRule(State _state, List<Result> _outResults)
+		{
+			State _start = _state;
+			List<Result> results = new List<Result>();
+			
+			_state = DoChoice(_state, results,
+			delegate (State s, List<Result> r) {return DoParse(s, r, "IdAttribute");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "ExpertProbability");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Probability");});
+			
+			if (_state.Parsed)
+			{
+				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
+				value = results[0].Value;
+				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+			}
+			
+			return _state;
+		}
+		
 		// CustomAttribute := '$' Identifier S '"' String? '"'
 		private State DoParseCustomAttributeRule(State _state, List<Result> _outResults)
 		{
@@ -1129,7 +1232,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// RDSAttribute := 'rds' S Float
+		// RDSAttribute := 'rds' S (Percentage / Float)
 		private State DoParseRDSAttributeRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -1138,7 +1241,9 @@ namespace KAOSTools.Parsing
 			_state = DoSequence(_state, results,
 			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "rds");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Float");});
+			delegate (State s, List<Result> r) {return DoChoice(s, r,
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Percentage");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Float");});});
 			
 			if (_state.Parsed)
 			{
@@ -1150,7 +1255,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// Probability := ('probability' / 'eps') S Float
+		// Probability := ('probability' / 'eps') S (Percentage / Float / UDistribution)
 		private State DoParseProbabilityRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -1161,12 +1266,47 @@ namespace KAOSTools.Parsing
 				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "probability");},
 				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "eps");});},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Float");});
+			delegate (State s, List<Result> r) {return DoChoice(s, r,
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Percentage");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Float");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "UDistribution");});});
 			
 			if (_state.Parsed)
 			{
 				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
 				value = BuildProbability(results);
+				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+			}
+			
+			return _state;
+		}
+		
+		// ExpertProbability := 'probability' (S '[' S (Name / Identifier) S ']') S (QuantileList / UDistribution)
+		private State DoParseExpertProbabilityRule(State _state, List<Result> _outResults)
+		{
+			State _start = _state;
+			List<Result> results = new List<Result>();
+			
+			_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "probability");},
+			delegate (State s, List<Result> r) {return DoSequence(s, r,
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "[");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoChoice(s2, r2,
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Name");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Identifier");});},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "]");});},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoChoice(s, r,
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "QuantileList");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "UDistribution");});});
+			
+			if (_state.Parsed)
+			{
+				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
+				value = BuildExpertProbability(results);
 				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 			}
 			
@@ -3096,6 +3236,33 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
+		// Percentage := Number '%'
+		private State DoParsePercentageRule(State _state, List<Result> _outResults)
+		{
+			State _start = _state;
+			List<Result> results = new List<Result>();
+			
+			_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Number");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "%");});
+			
+			if (_state.Parsed)
+			{
+				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
+				value = null;
+				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+			}
+			else
+			{
+				string expected = null;
+				expected = "percentage";
+				if (expected != null)
+					_state = new State(_start.Index, false, ErrorSet.Combine(_start.Errors, new ErrorSet(_state.Errors.Index, expected)));
+			}
+			
+			return _state;
+		}
+		
 		// Variable := [a-z]+ [a-zA-Z0-9]*
 		private State DoParseVariableRule(State _state, List<Result> _outResults)
 		{
@@ -3145,6 +3312,153 @@ namespace KAOSTools.Parsing
 			{
 				string expected = null;
 				expected = "bool";
+				if (expected != null)
+					_state = new State(_start.Index, false, ErrorSet.Combine(_start.Errors, new ErrorSet(_state.Errors.Index, expected)));
+			}
+			
+			return _state;
+		}
+		
+		// QuantileList := '(' S (Percentage / Number) (S ',' S (Percentage / Number))* S ')'
+		private State DoParseQuantileListRule(State _state, List<Result> _outResults)
+		{
+			State _start = _state;
+			List<Result> results = new List<Result>();
+			
+			_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "(");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoChoice(s, r,
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Percentage");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Number");});},
+			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,
+				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
+					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, ",");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
+					delegate (State s3, List<Result> r3) {return DoChoice(s3, r3,
+						delegate (State s4, List<Result> r4) {return DoParse(s4, r4, "Percentage");},
+						delegate (State s4, List<Result> r4) {return DoParse(s4, r4, "Number");});});});},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, ")");});
+			
+			if (_state.Parsed)
+			{
+				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
+				value = BuildQuantileList(results);
+				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+			}
+			else
+			{
+				string expected = null;
+				expected = "list of quantiles";
+				if (expected != null)
+					_state = new State(_start.Index, false, ErrorSet.Combine(_start.Errors, new ErrorSet(_state.Errors.Index, expected)));
+			}
+			
+			return _state;
+		}
+		
+		// UDistribution := ('uniform' S '(' S Number S ',' S Number S ')') / ('triangular' S '(' S Number S ',' S Number S ',' S Number S ')') / ('pert' S '(' S Number S ',' S Number S ',' S Number S ')') / ('beta' S '(' S Number S ',' S Number S ')')
+		private State DoParseUDistributionRule(State _state, List<Result> _outResults)
+		{
+			State _start = _state;
+			List<Result> results = new List<Result>();
+			
+			_state = DoChoice(_state, results,
+			delegate (State s, List<Result> r) {return DoSequence(s, r,
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "uniform");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "(");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Number");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, ",");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Number");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, ")");});},
+			delegate (State s, List<Result> r) {return DoSequence(s, r,
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "triangular");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "(");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Number");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, ",");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Number");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, ",");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Number");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, ")");});},
+			delegate (State s, List<Result> r) {return DoSequence(s, r,
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "pert");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "(");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Number");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, ",");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Number");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, ",");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Number");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, ")");});},
+			delegate (State s, List<Result> r) {return DoSequence(s, r,
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "beta");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "(");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Number");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, ",");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Number");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, ")");});});
+			
+			if (_state.Parsed)
+			{
+				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
+				value = BuildUDistribution(results);
+				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+			}
+			else
+			{
+				string expected = null;
+				expected = "uncertainty distribution";
+				if (expected != null)
+					_state = new State(_start.Index, false, ErrorSet.Combine(_start.Errors, new ErrorSet(_state.Errors.Index, expected)));
+			}
+			
+			return _state;
+		}
+		
+		// ModelAttributeName := [\\._-a-zA-Z0-9]+
+		private State DoParseModelAttributeNameRule(State _state, List<Result> _outResults)
+		{
+			State _start = _state;
+			List<Result> results = new List<Result>();
+			
+			_state = DoRepetition(_state, results, 1, 2147483647,
+			delegate (State s, List<Result> r) {return DoParseRange(s, r, false, "\\._-", "azAZ09", null, "[\\._-a-zA-Z0-9]");});
+			
+			if (_state.Parsed)
+			{
+				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
+				value = null;
+				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+			}
+			else
+			{
+				string expected = null;
+				expected = "ModelAttributeName";
 				if (expected != null)
 					_state = new State(_start.Index, false, ErrorSet.Combine(_start.Errors, new ErrorSet(_state.Errors.Index, expected)));
 			}

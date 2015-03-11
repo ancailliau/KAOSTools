@@ -184,8 +184,13 @@ namespace KAOSTools.MetaModel
 
         public double CPS { get; set; }
 
+        public UncertaintyDistribution UEPS { get; set; }
+
+        public Dictionary<Expert, QuantileList> ExpertEstimates { get; set; }
+
         public Obstacle (KAOSModel model) : base(model)
         {
+            ExpertEstimates = new Dictionary<Expert, QuantileList> ();
         }
 
         public override KAOSMetaModelElement Copy ()
@@ -197,7 +202,7 @@ namespace KAOSTools.MetaModel
                 Definition = Definition,
                 FormalSpec = FormalSpec,
                 CPS = CPS,
-                EPS = EPS,
+                EPS = EPS
             };
         }
     }
@@ -220,6 +225,8 @@ namespace KAOSTools.MetaModel
         public Formula FormalSpec { get; set; }
 
         public double EPS { get; set; }
+
+        public UncertaintyDistribution UEPS { get; set; }
 
         public DomainHypothesis (KAOSModel model) : base(model)
         {
@@ -1069,5 +1076,192 @@ namespace KAOSTools.MetaModel
         public string Name { get; set; }
 
         public Entity Type { get; set; }
+    }
+
+
+
+    public abstract class UncertaintyDistribution {
+        public abstract double Sample (Random r);
+    }
+
+    public class UniformDistribution : UncertaintyDistribution {
+        public float LowerBound;
+        public float UpperBound;
+
+        public override double Sample (Random r) {
+            return MathNet.Numerics.Distributions.ContinuousUniform.Sample (r, LowerBound, UpperBound);
+        }
+    }
+
+    public class TriangularDistribution : UncertaintyDistribution {
+        public float Min;
+        public float Max;
+        public float Mode;
+
+        public override double Sample (Random r) {
+            return MathNet.Numerics.Distributions.Triangular.Sample (r, Min, Max, Mode);
+        }
+    }
+
+    public class PERTDistribution : UncertaintyDistribution {
+        public float Min;
+        public float Max;
+        public float Mode;
+
+        public override double Sample (Random r) {
+            var mean = (Min + 4 * Mode + Max) / 6;
+            var alpha = 6 * ((mean - Min) / (Max - Min));
+            var beta = 6 * ((Max - mean) / (Max - Min));
+            // Console.WriteLine ("beta={0}, alpha={1}, mean={2}", beta, alpha, mean);
+            
+            var s = r.NextDouble ();
+            return (alglib.invincompletebeta (alpha, beta, s) * (Max - Min)) + Min;
+        }
+    }
+
+    public class BetaDistribution : UncertaintyDistribution {
+        public float Alpha;
+        public float Beta;
+
+        public override double Sample (Random r) {
+            return MathNet.Numerics.Distributions.Beta.Sample(r, Alpha, Beta);
+        }
+    }
+
+    public class QuantileDistribution : UncertaintyDistribution
+    {
+        readonly double[] probabilities;
+        readonly double[] quantiles;
+
+        public QuantileDistribution (double[] probabilities, double[] quantiles)
+        {
+            this.probabilities = probabilities;
+            this.quantiles = quantiles;
+        }
+
+        public override double Sample (Random _random)
+        {
+            double s = _random.NextDouble ();
+
+            int i;
+            for (i = 1; i < probabilities.Length - 1; i++) {
+                if (s < probabilities [i]) {
+                    break;
+                }
+            }
+
+            var ss = (s - probabilities [i-1]) / (probabilities [i] - probabilities [i - 1]);
+            var ss2 = ss * (quantiles [i] - quantiles [i - 1]) + quantiles[i - 1];
+            return ss2;
+        }
+
+        public double LowerBound {
+            get {
+                return quantiles.Min ();
+            }
+        }
+
+        public double UpperBound {
+            get {
+                return quantiles.Max ();
+            }
+        }
+
+        public override string ToString ()
+        {
+            return string.Format ("[QuantileDistribution: {0}]", 
+                string.Join (" ", Enumerable.Range (0, quantiles.Length).Select (i => quantiles[i] + ":" + probabilities[i]))
+            );
+        }
+
+    }
+
+    public class MixtureDistribution : UncertaintyDistribution
+    {
+        readonly double[] cummulativeWeight;
+        readonly QuantileDistribution[] distributions;
+
+        public MixtureDistribution (double[] cummulativeWeight, QuantileDistribution[] distributions)
+        {
+            this.cummulativeWeight = cummulativeWeight;
+            this.distributions = distributions;
+        }
+
+        public override double Sample (Random _random)
+        {
+            double s = _random.NextDouble ();
+
+            int i;
+            for (i = 1; i < cummulativeWeight.Length - 1; i++) {
+                if (s < cummulativeWeight [i]) {
+                    break;
+                }
+            }
+            return distributions[i-1].Sample (_random);
+        }
+
+        public double LowerBound {
+            get {
+                return distributions.Min (x => x.LowerBound);
+            }
+        }
+
+        public double UpperBound {
+            get {
+                return distributions.Max (x => x.UpperBound);
+            }
+        }
+    }
+
+    public class QuantileList {
+        public List<double> Quantiles;
+        public QuantileList ()
+        {
+            Quantiles = new List<double> ();
+        }
+    }
+
+    public class Expert : KAOSMetaModelElement
+    {
+        public string Name { get; set; }
+
+        public override string FriendlyName {
+            get {
+                return string.IsNullOrEmpty(Name) ? Identifier : Name;
+            }
+        }
+
+        public Expert  (KAOSModel model) : base (model)
+        {
+        }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            throw new NotImplementedException ();
+        }
+    }
+
+    public class Calibration : KAOSMetaModelElement
+    {
+        public string Name { get; set; }
+
+        public double EPS { get; set; }
+
+        public Dictionary<Expert, QuantileList> ExpertEstimates { get; set; }
+
+        public override string FriendlyName {
+            get {
+                return string.IsNullOrEmpty(Name) ? Identifier : Name;
+            }
+        }
+
+        public Calibration  (KAOSModel model) : base (model)
+        {
+        }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            throw new NotImplementedException ();
+        }
     }
 }

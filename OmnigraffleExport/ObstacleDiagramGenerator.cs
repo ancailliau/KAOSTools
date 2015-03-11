@@ -37,6 +37,9 @@ namespace KAOSTools.OmnigraffleExport
                         Render (resolution);
                     }
                 }
+                foreach (var child in refinement.DomainHypotheses ()) {
+                    Render (child);
+                }
                 Render (refinement);
             }
         }
