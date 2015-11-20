@@ -33,12 +33,12 @@
     <Reference Include="NDesk.Options">
       <HintPath>..\Libraries\NDesk.Options.dll</HintPath>
     </Reference>
-    <Reference Include="CE.iPhone.PList">
-      <HintPath>..\Libraries\CE.iPhone.PList.dll</HintPath>
-    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="PList">
+      <HintPath>..\packages\plist.net.1.0\lib\Net35\PList.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -71,5 +71,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Omnigraffle\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
