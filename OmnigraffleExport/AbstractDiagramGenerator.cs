@@ -380,16 +380,6 @@ namespace KAOSTools.OmnigraffleExport
                 1, 1, 1, 1);
         }
 
-        protected void Render (AntiGoal antigoal)
-        {
-            int lineWidth = 1;
-            if (antigoal.AgentAssignments().Count() > 0)
-                lineWidth = 2;
-
-            AddParallelogram (antigoal.Identifier, antigoal.FriendlyName, 
-                lineWidth, 1, 234.0/255, 192.0/255);
-        }
-
         protected void Render (Obstacle obstacle)
         {
             int lineWidth = 1;
@@ -523,29 +513,6 @@ namespace KAOSTools.OmnigraffleExport
                 var childGraphic = shapes [child].First ();
                 var line = GetFilledArrow (circle, childGraphic, true);
                 AddText (line, @"Negative\par contribution");
-                sheet.GraphicsList.Add (line);
-            }
-        }
-
-        protected void Render (AntiGoalRefinement refinement)
-        {
-            var circle = GetCircle ();
-            Add (refinement.Identifier, circle);
-
-            if (shapes.ContainsKey(refinement.ParentAntiGoalIdentifier)) {
-                var parentGraphic = shapes[refinement.ParentAntiGoalIdentifier].First ();
-                var topArrow = GetFilledArrow (circle, parentGraphic);
-                if (refinement.SystemReferenceIdentifier != null)
-                    AddText (topArrow, "");
-                sheet.GraphicsList.Add (topArrow);
-            }
-
-            foreach (var child in refinement.SubAntiGoalIdentifiers) {
-                if (!shapes.ContainsKey(child))
-                    continue;
-
-                var childGraphic = shapes [child].First ();
-                var line = GetLine (childGraphic, circle);
                 sheet.GraphicsList.Add (line);
             }
         }

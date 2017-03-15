@@ -137,11 +137,6 @@ namespace KAOSTools.Parsing {
             return BuildParsedElementWithAttributes<ParsedGoal> (results);
         }
 
-        ParsedElement BuildAntiGoal (List<Result> results)
-        {
-            return BuildParsedElementWithAttributes<ParsedAntiGoal> (results);
-        }
-        
         ParsedElement BuildSoftGoal (List<Result> results)
         {
             return BuildParsedElementWithAttributes<ParsedSoftGoal> (results);
@@ -555,27 +550,6 @@ namespace KAOSTools.Parsing {
                 start++;
             }
 
-            if (results.Count > start && results[start].Value is ParsedSystemReference) {
-                attribute.SystemIdentifier = (results[start].Value as ParsedSystemReference).Name;
-                start++;
-            }
-
-            for (int i = start; i < results.Count; i = i + 2) {
-                attribute.Values.Add (results[i].Value);
-            }
-
-            return attribute;
-        }
-
-        ParsedElement BuildRefinedByAntiGoal (List<Result> results)
-        {
-            var attribute = new ParsedRefinedByAntiGoalAttribute () { 
-                Line = results[0].Line, 
-                Col = results[0].Col, 
-                Filename = m_file
-            };
-
-            int start = 1;
             if (results.Count > start && results[start].Value is ParsedSystemReference) {
                 attribute.SystemIdentifier = (results[start].Value as ParsedSystemReference).Name;
                 start++;

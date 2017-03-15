@@ -59,28 +59,6 @@ namespace KAOSTools.Core
 
         #endregion
 
-        #region Anti-goals
-
-        public static IEnumerable<AntiGoalRefinement> Refinements (this AntiGoal antiGoal) {
-            return from refinement in antiGoal.model.AntiGoalRefinements()
-                where refinement.ParentAntiGoalIdentifier == antiGoal.Identifier
-                    select refinement;
-        }
-
-        public static IEnumerable<AntiGoalAgentAssignment> AgentAssignments (this AntiGoal antiGoal) {
-            return from assignement in antiGoal.model.AntiGoalAgentAssignments()
-                where assignement.AntiGoalIdentifier == antiGoal.Identifier
-                    select assignement;
-        }
-
-        public static IEnumerable<AntiGoalRefinement> ParentRefinements (this AntiGoal antiGoal) {
-            return from refinement in antiGoal.model.AntiGoalRefinements()
-                where refinement.SubAntiGoalIdentifiers.Contains(antiGoal.Identifier)
-                    select refinement;
-        }
-
-        #endregion
-
         #region Obstacles
 
         public static IEnumerable<ObstacleRefinement> Refinements (this Obstacle obstacle) {
@@ -184,10 +162,6 @@ namespace KAOSTools.Core
             return obstacleAA.model.Obstacles().SingleOrDefault(y => y.Identifier == obstacleAA.ObstacleIdentifier);
         }
 
-        public static AntiGoal AntiGoal (this AntiGoalAgentAssignment antiGoalAA) {
-            return antiGoalAA.model.AntiGoals().SingleOrDefault(y => y.Identifier == antiGoalAA.AntiGoalIdentifier);
-        }
-
         #endregion
 
         #region Goal refinement
@@ -214,34 +188,6 @@ namespace KAOSTools.Core
 
         #endregion
 
-        #region Anti Goal refinement
-
-        public static IEnumerable<AntiGoal> SubAntiGoals (this AntiGoalRefinement refinement) {
-            return refinement.SubAntiGoalIdentifiers
-                .Select(x => refinement.model.AntiGoals().SingleOrDefault(y => y.Identifier == x));
-        }
-
-        public static IEnumerable<DomainProperty> DomainProperties (this AntiGoalRefinement refinement) {
-            return refinement.DomainPropertyIdentifiers
-                .Select(x => refinement.model.DomainProperties().SingleOrDefault(y => y.Identifier == x));
-        }
-
-        public static IEnumerable<DomainHypothesis> DomainHypotheses (this AntiGoalRefinement refinement) {
-            return refinement.DomainHypothesisIdentifiers
-                .Select(x => refinement.model.DomainHypotheses().SingleOrDefault(y => y.Identifier == x));
-        }
-
-        public static IEnumerable<Obstacle> Obstacles (this AntiGoalRefinement refinement) {
-            return refinement.ObstacleIdentifiers
-                .Select(x => refinement.model.Obstacles().SingleOrDefault(y => y.Identifier == x));
-        }
-
-        public static AntiGoal ParentAntiGoal (this AntiGoalRefinement refinement) {
-            return refinement.model.AntiGoals().SingleOrDefault(y => y.Identifier == refinement.ParentAntiGoalIdentifier);
-        }
-
-
-        #endregion
                 
         #region Obstacle refinement
 

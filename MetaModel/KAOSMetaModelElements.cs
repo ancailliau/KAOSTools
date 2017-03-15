@@ -11,40 +11,7 @@ namespace KAOSTools.Core
 
     #region Meta entities
 
-    
 
-    public class AntiGoal : KAOSCoreElement
-    {
-        public string Name { get; set; }
-
-        public override string FriendlyName {
-            get {
-                return string.IsNullOrEmpty(Name) ? Identifier : Name;
-            }
-        }
-
-        public string Definition { get; set; }
-
-        public Formula FormalSpec { get; set; }
-
-
-        public AntiGoal (KAOSModel model) : base(model)
-        {
-        }
-
-        public override KAOSCoreElement Copy ()
-        {
-            return new AntiGoal (null) {
-                Identifier = Identifier,
-                Implicit = Implicit,
-                Name = Name,
-                Definition = Definition,
-                FormalSpec = FormalSpec
-            };
-        }
-    }
-
-    
 
     
 
@@ -118,72 +85,6 @@ namespace KAOSTools.Core
 
     
 
-    public class AntiGoalRefinement : KAOSCoreElement
-    {
-        public string ParentAntiGoalIdentifier { get; set; }
-        public string SystemReferenceIdentifier { get; set; } // TODO remove
-
-        public ISet<string> SubAntiGoalIdentifiers { get; set; }
-        public ISet<string> ObstacleIdentifiers { get; set; }
-        public ISet<string> DomainPropertyIdentifiers { get; set; }
-        public ISet<string> DomainHypothesisIdentifiers { get; set; }
-
-        public bool IsEmpty {
-            get {
-                return SubAntiGoalIdentifiers.Count + ObstacleIdentifiers.Count 
-                    + DomainPropertyIdentifiers.Count + DomainHypothesisIdentifiers.Count == 0;
-            }
-        }
-
-        public AntiGoalRefinement (KAOSModel model) : base (model)
-        {
-            SubAntiGoalIdentifiers = new HashSet<string> ();
-            ObstacleIdentifiers = new HashSet<string> ();
-            DomainPropertyIdentifiers = new HashSet<string> ();
-            DomainHypothesisIdentifiers = new HashSet<string> ();
-        }
-
-        public void SetParentAntiGoal (AntiGoal element)
-        {
-            this.ParentAntiGoalIdentifier = element.Identifier;
-        }
-
-        public void Add (Obstacle obstacle)
-        {
-            this.ObstacleIdentifiers.Add (obstacle.Identifier);
-        }
-
-        public void Add (AntiGoal antiGoal)
-        {
-            this.SubAntiGoalIdentifiers.Add (antiGoal.Identifier);
-        }
-
-        public void Add (DomainProperty domProp)
-        {
-            this.DomainPropertyIdentifiers.Add (domProp.Identifier);
-        }
-
-        public void Add (DomainHypothesis domHyp)
-        {
-            this.DomainHypothesisIdentifiers.Add (domHyp.Identifier);
-        }
-
-        public override KAOSCoreElement Copy ()
-        {
-            return new AntiGoalRefinement (null) {
-                Identifier = Identifier,
-                Implicit = Implicit,
-                ParentAntiGoalIdentifier = ParentAntiGoalIdentifier,
-                SystemReferenceIdentifier = SystemReferenceIdentifier,
-                SubAntiGoalIdentifiers = new HashSet<string> (SubAntiGoalIdentifiers),
-                ObstacleIdentifiers = new HashSet<string> (ObstacleIdentifiers),
-                DomainPropertyIdentifiers = new HashSet<string> (DomainPropertyIdentifiers),
-                DomainHypothesisIdentifiers = new HashSet<string> (DomainHypothesisIdentifiers)
-            };
-        }
-    }
-
-    
 
     #endregion
 

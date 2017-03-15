@@ -66,7 +66,6 @@ namespace KAOSTools.Parsing
     public class ParsedPredicate            : ParsedElementWithAttributes {}
     public class ParsedSystem               : ParsedElementWithAttributes {}
     public class ParsedGoal                 : ParsedElementWithAttributes {}
-    public class ParsedAntiGoal             : ParsedElementWithAttributes {}
     public class ParsedSoftGoal             : ParsedElementWithAttributes {}
     public class ParsedDomainProperty       : ParsedElementWithAttributes {}
     public class ParsedDomainHypothesis     : ParsedElementWithAttributes {}

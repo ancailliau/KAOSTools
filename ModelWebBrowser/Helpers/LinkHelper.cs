@@ -12,11 +12,6 @@ namespace ModelWebBrowser.Helpers
             return helper.ActionLink (goal.FriendlyName, "GoalModel");
         }
 
-        public static MvcHtmlString GetLink (this HtmlHelper helper, AntiGoal antigoal)
-        {
-            return helper.ActionLink (antigoal.FriendlyName, "GoalModel");
-        }
-
         public static MvcHtmlString GetLink (this HtmlHelper helper, Obstacle obstacle)
         {
             return helper.ActionLink (obstacle.FriendlyName, "GoalModel");

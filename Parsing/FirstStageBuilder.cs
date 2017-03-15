@@ -57,9 +57,6 @@ namespace KAOSTools.Parsing
             if (element is ParsedGoal)
                 return BuildKAOSElement<Goal> (element);
 
-            if (element is ParsedAntiGoal)
-                return BuildKAOSElement<AntiGoal> (element);
-            
             if (element is ParsedSoftGoal)
                 return BuildKAOSElement<SoftGoal> (element);
 

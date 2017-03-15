@@ -456,38 +456,7 @@ namespace KAOSTools.Parsing
         }
 
         
-        public void Handle (AntiGoal element, ParsedAssignedToAttribute assignedTo)
-        {
-            var assignment = new AntiGoalAgentAssignment (model);
-            assignment.AntiGoalIdentifier = element.Identifier;
 
-
-            foreach (var child in assignedTo.Values) {
-                if (child is IdentifierExpression | child is NameExpression) {
-                    Agent agent;
-                    if (!Get (child, out agent)) {
-                        agent = Create<Agent> (child);
-                    }
-                    assignment.Add (agent);
-
-                } else if (child is ParsedAgent) {
-                    assignment.Add (fsb.BuildElementWithKeys (child));
-                    BuildElement (child);
-
-                } else {
-
-                    // TODO use string.Format
-                    throw new NotImplementedException (
-                        "'" + child.GetType().Name 
-                        + "' is not supported in '" 
-                        + assignedTo.GetType().Name + "' on '" 
-                        + element.GetType().Name + "'");
-                }
-            }
-
-            if (!assignment.IsEmpty)
-                model.Add (assignment);
-        }
 
         private void Handle (Obstacle element, ParsedAssignedToAttribute assignedTo)
         {
@@ -624,68 +593,7 @@ namespace KAOSTools.Parsing
                 model.Add (refinement);
         }
 
-        public void Handle (AntiGoal element, ParsedRefinedByAntiGoalAttribute refinedBy)
-        {
-            var refinement = new AntiGoalRefinement (model);
-            refinement.SetParentAntiGoal (element);
 
-
-            foreach (var child in refinedBy.Values) {
-                if (child is IdentifierExpression | child is NameExpression) {
-                    DomainProperty domprop;
-                    if (Get (child, out domprop)) {
-                        refinement.Add (domprop);
-                        continue;
-                    }
-
-                    DomainHypothesis domhyp;
-                    if (Get (child, out domhyp)) {
-                        refinement.Add (domhyp);
-                        continue;
-                    }
-                    
-                    Obstacle obstacle;
-                    if (Get (child, out obstacle)) {
-                        refinement.Add (obstacle);
-                        continue;
-                    }
-
-                    AntiGoal antigoal;
-                    if (!Get (child, out antigoal)) {
-                        antigoal = Create<AntiGoal> (child);
-                    }
-                    refinement.Add (antigoal);
-
-                } else if (child is ParsedAntiGoal) {
-                    refinement.Add (fsb.BuildElementWithKeys (child));
-                    BuildElement (child);
-
-                } else if (child is ParsedObstacle) {
-                    refinement.Add (fsb.BuildElementWithKeys (child));
-                    BuildElement (child);
-
-                } else if (child is ParsedDomainProperty) {
-                    refinement.Add (fsb.BuildElementWithKeys (child));
-                    BuildElement (child);
-
-                } else if (child is ParsedDomainHypothesis) {
-                    refinement.Add (fsb.BuildElementWithKeys (child));
-                    BuildElement (child);
-
-                } else {
-
-                    // TODO use string.Format
-                    throw new NotImplementedException (
-                        "'" + child.GetType().Name 
-                        + "' is not supported in '" 
-                        + refinedBy.GetType().Name + "' on '" 
-                        + element.GetType().Name + "'");
-                }
-            }
-
-            if (!refinement.IsEmpty)
-                model.Add (refinement);
-        }
 
         public void Handle (Obstacle element, ParsedRefinedByAttribute refinedBy)
         {

@@ -49,7 +49,6 @@ namespace KAOSTools.Parsing
 			m_nonterminals.Add("Constraint", new ParseMethod[]{this.DoParseConstraintRule});
 			m_nonterminals.Add("System", new ParseMethod[]{this.DoParseSystemRule});
 			m_nonterminals.Add("Goal", new ParseMethod[]{this.DoParseGoalRule});
-			m_nonterminals.Add("AntiGoal", new ParseMethod[]{this.DoParseAntiGoalRule});
 			m_nonterminals.Add("SoftGoal", new ParseMethod[]{this.DoParseSoftGoalRule});
 			m_nonterminals.Add("DomProp", new ParseMethod[]{this.DoParseDomPropRule});
 			m_nonterminals.Add("Obstacle", new ParseMethod[]{this.DoParseObstacleRule});
@@ -64,7 +63,6 @@ namespace KAOSTools.Parsing
 			m_nonterminals.Add("Calibration", new ParseMethod[]{this.DoParseCalibrationRule});
 			m_nonterminals.Add("CostVariable", new ParseMethod[]{this.DoParseCostVariableRule});
 			m_nonterminals.Add("GoalAttribute", new ParseMethod[]{this.DoParseGoalAttributeRule});
-			m_nonterminals.Add("AntiGoalAttribute", new ParseMethod[]{this.DoParseAntiGoalAttributeRule});
 			m_nonterminals.Add("SoftGoalAttribute", new ParseMethod[]{this.DoParseSoftGoalAttributeRule});
 			m_nonterminals.Add("DomPropAttribute", new ParseMethod[]{this.DoParseDomPropAttributeRule});
 			m_nonterminals.Add("DomHypAttribute", new ParseMethod[]{this.DoParseDomHypAttributeRule});
@@ -103,7 +101,6 @@ namespace KAOSTools.Parsing
 			m_nonterminals.Add("RefinedByObstacle", new ParseMethod[]{this.DoParseRefinedByObstacleRule});
 			m_nonterminals.Add("RefinedByGoal", new ParseMethod[]{this.DoParseRefinedByGoalRule});
 			m_nonterminals.Add("GoalRefinementChildren", new ParseMethod[]{this.DoParseGoalRefinementChildrenRule});
-			m_nonterminals.Add("RefinedByAntiGoal", new ParseMethod[]{this.DoParseRefinedByAntiGoalRule});
 			m_nonterminals.Add("RefinedByPattern", new ParseMethod[]{this.DoParseRefinedByPatternRule});
 			m_nonterminals.Add("RefinedByAlternative", new ParseMethod[]{this.DoParseRefinedByAlternativeRule});
 			m_nonterminals.Add("AssignedTo", new ParseMethod[]{this.DoParseAssignedToRule});
@@ -200,7 +197,7 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// Elements := ((ModelAttribute / System / Predicate / Goal / AntiGoal / SoftGoal / DomProp / Obstacle / Agent / Import / DomHyp / Entity / Type / Association / Expert / Calibration / CostVariable / Constraint) S)*
+		// Elements := ((ModelAttribute / System / Predicate / Goal / SoftGoal / DomProp / Obstacle / Agent / Import / DomHyp / Entity / Type / Association / Expert / Calibration / CostVariable / Constraint) S)*
 		private State DoParseElementsRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -213,7 +210,6 @@ namespace KAOSTools.Parsing
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "System");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Predicate");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Goal");},
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "AntiGoal");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "SoftGoal");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "DomProp");},
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "Obstacle");},
@@ -396,35 +392,6 @@ namespace KAOSTools.Parsing
 			{
 				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
 				value = BuildGoal(results);
-				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
-			}
-			
-			return _state;
-		}
-		
-		// AntiGoal := ('declare' / 'override') S 'antigoal' S (AntiGoalAttribute S)* 'end'
-		private State DoParseAntiGoalRule(State _state, List<Result> _outResults)
-		{
-			State _start = _state;
-			List<Result> results = new List<Result>();
-			
-			_state = DoSequence(_state, results,
-			delegate (State s, List<Result> r) {return DoChoice(s, r,
-				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "declare");},
-				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "override");});},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
-			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "antigoal");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
-			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,
-				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "AntiGoalAttribute");},
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");});});},
-			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "end");});
-			
-			if (_state.Parsed)
-			{
-				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
-				value = BuildAntiGoal(results);
 				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 			}
 			
@@ -830,31 +797,6 @@ namespace KAOSTools.Parsing
 			delegate (State s, List<Result> r) {return DoParse(s, r, "ExceptionAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "AssumptionAttribute");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "CostAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "CustomAttribute");});
-			
-			if (_state.Parsed)
-			{
-				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
-				value = results[0].Value;
-				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
-			}
-			
-			return _state;
-		}
-		
-		// AntiGoalAttribute := IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByAntiGoal / AssignedTo / CustomAttribute
-		private State DoParseAntiGoalAttributeRule(State _state, List<Result> _outResults)
-		{
-			State _start = _state;
-			List<Result> results = new List<Result>();
-			
-			_state = DoChoice(_state, results,
-			delegate (State s, List<Result> r) {return DoParse(s, r, "IdAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "NameAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "DefinitionAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "FormalSpecAttribute");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "RefinedByAntiGoal");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "AssignedTo");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "CustomAttribute");});
 			
 			if (_state.Parsed)
@@ -1833,49 +1775,6 @@ namespace KAOSTools.Parsing
 			{
 				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
 				value = BuildGoalRefinementChildren(results);
-				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
-			}
-			
-			return _state;
-		}
-		
-		// RefinedByAntiGoal := 'refinedby' S (RefinedByAlternative S)? (AntiGoal / Obstacle / DomProp / DomHyp / Name / Identifier) (S ',' S (AntiGoal / Obstacle / DomProp / DomHyp / Name / Identifier))*
-		private State DoParseRefinedByAntiGoalRule(State _state, List<Result> _outResults)
-		{
-			State _start = _state;
-			List<Result> results = new List<Result>();
-			
-			_state = DoSequence(_state, results,
-			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "refinedby");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
-			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 1,
-				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "RefinedByAlternative");},
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");});});},
-			delegate (State s, List<Result> r) {return DoChoice(s, r,
-				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "AntiGoal");},
-				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Obstacle");},
-				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "DomProp");},
-				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "DomHyp");},
-				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Name");},
-				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Identifier");});},
-			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,
-				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
-					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, ",");},
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
-					delegate (State s3, List<Result> r3) {return DoChoice(s3, r3,
-						delegate (State s4, List<Result> r4) {return DoParse(s4, r4, "AntiGoal");},
-						delegate (State s4, List<Result> r4) {return DoParse(s4, r4, "Obstacle");},
-						delegate (State s4, List<Result> r4) {return DoParse(s4, r4, "DomProp");},
-						delegate (State s4, List<Result> r4) {return DoParse(s4, r4, "DomHyp");},
-						delegate (State s4, List<Result> r4) {return DoParse(s4, r4, "Name");},
-						delegate (State s4, List<Result> r4) {return DoParse(s4, r4, "Identifier");});});});});
-			
-			if (_state.Parsed)
-			{
-				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
-				value = BuildRefinedByAntiGoal(results);
 				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 			}
 			

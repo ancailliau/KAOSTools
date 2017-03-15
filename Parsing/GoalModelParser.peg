@@ -7,7 +7,7 @@ debug =
 Start := S Elements S;
 
 Elements := 
-    ( ( ModelAttribute / System / Predicate / Goal / AntiGoal / SoftGoal / DomProp / Obstacle / Agent / Import / DomHyp 
+    ( ( ModelAttribute / System / Predicate / Goal / SoftGoal / DomProp / Obstacle / Agent / Import / DomHyp 
         / Entity / Type / Association / Expert / Calibration / CostVariable / Constraint ) S )*
     `value = BuildElements (results);`
 
@@ -36,10 +36,6 @@ System :=
 Goal := 
     ( 'declare' / 'override' ) S 'goal' S (GoalAttribute S)* 'end'
     `value = BuildGoal(results);`
-    
-AntiGoal := 
-    ( 'declare' / 'override' ) S 'antigoal' S (AntiGoalAttribute S)* 'end'
-    `value = BuildAntiGoal(results);`
     
 SoftGoal := 
     ( 'declare' / 'override' ) S 'softgoal' S (SoftGoalAttribute S)* 'end'
@@ -100,11 +96,6 @@ GoalAttribute :=
       / ObstructedBy / AssignedTo / RDSAttribute / ExceptionAttribute / AssumptionAttribute / 
       CostAttribute / CustomAttribute )
     `value = results[0].Value;`            
-                                                                                                                                                                  
-AntiGoalAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByAntiGoal 
-      / AssignedTo / CustomAttribute)
-    `value = results[0].Value;`
                                                                                                                                              
 SoftGoalAttribute := 
     ( IdAttribute / NameAttribute / DefinitionAttribute / CustomAttribute)
@@ -264,12 +255,6 @@ GoalRefinementChildren :=
     ( Goal / DomProp / DomHyp / Name / Identifier ) 
     (S ',' S ( Goal / DomProp / DomHyp / Name / Identifier ) )*
     `value = BuildGoalRefinementChildren(results);`
-    
-RefinedByAntiGoal := 
-    'refinedby' S (RefinedByAlternative S)?
-    ( AntiGoal / Obstacle / DomProp / DomHyp / Name / Identifier ) 
-    (S ',' S ( AntiGoal / Obstacle / DomProp / DomHyp / Name / Identifier ) )*
-    `value = BuildRefinedByAntiGoal(results);`
     
 RefinedByPattern := '(' S RefinementPattern S ')'
     `value = BuildRefinedByPattern(results);`

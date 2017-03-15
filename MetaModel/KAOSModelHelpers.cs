@@ -24,10 +24,6 @@ namespace KAOSTools.Core
             return (Goal) model.Elements.SingleOrDefault (x => x is Goal && pred (x as Goal));
         }
 
-        public static IEnumerable<AntiGoal> AntiGoals (this KAOSModel model) {
-                return model.Elements.Where (x => x is AntiGoal).Cast<AntiGoal>();
-        }
-
         public static IEnumerable<Obstacle> Obstacles (this KAOSModel model) {
                 return model.Elements.Where (x => x is Obstacle).Cast<Obstacle>();
         }
@@ -58,9 +54,6 @@ namespace KAOSTools.Core
 			return model.Elements.OfType<GoalRefinement> ();
         }
 
-        public static IEnumerable<AntiGoalRefinement> AntiGoalRefinements (this KAOSModel model) {
-                return model.Elements.Where (x => x is AntiGoalRefinement).Cast<AntiGoalRefinement>();
-        }
 
         public static IEnumerable<ObstacleRefinement> ObstacleRefinements (this KAOSModel model) {
                 return model.Elements.Where (x => x is ObstacleRefinement).Cast<ObstacleRefinement>();
@@ -182,16 +175,6 @@ namespace KAOSTools.Core
         public static IEnumerable<Obstacle> RootObstacles (this KAOSModel model) {
             return model.Obstructions ().Select ( x => x.Obstacle() );
         }
-
-        public static IEnumerable<AntiGoal> RootAntiGoals (this KAOSModel model) {
-            var rootAntiGoals = new HashSet<string> (model.AntiGoals().Select (x => x.Identifier));
-            foreach (var goal in model.AntiGoals())
-                foreach (var refinement in goal.Refinements()) 
-                    foreach (var child in refinement.SubAntiGoalIdentifiers)
-                        rootAntiGoals.Remove (child);
-            return rootAntiGoals.Select (x => model.AntiGoals().SingleOrDefault (y => y.Identifier == x));
-        }
-
 
         public static IEnumerable<Goal> ObstructedGoals (this KAOSModel model) {
             return from g in model.Obstructions() select g.ObstructedGoal ();

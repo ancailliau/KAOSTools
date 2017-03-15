@@ -52,7 +52,6 @@
     <Compile Include="TestParsingEntity.cs" />
     <Compile Include="TestParsingRelations.cs" />
     <Compile Include="TestParsingFormalSpec.cs" />
-    <Compile Include="TestParsingAntiGoal.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
