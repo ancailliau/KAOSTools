@@ -3,7 +3,7 @@ using System.Linq;
 using NUnit.Framework;
 using KAOSTools.Parsing;
 using ShallTests;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 
 namespace KAOSTools.Parsing.Tests
 {

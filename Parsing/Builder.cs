@@ -1,7 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
 using System.Linq;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 using System.Collections.Generic;
 
 namespace KAOSTools.Parsing
@@ -9,11 +9,11 @@ namespace KAOSTools.Parsing
     public class Builder
     {
         protected KAOSModel model;
-        protected IDictionary<KAOSMetaModelElement, IList<Declaration>> declarations;
+        protected IDictionary<KAOSCoreElement, IList<Declaration>> declarations;
         protected Uri relativePath;
     
         public Builder (KAOSModel model, 
-                        IDictionary<KAOSMetaModelElement, IList<Declaration>> declarations,
+                        IDictionary<KAOSCoreElement, IList<Declaration>> declarations,
                         Uri relativePath)
         {
             this.model = model;
@@ -124,7 +124,7 @@ namespace KAOSTools.Parsing
         #region Get helpers
 
         bool Get<T> (string value, out T element, string property)
-            where T : KAOSMetaModelElement
+            where T : KAOSCoreElement
         {
             Func<T, bool> predicate = e => (string) e.GetType ().GetProperty (property).GetValue (e, null) == value;
             element = model.Elements.Where (x => x is T).Cast<T>().SingleOrDefault (predicate);
@@ -136,7 +136,7 @@ namespace KAOSTools.Parsing
         }
 
         protected bool Get<T> (IdentifierExpression identifier, out T element)
-            where T : KAOSMetaModelElement
+            where T : KAOSCoreElement
         {
             var val = Get (identifier.Value, out element, "Identifier");
             if (val) {
@@ -150,7 +150,7 @@ namespace KAOSTools.Parsing
         }
 
         protected bool Get<T> (NameExpression name, out T element)
-            where T : KAOSMetaModelElement
+            where T : KAOSCoreElement
         {
             var val = Get (name.Value, out element, "Name");
             if (val) {
@@ -168,7 +168,7 @@ namespace KAOSTools.Parsing
         #region Create helpers
 
         protected T Create<T> (IdentifierExpression identifier)
-            where T : KAOSMetaModelElement
+            where T : KAOSCoreElement
         {
             var t = (T) Activator.CreateInstance (typeof(T), new Object[] { model });
 
@@ -184,7 +184,7 @@ namespace KAOSTools.Parsing
         }
 
         protected T Create<T> (NameExpression name)
-            where T : KAOSMetaModelElement
+            where T : KAOSCoreElement
         {
             var t = (T) Activator.CreateInstance (typeof(T), new Object[] { model });
             t.Implicit = true;

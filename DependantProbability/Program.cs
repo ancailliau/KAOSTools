@@ -5,7 +5,7 @@ using BoolSimplify;
 using System.IO;
 
 // TODO bugs in simplify when "single" and or "single" or 
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 using KAOSTools.Parsing;
 
 namespace DependantProbability

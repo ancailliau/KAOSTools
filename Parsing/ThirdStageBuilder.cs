@@ -1,4 +1,4 @@
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 using System.Collections.Generic;
 using System;
 using System.Linq;
@@ -13,7 +13,7 @@ namespace KAOSTools.Parsing
         IDictionary<Predicate, int> predicateArgumentCurrentPosition;
 
         public ThirdStageBuilder (KAOSModel model, 
-                                   IDictionary<KAOSMetaModelElement, IList<Declaration>> declarations,
+                                   IDictionary<KAOSCoreElement, IList<Declaration>> declarations,
                                    FirstStageBuilder fsb,
                                    SecondStageBuilder ssb,
                                   FormulaBuilder fb,
@@ -59,7 +59,7 @@ namespace KAOSTools.Parsing
             }
         }
         
-        public void Handle (KAOSMetaModelElement element, object attribute)
+        public void Handle (KAOSCoreElement element, object attribute)
         {
             // Ignore all but defined
         }
@@ -137,7 +137,7 @@ namespace KAOSTools.Parsing
         }
 
 
-        public void Handle (KAOSMetaModelElement element, ParsedFormalSpecAttribute formalSpec)
+        public void Handle (KAOSCoreElement element, ParsedFormalSpecAttribute formalSpec)
         {
             // Third stage is required because formula might need information build
             // only on stage 2. For example, ancestors of entities during predicates resolution.
@@ -215,7 +215,7 @@ namespace KAOSTools.Parsing
 
         #endregion 
 
-        public void Handle<T> (KAOSMetaModelElement element, 
+        public void Handle<T> (KAOSCoreElement element, 
                                T value, 
                                string propertyName) {
             var definitionProperty = element.GetType ().GetProperty (propertyName);

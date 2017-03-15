@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using MathNet.Numerics.LinearAlgebra.Double;
 
-namespace KAOSTools.MetaModel
+namespace KAOSTools.Core
 {
 
     public class Transition {

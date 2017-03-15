@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 using KAOSTools.Utils;
 using UncertaintySimulation;
 
@@ -22,7 +22,7 @@ namespace LuaCodeGenerator
             foreach (var r in model.Goals())
             {   
                 var os = r.GetObstructionSuperset(false);
-                var severities = new Dictionary<ISet<KAOSMetaModelElement>, double>();
+                var severities = new Dictionary<ISet<KAOSCoreElement>, double>();
 
                 var samplingVector = new Dictionary<int, double>();
                 foreach (var o in os.mapping.Keys)
@@ -49,7 +49,7 @@ namespace LuaCodeGenerator
             foreach (var r in model.Obstacles())
             {
                 var os = r.GetObstructionSuperset();
-                var severities = new Dictionary<ISet<KAOSMetaModelElement>, double>();
+                var severities = new Dictionary<ISet<KAOSCoreElement>, double>();
 
                 var samplingVector = new Dictionary<int, double>();
                 foreach (var o in os.mapping.Keys)

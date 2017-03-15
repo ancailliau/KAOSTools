@@ -3,7 +3,7 @@ using System.Linq;
 using ShallTests;
 using NUnit.Framework;
 
-namespace KAOSTools.MetaModel.Tests
+namespace KAOSTools.Core.Tests
 {
 
     [TestFixture()]

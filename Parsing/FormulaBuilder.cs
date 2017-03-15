@@ -1,5 +1,5 @@
 using System;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -9,12 +9,12 @@ namespace KAOSTools.Parsing
     public class FormulaBuilder
     {
         private KAOSModel model;
-        private IDictionary<KAOSMetaModelElement, IList<Declaration>> Declarations;
+        private IDictionary<KAOSCoreElement, IList<Declaration>> Declarations;
         private FirstStageBuilder FSB;
         protected Uri relativePath;
 
         public FormulaBuilder (KAOSModel model, 
-                               IDictionary<KAOSMetaModelElement, 
+                               IDictionary<KAOSCoreElement, 
                                IList<Declaration>> declarations, 
                                FirstStageBuilder fsb,
                                Uri relativePath)
@@ -37,7 +37,7 @@ namespace KAOSTools.Parsing
 
             if (value.GetType () == typeof (ParsedForallExpression)) {
                 var a = new Forall ();
-                var d2 = new Dictionary<string, KAOSTools.MetaModel.Entity> (declaredVariables);
+                var d2 = new Dictionary<string, KAOSTools.Core.Entity> (declaredVariables);
                 foreach (var arg in (value as ParsedForallExpression).arguments) {
                     var name = arg.VariableName;
                     var type = GetOrCreateEntity (arg.Type);
@@ -46,7 +46,7 @@ namespace KAOSTools.Parsing
                         throw new CompilationException (string.Format ("'{0}' is already defined", name));
                     }
 
-                    a.Declarations.Add (new KAOSTools.MetaModel.ArgumentDeclaration () {
+                    a.Declarations.Add (new KAOSTools.Core.ArgumentDeclaration () {
                         Name = name,
                         Type = type
                     });
@@ -56,7 +56,7 @@ namespace KAOSTools.Parsing
                 return a;
             } else if (value.GetType () == typeof (ParsedExistsExpression)) {
                 var a = new Exists ();
-                var d2 = new Dictionary<string, KAOSTools.MetaModel.Entity> (declaredVariables);
+                var d2 = new Dictionary<string, KAOSTools.Core.Entity> (declaredVariables);
                 foreach (var arg in (value as ParsedExistsExpression).arguments) {
                     var name = arg.VariableName;
                     var type = GetOrCreateEntity (arg.Type);
@@ -65,7 +65,7 @@ namespace KAOSTools.Parsing
                         throw new CompilationException (string.Format ("'{0}' is already defined", name));
                     }
 
-                    a.Declarations.Add (new KAOSTools.MetaModel.ArgumentDeclaration () {
+                    a.Declarations.Add (new KAOSTools.Core.ArgumentDeclaration () {
                         Name = name,
                         Type = type
                     });
@@ -222,9 +222,9 @@ namespace KAOSTools.Parsing
                                                               value.GetType ().Name));
         }
         
-        public Formula BuildPredicateFormula (KAOSTools.MetaModel.Predicate p, ParsedElement value)
+        public Formula BuildPredicateFormula (KAOSTools.Core.Predicate p, ParsedElement value)
         {
-            var dict = new Dictionary<string, KAOSTools.MetaModel.Entity> ();
+            var dict = new Dictionary<string, KAOSTools.Core.Entity> ();
             
             foreach (var attr in p.Arguments) {
                 dict.Add (attr.Name, attr.Type);
@@ -318,14 +318,14 @@ namespace KAOSTools.Parsing
         }
         
         
-        KAOSTools.MetaModel.Attribute GetOrCreateAttribute (ParsedAttributeReferenceExpression pref, 
-            KAOSTools.MetaModel.Entity entity) {
+        KAOSTools.Core.Attribute GetOrCreateAttribute (ParsedAttributeReferenceExpression pref, 
+            KAOSTools.Core.Entity entity) {
             Console.WriteLine (">> " + pref.AttributeSignature.Value + " <<");
             if (entity != null) {
                 if (pref.AttributeSignature is NameExpression) {
                     var attribute = entity.Attributes().SingleOrDefault (x => x.Name == pref.AttributeSignature.Value);
                     if (attribute == null) {
-                        attribute = new KAOSTools.MetaModel.Attribute (model) { 
+                        attribute = new KAOSTools.Core.Attribute (model) { 
                             Name = pref.AttributeSignature.Value, 
                             Implicit = true
                         } ;
@@ -345,7 +345,7 @@ namespace KAOSTools.Parsing
                 } else if (pref.AttributeSignature is IdentifierExpression) {
                     var attribute = entity.model.Attributes().SingleOrDefault (x => x.Identifier == entity.Identifier + "." +pref.AttributeSignature.Value);
                     if (attribute == null) {
-                        attribute = new KAOSTools.MetaModel.Attribute (model) { 
+                        attribute = new KAOSTools.Core.Attribute (model) { 
                             Identifier = entity.Identifier + "." + pref.AttributeSignature.Value, 
                             Implicit = true
                         } ;
@@ -369,7 +369,7 @@ namespace KAOSTools.Parsing
             }
         }
         
-        Relation GetOrCreateRelation (ParsedInRelationExpression rel, Dictionary<string, KAOSTools.MetaModel.Entity> declarations)
+        Relation GetOrCreateRelation (ParsedInRelationExpression rel, Dictionary<string, KAOSTools.Core.Entity> declarations)
         {
             dynamic identifierOrName = rel.Relation;
 
@@ -420,7 +420,7 @@ namespace KAOSTools.Parsing
         }
         
         Predicate GetOrCreatePredicate (ParsedPredicateReferenceExpression parsedPred,
-                                        Dictionary<string, KAOSTools.MetaModel.Entity> declarations)
+                                        Dictionary<string, KAOSTools.Core.Entity> declarations)
         {
             var idOrName = parsedPred.PredicateSignature;
             Predicate predicate;

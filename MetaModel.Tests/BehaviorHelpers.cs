@@ -1,6 +1,6 @@
 using System;
 
-namespace KAOSTools.MetaModel.Tests
+namespace KAOSTools.Core.Tests
 {
     public static class TestHelpers {
         

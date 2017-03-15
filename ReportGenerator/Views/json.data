@@ -1,5 +1,5 @@
-﻿@model KAOSTools.MetaModel.KAOSModel
-@using KAOSTools.MetaModel
+﻿@model KAOSTools.Core.KAOSModel
+@using KAOSTools.Core
 @using ReportGenerator.Helpers
 
 {

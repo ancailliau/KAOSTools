@@ -1,7 +1,7 @@
 ﻿using System;
 using BDDSharp;
 using System.Collections.Generic;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 using System.Linq;
 using ExpertOpinionSharp.Frameworks;
 
@@ -34,10 +34,10 @@ namespace UncertaintySimulation
             return root.GetObstructionSuperset ();
         }
 
-        Dictionary<KAOSMetaModelElement, double[]> InitProbabilityVectors (Goal root, ObstructionSuperset os)
+        Dictionary<KAOSCoreElement, double[]> InitProbabilityVectors (Goal root, ObstructionSuperset os)
         {
-            Dictionary<KAOSMetaModelElement, double[]> probabilityVectors;
-            probabilityVectors = new Dictionary<KAOSMetaModelElement, double[]> ();
+            Dictionary<KAOSCoreElement, double[]> probabilityVectors;
+            probabilityVectors = new Dictionary<KAOSCoreElement, double[]> ();
             foreach (var n in os.reverse_mapping) {
                 probabilityVectors.Add (n.Value, new double[n_sample]);
             }
@@ -144,17 +144,17 @@ namespace UncertaintySimulation
             SetupUncertaintySatisfaction (model, ef);
         }
 
-        public Dictionary<KAOSMetaModelElement, double[]> Simulate ()
+        public Dictionary<KAOSCoreElement, double[]> Simulate ()
         {
             return Simulate (root, null);
         }
 
-        public Dictionary<KAOSMetaModelElement, double[]> Simulate (Goal goal)
+        public Dictionary<KAOSCoreElement, double[]> Simulate (Goal goal)
         {
             return Simulate (goal, null);
         }
 
-        public Dictionary<KAOSMetaModelElement, double[]> Simulate (Goal goal, IEnumerable<Obstacle> obstacles)
+        public Dictionary<KAOSCoreElement, double[]> Simulate (Goal goal, IEnumerable<Obstacle> obstacles)
         {
             var obstructionSuperset = ComputeObstructionSets (goal);
             var probabilityVectors = InitProbabilityVectors (goal, obstructionSuperset);

@@ -1,5 +1,5 @@
 ﻿using System;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 using BDDSharp;
 using System.Linq;
 using System.Collections.Generic;
@@ -10,10 +10,10 @@ namespace UncertaintySimulation
     public class ObstructionSuperset {
 
         public BDDNode bdd;
-        public Dictionary<KAOSMetaModelElement, int> mapping;
-        public Dictionary<int, KAOSMetaModelElement> reverse_mapping;
+        public Dictionary<KAOSCoreElement, int> mapping;
+        public Dictionary<int, KAOSCoreElement> reverse_mapping;
 
-        public ObstructionSuperset (BDDNode bdd, Dictionary<KAOSMetaModelElement, int> mapping, Dictionary<int, KAOSMetaModelElement> reverse_mapping)
+        public ObstructionSuperset (BDDNode bdd, Dictionary<KAOSCoreElement, int> mapping, Dictionary<int, KAOSCoreElement> reverse_mapping)
         {
             this.bdd = bdd;
 
@@ -34,8 +34,8 @@ namespace UncertaintySimulation
         public static ObstructionSuperset GetObstructionSuperset (this Goal goal, bool take_exception_in_account = true) {
             var manager = new BDDManager (0);
 
-            var mapping = new Dictionary<KAOSMetaModelElement, int> ();
-            var reverse_mapping = new Dictionary<int, KAOSMetaModelElement> ();
+            var mapping = new Dictionary<KAOSCoreElement, int> ();
+            var reverse_mapping = new Dictionary<int, KAOSCoreElement> ();
             var bDDNode = GetObstructionSet (goal, manager, mapping, reverse_mapping, take_exception_in_account);
             bDDNode = manager.Sifting (bDDNode);
 
@@ -46,8 +46,8 @@ namespace UncertaintySimulation
 		{
 			var manager = new BDDManager(0);
 
-			var mapping = new Dictionary<KAOSMetaModelElement, int>();
-			var reverse_mapping = new Dictionary<int, KAOSMetaModelElement>();
+			var mapping = new Dictionary<KAOSCoreElement, int>();
+			var reverse_mapping = new Dictionary<int, KAOSCoreElement>();
 			var bDDNode = GetObstructionSet(obstacle, manager, mapping, reverse_mapping);
 			bDDNode = manager.Sifting(bDDNode);
 
@@ -55,14 +55,14 @@ namespace UncertaintySimulation
 		}
 
         public static BDDNode GetObstructionSet (Goal goal, BDDManager manager, 
-            Dictionary<KAOSMetaModelElement, int> mapping = null, 
-            Dictionary<int, KAOSMetaModelElement> reverse_mapping = null, bool take_exception_in_account = true)
+            Dictionary<KAOSCoreElement, int> mapping = null, 
+            Dictionary<int, KAOSCoreElement> reverse_mapping = null, bool take_exception_in_account = true)
         {
             if (mapping == null) 
-                mapping = new Dictionary<KAOSMetaModelElement, int> ();
+                mapping = new Dictionary<KAOSCoreElement, int> ();
 
             if (reverse_mapping == null)
-                reverse_mapping = new Dictionary<int, KAOSMetaModelElement> ();
+                reverse_mapping = new Dictionary<int, KAOSCoreElement> ();
 
             if ((goal.Refinements ().Count () + goal.Obstructions ().Count ()) > 1)
                 throw new NotImplementedException ("More than a refinement and an obstruction");
@@ -114,8 +114,8 @@ namespace UncertaintySimulation
         }
 
 		public static BDDNode GetObstructionSet(GoalException exception, BDDManager manager,
-			Dictionary<KAOSMetaModelElement, int> mapping,
-			Dictionary<int, KAOSMetaModelElement> reverse_mapping = null)
+			Dictionary<KAOSCoreElement, int> mapping,
+			Dictionary<int, KAOSCoreElement> reverse_mapping = null)
 		{
 			var child = exception.ResolvingGoal();
 			var bDDNode = GetObstructionSet(child, manager, mapping, reverse_mapping);
@@ -124,8 +124,8 @@ namespace UncertaintySimulation
 		}
 
         public static BDDNode GetObstructionSet (GoalRefinement refinement, BDDManager manager, 
-            Dictionary<KAOSMetaModelElement, int> mapping, 
-            Dictionary<int, KAOSMetaModelElement> reverse_mapping = null)
+            Dictionary<KAOSCoreElement, int> mapping, 
+            Dictionary<int, KAOSCoreElement> reverse_mapping = null)
         {
             BDDNode acc = null;
             foreach (var child in refinement.SubGoals ()) {
@@ -148,15 +148,15 @@ namespace UncertaintySimulation
         }
 
         public static BDDNode GetObstructionSet (Obstruction obstruction, BDDManager manager, 
-            Dictionary<KAOSMetaModelElement, int> mapping, 
-            Dictionary<int, KAOSMetaModelElement> reverse_mapping = null)
+            Dictionary<KAOSCoreElement, int> mapping, 
+            Dictionary<int, KAOSCoreElement> reverse_mapping = null)
         {
             return GetObstructionSet (obstruction.Obstacle (), manager, mapping, reverse_mapping);
         }
 
         public static BDDNode GetObstructionSet (Obstacle obstacle, BDDManager manager, 
-            Dictionary<KAOSMetaModelElement, int> mapping, 
-            Dictionary<int, KAOSMetaModelElement> reverse_mapping = null)
+            Dictionary<KAOSCoreElement, int> mapping, 
+            Dictionary<int, KAOSCoreElement> reverse_mapping = null)
         {
             BDDNode acc2 = null;
             foreach (var r in obstacle.Refinements ()) {
@@ -201,8 +201,8 @@ namespace UncertaintySimulation
         }
 
         public static BDDNode GetObstructionSet (DomainHypothesis domhyp, BDDManager manager, 
-            Dictionary<KAOSMetaModelElement, int> mapping, 
-            Dictionary<int, KAOSMetaModelElement> reverse_mapping = null)
+            Dictionary<KAOSCoreElement, int> mapping, 
+            Dictionary<int, KAOSCoreElement> reverse_mapping = null)
         {
             BDDNode acc2 = null;
 

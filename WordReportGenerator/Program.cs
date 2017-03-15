@@ -1,7 +1,7 @@
 ﻿using System;
 using KAOSTools.Utils;
 using Novacode;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;

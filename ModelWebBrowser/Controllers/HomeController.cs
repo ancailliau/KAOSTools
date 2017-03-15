@@ -7,7 +7,7 @@ using System.Web.Mvc.Ajax;
 using ModelWebBrowser.Models;
 using KAOSTools.Parsing;
 using System.IO;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 
 namespace ModelWebBrowser.Controllers
 {

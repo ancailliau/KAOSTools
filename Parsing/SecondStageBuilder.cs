@@ -1,4 +1,4 @@
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 using System.Collections.Generic;
 using System;
 using System.Linq;
@@ -11,7 +11,7 @@ namespace KAOSTools.Parsing
         FormulaBuilder fb;
 
         public SecondStageBuilder (KAOSModel model, 
-                                   IDictionary<KAOSMetaModelElement, IList<Declaration>> declarations,
+                                   IDictionary<KAOSCoreElement, IList<Declaration>> declarations,
                                    FirstStageBuilder fsb,
                                    FormulaBuilder fb,
                                    Uri relativePath)
@@ -55,7 +55,7 @@ namespace KAOSTools.Parsing
         }
 
 
-        public void Handle (KAOSMetaModelElement element, object attribute)
+        public void Handle (KAOSCoreElement element, object attribute)
         {
             throw new NotImplementedException (string.Format("'{0}' is not yet supported on '{1}'", 
                                                              attribute.GetType().Name,
@@ -77,7 +77,7 @@ namespace KAOSTools.Parsing
             }
         }
 
-        public void Handle (KAOSMetaModelElement element, ParsedCustomAttribute attribute)
+        public void Handle (KAOSCoreElement element, ParsedCustomAttribute attribute)
         {
             element.CustomData.Add (attribute.Key, attribute.Value);
         }
@@ -207,7 +207,7 @@ namespace KAOSTools.Parsing
             element.IsComplete = parsedAttribute.Value;
         }
 
-        public void Handle (KAOSTools.MetaModel.Attribute attribute, ParsedDerivedAttribute parsedAttribute)
+        public void Handle (KAOSTools.Core.Attribute attribute, ParsedDerivedAttribute parsedAttribute)
         {
             attribute.Derived = true;
         }
@@ -333,7 +333,7 @@ namespace KAOSTools.Parsing
 
         public void Handle (Entity element, ParsedAttributeAttribute attribute)
         {
-            var a = new KAOSTools.MetaModel.Attribute (model);
+            var a = new KAOSTools.Core.Attribute (model);
 
             Handle (a, new ParsedNameAttribute() { 
                 Value = attribute.Name
@@ -353,7 +353,7 @@ namespace KAOSTools.Parsing
 
         public void Handle (Entity element, ParsedAttributeDeclaration attribute)
         {
-            var a = new KAOSTools.MetaModel.Attribute (model);
+            var a = new KAOSTools.Core.Attribute (model);
             a.SetEntity (element);
 
             foreach (dynamic attr in attribute.Attributes) {
@@ -367,7 +367,7 @@ namespace KAOSTools.Parsing
             });
         }
 
-        public void Handle (KAOSTools.MetaModel.Attribute element, 
+        public void Handle (KAOSTools.Core.Attribute element, 
                             ParsedAttributeEntityTypeAttribute attribute) {
 
             GivenType givenType = null;
@@ -879,7 +879,7 @@ namespace KAOSTools.Parsing
             element.Links.Add (new Link (model) { Target = entity, Multiplicity = attribute.Multiplicity });
         }
 
-        public void Handle (KAOSMetaModelElement element, ParsedAgentTypeAttribute attribute)
+        public void Handle (KAOSCoreElement element, ParsedAgentTypeAttribute attribute)
         {
             if (attribute.Value == ParsedAgentType.Environment)
                 Handle (element, AgentType.Environment, "Type");
@@ -894,7 +894,7 @@ namespace KAOSTools.Parsing
                 throw new NotImplementedException ();
         }
 
-        public void Handle (KAOSMetaModelElement element, ParsedEntityTypeAttribute attribute)
+        public void Handle (KAOSCoreElement element, ParsedEntityTypeAttribute attribute)
         {
             EntityType type;
             if (attribute.Value == ParsedEntityType.Software) {
@@ -910,17 +910,17 @@ namespace KAOSTools.Parsing
             Handle (element, type, "Type");
         }
 
-        public void Handle (KAOSMetaModelElement element, ParsedRDSAttribute attribute)
+        public void Handle (KAOSCoreElement element, ParsedRDSAttribute attribute)
         {
             Handle (element, attribute.Value, "RDS");
         }
         
-        public void Handle (KAOSMetaModelElement element, ParsedProbabilityAttribute attribute)
+        public void Handle (KAOSCoreElement element, ParsedProbabilityAttribute attribute)
         {
             Handle (element, attribute.Value, "EPS");
         }
         
-        public void Handle (KAOSMetaModelElement element, ParsedExpertProbabilityAttribute attribute)
+        public void Handle (KAOSCoreElement element, ParsedExpertProbabilityAttribute attribute)
         {
             if (element is Obstacle) {
 
@@ -999,22 +999,22 @@ namespace KAOSTools.Parsing
             }
         }
 
-        public void Handle (KAOSMetaModelElement element, ParsedNameAttribute name)
+        public void Handle (KAOSCoreElement element, ParsedNameAttribute name)
         {
             Handle (element, Sanitize (name.Value), "Name");
         }
 
-        public void Handle (KAOSMetaModelElement element, ParsedDefinitionAttribute definition)
+        public void Handle (KAOSCoreElement element, ParsedDefinitionAttribute definition)
         {
             Handle (element, definition.Value.Verbatim ? definition.Value.Value : Sanitize (definition.Value.Value), "Definition");
         }
 
-        public void Handle (KAOSTools.MetaModel.Attribute element, ParsedIdentifierAttribute identifier)
+        public void Handle (KAOSTools.Core.Attribute element, ParsedIdentifierAttribute identifier)
         {
             Handle (element, element.EntityIdentifier + "." + identifier.Value, "Identifier");
         }
 
-        public void Handle (KAOSMetaModelElement element, ParsedIdentifierAttribute identifier)
+        public void Handle (KAOSCoreElement element, ParsedIdentifierAttribute identifier)
         {
             Handle (element, identifier.Value, "Identifier");
         }
@@ -1024,17 +1024,17 @@ namespace KAOSTools.Parsing
             // ignore, see third stage
         }
         
-        public void Handle (KAOSMetaModelElement element, ParsedSignatureAttribute attribute)
+        public void Handle (KAOSCoreElement element, ParsedSignatureAttribute attribute)
         {
             Handle (element, attribute.Value, "Signature");
         }
 
-        public void Handle (KAOSMetaModelElement element, ParsedFormalSpecAttribute formalSpec)
+        public void Handle (KAOSCoreElement element, ParsedFormalSpecAttribute formalSpec)
         {
             // ignore, see third stage
         }
 
-        public void Handle (KAOSMetaModelElement element, ParsedConflictAttribute conflict)
+        public void Handle (KAOSCoreElement element, ParsedConflictAttribute conflict)
         {
             if (element is Constraint) {
                 var cst = (Constraint)element;
@@ -1046,7 +1046,7 @@ namespace KAOSTools.Parsing
             }
         }
 
-        public void Handle (KAOSMetaModelElement element, ParsedOrCstAttribute conflict)
+        public void Handle (KAOSCoreElement element, ParsedOrCstAttribute conflict)
         {
             if (element is Constraint) {
                 var cst = (Constraint)element;
@@ -1093,7 +1093,7 @@ namespace KAOSTools.Parsing
             element.DefaultValue = def.Value;
         }
 
-        public void Handle<T> (KAOSMetaModelElement element, 
+        public void Handle<T> (KAOSCoreElement element, 
                                T value, 
                                string propertyName) {
             var definitionProperty = element.GetType ().GetProperty (propertyName);

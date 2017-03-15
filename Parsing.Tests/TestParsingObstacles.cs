@@ -4,7 +4,7 @@ using NUnit.Framework;
 using KAOSTools.Parsing;
 using System.Collections.Generic;
 using ShallTests;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 
 namespace KAOSTools.Parsing.Tests
 {

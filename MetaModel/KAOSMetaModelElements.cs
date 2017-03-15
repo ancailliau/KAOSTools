@@ -3,10 +3,10 @@ using System;
 using System.Linq;
 using System.Runtime.Serialization;
 
-namespace KAOSTools.MetaModel
+namespace KAOSTools.Core
 {
     [DataContract]
-    public abstract class KAOSMetaModelElement
+    public abstract class KAOSCoreElement
     {
         [DataMember]
         public string Identifier { get; set; }
@@ -29,14 +29,14 @@ namespace KAOSTools.MetaModel
             set;
         }
 
-        public KAOSMetaModelElement (KAOSModel model)
+        public KAOSCoreElement (KAOSModel model)
         {
             this.Identifier = Guid.NewGuid ().ToString ();
             this.model = model;
             this.CustomData = new Dictionary<string,string> ();
         }
 
-        public abstract KAOSMetaModelElement Copy ();
+        public abstract KAOSCoreElement Copy ();
 
         public override bool Equals (object obj)
         {
@@ -44,9 +44,9 @@ namespace KAOSTools.MetaModel
                 return false;
             if (ReferenceEquals (this, obj))
                 return true;
-            if (obj.GetType () != typeof(KAOSMetaModelElement))
+            if (obj.GetType () != typeof(KAOSCoreElement))
                 return false;
-            KAOSMetaModelElement other = (KAOSMetaModelElement)obj;
+            KAOSCoreElement other = (KAOSCoreElement)obj;
             return Identifier == other.Identifier;
         }
 
@@ -63,7 +63,7 @@ namespace KAOSTools.MetaModel
     #region Meta entities
 
     [DataContract]
-    public class Goal : KAOSMetaModelElement
+    public class Goal : KAOSCoreElement
     {
         [DataMember]
         public string Name { get; set; }
@@ -94,7 +94,7 @@ namespace KAOSTools.MetaModel
             Costs = new Dictionary<CostVariable, double> ();
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             return new Goal (null) {
                 Identifier = Identifier,
@@ -108,7 +108,7 @@ namespace KAOSTools.MetaModel
         }
     }
 
-    public class AntiGoal : KAOSMetaModelElement
+    public class AntiGoal : KAOSCoreElement
     {
         public string Name { get; set; }
 
@@ -128,7 +128,7 @@ namespace KAOSTools.MetaModel
             InSystems = new HashSet<AlternativeSystem>();
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             return new AntiGoal (null) {
                 Identifier = Identifier,
@@ -140,7 +140,7 @@ namespace KAOSTools.MetaModel
         }
     }
 
-    public class SoftGoal : KAOSMetaModelElement
+    public class SoftGoal : KAOSCoreElement
     {
         public string Name { get; set; }
 
@@ -157,7 +157,7 @@ namespace KAOSTools.MetaModel
             InSystems = new HashSet<AlternativeSystem>();
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             return new SoftGoal (null) {
                 Identifier = Identifier,
@@ -169,7 +169,7 @@ namespace KAOSTools.MetaModel
     }
 
     [DataContract]
-    public class Obstacle : KAOSMetaModelElement
+    public class Obstacle : KAOSCoreElement
     {
         [DataMember]
         public string Name { get; set; }
@@ -198,7 +198,7 @@ namespace KAOSTools.MetaModel
             ExpertEstimates = new Dictionary<Expert, QuantileList> ();
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             return new Obstacle (null) {
                 Identifier = Identifier,
@@ -213,7 +213,7 @@ namespace KAOSTools.MetaModel
     }
 
     [DataContract]
-    public class DomainHypothesis : KAOSMetaModelElement
+    public class DomainHypothesis : KAOSCoreElement
     { 
         [DataMember]
         public string Name { get; set; }
@@ -238,7 +238,7 @@ namespace KAOSTools.MetaModel
 
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             return new DomainHypothesis (null) {
                 Identifier = Identifier,
@@ -252,7 +252,7 @@ namespace KAOSTools.MetaModel
     }
 
     [DataContract]
-    public class DomainProperty : KAOSMetaModelElement
+    public class DomainProperty : KAOSCoreElement
     { 
         [DataMember]
         public string Name { get; set; }
@@ -272,7 +272,7 @@ namespace KAOSTools.MetaModel
 
         public DomainProperty (KAOSModel model) : base (model) {}
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             return new DomainProperty (null) {
                 Identifier = Identifier,
@@ -286,7 +286,7 @@ namespace KAOSTools.MetaModel
     }
 
     [DataContract]
-    public class Agent : KAOSMetaModelElement
+    public class Agent : KAOSCoreElement
     {
         [DataMember]
         public string Name { get; set; }
@@ -308,7 +308,7 @@ namespace KAOSTools.MetaModel
             Type = AgentType.None;
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             return new Agent(null) {
                 Identifier = Identifier,
@@ -333,7 +333,7 @@ namespace KAOSTools.MetaModel
     #region Assignements
 
     [DataContract]
-    public abstract class AgentAssignment : KAOSMetaModelElement
+    public abstract class AgentAssignment : KAOSCoreElement
     {
         public AlternativeSystem SystemReference { get; set; }
 
@@ -364,7 +364,7 @@ namespace KAOSTools.MetaModel
         public string GoalIdentifier { get; set ; }
         public GoalAgentAssignment  (KAOSModel model) : base (model) {}
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             return new GoalAgentAssignment (null) {
                 Identifier = Identifier,
@@ -382,7 +382,7 @@ namespace KAOSTools.MetaModel
         public string OperationIdentifier { get; set ; }
         public OperationAgentPerformance  (KAOSModel model) : base (model) {}
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             return new OperationAgentPerformance (null) {
                 Identifier = Identifier,
@@ -397,7 +397,7 @@ namespace KAOSTools.MetaModel
         public string ObstacleIdentifier { get; set ; }
         public ObstacleAgentAssignment  (KAOSModel model) : base (model) {}
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             return new ObstacleAgentAssignment (null) {
                 Identifier = Identifier,
@@ -412,7 +412,7 @@ namespace KAOSTools.MetaModel
         public string AntiGoalIdentifier { get; set ; }
         public AntiGoalAgentAssignment  (KAOSModel model) : base (model) {}
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             return new AntiGoalAgentAssignment (null) {
                 Identifier = Identifier,
@@ -428,7 +428,7 @@ namespace KAOSTools.MetaModel
     #region Refinements
 
     [DataContract]
-    public class GoalRefinement : KAOSMetaModelElement
+    public class GoalRefinement : KAOSCoreElement
     {
         
         [DataMember]
@@ -539,7 +539,7 @@ namespace KAOSTools.MetaModel
             this.PositiveSoftGoalsIdentifiers.Add (goal.Identifier);
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             return new GoalRefinement (null) {
                 Identifier = Identifier,
@@ -555,7 +555,7 @@ namespace KAOSTools.MetaModel
         }
     }
 
-    public class AntiGoalRefinement : KAOSMetaModelElement
+    public class AntiGoalRefinement : KAOSCoreElement
     {
         public string ParentAntiGoalIdentifier { get; set; }
         public string SystemReferenceIdentifier { get; set; }
@@ -610,7 +610,7 @@ namespace KAOSTools.MetaModel
             this.DomainHypothesisIdentifiers.Add (domHyp.Identifier);
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             return new AntiGoalRefinement (null) {
                 Identifier = Identifier,
@@ -625,7 +625,7 @@ namespace KAOSTools.MetaModel
         }
     }
 
-    public class ObstacleRefinement : KAOSMetaModelElement
+    public class ObstacleRefinement : KAOSCoreElement
     {
         public string ParentObstacleIdentifier { get; set; }
 
@@ -676,7 +676,7 @@ namespace KAOSTools.MetaModel
             this.DomainHypothesisIdentifiers.Add (domHyp.Identifier);
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             return new ObstacleRefinement (null) {
                 Identifier = Identifier,
@@ -694,7 +694,7 @@ namespace KAOSTools.MetaModel
     #region Obstructions and resolutions
 
     [DataContract]
-    public class Obstruction : KAOSMetaModelElement {
+    public class Obstruction : KAOSCoreElement {
         
         [DataMember]
         public string ObstructedGoalIdentifier { get; set; }
@@ -714,7 +714,7 @@ namespace KAOSTools.MetaModel
             this.ObstacleIdentifier = obstacle.Identifier;
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             return new Obstruction (null) {
                 Identifier = Identifier,
@@ -726,7 +726,7 @@ namespace KAOSTools.MetaModel
     }
 
     [DataContract]
-    public class Resolution : KAOSMetaModelElement {
+    public class Resolution : KAOSCoreElement {
         
         [DataMember]
         public string ObstacleIdentifier { get; set; }
@@ -755,7 +755,7 @@ namespace KAOSTools.MetaModel
             this.ObstacleIdentifier = obstacle.Identifier;
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             return new Resolution (null) {
                 Identifier = Identifier,
@@ -796,7 +796,7 @@ namespace KAOSTools.MetaModel
     #region Exceptions and assumptions
 
     [DataContract]
-    public class GoalException : KAOSMetaModelElement {
+    public class GoalException : KAOSCoreElement {
         public GoalException (KAOSModel model) : base (model)
         {
         }
@@ -825,7 +825,7 @@ namespace KAOSTools.MetaModel
             ResolvedObstacleIdentifier = obstacle.Identifier;
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             return new GoalException (model) {
                 AnchorGoalIdentifier = AnchorGoalIdentifier,
@@ -837,7 +837,7 @@ namespace KAOSTools.MetaModel
         }
     }
 
-    public class GoalReplacement : KAOSMetaModelElement {
+    public class GoalReplacement : KAOSCoreElement {
         public GoalReplacement (KAOSModel model) : base (model)
         {
         }
@@ -865,7 +865,7 @@ namespace KAOSTools.MetaModel
             ResolvedObstacleIdentifier = obstacle.Identifier;
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             return new GoalReplacement (model) {
                 AnchorGoalIdentifier = AnchorGoalIdentifier,
@@ -879,7 +879,7 @@ namespace KAOSTools.MetaModel
     }
 
 
-    public class ObstacleAssumption : KAOSMetaModelElement {
+    public class ObstacleAssumption : KAOSCoreElement {
         public ObstacleAssumption (KAOSModel model) : base (model)
         {
         }
@@ -896,7 +896,7 @@ namespace KAOSTools.MetaModel
             ResolvedObstacleIdentifier = obstacle.Identifier;
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             return new ObstacleAssumption (model) {
                 AnchorGoalIdentifier = AnchorGoalIdentifier,
@@ -914,7 +914,7 @@ namespace KAOSTools.MetaModel
 
     #region Object Model
 
-    public class Entity : KAOSMetaModelElement {
+    public class Entity : KAOSCoreElement {
         public string Name { get; set; }
 
         public override string FriendlyName {
@@ -938,7 +938,7 @@ namespace KAOSTools.MetaModel
             ParentIdentifiers.Add (parent.Identifier);
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             return new Entity (model) {
                 Identifier = Identifier,
@@ -951,7 +951,7 @@ namespace KAOSTools.MetaModel
         }
     }
 
-    public class Attribute : KAOSMetaModelElement {
+    public class Attribute : KAOSCoreElement {
         public bool Derived { get; set; }
         public string Name { get; set; }
         public string Definition { get; set; }
@@ -984,7 +984,7 @@ namespace KAOSTools.MetaModel
             TypeIdentifier = givenType.Identifier;
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             return new Attribute (model) {
                 Identifier = Identifier,
@@ -997,7 +997,7 @@ namespace KAOSTools.MetaModel
         }
     }
 
-    public class GivenType : KAOSMetaModelElement {
+    public class GivenType : KAOSCoreElement {
         public string Name { get; set; }
 
         public override string FriendlyName {
@@ -1013,7 +1013,7 @@ namespace KAOSTools.MetaModel
             
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             throw new NotImplementedException ();
         }
@@ -1028,14 +1028,14 @@ namespace KAOSTools.MetaModel
         }
     }
 
-    public class Link : KAOSMetaModelElement {
+    public class Link : KAOSCoreElement {
         public Entity Target { get; set; }
         public string Role { get; set; }
         public string Multiplicity { get; set; }
         public Link  (KAOSModel model) : base (model)
         {}
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             throw new NotImplementedException ();
         }
@@ -1047,7 +1047,7 @@ namespace KAOSTools.MetaModel
 
     #endregion
 
-    public class AlternativeSystem : KAOSMetaModelElement
+    public class AlternativeSystem : KAOSCoreElement
     {
         public string Name { get; set; }
 
@@ -1066,7 +1066,7 @@ namespace KAOSTools.MetaModel
             Alternatives = new HashSet<AlternativeSystem> ();
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
 			return new AlternativeSystem(model) {
 				Identifier = Identifier,
@@ -1080,7 +1080,7 @@ namespace KAOSTools.MetaModel
         }
     }
 
-    public class Predicate : KAOSMetaModelElement
+    public class Predicate : KAOSCoreElement
     {
         public string Name { get; set; }
 
@@ -1107,7 +1107,7 @@ namespace KAOSTools.MetaModel
             DefaultValue = false;
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
 			return new Predicate(model) {
 				Identifier = Identifier,
@@ -1283,7 +1283,7 @@ namespace KAOSTools.MetaModel
         }
     }
 
-    public class Expert : KAOSMetaModelElement
+    public class Expert : KAOSCoreElement
     {
         public string Name { get; set; }
 
@@ -1297,13 +1297,13 @@ namespace KAOSTools.MetaModel
         {
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             throw new NotImplementedException ();
         }
     }
 
-    public class Calibration : KAOSMetaModelElement
+    public class Calibration : KAOSCoreElement
     {
         public string Name { get; set; }
 
@@ -1321,13 +1321,13 @@ namespace KAOSTools.MetaModel
         {
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             throw new NotImplementedException ();
         }
     }
 
-    public class CostVariable : KAOSMetaModelElement
+    public class CostVariable : KAOSCoreElement
     {
         public string Name { get; set; }
 
@@ -1335,13 +1335,13 @@ namespace KAOSTools.MetaModel
         {
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             throw new NotImplementedException ();
         }
     }
 
-    public class Constraint : KAOSMetaModelElement
+    public class Constraint : KAOSCoreElement
     {
         public string Name { get; set; }
         public string Definition { get; set; }
@@ -1354,7 +1354,7 @@ namespace KAOSTools.MetaModel
             Or = new List<string> ();
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
 			return new Constraint(model) {
 				Identifier = Identifier,
@@ -1381,7 +1381,7 @@ namespace KAOSTools.MetaModel
         
     }
 
-    public class Operation : KAOSMetaModelElement
+    public class Operation : KAOSCoreElement
     {
         public string Name { get; set; }
         public Formula DomPre { get; set; }
@@ -1398,7 +1398,7 @@ namespace KAOSTools.MetaModel
             ReqPost = new List<ReqOpSpecification> ();
         }
 
-        public override KAOSMetaModelElement Copy ()
+        public override KAOSCoreElement Copy ()
         {
             throw new NotImplementedException ();
         }

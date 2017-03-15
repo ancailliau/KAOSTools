@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using KAOSTools.Utils;
 using KAOSTools.Parsing;
 using System.Web.Script.Serialization;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 
 namespace KAOSTools.ModelAnalyzer
 {
@@ -159,7 +159,7 @@ namespace KAOSTools.ModelAnalyzer
 
         /*
 
-        private static string GetReferenceString (string name, KAOSMetaModelElement pred) 
+        private static string GetReferenceString (string name, KAOSCoreElement pred) 
         {
             if (!declarations.ContainsKey(pred)) {
                 throw new Exception (pred.Identifier + ":" + pred.GetType() + " was not found in declarations. Please fill a bug with your model.");
@@ -180,7 +180,7 @@ namespace KAOSTools.ModelAnalyzer
 
         #region ForAll... helpers 
         
-        static void ForAllKAOSElement (Action<KAOSMetaModelElement> action) {
+        static void ForAllKAOSElement (Action<KAOSCoreElement> action) {
             ForAllGoals (action);
             ForAllObstacles (action);
             ForAllDomainProperties (action);

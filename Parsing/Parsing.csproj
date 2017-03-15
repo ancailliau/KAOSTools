@@ -53,9 +53,9 @@
     <None Include="GoalModelParser.peg" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MetaModel\MetaModel.csproj">
+    <ProjectReference Include="..\MetaModel\Core.csproj">
       <Project>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</Project>
-      <Name>MetaModel</Name>
+      <Name>Core</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

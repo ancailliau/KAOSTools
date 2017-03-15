@@ -44,13 +44,13 @@
       <Project>{C96BDFB0-950D-4DF0-9BFB-27EA7C8CABD3}</Project>
       <Name>Utils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MetaModel\MetaModel.csproj">
-      <Project>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</Project>
-      <Name>MetaModel</Name>
-    </ProjectReference>
     <ProjectReference Include="..\UncertaintySimulation\UncertaintySimulation.csproj">
       <Project>{F37A9A4A-DE7F-4C0E-84A6-8D3EA29AFB4F}</Project>
       <Name>UncertaintySimulation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MetaModel\Core.csproj">
+      <Project>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</Project>
+      <Name>Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

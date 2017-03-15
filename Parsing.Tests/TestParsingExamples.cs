@@ -6,7 +6,7 @@ using KAOSTools.Parsing;
 using System.Net;
 using System.IO;
 using ShallTests;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 
 namespace KAOSTools.Parsing.Tests
 {

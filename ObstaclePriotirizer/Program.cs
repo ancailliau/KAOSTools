@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 using UncertaintySimulation;
 
 namespace ObstaclePriotirizer

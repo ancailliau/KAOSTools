@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace KAOSTools.MetaModel
+namespace KAOSTools.Core
 {
     public static class KAOSModelHelpers
     {

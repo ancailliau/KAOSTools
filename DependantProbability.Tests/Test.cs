@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using System;
 using System.IO;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 
 namespace DependantProbability.Tests
 {

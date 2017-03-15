@@ -1,6 +1,6 @@
 using System;
 using NDesk.Options;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 using System.Collections.Generic;
 using System.IO;
 using KAOSTools.Parsing;
@@ -13,7 +13,7 @@ namespace KAOSTools.Utils
         protected static string input;
         protected static string filename;
         protected static KAOSModel model;
-        protected static IDictionary<KAOSMetaModelElement, IList<Declaration>> declarations;
+        protected static IDictionary<KAOSCoreElement, IList<Declaration>> declarations;
         protected static List<string> reminderArgs;
 
         protected static void Init (string[] args)

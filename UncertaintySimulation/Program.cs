@@ -1,6 +1,6 @@
 ﻿using System;
 using KAOSTools.Utils;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 using BDDSharp;
 using System.Linq;
 using System.Collections.Generic;
@@ -156,11 +156,11 @@ namespace UncertaintySimulation
             Console.WriteLine();
         }
 
-        static int PrintCSV (int hist_width, Goal root, Dictionary<KAOSMetaModelElement, double[]> p, int n_sample,
-            Dictionary<int, KAOSMetaModelElement> reverse_mapping, TextWriter stream)
+        static int PrintCSV (int hist_width, Goal root, Dictionary<KAOSCoreElement, double[]> p, int n_sample,
+            Dictionary<int, KAOSCoreElement> reverse_mapping, TextWriter stream)
         {
             double w = 1.0 / hist_width;
-            var buckets = new Dictionary<KAOSMetaModelElement, double[]> ();
+            var buckets = new Dictionary<KAOSCoreElement, double[]> ();
             foreach (var kv in reverse_mapping) {
                 var obstacle = kv.Value;
                 buckets [obstacle] = new double[hist_width+1];

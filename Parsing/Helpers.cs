@@ -1,11 +1,11 @@
 using System;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 
 namespace KAOSTools.Parsing
 {
     public static class Helpers
     {
-        public static KAOSMetaModelElement OverrideKeys (this KAOSMetaModelElement o1, KAOSMetaModelElement o2) {
+        public static KAOSCoreElement OverrideKeys (this KAOSCoreElement o1, KAOSCoreElement o2) {
             if (string.IsNullOrEmpty (o1.Identifier))
                 o1.Identifier = o2.Identifier;
 

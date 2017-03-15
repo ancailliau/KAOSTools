@@ -47,13 +47,13 @@
       <Project>{52C948A2-30AD-40A7-89A3-9D66B2FCDD9F}</Project>
       <Name>Parsing</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MetaModel\MetaModel.csproj">
-      <Project>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</Project>
-      <Name>MetaModel</Name>
-    </ProjectReference>
     <ProjectReference Include="..\UncertaintySimulation\UncertaintySimulation.csproj">
       <Project>{F37A9A4A-DE7F-4C0E-84A6-8D3EA29AFB4F}</Project>
       <Name>UncertaintySimulation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MetaModel\Core.csproj">
+      <Project>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</Project>
+      <Name>Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

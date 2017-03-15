@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 
-namespace KAOSTools.MetaModel
+namespace KAOSTools.Core
 {
     public static class KAOSFixPoints
     {

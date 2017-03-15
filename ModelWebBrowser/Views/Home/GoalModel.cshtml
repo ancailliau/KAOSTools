@@ -1,6 +1,6 @@
 @model ModelWebBrowser.Models.KAOSModelPage
 @using ModelWebBrowser.Helpers
-@using KAOSTools.MetaModel
+@using KAOSTools.Core
 @using System.Linq
 
 <div class="row">
@@ -450,8 +450,8 @@
               @(r.SystemReference != null ? "(" + r.SystemReference.FriendlyName + ")" : "")
      
               @{
-                var isRequirement = ((IEnumerable<Agent>) r.Agents()).All (y => y.Type == KAOSTools.MetaModel.AgentType.Software);
-                var isExpectation = ((IEnumerable<Agent>) r.Agents()).All (y => y.Type == KAOSTools.MetaModel.AgentType.Environment | y.Type == KAOSTools.MetaModel.AgentType.None);
+                var isRequirement = ((IEnumerable<Agent>) r.Agents()).All (y => y.Type == KAOSTools.Core.AgentType.Software);
+                var isExpectation = ((IEnumerable<Agent>) r.Agents()).All (y => y.Type == KAOSTools.Core.AgentType.Environment | y.Type == KAOSTools.Core.AgentType.None);
               }
               
               @if (isRequirement) {
@@ -577,11 +577,11 @@
   <tr>
     <th>Type</th>
     <td>
-      @if (argument.Type == KAOSTools.MetaModel.AgentType.Software) {
+      @if (argument.Type == KAOSTools.Core.AgentType.Software) {
         @:Software
-      } else if (argument.Type == KAOSTools.MetaModel.AgentType.Environment) {
+      } else if (argument.Type == KAOSTools.Core.AgentType.Environment) {
         @:Environment
-      } else if (argument.Type == KAOSTools.MetaModel.AgentType.Malicious) {
+      } else if (argument.Type == KAOSTools.Core.AgentType.Malicious) {
         @:Malicious
       } else {
         <span class="muted">Not specified</span>

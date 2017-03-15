@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 
 namespace UncertaintySimulation.Outputs
 {

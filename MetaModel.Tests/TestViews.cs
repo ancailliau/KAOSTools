@@ -4,7 +4,7 @@ using NUnit.Framework;
 using KAOSTools.Parsing;
 using ShallTests;
 
-namespace KAOSTools.MetaModel.Tests
+namespace KAOSTools.Core.Tests
 {
     [TestFixture()]
     public class TestViews

@@ -1,5 +1,5 @@
 using System;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,7 +13,7 @@ namespace KAOSTools.Parsing
     {
 
         public FirstStageBuilder (KAOSModel model, 
-                                  IDictionary<KAOSMetaModelElement, 
+                                  IDictionary<KAOSCoreElement, 
                                   IList<Declaration>> declarations,
                                   Uri relativePath)
             : base (model, declarations, relativePath)
@@ -52,7 +52,7 @@ namespace KAOSTools.Parsing
             }
         }
 
-        public KAOSMetaModelElement BuildElementWithKeys (ParsedElementWithAttributes element)
+        public KAOSCoreElement BuildElementWithKeys (ParsedElementWithAttributes element)
         {
             if (element is ParsedGoal)
                 return BuildKAOSElement<Goal> (element);
@@ -113,7 +113,7 @@ namespace KAOSTools.Parsing
         }
 
         public T BuildKAOSElement<T> (ParsedElementWithAttributes parsedElement) 
-            where T: KAOSMetaModelElement
+            where T: KAOSCoreElement
         {
             var element = (T) Activator.CreateInstance (typeof(T), new object[] { model });
 
@@ -122,7 +122,7 @@ namespace KAOSTools.Parsing
             var hasIdentifier = GetIdentifier (parsedElement, out identifier);
             var hasSignature = GetSignature (parsedElement, out signature);
 
-            Func<KAOSMetaModelElement, bool> predicate = e => e.GetType () == typeof(T) && e.Identifier == identifier;
+            Func<KAOSCoreElement, bool> predicate = e => e.GetType () == typeof(T) && e.Identifier == identifier;
             if (hasIdentifier 
                 && model.Elements.Any (predicate)) {
                 if (parsedElement.Override)

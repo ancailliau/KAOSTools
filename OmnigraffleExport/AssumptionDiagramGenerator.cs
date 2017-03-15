@@ -4,7 +4,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using NDesk.Options;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 using KAOSTools.Utils;
 using KAOSTools.OmnigraffleExport.Omnigraffle;
 using System.Text;

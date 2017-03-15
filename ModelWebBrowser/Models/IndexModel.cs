@@ -1,5 +1,5 @@
 using System;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 using System.Collections.Generic;
 using KAOSTools.Parsing;
 
@@ -17,7 +17,7 @@ namespace ModelWebBrowser.Models
             set;
         }
 
-        public IDictionary<KAOSMetaModelElement, IList<Declaration>> Declarations {
+        public IDictionary<KAOSCoreElement, IList<Declaration>> Declarations {
             get;
             set;
         }

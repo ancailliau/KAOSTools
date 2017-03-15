@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using KAOSTools.Parsing;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 using System.Text.RegularExpressions;
 using System.IO;
 
@@ -17,12 +17,12 @@ namespace KAOSTools.Parsing
         /// <summary>
         /// The declarations for each elemnt of the model.
         /// </summary>
-        public IDictionary<KAOSMetaModelElement, IList<Declaration>> Declarations { get; set; }
+        public IDictionary<KAOSCoreElement, IList<Declaration>> Declarations { get; set; }
 
         public KAOSModel Parse (string input, string filename)
         {
             KAOSModel model = new KAOSModel();
-            Declarations = new Dictionary<KAOSMetaModelElement, IList<Declaration>> ();
+            Declarations = new Dictionary<KAOSCoreElement, IList<Declaration>> ();
             GoalModelParser _parser = new GoalModelParser ();
             
             Uri RelativePath = null;

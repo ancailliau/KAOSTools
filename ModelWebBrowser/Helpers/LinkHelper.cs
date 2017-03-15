@@ -1,6 +1,6 @@
 using System;
 using System.Web.Mvc;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 using System.Web.Mvc.Html;
 
 namespace ModelWebBrowser.Helpers

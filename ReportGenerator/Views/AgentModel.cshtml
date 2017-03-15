@@ -1,5 +1,5 @@
 ﻿@model ReportGenerator.ViewModel
-@using KAOSTools.MetaModel
+@using KAOSTools.Core
 @using ReportGenerator.Helpers
 @using System.IO
 
@@ -189,8 +189,8 @@
               @(r.SystemReference != null ? "(" + r.SystemReference.FriendlyName + ")" : "")
      
               @{
-                var isRequirement = ((IEnumerable<Agent>) r.Agents()).All (y => y.Type == KAOSTools.MetaModel.AgentType.Software);
-                var isExpectation = ((IEnumerable<Agent>) r.Agents()).All (y => y.Type == KAOSTools.MetaModel.AgentType.Environment | y.Type == KAOSTools.MetaModel.AgentType.None);
+                var isRequirement = ((IEnumerable<Agent>) r.Agents()).All (y => y.Type == KAOSTools.Core.AgentType.Software);
+                var isExpectation = ((IEnumerable<Agent>) r.Agents()).All (y => y.Type == KAOSTools.Core.AgentType.Environment | y.Type == KAOSTools.Core.AgentType.None);
               }
               
               @if (isRequirement) {
@@ -236,7 +236,7 @@
   }
 }
 
-@helper Source (KAOSMetaModelElement g) {
+@helper Source (KAOSCoreElement g) {
   if (Model.Declarations.ContainsKey(g)) {
     <dt>Defined in</dt>
     <dd><ul>

@@ -7,13 +7,13 @@ using System.Reflection;
 using KAOSTools.DotExporter;
 using KAOSTools.Parsing;
 using System.Collections.Generic;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 
 namespace ReportGenerator
 {
     public class ViewModel {
-        public KAOSTools.MetaModel.KAOSModel Model;
-        public IDictionary<KAOSMetaModelElement, IList<Declaration>> Declarations;   
+        public KAOSTools.Core.KAOSModel Model;
+        public IDictionary<KAOSCoreElement, IList<Declaration>> Declarations;   
     }
     
     class MainClass : KAOSTools.Utils.KAOSToolCLI

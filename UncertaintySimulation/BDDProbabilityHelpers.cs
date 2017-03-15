@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BDDSharp;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 
 namespace UncertaintySimulation
 {

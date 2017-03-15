@@ -3,7 +3,7 @@ using System.Linq;
 using NUnit.Framework;
 using KAOSTools.Parsing;
 
-namespace KAOSTools.MetaModel.Tests
+namespace KAOSTools.Core.Tests
 {
     [TestFixture()]
     public class TestExperimentalResponsibilities

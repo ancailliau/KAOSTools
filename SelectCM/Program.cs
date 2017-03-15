@@ -1,7 +1,7 @@
 ﻿using System;
 using KAOSTools.Utils;
 using System.Linq;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 using UncertaintySimulation;
 
 namespace SelectCM

@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.IO;
 using KAOSTools.Parsing;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 using NDesk.Options;
 using System.Collections.Generic;
 using KAOSTools.Utils;

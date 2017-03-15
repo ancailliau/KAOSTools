@@ -1,5 +1,5 @@
 ﻿@model ReportGenerator.ViewModel
-@using KAOSTools.MetaModel
+@using KAOSTools.Core
 @using ReportGenerator.Helpers
 @using System.IO
 
@@ -172,7 +172,7 @@
   }
 }
 
-@helper Source (KAOSMetaModelElement g) {
+@helper Source (KAOSCoreElement g) {
   if (Model.Declarations.ContainsKey(g)) {
     <dt>Defined in</dt>
     <dd><ul>

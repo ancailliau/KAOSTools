@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using NLog;
 
-namespace KAOSTools.MetaModel
+namespace KAOSTools.Core
 {
     public static class ResolutionIntegrationHelper
     {

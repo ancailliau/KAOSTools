@@ -1,5 +1,5 @@
 using System;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 using KAOSTools.OmnigraffleExport.Omnigraffle;
 using System.Collections.Generic;
 using System.Text;

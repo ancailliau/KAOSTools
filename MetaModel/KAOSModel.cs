@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace KAOSTools.MetaModel
+namespace KAOSTools.Core
 {
     public class KAOSModel
     {
@@ -15,9 +15,9 @@ namespace KAOSTools.MetaModel
             set;
         }
 
-        private Dictionary<string, KAOSMetaModelElement> _elements;
+        private Dictionary<string, KAOSCoreElement> _elements;
 
-        public IEnumerable<KAOSMetaModelElement> Elements {
+        public IEnumerable<KAOSCoreElement> Elements {
             get {
                 return _elements.Values;
             }
@@ -25,11 +25,11 @@ namespace KAOSTools.MetaModel
 
         public KAOSModel ()
         {
-            this._elements = new Dictionary<string, KAOSMetaModelElement> ();
+            this._elements = new Dictionary<string, KAOSCoreElement> ();
             Parameters = new Dictionary<string, string> ();
         }
 
-        public void Add (KAOSMetaModelElement element)
+        public void Add (KAOSCoreElement element)
         {
             var e = element;
             if (e.model != this)
@@ -44,7 +44,7 @@ namespace KAOSTools.MetaModel
             this._elements.Add (e.Identifier, e);
         }
 
-        public void Remove (KAOSMetaModelElement element)
+        public void Remove (KAOSCoreElement element)
         {
             if (this._elements.ContainsKey(element.Identifier))
                 this._elements.Remove (element.Identifier);

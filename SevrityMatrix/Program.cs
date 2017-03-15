@@ -1,6 +1,6 @@
 ﻿using System;
 using KAOSTools.Utils;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 using UncertaintySimulation;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,8 +33,8 @@ namespace SevrityMatrix
                 file_csv.WriteLine("Probability;Severity;Risks");
 
                 var os = r.GetObstructionSuperset(false);
-                var severities = new Dictionary<ISet<KAOSMetaModelElement>, double>();
-                ComputeAllSeverities(os, os.mapping.Keys.ToList(), Enumerable.Empty<KAOSMetaModelElement>(), severities);
+                var severities = new Dictionary<ISet<KAOSCoreElement>, double>();
+                ComputeAllSeverities(os, os.mapping.Keys.ToList(), Enumerable.Empty<KAOSCoreElement>(), severities);
 
                 int currentCount = -1;
                 foreach (var s in severities.OrderBy(x => x.Key.Count))
@@ -100,12 +100,12 @@ namespace SevrityMatrix
             foreach (var rootGoal in model.Goals(g => g.Identifier == "m_water_ph"))
             {
                 var os = rootGoal.GetObstructionSuperset(false);
-                var severities = new Dictionary<ISet<KAOSMetaModelElement>, double>();
-                ComputeAllSeverities(os, os.mapping.Keys.ToList(), Enumerable.Empty<KAOSMetaModelElement>(), severities);
+                var severities = new Dictionary<ISet<KAOSCoreElement>, double>();
+                ComputeAllSeverities(os, os.mapping.Keys.ToList(), Enumerable.Empty<KAOSCoreElement>(), severities);
 
                 var subsets = severities.OrderBy(kv => kv.Key.Count);
-                var pendingSubset = new Queue<KeyValuePair<ISet<KAOSMetaModelElement>, double>>(subsets.Where(ss => ss.Key.Count == 1));
-                var visitedSubset = new HashSet<KeyValuePair<ISet<KAOSMetaModelElement>, double>>(subsets.Where(ss => ss.Key.Count == 1));
+                var pendingSubset = new Queue<KeyValuePair<ISet<KAOSCoreElement>, double>>(subsets.Where(ss => ss.Key.Count == 1));
+                var visitedSubset = new HashSet<KeyValuePair<ISet<KAOSCoreElement>, double>>(subsets.Where(ss => ss.Key.Count == 1));
 
                 int i = 0;
 
@@ -153,12 +153,12 @@ namespace SevrityMatrix
             foreach (var rootGoal in model.Goals(g => g.Identifier == "m_water_ph"))
             {
                 var os = rootGoal.GetObstructionSuperset(false);
-                var severities = new Dictionary<ISet<KAOSMetaModelElement>, double>();
-                ComputeAllSeverities(os, os.mapping.Keys.ToList(), Enumerable.Empty<KAOSMetaModelElement>(), severities);
+                var severities = new Dictionary<ISet<KAOSCoreElement>, double>();
+                ComputeAllSeverities(os, os.mapping.Keys.ToList(), Enumerable.Empty<KAOSCoreElement>(), severities);
 
                 var subsets = severities.OrderBy(kv => kv.Key.Count);
-                var pendingSubset = new Queue<KeyValuePair<ISet<KAOSMetaModelElement>, double>>(subsets.Where(ss => ss.Key.Count == 1 && ss.Key.Contains(model.Obstacle(a => a.Identifier == "o_blackspot"))));
-                                                                                                var inQueue = new HashSet<KeyValuePair<ISet<KAOSMetaModelElement>, double>>(pendingSubset);
+                var pendingSubset = new Queue<KeyValuePair<ISet<KAOSCoreElement>, double>>(subsets.Where(ss => ss.Key.Count == 1 && ss.Key.Contains(model.Obstacle(a => a.Identifier == "o_blackspot"))));
+                                                                                                var inQueue = new HashSet<KeyValuePair<ISet<KAOSCoreElement>, double>>(pendingSubset);
 
                 int i = 0;
 
@@ -195,7 +195,7 @@ namespace SevrityMatrix
             }
         }
 
-        static void ComputeAllSeverities(ObstructionSuperset os, IEnumerable<KAOSMetaModelElement> pending, IEnumerable<KAOSMetaModelElement> inSet, Dictionary<ISet<KAOSMetaModelElement>, double> severities)
+        static void ComputeAllSeverities(ObstructionSuperset os, IEnumerable<KAOSCoreElement> pending, IEnumerable<KAOSCoreElement> inSet, Dictionary<ISet<KAOSCoreElement>, double> severities)
         {
             if (pending.Count() == 0)
             {
@@ -215,7 +215,7 @@ namespace SevrityMatrix
                         throw new NotImplementedException();
                     }
                 }
-                severities.Add(new HashSet<KAOSMetaModelElement>(inSet), 1 - os.GetProbability(samplingVector));
+                severities.Add(new HashSet<KAOSCoreElement>(inSet), 1 - os.GetProbability(samplingVector));
             }
             else
             {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using KAOSTools.OmnigraffleExport.Omnigraffle;
-using KAOSTools.MetaModel;
+using KAOSTools.Core;
 using System.Text;
 using System.Linq;
 
@@ -736,7 +736,7 @@ namespace KAOSTools.OmnigraffleExport
             Add (obstruction.Identifier, topArrow);
         }
 
-        protected void Render (KAOSTools.MetaModel.Attribute attribute)
+        protected void Render (KAOSTools.Core.Attribute attribute)
         {
             if (!shapes.ContainsKey (attribute.EntityIdentifier)) 
                 return;
