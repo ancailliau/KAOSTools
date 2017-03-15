@@ -111,7 +111,7 @@ DomHypAttribute :=
 
 ObstacleAttribute := 
     ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByObstacle 
-      / ResolvedBy / ExpertProbability / Probability / AssignedTo / CustomAttribute)
+      / ResolvedBy / ExpertProbability / Probability / CustomAttribute)
     `value = results[0].Value;`
 
 AgentAttribute := 

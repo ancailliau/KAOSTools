@@ -59,7 +59,7 @@
     <Compile Include="FormalSpec.cs" />
     <Compile Include="ResolutionIntegrationHelper.cs" />
     <Compile Include="KAOSModelHelpers.cs" />
-    <Compile Include="KAOSMetaModelElements.cs" />
+    <Compile Include="PredicateArgument.cs" />
     <Compile Include="KAOSMetaModelElementsHelpers.cs" />
     <Compile Include="KAOSCoreElement.cs" />
     <Compile Include="Goal.cs" />
@@ -92,6 +92,13 @@
     <Compile Include="Calibration.cs" />
     <Compile Include="Constraint.cs" />
     <Compile Include="CostVariable.cs" />
+    <Compile Include="Entity.cs" />
+    <Compile Include="Attribute.cs" />
+    <Compile Include="GivenType.cs" />
+    <Compile Include="Relation.cs" />
+    <Compile Include="Link.cs" />
+    <Compile Include="EntityType.cs" />
+    <Compile Include="Predicate.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
