@@ -123,27 +123,6 @@ namespace KAOSTools.Parsing.Tests
                 parser.Parse (input);
             });
         }
-        
-        [TestCase(@"declare obstacle
-                        id obstacle
-                        assignedto agent
-                    end")]
-        [TestCase(@"declare obstacle
-                        id obstacle
-                        assignedto declare agent
-                                     id agent
-                                   end
-                    end")]
-        public void TestObstacleAssignedTo (string input)
-        {
-            var model = parser.Parse (input);
-            model.Obstacles()
-                .Where (x => x.Identifier == "obstacle" & x.AgentAssignments().Count() == 1)
-                    .SelectMany (x => x.AgentAssignments())
-                    .SelectMany (x => x.Agents())
-                    .ShallBeSingle ()
-                    .ShallBeSuchThat (x => x.Identifier == "agent");
-        }
 
         [TestCase(@"declare goal
                         id goal

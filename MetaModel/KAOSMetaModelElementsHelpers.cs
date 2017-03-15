@@ -79,12 +79,6 @@ namespace KAOSTools.Core
                     select resolution;
         }
 
-        public static IEnumerable<ObstacleAgentAssignment> AgentAssignments (this Obstacle obstacle) {
-            return from assignement in obstacle.model.ObstacleAgentAssignments()
-                where assignement.ObstacleIdentifier == obstacle.Identifier
-                    select assignement;
-        }
-        
         public static IEnumerable<Obstruction> Obstructions (this Obstacle obstacle) {
             return from obstruction in obstacle.model.Obstructions()
                 where obstruction.ObstacleIdentifier == obstacle.Identifier
@@ -133,12 +127,6 @@ namespace KAOSTools.Core
                     select assignements;
         }
         
-        public static IEnumerable<ObstacleAgentAssignment> AssignedObstacles (this Agent agent) {
-            return from assignements in agent.model.ObstacleAgentAssignments()
-                where assignements.Agents().Contains (agent)
-                    select assignements;
-        }
-        
         #endregion
 
         #region Agent assignments
@@ -152,9 +140,6 @@ namespace KAOSTools.Core
             return goalAA.model.Goals().SingleOrDefault(y => y.Identifier == goalAA.GoalIdentifier);
         }
 
-        public static Obstacle Obstacle (this ObstacleAgentAssignment obstacleAA) {
-            return obstacleAA.model.Obstacles().SingleOrDefault(y => y.Identifier == obstacleAA.ObstacleIdentifier);
-        }
 
         #endregion
 

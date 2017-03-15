@@ -383,8 +383,6 @@ namespace KAOSTools.OmnigraffleExport
         protected void Render (Obstacle obstacle)
         {
             int lineWidth = 1;
-            if (obstacle.AgentAssignments().Count() > 0)
-                lineWidth = 2;
 
             AddInvertParallelogram (obstacle.Identifier, obstacle.FriendlyName, 
                 lineWidth, 1, 0.590278, 0.611992);
@@ -568,27 +566,6 @@ namespace KAOSTools.OmnigraffleExport
                     childGraphic = Render (assignment.model.Agents ().Single (x => x.Identifier == child));
                 }
 
-                var line = GetLine (childGraphic, circle);
-                sheet.GraphicsList.Add (line);
-            }
-        }
-
-        protected void Render (ObstacleAgentAssignment assignment)
-        {
-            var circle = GetCircle ();
-            Add (assignment.Identifier, circle);
-
-            if (shapes.ContainsKey(assignment.ObstacleIdentifier)) {
-                var parentGraphic = shapes[assignment.ObstacleIdentifier].First ();
-                var topArrow = GetFilledArrow (circle, parentGraphic);
-                sheet.GraphicsList.Add (topArrow);
-            }
-
-            foreach (var child in assignment.AgentIdentifiers) {
-                if (!shapes.ContainsKey(child))
-                    continue;
-
-                var childGraphic = shapes [child].First ();
                 var line = GetLine (childGraphic, circle);
                 sheet.GraphicsList.Add (line);
             }

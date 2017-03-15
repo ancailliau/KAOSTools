@@ -455,42 +455,6 @@ namespace KAOSTools.Parsing
                 model.Add (assignment);
         }
 
-        
-
-
-        private void Handle (Obstacle element, ParsedAssignedToAttribute assignedTo)
-        {
-            var assignment = new ObstacleAgentAssignment (model);
-            assignment.ObstacleIdentifier = element.Identifier;
-
-
-            foreach (var child in assignedTo.Values) {
-                if (child is IdentifierExpression | child is NameExpression) {
-                    Agent agent;
-                    if (!Get (child, out agent)) {
-                        agent = Create<Agent> (child);
-                    }
-                    assignment.Add (agent);
-
-                } else if (child is ParsedAgent) {
-                    assignment.Add (fsb.BuildElementWithKeys (child));
-                    BuildElement (child);
-
-                } else {
-
-                    // TODO use string.Format
-                    throw new NotImplementedException (
-                        "'" + child.GetType().Name 
-                        + "' is not supported in '" 
-                        + assignedTo.GetType().Name + "' on '" 
-                        + element.GetType().Name + "'");
-                }
-            }
-
-            if (!assignment.IsEmpty)
-                model.Add (assignment);
-        }
-
         public void Handle (Goal element, ParsedRefinedByAttribute refinedBy)
         {
             var refinement = new GoalRefinement (model);

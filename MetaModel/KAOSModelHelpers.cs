@@ -71,10 +71,6 @@ namespace KAOSTools.Core
                 return model.Elements.Where (x => x is GoalAgentAssignment).Cast<GoalAgentAssignment>();
         }
 
-        public static IEnumerable<ObstacleAgentAssignment> ObstacleAgentAssignments (this KAOSModel model) {
-                return model.Elements.Where (x => x is ObstacleAgentAssignment).Cast<ObstacleAgentAssignment>();
-        }
-
         public static IEnumerable<GoalException> Exceptions (this KAOSModel model) {
             return model.Elements.Where (x => x is GoalException).Cast<GoalException>();
         }
