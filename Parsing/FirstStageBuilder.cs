@@ -105,9 +105,6 @@ namespace KAOSTools.Parsing
             if (element is ParsedConstraint)
                 return BuildKAOSElement<Constraint> (element);
 
-            if (element is ParsedOperation)
-                return BuildKAOSElement<Operation> (element);
-
             throw new BuilderException (string.Format ("'{0}' not supported", element.GetType ()),
                                         element.Filename, element.Line, element.Col);
         }

@@ -485,45 +485,6 @@ namespace KAOSTools.Parsing
                 model.Add (assignment);
         }
 
-        public void Handle (Operation element, ParsedPerformedByAttribute assignedTo)
-        {
-            var performance = new OperationAgentPerformance (model);
-            performance.OperationIdentifier = element.Identifier;
-
-            if (assignedTo.SystemIdentifier != null) {
-                AlternativeSystem alternative;
-                if (!Get (assignedTo.SystemIdentifier, out alternative)) {
-                    alternative = Create<AlternativeSystem> (assignedTo.SystemIdentifier);
-                }
-                performance.SystemReference = alternative;
-            }
-
-            foreach (var child in assignedTo.Values) {
-                if (child is IdentifierExpression | child is NameExpression) {
-                    Agent agent;
-                    if (!Get (child, out agent)) {
-                        agent = Create<Agent> (child);
-                    }
-                    performance.Add (agent);
-
-                } else if (child is ParsedAgent) {
-                    performance.Add (fsb.BuildElementWithKeys (child));
-                    BuildElement (child);
-
-                } else {
-
-                    // TODO use string.Format
-                    throw new NotImplementedException (
-                        "'" + child.GetType().Name 
-                        + "' is not supported in '" 
-                        + assignedTo.GetType().Name + "' on '" 
-                        + element.GetType().Name + "'");
-                }
-            }
-
-            if (!performance.IsEmpty)
-                model.Add (performance);
-        }
         
         public void Handle (AntiGoal element, ParsedAssignedToAttribute assignedTo)
         {
@@ -1057,36 +1018,6 @@ namespace KAOSTools.Parsing
                 }
             }
         }
-
-        #region operations
-
-        public void Handle (Operation element, ParsedDomPreAttribute conflict)
-        {
-            // ignore, see third stage
-        }
-
-        public void Handle (Operation element, ParsedDomPostAttribute conflict)
-        {
-            // ignore, see third stage
-        }
-
-        public void Handle (Operation element, ParsedReqPreAttribute conflict)
-        {
-            // ignore, see third stage
-        }
-
-        public void Handle (Operation element, ParsedReqPostAttribute conflict)
-        {
-            // ignore, see third stage
-        }
-
-        public void Handle (Operation element, ParsedReqTrigAttribute conflict)
-        {
-            // ignore, see third stage
-        }
-
-        #endregion 
-
 
         public void Handle (Predicate element, DefaultValueAttribute def)
         {

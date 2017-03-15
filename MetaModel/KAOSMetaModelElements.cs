@@ -470,40 +470,5 @@ namespace KAOSTools.Core
 
     
 
-    
 
-    public class ReqOpSpecification
-    {
-        public Goal Goal;
-        public Formula Specification;
-        public ReqOpSpecification (Goal goal, Formula specification)
-        {
-            this.Goal = goal;
-            this.Specification = specification;
-        }
-        
-    }
-
-    public class Operation : KAOSCoreElement
-    {
-        public string Name { get; set; }
-        public Formula DomPre { get; set; }
-        public Formula DomPost { get; set; }
-
-        public IList<ReqOpSpecification> ReqTrig { get; set; }
-        public IList<ReqOpSpecification> ReqPre { get; set; }
-        public IList<ReqOpSpecification> ReqPost { get; set; }
-
-        public Operation  (KAOSModel model) : base (model)
-        {
-            ReqTrig = new List<ReqOpSpecification> ();
-            ReqPre = new List<ReqOpSpecification> ();
-            ReqPost = new List<ReqOpSpecification> ();
-        }
-
-        public override KAOSCoreElement Copy ()
-        {
-            throw new NotImplementedException ();
-        }
-    }
 }

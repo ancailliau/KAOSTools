@@ -169,17 +169,6 @@ namespace KAOSTools.Core
 
         #endregion
 
-        #region Operations
-
-        public static IEnumerable<Operation> Operations (this KAOSModel model) {
-            return model.Elements.OfType<Operation>();
-        }
-
-        public static IEnumerable<OperationAgentPerformance> PerformedBy (this Operation op) {
-            return op.model.Elements.OfType<OperationAgentPerformance>().Where (x => x.OperationIdentifier == op.Identifier);
-        }
-
-        #endregion
 
 
         public static ISet<Goal> RootGoals (this KAOSModel model) {

@@ -83,8 +83,6 @@ namespace KAOSTools.Parsing
 
     public class ParsedConstraint           : ParsedElementWithAttributes {}
 
-    public class ParsedOperation            : ParsedElementWithAttributes {}
-
     public class ParsedEntity : ParsedElementWithAttributes
     {
         public ParsedEntityType EntityType { get; set; }
@@ -124,7 +122,6 @@ namespace KAOSTools.Parsing
     public enum ParsedContribution { Positive, Negative }
 
     public class ParsedAssignedToAttribute : ParsedAttributeWithElementsAndSystemIdentifier {}
-    public class ParsedPerformedByAttribute : ParsedAttributeWithElementsAndSystemIdentifier {}
 
     public class ParsedGoalRefinementChildrenAttribute : ParsedAttributeWithElements {}
 
@@ -168,31 +165,6 @@ namespace KAOSTools.Parsing
 
     public class ParsedFormalSpecAttribute   : ParsedAttributeWithValue<ParsedElement> {}
 
-    public class ParsedDomPreAttribute    : ParsedAttribute {
-        public dynamic Specification { get; set; }
-    }
-
-    public class ParsedDomPostAttribute   : ParsedAttribute  {
-        public dynamic Specification { get; set; }
-    }
-
-    public class ParsedReqPreAttribute    : ParsedAttribute  {
-        public dynamic IdOrName  { get; set; }
-        public dynamic Specification { get; set; }
-    }
-
-    public class ParsedReqPostAttribute   : ParsedAttribute  {
-        public dynamic IdOrName  { get; set; }
-        public dynamic Specification { get; set; }
-    }
-
-    public class ParsedReqTrigAttribute   : ParsedAttribute  {
-        public dynamic IdOrName  { get; set; }
-        public dynamic Specification { get; set; }
-    }
-
-
-    
     public class ParsedResolvedByAttribute   : ParsedAttributeWithValue<dynamic> {
         public ParsedResolutionPattern Pattern { get; set; }
     }

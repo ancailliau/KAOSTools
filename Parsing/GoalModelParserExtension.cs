@@ -611,12 +611,6 @@ namespace KAOSTools.Parsing {
                 (results);
         }
 
-        ParsedElement BuildPerformedBy (List<Result> results)
-        {
-            return BuildParsedAttributeWithElementsAndSystemIdentifier<ParsedPerformedByAttribute> 
-                (results);
-        }
-
         ParsedElement BuildAttributeAttribute (List<Result> results)
         {
             if (results[1].Value is ParsedAttributeDeclaration) {
@@ -1311,70 +1305,6 @@ namespace KAOSTools.Parsing {
         }
 
 
-
-
-        ParsedElement BuildOperation (List<Result> results)
-        {
-            return BuildParsedElementWithAttributes<ParsedOperation> (results);
-        }
-
-        ParsedElement BuildDomPreAttribute (List<Result> results)
-        {
-            var item = new ParsedDomPreAttribute { 
-                Specification = results[1].Value,
-                Line = results[0].Line, 
-                Col = results[0].Col, 
-                Filename = m_file
-            };
-            return item;
-        }
-
-        ParsedElement BuildDomPostAttribute (List<Result> results)
-        {
-            var item = new ParsedDomPostAttribute { 
-                Specification = results[1].Value,
-                Line = results[0].Line, 
-                Col = results[0].Col, 
-                Filename = m_file
-            };
-            return item;
-        }
-
-        ParsedElement BuildReqPreAttribute (List<Result> results)
-        {
-            var item = new ParsedReqPreAttribute { 
-                IdOrName = results[2].Value,
-                Specification = results[3].Value,
-                Line = results[0].Line, 
-                Col = results[0].Col, 
-                Filename = m_file
-            };
-            return item;
-        }
-
-        ParsedElement BuildReqPostAttribute (List<Result> results)
-        {
-            var item = new ParsedReqPostAttribute { 
-                IdOrName = results[2].Value,
-                Specification = results[3].Value,
-                Line = results[0].Line, 
-                Col = results[0].Col, 
-                Filename = m_file
-            };
-            return item;
-        }
-
-        ParsedElement BuildReqTrigAttribute (List<Result> results)
-        {
-            var item = new ParsedReqTrigAttribute { 
-                IdOrName = results[2].Value,
-                Specification = results[3].Value,
-                Line = results[0].Line, 
-                Col = results[0].Col, 
-                Filename = m_file
-            };
-            return item;
-        }
 
 
         ParsedElement BuildDefaultValueAttribute (List<Result> results)
