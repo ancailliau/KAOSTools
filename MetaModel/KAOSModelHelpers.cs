@@ -59,7 +59,7 @@ namespace KAOSTools.MetaModel
         // Relations
 
         public static IEnumerable<GoalRefinement> GoalRefinements (this KAOSModel model) {
-                return model.Elements.Where (x => x is GoalRefinement).Cast<GoalRefinement>();
+			return model.Elements.OfType<GoalRefinement> ();
         }
 
         public static IEnumerable<AntiGoalRefinement> AntiGoalRefinements (this KAOSModel model) {
@@ -169,6 +169,18 @@ namespace KAOSTools.MetaModel
 
         #endregion
 
+        #region Operations
+
+        public static IEnumerable<Operation> Operations (this KAOSModel model) {
+            return model.Elements.OfType<Operation>();
+        }
+
+        public static IEnumerable<OperationAgentPerformance> PerformedBy (this Operation op) {
+            return op.model.Elements.OfType<OperationAgentPerformance>().Where (x => x.OperationIdentifier == op.Identifier);
+        }
+
+        #endregion
+
 
         public static ISet<Goal> RootGoals (this KAOSModel model) {
                 var goals = new HashSet<Goal> (model.Goals());
@@ -237,8 +249,8 @@ namespace KAOSTools.MetaModel
             foreach (var refinement in model.ObstacleRefinements ())
                 obstacles.Remove (refinement.ParentObstacle ());
 
-            foreach (var obstruction in model.Obstructions ())
-                obstacles.Remove (obstruction.Obstacle ());
+            //foreach (var obstruction in model.Obstructions ())
+            //    obstacles.Remove (obstruction.Obstacle ());
 
             return obstacles;
         }

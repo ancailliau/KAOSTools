@@ -34,19 +34,19 @@ namespace KAOSTools.Parsing
         {
             if (value == null)
                 throw new ArgumentNullException ("value");
-            
-            if (value.GetType() == typeof (ParsedForallExpression)) {
+
+            if (value.GetType () == typeof (ParsedForallExpression)) {
                 var a = new Forall ();
                 var d2 = new Dictionary<string, KAOSTools.MetaModel.Entity> (declaredVariables);
                 foreach (var arg in (value as ParsedForallExpression).arguments) {
                     var name = arg.VariableName;
                     var type = GetOrCreateEntity (arg.Type);
-                    
-                    if (declaredVariables.ContainsKey(name)) {
+
+                    if (declaredVariables.ContainsKey (name)) {
                         throw new CompilationException (string.Format ("'{0}' is already defined", name));
                     }
-                    
-                    a.Declarations.Add (new KAOSTools.MetaModel.ArgumentDeclaration() {
+
+                    a.Declarations.Add (new KAOSTools.MetaModel.ArgumentDeclaration () {
                         Name = name,
                         Type = type
                     });
@@ -54,18 +54,18 @@ namespace KAOSTools.Parsing
                 }
                 a.Enclosed = BuildFormula ((value as ParsedForallExpression).Enclosed, d2);
                 return a;
-            } else if (value.GetType() == typeof (ParsedExistsExpression)) {
+            } else if (value.GetType () == typeof (ParsedExistsExpression)) {
                 var a = new Exists ();
                 var d2 = new Dictionary<string, KAOSTools.MetaModel.Entity> (declaredVariables);
                 foreach (var arg in (value as ParsedExistsExpression).arguments) {
                     var name = arg.VariableName;
                     var type = GetOrCreateEntity (arg.Type);
-                    
-                    if (declaredVariables.ContainsKey(name)) {
+
+                    if (declaredVariables.ContainsKey (name)) {
                         throw new CompilationException (string.Format ("'{0}' is already defined", name));
                     }
-                    
-                    a.Declarations.Add (new KAOSTools.MetaModel.ArgumentDeclaration() {
+
+                    a.Declarations.Add (new KAOSTools.MetaModel.ArgumentDeclaration () {
                         Name = name,
                         Type = type
                     });
@@ -73,80 +73,80 @@ namespace KAOSTools.Parsing
                 }
                 a.Enclosed = BuildFormula ((value as ParsedExistsExpression).Enclosed, d2);
                 return a;
-            } else if (value.GetType() == typeof (ParsedStrongImplyExpression)) {
-                return new StrongImply () { 
+            } else if (value.GetType () == typeof (ParsedStrongImplyExpression)) {
+                return new StrongImply () {
                     Left = BuildFormula ((value as ParsedStrongImplyExpression).Left, declaredVariables),
                     Right = BuildFormula ((value as ParsedStrongImplyExpression).Right, declaredVariables)
                 };
-            } else if (value.GetType() == typeof (ParsedImplyExpression)) {
-                return new Imply () { 
+            } else if (value.GetType () == typeof (ParsedImplyExpression)) {
+                return new Imply () {
                     Left = BuildFormula ((value as ParsedImplyExpression).Left, declaredVariables),
                     Right = BuildFormula ((value as ParsedImplyExpression).Right, declaredVariables)
                 };
-            } else if (value.GetType() == typeof (ParsedEquivalenceExpression)) {
-                return new Equivalence () { 
+            } else if (value.GetType () == typeof (ParsedEquivalenceExpression)) {
+                return new Equivalence () {
                     Left = BuildFormula ((value as ParsedEquivalenceExpression).Left, declaredVariables),
                     Right = BuildFormula ((value as ParsedEquivalenceExpression).Right, declaredVariables)
                 };
-            } else if (value.GetType() == typeof (ParsedUntilExpression)) {
-                return new Until () { 
+            } else if (value.GetType () == typeof (ParsedUntilExpression)) {
+                return new Until () {
                     Left = BuildFormula ((value as ParsedUntilExpression).Left, declaredVariables),
                     Right = BuildFormula ((value as ParsedUntilExpression).Right, declaredVariables)
                 };
-            } else if (value.GetType() == typeof (ParsedUnlessExpression)) {
-                return new Unless () { 
+            } else if (value.GetType () == typeof (ParsedUnlessExpression)) {
+                return new Unless () {
                     Left = BuildFormula ((value as ParsedUnlessExpression).Left, declaredVariables),
                     Right = BuildFormula ((value as ParsedUnlessExpression).Right, declaredVariables)
                 };
-            } else if (value.GetType() == typeof (ParsedReleaseExpression)) {
-                return new Release () { 
+            } else if (value.GetType () == typeof (ParsedReleaseExpression)) {
+                return new Release () {
                     Left = BuildFormula ((value as ParsedReleaseExpression).Left, declaredVariables),
                     Right = BuildFormula ((value as ParsedReleaseExpression).Right, declaredVariables)
                 };
-            } else if (value.GetType() == typeof (ParsedAndExpression)) {
-                return new And () { 
+            } else if (value.GetType () == typeof (ParsedAndExpression)) {
+                return new And () {
                     Left = BuildFormula ((value as ParsedAndExpression).Left, declaredVariables),
                     Right = BuildFormula ((value as ParsedAndExpression).Right, declaredVariables)
                 };
-            } else if (value.GetType() == typeof (ParsedOrExpression)) {
-                return new Or () { 
+            } else if (value.GetType () == typeof (ParsedOrExpression)) {
+                return new Or () {
                     Left = BuildFormula ((value as ParsedOrExpression).Left, declaredVariables),
                     Right = BuildFormula ((value as ParsedOrExpression).Right, declaredVariables)
                 };
-            } else if (value.GetType() == typeof (ParsedNotExpression)) {
-                return new Not () { 
+            } else if (value.GetType () == typeof (ParsedNotExpression)) {
+                return new Not () {
                     Enclosed = BuildFormula ((value as ParsedNotExpression).Enclosed, declaredVariables)
                 };
-            } else if (value.GetType() == typeof (ParsedNextExpression)) {
-                return new Next () { 
+            } else if (value.GetType () == typeof (ParsedNextExpression)) {
+                return new Next () {
                     Enclosed = BuildFormula ((value as ParsedNextExpression).Enclosed, declaredVariables)
                 };
-            } else if (value.GetType() == typeof (ParsedEventuallyExpression)) {
-                return new Eventually () { 
+            } else if (value.GetType () == typeof (ParsedEventuallyExpression)) {
+                return new Eventually () {
                     Enclosed = BuildFormula ((value as ParsedEventuallyExpression).Enclosed, declaredVariables),
                     TimeBound = BuildTimeBound ((value as ParsedEventuallyExpression).TimeBound)
                 };
 
-            } else if (value.GetType() == typeof (ParsedEventuallyBeforeExpression)) {
-                return new EventuallyBefore () { 
-                    Left = BuildFormula ((value as ParsedEventuallyBeforeExpression).Left, declaredVariables),
-                    Right = BuildFormula ((value as ParsedEventuallyBeforeExpression).Right, declaredVariables),
+            } else if (value.GetType () == typeof (ParsedEventuallyBeforeExpression)) {
+                return new EventuallyBefore () {
+					Left = BuildFormula ((value as ParsedEventuallyBeforeExpression).Left, declaredVariables),
+					Right = BuildFormula((value as ParsedEventuallyBeforeExpression).Right, declaredVariables),
                     TimeBound = BuildTimeBound ((value as ParsedEventuallyBeforeExpression).TimeBound)
                 };
 
-            } else if (value.GetType() == typeof (ParsedGloballyExpression)) {
-                return new Globally () { 
+            } else if (value.GetType () == typeof (ParsedGloballyExpression)) {
+                return new Globally () {
                     Enclosed = BuildFormula ((value as ParsedGloballyExpression).Enclosed, declaredVariables),
                     TimeBound = BuildTimeBound ((value as ParsedGloballyExpression).TimeBound)
                 };
-                
-            } else if (value.GetType() == typeof (ParsedPredicateReferenceExpression)) {
+
+            } else if (value.GetType () == typeof (ParsedPredicateReferenceExpression)) {
                 var prel = value as ParsedPredicateReferenceExpression;
-                
+
                 // Check if arguments are all defined
                 foreach (var arg in prel.ActualArguments) {
                     if (!declaredVariables.ContainsKey (arg)) {
-                        throw new CompilationException (string.Format("'{0}' is not declared ({1}:{2},{3})", 
+                        throw new CompilationException (string.Format ("'{0}' is not declared ({1}:{2},{3})",
                                                                       arg, prel.Filename, prel.Line, prel.Col));
                     }
                 }
@@ -155,31 +155,31 @@ namespace KAOSTools.Parsing
                     Predicate = GetOrCreatePredicate (prel, declaredVariables),
                     ActualArguments = prel.ActualArguments
                 };
-            } else if (value.GetType() == typeof (ParsedInRelationExpression)) {
+            } else if (value.GetType () == typeof (ParsedInRelationExpression)) {
                 var prel = value as ParsedInRelationExpression;
                 foreach (var arg in prel.Variables) {
                     if (!declaredVariables.ContainsKey (arg)) {
-                        throw new CompilationException (string.Format("'{0}' is not declared", arg));
+                        throw new CompilationException (string.Format ("'{0}' is not declared", arg));
                     }
                 }
-                
+
                 return new RelationReference () {
                     Relation = GetOrCreateRelation (value as ParsedInRelationExpression, declaredVariables),
                     ActualArguments = prel.Variables
                 };
-            } else if (value.GetType() == typeof (ParsedAttributeReferenceExpression)) {
+            } else if (value.GetType () == typeof (ParsedAttributeReferenceExpression)) {
                 var pref = value as ParsedAttributeReferenceExpression;
-                if (declaredVariables.ContainsKey(pref.Variable)) {
+                if (declaredVariables.ContainsKey (pref.Variable)) {
                     return new AttributeReference () {
                         Variable = pref.Variable,
-                        Entity = declaredVariables[pref.Variable],
-                        Attribute = GetOrCreateAttribute (value as ParsedAttributeReferenceExpression, declaredVariables[pref.Variable])
+                        Entity = declaredVariables [pref.Variable],
+                        Attribute = GetOrCreateAttribute (value as ParsedAttributeReferenceExpression, declaredVariables [pref.Variable])
                     };
                 } else {
                     throw new CompilationException (string.Format ("Variable '{0}' is not declared", pref.Variable));
                 }
-                
-            } else if (value.GetType() == typeof (ParsedComparisonExpression)) {
+
+            } else if (value.GetType () == typeof (ParsedComparisonExpression)) {
                 var pref = value as ParsedComparisonExpression;
                 ComparisonCriteria criteria;
                 if (pref.criteria == ParsedComparisonCriteria.Equals) {
@@ -197,21 +197,21 @@ namespace KAOSTools.Parsing
                 } else {
                     throw new NotImplementedException ();
                 }
-                
+
                 return new ComparisonPredicate () {
                     Criteria = criteria,
                     Left = BuildFormula (pref.Left, declaredVariables),
                     Right = BuildFormula (pref.Right, declaredVariables)
                 };
-            } else if (value.GetType() == typeof (ParsedStringConstantExpression)) {
-                return new StringConstant { Value = Sanitize((value as ParsedStringConstantExpression).Value) };
-                
-            } else if (value.GetType() == typeof (ParsedNumericConstantExpression)) {
+            } else if (value.GetType () == typeof (ParsedStringConstantExpression)) {
+                return new StringConstant { Value = Sanitize ((value as ParsedStringConstantExpression).Value) };
+
+            } else if (value.GetType () == typeof (ParsedNumericConstantExpression)) {
                 return new NumericConstant { Value = (value as ParsedNumericConstantExpression).Value };
-            } else if (value.GetType() == typeof (ParsedBoolConstantExpression)) {
+            } else if (value.GetType () == typeof (ParsedBoolConstantExpression)) {
                 return new BoolConstant { Value = (value as ParsedBoolConstantExpression).Value };
-            } else if (value.GetType() == typeof (ParsedVariableReference)) {
-                if (!declaredVariables.ContainsKey((value as ParsedVariableReference).Value)) {
+            } else if (value.GetType () == typeof (ParsedVariableReference)) {
+                if (!declaredVariables.ContainsKey ((value as ParsedVariableReference).Value)) {
                     throw new CompilationException (string.Format ("Variable '{0}' is not declared", (value as ParsedVariableReference).Value));
                 }
 

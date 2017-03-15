@@ -56,7 +56,6 @@ namespace KAOSTools.MetaModel
                 return (Identifier != null ? Identifier.GetHashCode () : 0);
             }
         }
-
     }
 
     #region Goal Model
@@ -84,9 +83,15 @@ namespace KAOSTools.MetaModel
 
         public double RDS { get; set; }
 
+        public IDictionary<CostVariable, double> Costs {
+            get;
+            set;
+        }
+
         public Goal (KAOSModel model) : base(model)
         {
             InSystems = new HashSet<AlternativeSystem>();
+            Costs = new Dictionary<CostVariable, double> ();
         }
 
         public override KAOSMetaModelElement Copy ()
@@ -184,7 +189,7 @@ namespace KAOSTools.MetaModel
 
         public double CPS { get; set; }
 
-        public UncertaintyDistribution UEPS { get; set; }
+        public UncertaintyDistribution SatisfactionUncertainty { get; set; }
 
         public Dictionary<Expert, QuantileList> ExpertEstimates { get; set; }
 
@@ -226,7 +231,7 @@ namespace KAOSTools.MetaModel
 
         public double EPS { get; set; }
 
-        public UncertaintyDistribution UEPS { get; set; }
+        public UncertaintyDistribution SatisfactionUncertainty { get; set; }
 
         public DomainHypothesis (KAOSModel model) : base(model)
         {
@@ -365,6 +370,24 @@ namespace KAOSTools.MetaModel
                 Identifier = Identifier,
                 Implicit = Implicit,
                 GoalIdentifier = GoalIdentifier,
+                AgentIdentifiers = new List<string> (AgentIdentifiers)
+            };
+        }
+    }
+
+    [DataContract]
+    public class OperationAgentPerformance : AgentAssignment {
+
+        [DataMember]
+        public string OperationIdentifier { get; set ; }
+        public OperationAgentPerformance  (KAOSModel model) : base (model) {}
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            return new OperationAgentPerformance (null) {
+                Identifier = Identifier,
+                Implicit = Implicit,
+                OperationIdentifier = OperationIdentifier,
                 AgentIdentifiers = new List<string> (AgentIdentifiers)
             };
         }
@@ -827,6 +850,11 @@ namespace KAOSTools.MetaModel
             AnchorGoalIdentifier = goal.Identifier;
         }
 
+		public void SetAnchorGoal(string goal)
+		{
+			AnchorGoalIdentifier = goal;
+		}
+
         public void SetResolvingGoal (Goal goal)
         {
             ResolvingGoalIdentifier = goal.Identifier;
@@ -1040,13 +1068,26 @@ namespace KAOSTools.MetaModel
 
         public override KAOSMetaModelElement Copy ()
         {
-            throw new NotImplementedException ();
+			return new AlternativeSystem(model) {
+				Identifier = Identifier,
+				Implicit = Implicit,
+				InSystems = InSystems,
+				CustomData = CustomData,
+				Name = Name,
+				Definition = Definition,
+				Alternatives = new HashSet<AlternativeSystem> (Alternatives.Select (x => (AlternativeSystem) x.Copy ()))
+			};
         }
     }
 
     public class Predicate : KAOSMetaModelElement
     {
         public string Name { get; set; }
+
+        public bool DefaultValue {
+            get;
+            set;
+        }
 
         public override string FriendlyName {
             get {
@@ -1063,11 +1104,23 @@ namespace KAOSTools.MetaModel
         public Predicate  (KAOSModel model) : base (model)
         {
             Arguments = new List<PredicateArgument> ();
+            DefaultValue = false;
         }
 
         public override KAOSMetaModelElement Copy ()
         {
-            throw new NotImplementedException ();
+			return new Predicate(model) {
+				Identifier = Identifier,
+				Implicit = Implicit,
+				InSystems = InSystems,
+				CustomData = CustomData,
+				Name = Name,
+				DefaultValue = DefaultValue,
+				Arguments = new List<PredicateArgument>(Arguments.Select(x => x.Copy())),
+				Definition = Definition,
+				FormalSpec = FormalSpec
+			};
+
         }
     }
 
@@ -1076,6 +1129,15 @@ namespace KAOSTools.MetaModel
         public string Name { get; set; }
 
         public Entity Type { get; set; }
+
+		public PredicateArgument Copy()
+		{
+			return new PredicateArgument() {
+				Name = Name,
+				Type = (Entity)Type.Copy()
+			};
+		}
+
     }
 
 
@@ -1257,6 +1319,83 @@ namespace KAOSTools.MetaModel
 
         public Calibration  (KAOSModel model) : base (model)
         {
+        }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            throw new NotImplementedException ();
+        }
+    }
+
+    public class CostVariable : KAOSMetaModelElement
+    {
+        public string Name { get; set; }
+
+        public CostVariable  (KAOSModel model) : base (model)
+        {
+        }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+            throw new NotImplementedException ();
+        }
+    }
+
+    public class Constraint : KAOSMetaModelElement
+    {
+        public string Name { get; set; }
+        public string Definition { get; set; }
+        public List<string> Conflict  { get; set; }
+        public List<string> Or  { get; set; }
+
+        public Constraint  (KAOSModel model) : base (model)
+        {
+            Conflict = new List<string> ();
+            Or = new List<string> ();
+        }
+
+        public override KAOSMetaModelElement Copy ()
+        {
+			return new Constraint(model) {
+				Identifier = Identifier,
+				Implicit = Implicit,
+				InSystems = InSystems,
+				CustomData = CustomData,
+				Name = Name,
+				Definition = Definition,
+				Conflict = new List<string>(Conflict),
+				Or = new List<string>(Or)
+			};
+        }
+    }
+
+    public class ReqOpSpecification
+    {
+        public Goal Goal;
+        public Formula Specification;
+        public ReqOpSpecification (Goal goal, Formula specification)
+        {
+            this.Goal = goal;
+            this.Specification = specification;
+        }
+        
+    }
+
+    public class Operation : KAOSMetaModelElement
+    {
+        public string Name { get; set; }
+        public Formula DomPre { get; set; }
+        public Formula DomPost { get; set; }
+
+        public IList<ReqOpSpecification> ReqTrig { get; set; }
+        public IList<ReqOpSpecification> ReqPre { get; set; }
+        public IList<ReqOpSpecification> ReqPost { get; set; }
+
+        public Operation  (KAOSModel model) : base (model)
+        {
+            ReqTrig = new List<ReqOpSpecification> ();
+            ReqPre = new List<ReqOpSpecification> ();
+            ReqPost = new List<ReqOpSpecification> ();
         }
 
         public override KAOSMetaModelElement Copy ()

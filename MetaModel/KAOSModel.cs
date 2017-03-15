@@ -49,6 +49,11 @@ namespace KAOSTools.MetaModel
             if (this._elements.ContainsKey(element.Identifier))
                 this._elements.Remove (element.Identifier);
         }
+
+		public KAOSModel Copy()
+		{
+			throw new NotImplementedException();
+		}
     }
 
     public class KAOSView : KAOSModel {

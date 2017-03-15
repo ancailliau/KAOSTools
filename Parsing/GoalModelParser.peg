@@ -8,7 +8,7 @@ Start := S Elements S;
 
 Elements := 
     ( ( ModelAttribute / System / Predicate / Goal / AntiGoal / SoftGoal / DomProp / Obstacle / Agent / Import / DomHyp 
-        / Entity / Type / Association / Expert / Calibration ) S )*
+        / Entity / Type / Association / Expert / Calibration / CostVariable / Constraint / Operation ) S )*
     `value = BuildElements (results);`
 
 ModelAttribute :=
@@ -24,6 +24,14 @@ Import :=
 Predicate := 
     ( 'declare' / 'override' ) S 'predicate' S (PredicateAttribute S)* 'end' 
     `value = BuildPredicate(results);`
+
+Operation := 
+    ( 'declare' / 'override' ) S 'operation' S (OperationAttribute S)* 'end' 
+    `value = BuildOperation(results);`
+
+Constraint := 
+    ( 'declare' / 'override' ) S 'constraint' S (ConstraintAttribute S)* 'end' 
+    `value = BuildConstraint(results);`
 
 System := 
     ( 'declare' / 'override' ) S 'system' S (SystemAttribute S)* 'end' 
@@ -85,11 +93,16 @@ Calibration :=
     ( 'declare' / 'override' ) S 'calibration' S (CalibrationAttribute S)* 'end'
     `value = BuildCalibration(results);`
 
+CostVariable := 
+    ( 'declare' / 'override' ) S 'cost_variable' S (CostVariableAttribute S)* 'end'
+    `value = BuildCostVariable(results);`
+
 # Attribute collection
                                                                                                                                                                                                          
 GoalAttribute := 
     ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByGoal 
-      / ObstructedBy / AssignedTo / RDSAttribute / ExceptionAttribute / AssumptionAttribute / CustomAttribute )
+      / ObstructedBy / AssignedTo / RDSAttribute / ExceptionAttribute / AssumptionAttribute / 
+      CostAttribute / CustomAttribute )
     `value = results[0].Value;`            
                                                                                                                                                                   
 AntiGoalAttribute := 
@@ -120,6 +133,15 @@ AgentAttribute :=
                                                                          
 PredicateAttribute := 
     ( IdAttribute / NameAttribute / DefinitionAttribute / Argument 
+      / FormalSpecAttribute / DefaultValueAttribute / CustomAttribute) 
+    `value = results[0].Value;`       
+
+OperationAttribute := 
+    ( IdAttribute / NameAttribute / DomPreAttribute / DomPostAttribute / ReqPreAttribute / ReqPostAttribute / ReqTrigAttribute / PerformedBy / CustomAttribute) 
+    `value = results[0].Value;`   
+
+ConstraintAttribute := 
+    ( IdAttribute / NameAttribute / DefinitionAttribute / Conflict / OrCst
       / FormalSpecAttribute / CustomAttribute) 
     `value = results[0].Value;`
 
@@ -158,8 +180,35 @@ ExpertAttribute :=
 CalibrationAttribute :=
 	( IdAttribute / NameAttribute / ExpertProbability / Probability )
     `value = results[0].Value;`
+        
+CostVariableAttribute :=
+	( IdAttribute / NameAttribute )
+    `value = results[0].Value;`
+
     
 # Attributes
+
+# DomPreAttribute / DomPostAttribute / ReqPreAttribute / ReqPostAttribute / ReqTrigAttribute
+
+DefaultValueAttribute := 'default' S Bool
+    `value = BuildDefaultValueAttribute(results);`
+
+DomPreAttribute := 'dompre' S LogicFormula
+    `value = BuildDomPreAttribute(results);`
+
+DomPostAttribute := 'dompost' S LogicFormula
+    `value = BuildDomPostAttribute(results);`
+
+ReqPreAttribute := 'reqpre' S 'for' S (Name / Identifier) S LogicFormula
+    `value = BuildReqPreAttribute(results);`
+
+ReqPostAttribute := 'reqpost' S 'for' S (Name / Identifier) S LogicFormula
+    `value = BuildReqPostAttribute(results);`
+
+ReqTrigAttribute := 'reqtrig' S 'for' S (Name / Identifier) S LogicFormula
+    `value = BuildReqTrigAttribute(results);`
+
+
 
 CustomAttribute := '$' Identifier S '"' String? '"'
     `value = BuildCustomAttribute(results);`
@@ -257,11 +306,22 @@ AssignedTo :=
     ( Agent / Name / Identifier ) (S ',' S ( Agent / Name / Identifier ) )*
     `value = BuildAssignedTo(results);`
 
+PerformedBy := 
+    'performedby' ('[' S ( Name / Identifier ) S ']')? S 
+    ( Agent / Name / Identifier ) (S ',' S ( Agent / Name / Identifier ) )*
+    `value = BuildPerformedBy(results);`
+
 AttributeEntity := 'attribute' S ( Attribute / ( Name S (':' S ( Type / Name / Identifier ) )? ) )
     `value = BuildAttributeAttribute(results);`
 
 Argument := 'argument' S Identifier S (':' S ( Entity / Name / Identifier ) )?
     `value = BuildArgument(results);`
+
+Conflict := 'conflict' S Identifier (S ',' S Identifier)*
+    `value = BuildConflict(results);`
+
+OrCst := 'or' S Identifier (S ',' S Identifier)*
+    `value = BuildOrCst(results);`
 
 Link := 'link' S Multiplicity? S ( Entity / Name / Identifier )
     `value = BuildLink(results);`
@@ -280,6 +340,13 @@ SoftGoalContributionAttribute := 'contribute' S
 	( ( '+' / '-' ) S ( SoftGoal / Name / Identifier ) )
     (S ',' S ( ( '+' / '-' ) S ( SoftGoal / Name / Identifier ) ) )*
     `value = BuildSoftGoalContributionAttribute(results);`
+
+
+
+
+CostAttribute := 'cost' S ('[' S ( Name / Identifier ) S ']') S Float
+    `value = BuildCostAttribute(results);`
+
 
 # 
 
@@ -351,9 +418,9 @@ Binary :=
     `expected = "binary formula"`
 
 TemporalBinary :=
-    And S 'until' S Formula
+    And S 'until' (S EventuallyTimeBoundEmphasis)? S Formula
     / And S 'release' S Formula
-    / And S 'unless' S Formula
+    / And (S GloballyTimeBoundEmphasis)? S 'unless' S Formula
     / And
     `value = BuildTemporalBinary(results);`
     `expected = "temporal binary formula"`
@@ -371,10 +438,10 @@ Or :=
     `expected = "or"`
 
 Unary :=
-    'not' S Formula
-    / 'next' S Formula
-    / ('sooner-or-later' / 'eventually') (S EventuallyTimeBoundEmphasis)? S Formula (S 'before' S Formula)?
-    / ('always' / 'globally') (S GloballyTimeBoundEmphasis)? S Formula
+    'not' S Unary
+    / 'next' S Unary
+    / ('sooner-or-later' / 'eventually') (S EventuallyTimeBoundEmphasis)? S Unary
+    / ('always' / 'globally') (S GloballyTimeBoundEmphasis)? S Unary
     / Atom
     `value = BuildUnary(results);`
     `expected = "unary formula"`
@@ -459,6 +526,50 @@ TimeUnit :=
 	/ ( 'second' 's'? / 's' )
 	/ ( 'milisecond' 's'? / 'ms' )
     `value = null` `expected = "time unit"`
+
+
+
+LogicFormula := 
+	LogicFormulaBinary
+    `value = BuildLogicFormula(results);`
+    `expected = "binary formula"`
+
+LogicFormulaBinary :=
+    'if' S LogicFormulaAnd S 'then' S LogicFormula
+    / LogicFormulaAnd S 'iff' S LogicFormula
+    / LogicFormulaAnd
+    `value = BuildLogicFormulaBinary(results);`
+    `expected = "binary formula"`
+
+LogicFormulaAnd :=
+    LogicFormulaOr S 'and' S LogicFormula
+    / LogicFormulaOr
+    `value = BuildLogicFormulaAnd(results);`
+    `expected = "and"`
+
+LogicFormulaOr := 
+    LogicFormulaUnary S 'or' S LogicFormula
+    / LogicFormulaUnary
+    `value = BuildLogicFormulaOr(results);`
+    `expected = "or"`
+
+LogicFormulaUnary :=
+    'not' S LogicFormulaUnary
+    / LogicFormulaAtom
+    `value = BuildLogicFormulaUnary(results);`
+    `expected = "unary formula"`
+
+LogicFormulaAtom :=
+	'true' / 'false'
+    / RelationReference
+    / Comparison
+    / AttributeReference
+    / PredicateReference
+    / '(' S LogicFormula S ')'
+    `value = BuildLogicFormulaAtom(results);`
+    `expected = "atomic formula"`
+
+
 
 Integer := [0-9]+
     `value = null` `expected = "integer"`

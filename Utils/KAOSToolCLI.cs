@@ -50,12 +50,12 @@ namespace KAOSTools.Utils
 
             model = BuildModel ();
 
-            if (model != null) {
-                var h = new AlternativeHelpers();
-                h.ComputeInAlternatives (model);
+            //if (model != null) {
+            //    var h = new AlternativeHelpers();
+            //    h.ComputeInAlternatives (model);
 
-                model.IntegrateResolutions ();
-            }
+            //    model.IntegrateResolutions ();
+            //}
         }
         
         protected static KAOSModel BuildModel ()

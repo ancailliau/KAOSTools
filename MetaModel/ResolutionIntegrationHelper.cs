@@ -1,10 +1,12 @@
 using System;
 using System.Linq;
+using NLog;
 
 namespace KAOSTools.MetaModel
 {
     public static class ResolutionIntegrationHelper
     {
+		static readonly Logger logger = LogManager.GetCurrentClassLogger();
         public static void IntegrateResolutions (this KAOSModel model) {
             foreach (var goal in model.ObstructedGoals().ToArray ()) {
                 foreach (var obstacle in goal.Obstructions().ToArray ()) {
@@ -15,7 +17,7 @@ namespace KAOSTools.MetaModel
 
         static void RecursiveIntegration (Goal obstructedGoal, Obstacle obstacle) {
             foreach (var resolution in obstacle.Resolutions().ToArray ()) {
-                Integrate (obstructedGoal, obstacle, resolution);
+                Integrate (resolution);
             }
 
             foreach (var subobstacle in obstacle.Refinements().SelectMany (x => x.SubObstacles()).ToArray ()) {
@@ -31,67 +33,74 @@ namespace KAOSTools.MetaModel
             return goal;
         }
 
-        static void Integrate (Goal obstructedGoal, Obstacle obstacle, Resolution resolution) {
-            var anchor = obstructedGoal;
-            if (resolution.Parameters.Count > 0) {
-                anchor = resolution.Parameters[0];
+        public static void Integrate (Resolution resolution) {
+            if (resolution.Parameters.Count == 0) {
+				logger.Info("Wants to integrate " + resolution.ResolvingGoal().FriendlyName);
+				logger.Info(resolution.Obstacle().FriendlyName);
+				throw new NotImplementedException("No parameters to resolvedby");
             }
-            anchor = FinalAnchor (anchor);
+			var anchor = resolution.Parameters[0];
+            // anchor = FinalAnchor (anchor);
 
             if (resolution.ResolutionPattern == ResolutionPattern.GoalSubstitution
                 | resolution.ResolutionPattern == ResolutionPattern.GoalWeakening) {
 
-                var goalReplacement = new GoalReplacement (obstructedGoal.model) {
+				var replacement = resolution.model.Elements.OfType<GoalReplacement>()
+											.Where(x => x.ResolvedObstacleIdentifier == resolution.ObstacleIdentifier
+												   & x.ResolvingGoalIdentifier == resolution.ResolvingGoalIdentifier
+												   & x.AnchorGoalIdentifier == anchor.Identifier).ToList();
+
+				var goalReplacement = new GoalReplacement (resolution.model) {
                     Implicit = true
                 };
-                goalReplacement.SetObstacle (obstacle);
+				goalReplacement.SetObstacle (resolution.Obstacle ());
                 goalReplacement.SetResolvingGoal (resolution.ResolvingGoal ());
                 goalReplacement.SetAnchorGoal (anchor);
 
-                obstructedGoal.model.Add (goalReplacement);
+				resolution.model.Add (goalReplacement);
+				//logger.Info("Add replacement " + resolution.ResolvingGoal().FriendlyName + " to " + anchor.FriendlyName);
 
                 // Replace in refinements
-                var resolving_goal = resolution.ResolvingGoal ();
-                foreach (var r in anchor.ParentRefinements ().ToArray ()) {
-                    r.Remove (anchor);
-                    r.Add (resolving_goal);
-                }
+                //var resolving_goal = resolution.ResolvingGoal ();
+                //foreach (var r in anchor.ParentRefinements ().ToArray ()) {
+                //    r.Remove (anchor);
+                //    r.Add (resolving_goal);
+                //}
 
                 // Replace children refinements
-                foreach (var r in anchor.Refinements ().ToArray ()) {
-                    anchor.model.Remove (r);
-                    var r2 = (GoalRefinement) r.Copy ();
-                    r2.Identifier = Guid.NewGuid ().ToString ();
-                    r2.SetParentGoal (resolving_goal);
-                    resolution.model.Add (r2);
-                }
+                //foreach (var r in anchor.Refinements ().ToArray ()) {
+                //    anchor.model.Remove (r);
+                //    var r2 = (GoalRefinement) r.Copy ();
+                //    r2.Identifier = Guid.NewGuid ().ToString ();
+                //    r2.SetParentGoal (resolving_goal);
+                //    resolution.model.Add (r2);
+                //}
 
+                //// Replace in exceptions
+                //foreach (var r in anchor.Exceptions ().ToArray ()) {
+                //    r.SetAnchorGoal (resolving_goal);
+                //}
 
-                // Replace in exceptions
-                foreach (var r in anchor.Exceptions ().ToArray ()) {
-                    r.SetAnchorGoal (resolving_goal);
-                }
-
-                // Replace in provided
-                foreach (var r in anchor.Provided ().ToArray ()) {
-                    r.SetAnchorGoal (resolving_goal);
-                }
+                //// Replace in provided
+                //foreach (var r in anchor.Provided ().ToArray ()) {
+                //    r.SetAnchorGoal (resolving_goal);
+                //}
 
                 // Replace in agent assignements
-                foreach (var r in anchor.AgentAssignments ().ToArray ()) {
-                    r.GoalIdentifier = resolving_goal.Identifier;
-                }
+                //foreach (var r in anchor.AgentAssignments ().ToArray ()) {
+                //    r.GoalIdentifier = resolving_goal.Identifier;
+                //}
 
             } else {
 
-                var goalException = new GoalException (obstructedGoal.model) {
+				var goalException = new GoalException (resolution.model) {
                     Implicit = true
                 };
-                goalException.SetObstacle (obstacle);
+				goalException.SetObstacle (resolution.Obstacle ());
                 goalException.SetResolvingGoal (resolution.ResolvingGoal ());
                 goalException.SetAnchorGoal (anchor);
 
-                obstructedGoal.model.Add (goalException);
+				resolution.model.Add (goalException);
 
                 /*
                 var obstacleAssumption = new ObstacleAssumption (resolution.model);
@@ -107,6 +116,42 @@ namespace KAOSTools.MetaModel
             }
         }
 
+		public static void Desintegrate(Resolution resolution)
+		{
+			if (resolution.Parameters.Count == 0) {
+				throw new NotImplementedException();
+			}
+			var anchor = (Goal) resolution.Parameters[0];
+			// anchor = FinalAnchor (anchor);
+
+			if (resolution.ResolutionPattern == ResolutionPattern.GoalSubstitution
+				| resolution.ResolutionPattern == ResolutionPattern.GoalWeakening) {
+				
+				var replacement = resolution.model.Elements.OfType<GoalReplacement>()
+				                            .Where(x => x.ResolvedObstacleIdentifier == resolution.ObstacleIdentifier
+				                                   & x.ResolvingGoalIdentifier == resolution.ResolvingGoalIdentifier
+				                                   & x.AnchorGoalIdentifier == anchor.Identifier).ToList ();
+
+				foreach (var r in replacement) {
+					resolution.model.Remove(r);
+				}
+				//logger.Info("Remove replacement " + resolution.ResolvingGoal().FriendlyName);
+
+			} else {
+
+				var exception = resolution.model.Elements.OfType<GoalException>()
+											.Where(x => x.ResolvedObstacleIdentifier == resolution.ObstacleIdentifier
+												   & x.ResolvingGoalIdentifier == resolution.ResolvingGoalIdentifier
+												   & x.AnchorGoalIdentifier == anchor.Identifier).ToList();
+
+				foreach (var r in exception) {
+					resolution.model.Remove(r);
+				}
+
+
+			}
+		}
+
 
         /*
 
@@ -119,6 +164,7 @@ namespace KAOSTools.MetaModel
                 }
 
 */
+
 
         static void DownPropagate (ObstacleAssumption assumption, Goal goal) {
 

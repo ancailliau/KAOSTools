@@ -47,7 +47,7 @@ namespace KAOSTools.MetaModel
 
         public static IEnumerable<GoalReplacement> Replacements (this Goal goal) {
             return from e in goal.model.Replacements ()
-                    where e.ResolvingGoalIdentifier == goal.Identifier
+					                 where e.AnchorGoalIdentifier == goal.Identifier
                 select e;
         }
 

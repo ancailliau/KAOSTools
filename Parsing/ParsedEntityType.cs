@@ -79,6 +79,11 @@ namespace KAOSTools.Parsing
 
     public class ParsedExpert               : ParsedElementWithAttributes {}
     public class ParsedCalibration          : ParsedElementWithAttributes {}
+    public class ParsedCostVariable         : ParsedElementWithAttributes {}
+
+    public class ParsedConstraint           : ParsedElementWithAttributes {}
+
+    public class ParsedOperation            : ParsedElementWithAttributes {}
 
     public class ParsedEntity : ParsedElementWithAttributes
     {
@@ -92,6 +97,8 @@ namespace KAOSTools.Parsing
 
     #region Attributes
 
+    public class ParsedConflictAttribute : ParsedAttributeWithElements {}
+    public class ParsedOrCstAttribute    : ParsedAttributeWithElements {}
 
     public abstract class ParsedAttributeWithElementsAndSystemIdentifier : ParsedAttributeWithElements {
         public dynamic SystemIdentifier { get; set; }
@@ -117,6 +124,8 @@ namespace KAOSTools.Parsing
     public enum ParsedContribution { Positive, Negative }
 
     public class ParsedAssignedToAttribute : ParsedAttributeWithElementsAndSystemIdentifier {}
+    public class ParsedPerformedByAttribute : ParsedAttributeWithElementsAndSystemIdentifier {}
+
     public class ParsedGoalRefinementChildrenAttribute : ParsedAttributeWithElements {}
 
     public class ParsedIsAAttribute                  : ParsedAttributeWithValue<dynamic> {}
@@ -137,6 +146,12 @@ namespace KAOSTools.Parsing
     public class ParsedIdentifierAttribute   : ParsedAttributeWithValue<string> {}
     public class ParsedDefinitionAttribute   : ParsedAttributeWithValue<ParsedString> {}
     public class ParsedSignatureAttribute    : ParsedAttributeWithValue<string> {}
+    public class DefaultValueAttribute    : ParsedAttributeWithValue<bool> {}
+
+
+    public class ParsedCostAttribute         : ParsedAttributeWithValue<ParsedFloat> {
+        public dynamic CostVariable { get; set; }
+    }
 
     public class ParsedCustomAttribute         : ParsedAttributeWithValue<string> {
         public string Key { get; set; }
@@ -152,6 +167,30 @@ namespace KAOSTools.Parsing
     public class ParsedRDSAttribute          : ParsedAttributeWithValue<double> {}
 
     public class ParsedFormalSpecAttribute   : ParsedAttributeWithValue<ParsedElement> {}
+
+    public class ParsedDomPreAttribute    : ParsedAttribute {
+        public dynamic Specification { get; set; }
+    }
+
+    public class ParsedDomPostAttribute   : ParsedAttribute  {
+        public dynamic Specification { get; set; }
+    }
+
+    public class ParsedReqPreAttribute    : ParsedAttribute  {
+        public dynamic IdOrName  { get; set; }
+        public dynamic Specification { get; set; }
+    }
+
+    public class ParsedReqPostAttribute   : ParsedAttribute  {
+        public dynamic IdOrName  { get; set; }
+        public dynamic Specification { get; set; }
+    }
+
+    public class ParsedReqTrigAttribute   : ParsedAttribute  {
+        public dynamic IdOrName  { get; set; }
+        public dynamic Specification { get; set; }
+    }
+
 
     
     public class ParsedResolvedByAttribute   : ParsedAttributeWithValue<dynamic> {
@@ -310,9 +349,13 @@ namespace KAOSTools.Parsing
     public class ParsedStrongImplyExpression : ParsedBinaryExpression {}
     public class ParsedImplyExpression : ParsedBinaryExpression {}
     public class ParsedEquivalenceExpression : ParsedBinaryExpression {}
-    public class ParsedUntilExpression : ParsedBinaryExpression {}
+    public class ParsedUntilExpression : ParsedBinaryExpression {
+		public ParsedTimeBound TimeBound;
+	}
     public class ParsedReleaseExpression : ParsedBinaryExpression {}
-    public class ParsedUnlessExpression : ParsedBinaryExpression {}
+    public class ParsedUnlessExpression : ParsedBinaryExpression {
+		public ParsedTimeBound TimeBound;
+	}
     public class ParsedAndExpression : ParsedBinaryExpression {}
     public class ParsedOrExpression : ParsedBinaryExpression {}
    
@@ -466,5 +509,6 @@ namespace KAOSTools.Parsing
             Quantiles = new List<double> ();
         }
     }
+
 }
 

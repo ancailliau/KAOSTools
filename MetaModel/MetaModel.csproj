@@ -46,6 +46,9 @@
       <HintPath>..\packages\MathNet.Numerics.3.2.3\lib\net40\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="System.Numerics" />
+    <Reference Include="NLog">
+      <HintPath>..\..\..\Projects\MinePump\packages\NLog.4.3.5\lib\net40\NLog.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />

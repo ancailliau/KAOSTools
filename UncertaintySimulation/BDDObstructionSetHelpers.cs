@@ -3,14 +3,60 @@ using KAOSTools.MetaModel;
 using BDDSharp;
 using System.Linq;
 using System.Collections.Generic;
+using NLog;
 
 namespace UncertaintySimulation
 {
-    static class BDDObstructionSetHelpers {
+    public class ObstructionSuperset {
 
-        public static BDDNode GetObstructionSet (this Goal goal, BDDManager manager, 
+        public BDDNode bdd;
+        public Dictionary<KAOSMetaModelElement, int> mapping;
+        public Dictionary<int, KAOSMetaModelElement> reverse_mapping;
+
+        public ObstructionSuperset (BDDNode bdd, Dictionary<KAOSMetaModelElement, int> mapping, Dictionary<int, KAOSMetaModelElement> reverse_mapping)
+        {
+            this.bdd = bdd;
+
+            this.mapping = mapping;
+            this.reverse_mapping = reverse_mapping;
+        }
+
+        public double GetProbability (Dictionary<int, double> samplingVector) 
+        {
+            return bdd.GetProbability (samplingVector);
+        }
+    }
+
+    public static class BDDObstructionSetHelpers {
+
+		static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        public static ObstructionSuperset GetObstructionSuperset (this Goal goal, bool take_exception_in_account = true) {
+            var manager = new BDDManager (0);
+
+            var mapping = new Dictionary<KAOSMetaModelElement, int> ();
+            var reverse_mapping = new Dictionary<int, KAOSMetaModelElement> ();
+            var bDDNode = GetObstructionSet (goal, manager, mapping, reverse_mapping, take_exception_in_account);
+            bDDNode = manager.Sifting (bDDNode);
+
+			return new ObstructionSuperset (bDDNode, mapping, reverse_mapping);
+        }
+
+		public static ObstructionSuperset GetObstructionSuperset(this Obstacle obstacle)
+		{
+			var manager = new BDDManager(0);
+
+			var mapping = new Dictionary<KAOSMetaModelElement, int>();
+			var reverse_mapping = new Dictionary<int, KAOSMetaModelElement>();
+			var bDDNode = GetObstructionSet(obstacle, manager, mapping, reverse_mapping);
+			bDDNode = manager.Sifting(bDDNode);
+
+			return new ObstructionSuperset(bDDNode, mapping, reverse_mapping);
+		}
+
+        public static BDDNode GetObstructionSet (Goal goal, BDDManager manager, 
             Dictionary<KAOSMetaModelElement, int> mapping = null, 
-            Dictionary<int, KAOSMetaModelElement> reverse_mapping = null)
+            Dictionary<int, KAOSMetaModelElement> reverse_mapping = null, bool take_exception_in_account = true)
         {
             if (mapping == null) 
                 mapping = new Dictionary<KAOSMetaModelElement, int> ();
@@ -19,52 +65,96 @@ namespace UncertaintySimulation
                 reverse_mapping = new Dictionary<int, KAOSMetaModelElement> ();
 
             if ((goal.Refinements ().Count () + goal.Obstructions ().Count ()) > 1)
-                throw new NotImplementedException ();
+                throw new NotImplementedException ("More than a refinement and an obstruction");
 
             var r = goal.Refinements ().SingleOrDefault ();
             var o = goal.Obstructions ().SingleOrDefault ();
 
-            if (r != null)
-                return r.GetObstructionSet (manager, mapping, reverse_mapping);
+			if (take_exception_in_account) {
+				var replacement = goal.model.Replacements().Where(x => x.AnchorGoalIdentifier == goal.Identifier);
+				if (replacement.Any()) {
+					if (replacement.Count() > 1 & replacement.Select(x => x.ResolvingGoal().FriendlyName).Distinct().Count() >= 2) {
+						// More than one replacement for different goals. Which one to choose?
+						logger.Info("Goal {0} : ", goal.FriendlyName);
+						foreach (var r2 in replacement) {
+							logger.Info("- " + r2.ResolvingGoal().FriendlyName);
+						}
+						throw new NotImplementedException("Multiple replacement");
+
+					} else {
+						return GetObstructionSet(replacement.First().ResolvingGoal(), manager, mapping, reverse_mapping);
+					}
+				}
+			}
+
+			if (r != null) {
+				BDDNode acc = null;
+				foreach (var child in goal.Exceptions()) {
+					if (acc == null)
+						acc = GetObstructionSet(child, manager, mapping, reverse_mapping);
+					else {
+						var bDDNode = GetObstructionSet(child, manager, mapping, reverse_mapping);
+						acc = manager.Or(acc, bDDNode);
+					}
+				}
+
+				if (acc == null)
+					acc = GetObstructionSet(r, manager, mapping, reverse_mapping);
+				else {
+					var bDDNode = GetObstructionSet(r, manager, mapping, reverse_mapping);
+					acc = manager.Or(acc, bDDNode);
+				}
+				return acc;
+			}
 
             if (o != null)
-                return o.GetObstructionSet (manager, mapping, reverse_mapping);
+                return GetObstructionSet (o, manager, mapping, reverse_mapping);
 
             return manager.Zero;
         }
 
-        public static BDDNode GetObstructionSet (this GoalRefinement refinement, BDDManager manager, 
+		public static BDDNode GetObstructionSet(GoalException exception, BDDManager manager,
+			Dictionary<KAOSMetaModelElement, int> mapping,
+			Dictionary<int, KAOSMetaModelElement> reverse_mapping = null)
+		{
+			var child = exception.ResolvingGoal();
+			var bDDNode = GetObstructionSet(child, manager, mapping, reverse_mapping);
+
+			return bDDNode;
+		}
+
+        public static BDDNode GetObstructionSet (GoalRefinement refinement, BDDManager manager, 
             Dictionary<KAOSMetaModelElement, int> mapping, 
             Dictionary<int, KAOSMetaModelElement> reverse_mapping = null)
         {
             BDDNode acc = null;
             foreach (var child in refinement.SubGoals ()) {
                 if (acc == null) 
-                    acc = child.GetObstructionSet (manager, mapping, reverse_mapping);
+                    acc = GetObstructionSet (child, manager, mapping, reverse_mapping);
                 else {
-                    var bDDNode = child.GetObstructionSet(manager, mapping, reverse_mapping);
+                    var bDDNode = GetObstructionSet(child, manager, mapping, reverse_mapping);
                     acc = manager.Or(acc, bDDNode);
                 }
             }
             foreach (var child in refinement.DomainHypotheses ()) {
                 if (acc == null) 
-                    acc = child.GetObstructionSet (manager, mapping, reverse_mapping);
+                    acc = GetObstructionSet (child, manager, mapping, reverse_mapping);
                 else {
-                    var bDDNode = child.GetObstructionSet(manager, mapping, reverse_mapping);
+                    var bDDNode = GetObstructionSet(child, manager, mapping, reverse_mapping);
                     acc = manager.Or(acc, bDDNode);
                 }
             }
             return acc;
         }
 
-        public static BDDNode GetObstructionSet (this Obstruction obstruction, BDDManager manager, 
+        public static BDDNode GetObstructionSet (Obstruction obstruction, BDDManager manager, 
             Dictionary<KAOSMetaModelElement, int> mapping, 
             Dictionary<int, KAOSMetaModelElement> reverse_mapping = null)
         {
-            return obstruction.Obstacle ().GetObstructionSet (manager, mapping, reverse_mapping);
+            return GetObstructionSet (obstruction.Obstacle (), manager, mapping, reverse_mapping);
         }
 
-        public static BDDNode GetObstructionSet (this Obstacle obstacle, BDDManager manager, 
+        public static BDDNode GetObstructionSet (Obstacle obstacle, BDDManager manager, 
             Dictionary<KAOSMetaModelElement, int> mapping, 
             Dictionary<int, KAOSMetaModelElement> reverse_mapping = null)
         {
@@ -73,17 +163,17 @@ namespace UncertaintySimulation
                 BDDNode acc = null;
                 foreach (var c in r.SubObstacles ()) {
                     if (acc == null) {
-                        acc = c.GetObstructionSet (manager, mapping, reverse_mapping);
+                        acc = GetObstructionSet (c, manager, mapping, reverse_mapping);
                     } else {
-                        var bDDNode = c.GetObstructionSet(manager, mapping, reverse_mapping);
+                        var bDDNode = GetObstructionSet(c, manager, mapping, reverse_mapping);
                         acc = manager.And(acc, bDDNode);
                     }
                 }
                 foreach (var c in r.DomainHypotheses ()) {
                     if (acc == null) {
-                        acc = c.GetObstructionSet (manager, mapping, reverse_mapping);
+                        acc = GetObstructionSet (c, manager, mapping, reverse_mapping);
                     } else {
-                        var bDDNode = c.GetObstructionSet(manager, mapping, reverse_mapping);
+                        var bDDNode = GetObstructionSet(c, manager, mapping, reverse_mapping);
                         acc = manager.And(acc, bDDNode);
                     }
                 }
@@ -110,7 +200,7 @@ namespace UncertaintySimulation
             return acc2;
         }
 
-        public static BDDNode GetObstructionSet (this DomainHypothesis domhyp, BDDManager manager, 
+        public static BDDNode GetObstructionSet (DomainHypothesis domhyp, BDDManager manager, 
             Dictionary<KAOSMetaModelElement, int> mapping, 
             Dictionary<int, KAOSMetaModelElement> reverse_mapping = null)
         {

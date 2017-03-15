@@ -37,12 +37,22 @@
     <Reference Include="NDesk.Options">
       <HintPath>..\Libraries\NDesk.Options.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Cairo" />
+    <Reference Include="NLog">
+      <HintPath>..\..\..\Projects\MinePump\packages\NLog.4.3.5\lib\net45\NLog.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BDDObstructionSetHelpers.cs" />
     <Compile Include="BDDProbabilityHelpers.cs" />
+    <Compile Include="UncertaintyComputation.cs" />
+    <Compile Include="Outputs\OutputGenerator.cs" />
+    <Compile Include="Outputs\ShortTextReport.cs" />
+    <Compile Include="Outputs\GeneratorFactory.cs" />
+    <Compile Include="Outputs\GeneratorOptions.cs" />
+    <Compile Include="Outputs\SatisfactionUncertaintyPNG.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -66,5 +76,19 @@
       <Project>{17EE1289-7F54-404E-BD17-2FAB7D0C59C5}</Project>
       <Name>ExpertOpinionSharp</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\VizuSharp\VizuSharp.Cairo\VizuSharp.Cairo.csproj">
+      <Project>{40CA46CD-12FF-491F-A251-2D00928E643F}</Project>
+      <Name>VizuSharp.Cairo</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\VizuSharp\VizuSharp\VizuSharp.csproj">
+      <Project>{6FE1DC5A-E704-435B-A276-5DDAA0912EA9}</Project>
+      <Name>VizuSharp</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Outputs\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

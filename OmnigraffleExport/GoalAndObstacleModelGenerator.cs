@@ -57,12 +57,18 @@ namespace KAOSTools.OmnigraffleExport
         void RenderRefinement (Obstacle o) {
             foreach (var refinement in o.Refinements()) {
                 foreach (var child in refinement.SubObstacles ()) {
-                    Render (child);
+                    if (!shapes.ContainsKey (child.Identifier)) {
+                        Render (child);
+                    }
                     RenderRefinement (child);
 
                     foreach (var resolution in child.Resolutions ()) {
-                        Render (resolution.ResolvingGoal ());
-                        Render (resolution);
+                        if (!shapes.ContainsKey (resolution.ResolvingGoalIdentifier)) {
+                            Render (resolution.ResolvingGoal ());
+                        }
+                        if (!shapes.ContainsKey (resolution.Identifier)) {
+                            Render (resolution);
+                        }
                     }
                 }
                 foreach (var child in refinement.DomainHypotheses ()) {
