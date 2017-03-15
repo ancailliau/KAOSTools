@@ -52,10 +52,6 @@ namespace KAOSTools.Core
                 return model.Elements.Where (x => x is DomainHypothesis).Cast<DomainHypothesis>();
         }
 
-        public static IEnumerable<AlternativeSystem> AlternativeSystems (this KAOSModel model) {
-                return model.Elements.Where (x => x is AlternativeSystem).Cast<AlternativeSystem>();
-        }
-
         // Relations
 
         public static IEnumerable<GoalRefinement> GoalRefinements (this KAOSModel model) {
@@ -196,14 +192,6 @@ namespace KAOSTools.Core
             return rootAntiGoals.Select (x => model.AntiGoals().SingleOrDefault (y => y.Identifier == x));
         }
 
-        public static ISet<AlternativeSystem> RootSystems (this KAOSModel model) {
-            var systems = new HashSet<AlternativeSystem> (model.AlternativeSystems());
-            foreach (var system in model.AlternativeSystems())
-                foreach (var alternative in system.Alternatives) 
-                    systems.Remove (alternative);
-
-            return systems;
-        }
 
         public static IEnumerable<Goal> ObstructedGoals (this KAOSModel model) {
             return from g in model.Obstructions() select g.ObstructedGoal ();

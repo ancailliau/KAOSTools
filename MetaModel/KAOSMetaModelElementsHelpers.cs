@@ -211,9 +211,6 @@ namespace KAOSTools.Core
             return refinement.model.Goals().SingleOrDefault(y => y.Identifier == refinement.ParentGoalIdentifier);
         }
         
-        public static AlternativeSystem SystemReference (this GoalRefinement refinement) {
-            return refinement.model.AlternativeSystems().SingleOrDefault(y => y.Identifier == refinement.SystemReferenceIdentifier);
-        }
 
         #endregion
 
@@ -243,9 +240,6 @@ namespace KAOSTools.Core
             return refinement.model.AntiGoals().SingleOrDefault(y => y.Identifier == refinement.ParentAntiGoalIdentifier);
         }
 
-        public static AlternativeSystem SystemReference (this AntiGoalRefinement refinement) {
-            return refinement.model.AlternativeSystems().SingleOrDefault(y => y.Identifier == refinement.SystemReferenceIdentifier);
-        }
 
         #endregion
                 

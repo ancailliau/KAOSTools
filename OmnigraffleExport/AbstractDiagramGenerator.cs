@@ -484,7 +484,7 @@ namespace KAOSTools.OmnigraffleExport
                 var parentGraphic = shapes[refinement.ParentGoalIdentifier].First ();
                 var topArrow = GetFilledArrow (circle, parentGraphic);
                 if (refinement.SystemReferenceIdentifier != null)
-                    AddText (topArrow, refinement.SystemReference().FriendlyName);
+                    AddText (topArrow, "");
                 sheet.GraphicsList.Add (topArrow);
             }
 
@@ -536,7 +536,7 @@ namespace KAOSTools.OmnigraffleExport
                 var parentGraphic = shapes[refinement.ParentAntiGoalIdentifier].First ();
                 var topArrow = GetFilledArrow (circle, parentGraphic);
                 if (refinement.SystemReferenceIdentifier != null)
-                    AddText (topArrow, refinement.SystemReference().FriendlyName);
+                    AddText (topArrow, "");
                 sheet.GraphicsList.Add (topArrow);
             }
 

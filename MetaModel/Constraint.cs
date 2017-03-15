@@ -52,7 +52,6 @@ namespace KAOSTools.Core
 			return new Constraint(model) {
 				Identifier = Identifier,
 				Implicit = Implicit,
-				InSystems = InSystems,
 				CustomData = CustomData,
 				Name = Name,
 				Definition = Definition,

@@ -422,41 +422,11 @@ namespace KAOSTools.Parsing
             model.Add (obstruction);
         }
 
-        public void Handle (AlternativeSystem element, ParsedAlternativeAttribute alternativeAttribute)
-        {
-            if (alternativeAttribute.Value is IdentifierExpression | alternativeAttribute.Value is NameExpression) {
-                AlternativeSystem alternative;
-                if (!Get (alternativeAttribute.Value, out alternative)) {
-                    alternative = Create<AlternativeSystem> (alternativeAttribute.Value);
-                }
-                element.Alternatives.Add (alternative);
-                
-            } else if (alternativeAttribute.Value is ParsedSystem) {
-                element.Alternatives.Add (fsb.BuildElementWithKeys (alternativeAttribute.Value));
-                BuildElement (alternativeAttribute.Value);
-            } else {
-                
-                // TODO use string.Format
-                throw new NotImplementedException (
-                    "'" + alternativeAttribute.Value.GetType().Name 
-                    + "' is not supported in '" 
-                    + alternativeAttribute.GetType().Name + "' on '" 
-                    + element.GetType().Name + "'");
-            }
-        }
-
         public void Handle (Goal element, ParsedAssignedToAttribute assignedTo)
         {
             var assignment = new GoalAgentAssignment (model);
             assignment.GoalIdentifier = element.Identifier;
 
-            if (assignedTo.SystemIdentifier != null) {
-                AlternativeSystem alternative;
-                if (!Get (assignedTo.SystemIdentifier, out alternative)) {
-                    alternative = Create<AlternativeSystem> (assignedTo.SystemIdentifier);
-                }
-                assignment.SystemReference = alternative;
-            }
 
             foreach (var child in assignedTo.Values) {
                 if (child is IdentifierExpression | child is NameExpression) {
@@ -491,13 +461,6 @@ namespace KAOSTools.Parsing
             var assignment = new AntiGoalAgentAssignment (model);
             assignment.AntiGoalIdentifier = element.Identifier;
 
-            if (assignedTo.SystemIdentifier != null) {
-                AlternativeSystem alternative;
-                if (!Get (assignedTo.SystemIdentifier, out alternative)) {
-                    alternative = Create<AlternativeSystem> (assignedTo.SystemIdentifier);
-                }
-                assignment.SystemReference = alternative;
-            }
 
             foreach (var child in assignedTo.Values) {
                 if (child is IdentifierExpression | child is NameExpression) {
@@ -531,13 +494,6 @@ namespace KAOSTools.Parsing
             var assignment = new ObstacleAgentAssignment (model);
             assignment.ObstacleIdentifier = element.Identifier;
 
-            if (assignedTo.SystemIdentifier != null) {
-                AlternativeSystem alternative;
-                if (!Get (assignedTo.SystemIdentifier, out alternative)) {
-                    alternative = Create<AlternativeSystem> (assignedTo.SystemIdentifier);
-                }
-                assignment.SystemReference = alternative;
-            }
 
             foreach (var child in assignedTo.Values) {
                 if (child is IdentifierExpression | child is NameExpression) {
@@ -571,13 +527,6 @@ namespace KAOSTools.Parsing
             var refinement = new GoalRefinement (model);
             refinement.SetParentGoal(element);
 
-            if (refinedBy.SystemIdentifier != null) {
-                AlternativeSystem alternative;
-                if (!Get<AlternativeSystem> (refinedBy.SystemIdentifier, out alternative)) {
-                    alternative = Create<AlternativeSystem> (refinedBy.SystemIdentifier);
-                }
-                refinement.SetSystemReference(alternative);
-            }
 
             foreach (var child in refinedBy.Values) {
                 if (child is IdentifierExpression | child is NameExpression) {
@@ -680,13 +629,6 @@ namespace KAOSTools.Parsing
             var refinement = new AntiGoalRefinement (model);
             refinement.SetParentAntiGoal (element);
 
-            if (refinedBy.SystemIdentifier != null) {
-                AlternativeSystem alternative;
-                if (!Get<AlternativeSystem> (refinedBy.SystemIdentifier, out alternative)) {
-                    alternative = Create<AlternativeSystem> (refinedBy.SystemIdentifier);
-                }
-                refinement.SetSystemReference (alternative);
-            }
 
             foreach (var child in refinedBy.Values) {
                 if (child is IdentifierExpression | child is NameExpression) {

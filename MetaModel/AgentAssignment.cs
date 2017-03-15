@@ -17,8 +17,6 @@ namespace KAOSTools.Core
     [DataContract]
     public abstract class AgentAssignment : KAOSCoreElement
     {
-        public AlternativeSystem SystemReference { get; set; }
-
         [DataMember]
         public IList<string> AgentIdentifiers { get; set; }
 

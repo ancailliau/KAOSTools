@@ -78,9 +78,6 @@ namespace KAOSTools.Parsing
             if (element is ParsedPredicate)
                 return BuildKAOSElement<Predicate> (element);
 
-            if (element is ParsedSystem)
-                return BuildKAOSElement<AlternativeSystem> (element);
-
             if (element is ParsedEntity)
                 return BuildKAOSElement<Entity> (element);
 

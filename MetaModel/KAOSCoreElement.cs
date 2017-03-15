@@ -20,8 +20,6 @@ namespace KAOSTools.Core
         [DataMember]
         public bool Implicit { get; set; }
 
-        public ISet<AlternativeSystem> InSystems { get; set; }
-
         public KAOSModel model;
 
         public IDictionary<string,string> CustomData {

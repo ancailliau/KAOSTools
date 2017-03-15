@@ -91,7 +91,7 @@ namespace KAOSTools.DotExporter
             writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=onormal, label=""  {2}""];", 
                               g.Identifier,
                               tempGUID,
-                              g.InSystems.SetEquals(model.RootSystems()) ? "" : string.Join (", ", assignement.InSystems.Select (x => x.FriendlyName)));
+                              "");
 
 
             foreach (var agent in assignement.Agents()) {
@@ -130,7 +130,7 @@ namespace KAOSTools.DotExporter
             writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=onormal,label=""  {2}""];", 
                               parent.Identifier,
                               tempGUID,
-                refinement.SystemReference() != null ? refinement.SystemReference().FriendlyName : string.Empty);
+                string.Empty);
 
             foreach (var child in refinement.SubGoals()) {
                 writer.WriteLine (@"""{0}"" -> ""{1}"" [arrowtail=none];", 

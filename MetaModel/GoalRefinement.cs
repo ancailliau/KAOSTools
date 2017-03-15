@@ -85,11 +85,6 @@ namespace KAOSTools.Core
             this.ParentGoalIdentifier = element.Identifier;
         }
 
-        public void SetSystemReference (AlternativeSystem system)
-        {
-            this.SystemReferenceIdentifier = system.Identifier;
-        }
-
         public void Add (Goal goal)
         {
             this.SubGoalIdentifiers.Add (goal.Identifier);

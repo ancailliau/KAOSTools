@@ -38,7 +38,6 @@ namespace KAOSTools.Core
 
         public Goal (KAOSModel model) : base(model)
         {
-            InSystems = new HashSet<AlternativeSystem>();
             Costs = new Dictionary<CostVariable, double> ();
         }
 

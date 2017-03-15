@@ -24,8 +24,7 @@ namespace KAOSTools.Core
 
         public SoftGoal (KAOSModel model) : base(model)
         {
-            InSystems = new HashSet<AlternativeSystem>();
-        }
+            }
 
         public override KAOSCoreElement Copy ()
         {

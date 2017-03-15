@@ -48,7 +48,6 @@ namespace KAOSTools.ModelAnalyzer
             CheckUnassignedLeafGoals (model);
             CheckGoalWithSimilarNames (model, levensteinThreshold);
             CheckMissingDefinition (model);
-            CheckIncompatibleSystems (model);
 
             if (show_formal)
                 DisplayMissingFormalSpec (model);
@@ -64,27 +63,6 @@ namespace KAOSTools.ModelAnalyzer
             ForAllKAOSElement (x => {
                 if (x.Implicit) {
                     AddWarning (string.Format ("{1} '{0}' is implicitely declared.", x.FriendlyName, x.GetType().Name));
-                }
-            });
-        }
-
-        static void CheckIncompatibleSystems (KAOSModel model)
-        {
-            ForAllGoals (x => {
-                if (x.InSystems.Count() == 0) {
-                    AddWarning (string.Format ("Goal '{0}' appears in no alternative system.", x.FriendlyName));
-                }
-            });
-
-            ForAllGoals (g => {
-                foreach (var ag in g.AgentAssignments()) {
-                    if (ag.InSystems.Count() == 0) {
-                        AddWarning (string.Format ("The assignment of goal '{0}' to agent(s) {1} is incompatible. Goal appears only in {2} alternative systems.", 
-                                                g.FriendlyName, 
-                                                string.Join (",", ag.Agents().Select (x => string.Format ("'{0}'", x.Name))),
-                                                (g.InSystems.Count == 0 ? "no" : string.Join (",", g.InSystems.Select (x => string.Format ("'{0}'", x.Name))))
-                                                ));
-                    }
                 }
             });
         }
@@ -186,7 +164,6 @@ namespace KAOSTools.ModelAnalyzer
             ForAllDomainProperties (action);
             ForAllDomainHypotheses (action);
             ForAllAgents (action);
-            ForAllSystems (action);
             ForAllObjects (action);
             ForAllAssociations (action);
             ForAllPredicates (action);
@@ -223,12 +200,6 @@ namespace KAOSTools.ModelAnalyzer
             }
         }
 
-        static void ForAllSystems (Action<AlternativeSystem> action) {
-            foreach (var system in model.AlternativeSystems()) {
-                action(system);
-            }
-        }
-        
         static void ForAllObjects (Action<Entity> action) {
             foreach (var entity in model.Entities()) {
                 action(entity);

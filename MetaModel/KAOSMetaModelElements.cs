@@ -30,7 +30,6 @@ namespace KAOSTools.Core
 
         public AntiGoal (KAOSModel model) : base(model)
         {
-            InSystems = new HashSet<AlternativeSystem>();
         }
 
         public override KAOSCoreElement Copy ()
@@ -122,7 +121,7 @@ namespace KAOSTools.Core
     public class AntiGoalRefinement : KAOSCoreElement
     {
         public string ParentAntiGoalIdentifier { get; set; }
-        public string SystemReferenceIdentifier { get; set; }
+        public string SystemReferenceIdentifier { get; set; } // TODO remove
 
         public ISet<string> SubAntiGoalIdentifiers { get; set; }
         public ISet<string> ObstacleIdentifiers { get; set; }
@@ -147,11 +146,6 @@ namespace KAOSTools.Core
         public void SetParentAntiGoal (AntiGoal element)
         {
             this.ParentAntiGoalIdentifier = element.Identifier;
-        }
-
-        public void SetSystemReference (AlternativeSystem system)
-        {
-            this.SystemReferenceIdentifier = system.Identifier;
         }
 
         public void Add (Obstacle obstacle)
@@ -353,39 +347,6 @@ namespace KAOSTools.Core
 
     #endregion
 
-    public class AlternativeSystem : KAOSCoreElement
-    {
-        public string Name { get; set; }
-
-        public override string FriendlyName {
-            get {
-                return string.IsNullOrEmpty(Name) ? Identifier : Name;
-            }
-        }
-
-        public string Definition { get; set; }
-
-        public ISet<AlternativeSystem> Alternatives { get; set; }
-
-        public AlternativeSystem  (KAOSModel model) : base (model)
-        {
-            Alternatives = new HashSet<AlternativeSystem> ();
-        }
-
-        public override KAOSCoreElement Copy ()
-        {
-			return new AlternativeSystem(model) {
-				Identifier = Identifier,
-				Implicit = Implicit,
-				InSystems = InSystems,
-				CustomData = CustomData,
-				Name = Name,
-				Definition = Definition,
-				Alternatives = new HashSet<AlternativeSystem> (Alternatives.Select (x => (AlternativeSystem) x.Copy ()))
-			};
-        }
-    }
-
     public class Predicate : KAOSCoreElement
     {
         public string Name { get; set; }
@@ -418,7 +379,6 @@ namespace KAOSTools.Core
 			return new Predicate(model) {
 				Identifier = Identifier,
 				Implicit = Implicit,
-				InSystems = InSystems,
 				CustomData = CustomData,
 				Name = Name,
 				DefaultValue = DefaultValue,
