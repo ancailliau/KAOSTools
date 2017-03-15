@@ -9,6 +9,8 @@
     <OutputType>Library</OutputType>
     <RootNamespace>KAOSTools.Core</RootNamespace>
     <AssemblyName>KAOSTools.MetaModel</AssemblyName>
+    <ReleaseVersion>0.2</ReleaseVersion>
+    <SynchReleaseVersion>false</SynchReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -55,7 +57,6 @@
     <Compile Include="ResponsibilityHelpers.cs" />
     <Compile Include="BehaviorModel.cs" />
     <Compile Include="KAOSModel.cs" />
-    <Compile Include="AlternativeHelpers.cs" />
     <Compile Include="FormalSpec.cs" />
     <Compile Include="ResolutionIntegrationHelper.cs" />
     <Compile Include="KAOSModelHelpers.cs" />
