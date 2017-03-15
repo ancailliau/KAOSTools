@@ -1,8 +1,9 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using KAOSTools.Core;
 
-namespace KAOSTools.Core
+namespace UCLouvain.KAOSTools.Core.Agents
 {
     public static class ResponsibilityHelpers {
         

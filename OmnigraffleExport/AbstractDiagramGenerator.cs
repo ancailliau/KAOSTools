@@ -4,6 +4,7 @@ using KAOSTools.OmnigraffleExport.Omnigraffle;
 using KAOSTools.Core;
 using System.Text;
 using System.Linq;
+using UCLouvain.KAOSTools.Core.Agents;
 
 namespace KAOSTools.OmnigraffleExport
 {

@@ -5,6 +5,7 @@ using KAOSTools.Utils;
 using KAOSTools.Parsing;
 using System.Web.Script.Serialization;
 using KAOSTools.Core;
+using UCLouvain.KAOSTools.Core.Agents;
 
 namespace KAOSTools.ModelAnalyzer
 {

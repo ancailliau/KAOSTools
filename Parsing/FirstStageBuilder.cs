@@ -2,6 +2,7 @@ using System;
 using KAOSTools.Core;
 using System.Collections.Generic;
 using System.Linq;
+using UCLouvain.KAOSTools.Core.Agents;
 
 namespace KAOSTools.Parsing
 {

@@ -3,6 +3,7 @@ using System.Linq;
 using NUnit.Framework;
 using ShallTests;
 using KAOSTools.Core;
+using UCLouvain.KAOSTools.Core.Agents;
 
 namespace KAOSTools.Parsing.Tests
 {
@@ -14,12 +15,12 @@ namespace KAOSTools.Parsing.Tests
         [TestCase(@"declare agent
                         id test
                         type software
-                    end", KAOSTools.Core.AgentType.Software)]
+                    end", AgentType.Software)]
         [TestCase(@"declare agent
                         id test
                         type environment
-                    end", KAOSTools.Core.AgentType.Environment)]
-        public void TestTypeOfAgent (string input, KAOSTools.Core.AgentType type)
+                    end", AgentType.Environment)]
+        public void TestTypeOfAgent (string input, AgentType type)
         {
             var model = parser.Parse (input);
             model.Agents()

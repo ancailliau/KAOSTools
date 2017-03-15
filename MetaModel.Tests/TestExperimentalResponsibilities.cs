@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using KAOSTools.Parsing;
+using UCLouvain.KAOSTools.Core.Agents;
 
 namespace KAOSTools.Core.Tests
 {

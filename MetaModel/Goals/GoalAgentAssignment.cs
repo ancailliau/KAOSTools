@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
+using UCLouvain.KAOSTools.Core.Agents;
 
 namespace KAOSTools.Core
 {

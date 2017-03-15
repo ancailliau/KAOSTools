@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
+using KAOSTools.Core;
 
-namespace KAOSTools.Core
+namespace UCLouvain.KAOSTools.Core.Agents
 {
 
     #region Goal Model

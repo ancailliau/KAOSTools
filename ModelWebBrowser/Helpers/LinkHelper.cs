@@ -2,6 +2,7 @@ using System;
 using System.Web.Mvc;
 using KAOSTools.Core;
 using System.Web.Mvc.Html;
+using UCLouvain.KAOSTools.Core.Agents;
 
 namespace ModelWebBrowser.Helpers
 {

@@ -6,7 +6,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>KAOSTools.Core</RootNamespace>
+    <RootNamespace>UCLouvain.KAOSTools.Core</RootNamespace>
     <AssemblyName>KAOSTools.MetaModel</AssemblyName>
     <ReleaseVersion>0.2</ReleaseVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
