@@ -55,33 +55,4 @@ namespace KAOSTools.Core
             }
         }
     }
-
-    #region Goal Model
-
-    #region Meta entities
-
-    #endregion
-
-    #region Assignements
-
-    #endregion
-
-    #region Refinements
-
-    #endregion
-
-    #region Obstructions and resolutions
-
-    #endregion
-
-    #region Exceptions and assumptions
-
-    #endregion
-
-    #endregion
-
-    #region Object Model
-
-    #endregion
-    
 }

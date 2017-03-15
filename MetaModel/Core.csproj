@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -54,54 +53,64 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="ResponsibilityHelpers.cs" />
-    <Compile Include="KAOSModel.cs" />
-    <Compile Include="FormalSpec.cs" />
-    <Compile Include="ResolutionIntegrationHelper.cs" />
-    <Compile Include="KAOSModelHelpers.cs" />
-    <Compile Include="PredicateArgument.cs" />
     <Compile Include="KAOSMetaModelElementsHelpers.cs" />
     <Compile Include="KAOSCoreElement.cs" />
-    <Compile Include="Goal.cs" />
-    <Compile Include="SoftGoal.cs" />
-    <Compile Include="Obstacle.cs" />
-    <Compile Include="DomainHypothesis.cs" />
-    <Compile Include="DomainProperty.cs" />
-    <Compile Include="Agent.cs" />
-    <Compile Include="AgentType.cs" />
-    <Compile Include="AgentAssignment.cs" />
-    <Compile Include="GoalAgentAssignment.cs" />
-    <Compile Include="GoalRefinement.cs" />
-    <Compile Include="ObstacleRefinement.cs" />
-    <Compile Include="Obstruction.cs" />
-    <Compile Include="Resolution.cs" />
-    <Compile Include="ResolutionPattern.cs" />
-    <Compile Include="RefinementPattern.cs" />
-    <Compile Include="GoalException.cs" />
-    <Compile Include="GoalReplacement.cs" />
-    <Compile Include="ObstacleAssumption.cs" />
-    <Compile Include="UncertaintyDistribution.cs" />
-    <Compile Include="UniformDistribution.cs" />
-    <Compile Include="TriangularDistribution.cs" />
-    <Compile Include="PERTDistribution.cs" />
-    <Compile Include="BetaDistribution.cs" />
-    <Compile Include="QuantileDistribution.cs" />
-    <Compile Include="MixtureDistribution.cs" />
-    <Compile Include="QuantileList.cs" />
-    <Compile Include="Expert.cs" />
-    <Compile Include="Calibration.cs" />
-    <Compile Include="Constraint.cs" />
-    <Compile Include="CostVariable.cs" />
-    <Compile Include="Entity.cs" />
-    <Compile Include="Attribute.cs" />
-    <Compile Include="GivenType.cs" />
-    <Compile Include="Relation.cs" />
-    <Compile Include="Link.cs" />
-    <Compile Include="EntityType.cs" />
-    <Compile Include="Predicate.cs" />
+    <Compile Include="Agents\Agent.cs" />
+    <Compile Include="Agents\AgentAssignment.cs" />
+    <Compile Include="Agents\AgentType.cs" />
+    <Compile Include="Objects\Attribute.cs" />
+    <Compile Include="SatisfactionRates\BetaDistribution.cs" />
+    <Compile Include="Domain\DomainHypothesis.cs" />
+    <Compile Include="Domain\DomainProperty.cs" />
+    <Compile Include="Objects\Entity.cs" />
+    <Compile Include="Objects\EntityType.cs" />
+    <Compile Include="Objects\GivenType.cs" />
+    <Compile Include="Goals\Goal.cs" />
+    <Compile Include="Goals\GoalAgentAssignment.cs" />
+    <Compile Include="Goals\GoalException.cs" />
+    <Compile Include="Goals\GoalRefinement.cs" />
+    <Compile Include="Goals\GoalReplacement.cs" />
+    <Compile Include="Objects\Link.cs" />
+    <Compile Include="Obstacles\Obstacle.cs" />
+    <Compile Include="Obstacles\ObstacleAssumption.cs" />
+    <Compile Include="Obstacles\ObstacleRefinement.cs" />
+    <Compile Include="SatisfactionRates\PERTDistribution.cs" />
+    <Compile Include="FormalSpecs\FormalSpec.cs" />
+    <Compile Include="FormalSpecs\Predicate.cs" />
+    <Compile Include="FormalSpecs\PredicateArgument.cs" />
+    <Compile Include="SatisfactionRates\MixtureDistribution.cs" />
+    <Compile Include="Obstacles\Obstruction.cs" />
+    <Compile Include="SatisfactionRates\QuantileDistribution.cs" />
+    <Compile Include="SatisfactionRates\QuantileList.cs" />
+    <Compile Include="Goals\RefinementPattern.cs" />
+    <Compile Include="Objects\Relation.cs" />
+    <Compile Include="Obstacles\Resolution.cs" />
+    <Compile Include="Obstacles\ResolutionIntegrationHelper.cs" />
+    <Compile Include="Obstacles\ResolutionPattern.cs" />
+    <Compile Include="SatisfactionRates\TriangularDistribution.cs" />
+    <Compile Include="SatisfactionRates\UncertaintyDistribution.cs" />
+    <Compile Include="SatisfactionRates\UniformDistribution.cs" />
+    <Compile Include="Goals\SoftGoal.cs" />
+    <Compile Include="SatisfactionRates\Calibration.cs" />
+    <Compile Include="Model\Constraint.cs" />
+    <Compile Include="Model\CostVariable.cs" />
+    <Compile Include="Model\Expert.cs" />
+    <Compile Include="Model\KAOSModel.cs" />
+    <Compile Include="Model\KAOSModelHelpers.cs" />
+    <Compile Include="Agents\ResponsibilityHelpers.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Objects\" />
+    <Folder Include="Agents\" />
+    <Folder Include="Goals\" />
+    <Folder Include="Obstacles\" />
+    <Folder Include="SatisfactionRates\" />
+    <Folder Include="Domain\" />
+    <Folder Include="FormalSpecs\" />
+    <Folder Include="Model\" />
   </ItemGroup>
 </Project>
