@@ -42,7 +42,6 @@
   <ItemGroup>
     <Compile Include="TestExperimentalResponsibilities.cs" />
     <Compile Include="TestEntity.cs" />
-    <Compile Include="TestViews.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
