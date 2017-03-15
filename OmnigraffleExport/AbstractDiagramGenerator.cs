@@ -573,27 +573,6 @@ namespace KAOSTools.OmnigraffleExport
             }
         }
 
-        protected void Render (AntiGoalAgentAssignment assignment)
-        {
-            var circle = GetCircle ();
-            Add (assignment.Identifier, circle);
-
-            if (shapes.ContainsKey(assignment.AntiGoalIdentifier)) {
-                var parentGraphic = shapes[assignment.AntiGoalIdentifier].First ();
-                var topArrow = GetFilledArrow (circle, parentGraphic);
-                sheet.GraphicsList.Add (topArrow);
-            }
-
-            foreach (var child in assignment.AgentIdentifiers) {
-                if (!shapes.ContainsKey(child))
-                    continue;
-
-                var childGraphic = shapes [child].First ();
-                var line = GetLine (childGraphic, circle);
-                sheet.GraphicsList.Add (line);
-            }
-        }
-
         protected void Render (ObstacleAgentAssignment assignment)
         {
             var circle = GetCircle ();

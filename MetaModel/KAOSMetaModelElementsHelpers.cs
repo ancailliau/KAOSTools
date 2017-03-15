@@ -139,12 +139,6 @@ namespace KAOSTools.Core
                     select assignements;
         }
         
-        public static IEnumerable<AntiGoalAgentAssignment> AssignedAntiGoals (this Agent agent) {
-            return from assignements in agent.model.AntiGoalAgentAssignments()
-                where assignements.Agents().Contains (agent)
-                    select assignements;
-        }
-
         #endregion
 
         #region Agent assignments

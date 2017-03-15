@@ -64,21 +64,6 @@ namespace KAOSTools.Core
         }
     }
 
-    public class AntiGoalAgentAssignment : AgentAssignment {
-        public string AntiGoalIdentifier { get; set ; }
-        public AntiGoalAgentAssignment  (KAOSModel model) : base (model) {}
-
-        public override KAOSCoreElement Copy ()
-        {
-            return new AntiGoalAgentAssignment (null) {
-                Identifier = Identifier,
-                Implicit = Implicit,
-                AntiGoalIdentifier = AntiGoalIdentifier,
-                AgentIdentifiers = new List<string> (AgentIdentifiers)
-            };
-        }
-    }
-
     #endregion
 
     #region Refinements
