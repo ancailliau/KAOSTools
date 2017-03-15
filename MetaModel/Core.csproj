@@ -55,7 +55,6 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="ResponsibilityHelpers.cs" />
-    <Compile Include="BehaviorModel.cs" />
     <Compile Include="KAOSModel.cs" />
     <Compile Include="FormalSpec.cs" />
     <Compile Include="ResolutionIntegrationHelper.cs" />
