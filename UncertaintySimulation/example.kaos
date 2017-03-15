@@ -1,0 +1,126 @@
+# Goals
+
+declare goal
+  id amb_on_scene_when_inc_reported
+  name "Achieve [Ambulance On Scene When Incident Reported]"
+  rds .95
+  refinedby amb_alloc_when_inc_reported, amb_on_scene_when_amb_alloc
+end
+
+declare goal
+  id amb_alloc_when_inc_reported
+  name "Achieve [Ambulance Allocated When Incident Reported]"
+  assignedto cad
+end
+
+declare goal
+  id amb_on_scene_when_amb_alloc
+  name "Achieve [Ambulance On Scene When Allocated]"
+  refinedby amb_mob_when_amb_alloc, amb_on_scene_when_amb_mob
+end
+
+declare goal
+  id amb_mob_when_amb_alloc
+  name "Achieve [Ambulance Mobilized When Allocated]"
+  refinedby amb_mob_on_road, amb_mob_at_station
+end
+
+declare goal
+  id amb_on_scene_when_amb_mob
+  name "Achieve [Ambulance On Scene When Mobilized]"
+  assignedto staff
+  obstructedby amb_not_on_scene
+end
+
+declare goal
+  id amb_mob_on_road
+  name "Achieve [Allocated Ambulance Mobilized When On Road]"
+  assignedto operator
+end
+
+declare goal
+  id amb_mob_at_station
+  name "Achieve [Allocated Ambulance Mobilized When At Station]"
+  assignedto cad
+end
+
+# Obstacles and domain assumptions
+
+declare obstacle
+  id amb_not_on_scene
+  name "Mobilized Ambulance Not On Scene In Time"
+  refinedby amb_in_jam, not_on_scene_when_stuck
+  refinedby amb_lost, not_on_scene_when_lost
+  refinedby amb_broken, not_on_scene_when_broken
+end
+
+declare obstacle
+  id amb_in_jam
+  name "Ambulance Stuck In Traffic Jam"
+  uprobability triangular (0.01, 0.02, 0.04)
+end
+
+declare domhyp
+  id not_on_scene_when_stuck
+  name "Ambulance Not On Scene In Time When Stuck In Traffic Jam"
+  uprobability triangular (.97,.98,.99)
+end
+
+declare domhyp
+  id not_on_scene_when_lost
+  name "Ambulance Not On Scene In Time When Lost"
+  uprobability triangular (.98,.99,1)
+end
+
+declare domhyp
+  id not_on_scene_when_broken
+  name "Ambulance Not On Scene In Time When Broken Down"
+  uprobability uniform (1,1)
+end
+
+declare obstacle
+  id amb_lost
+  name "Ambulance Lost"
+  refinedby amb_not_in_familiar_area, gps_broken, lost_when_in_unfamiliar_and_no_gps
+end
+
+declare domhyp
+  id lost_when_in_unfamiliar_and_no_gps
+  name "Ambulance Lost When In Unfamiliar Area And GPS Not Working"
+  uprobability triangular (.94,.95,.96)
+end
+
+declare obstacle
+  id amb_broken
+  name "Ambulance Broken Down"
+  uprobability pert (.001, .005, .01)
+end
+
+declare obstacle
+  id amb_not_in_familiar_area
+  name "Ambulance Not In Familiar Area"
+  uprobability uniform (.1, .3)
+end
+
+declare obstacle
+  id gps_broken
+  name "GPS Not Working"
+  uprobability beta (0.2, 1.8)
+end
+
+# Agents
+
+declare agent 
+  id cad
+  name "CAD"
+end
+
+declare agent 
+  id staff
+  name "Ambulance Staff"
+end
+
+declare agent 
+  id operator
+  name "Operator"
+end
