@@ -100,8 +100,8 @@ namespace KAOSTools.Core
                 return model.Elements.Where (x => x is Predicate).Cast<Predicate>();
         }
         
-        public static IEnumerable<Attribute> Attributes (this KAOSModel model) {
-            return model.Elements.Where (x => x is Attribute).Cast<Attribute>();
+        public static IEnumerable<EntityAttribute> Attributes (this KAOSModel model) {
+            return model.Elements.Where (x => x is EntityAttribute).Cast<EntityAttribute>();
         }
 
         public static IEnumerable<Entity> Entities (this KAOSModel model) {

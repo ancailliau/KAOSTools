@@ -318,14 +318,14 @@ namespace KAOSTools.Parsing
         }
         
         
-        KAOSTools.Core.Attribute GetOrCreateAttribute (ParsedAttributeReferenceExpression pref, 
+        KAOSTools.Core.EntityAttribute GetOrCreateAttribute (ParsedAttributeReferenceExpression pref, 
             KAOSTools.Core.Entity entity) {
             Console.WriteLine (">> " + pref.AttributeSignature.Value + " <<");
             if (entity != null) {
                 if (pref.AttributeSignature is NameExpression) {
                     var attribute = entity.Attributes().SingleOrDefault (x => x.Name == pref.AttributeSignature.Value);
                     if (attribute == null) {
-                        attribute = new KAOSTools.Core.Attribute (model) { 
+                        attribute = new KAOSTools.Core.EntityAttribute (model) { 
                             Name = pref.AttributeSignature.Value, 
                             Implicit = true
                         } ;
@@ -345,7 +345,7 @@ namespace KAOSTools.Parsing
                 } else if (pref.AttributeSignature is IdentifierExpression) {
                     var attribute = entity.model.Attributes().SingleOrDefault (x => x.Identifier == entity.Identifier + "." +pref.AttributeSignature.Value);
                     if (attribute == null) {
-                        attribute = new KAOSTools.Core.Attribute (model) { 
+                        attribute = new KAOSTools.Core.EntityAttribute (model) { 
                             Identifier = entity.Identifier + "." + pref.AttributeSignature.Value, 
                             Implicit = true
                         } ;

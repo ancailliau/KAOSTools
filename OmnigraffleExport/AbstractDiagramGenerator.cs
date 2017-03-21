@@ -660,7 +660,7 @@ namespace KAOSTools.OmnigraffleExport
             Add (obstruction.Identifier, topArrow);
         }
 
-        protected void Render (KAOSTools.Core.Attribute attribute)
+        protected void Render (KAOSTools.Core.EntityAttribute attribute)
         {
             if (!shapes.ContainsKey (attribute.EntityIdentifier)) 
                 return;

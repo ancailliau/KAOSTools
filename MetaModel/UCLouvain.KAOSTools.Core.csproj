@@ -56,9 +56,8 @@
     <Compile Include="KAOSMetaModelElementsHelpers.cs" />
     <Compile Include="KAOSCoreElement.cs" />
     <Compile Include="Agents\Agent.cs" />
-    <Compile Include="Agents\AgentAssignment.cs" />
     <Compile Include="Agents\AgentType.cs" />
-    <Compile Include="Objects\Attribute.cs" />
+    <Compile Include="Objects\EntityAttribute.cs" />
     <Compile Include="SatisfactionRates\BetaDistribution.cs" />
     <Compile Include="Domain\DomainHypothesis.cs" />
     <Compile Include="Domain\DomainProperty.cs" />
@@ -66,7 +65,6 @@
     <Compile Include="Objects\EntityType.cs" />
     <Compile Include="Objects\GivenType.cs" />
     <Compile Include="Goals\Goal.cs" />
-    <Compile Include="Goals\GoalAgentAssignment.cs" />
     <Compile Include="Goals\GoalException.cs" />
     <Compile Include="Goals\GoalRefinement.cs" />
     <Compile Include="Goals\GoalReplacement.cs" />
@@ -81,7 +79,6 @@
     <Compile Include="SatisfactionRates\MixtureDistribution.cs" />
     <Compile Include="Obstacles\Obstruction.cs" />
     <Compile Include="SatisfactionRates\QuantileDistribution.cs" />
-    <Compile Include="SatisfactionRates\QuantileList.cs" />
     <Compile Include="Goals\RefinementPattern.cs" />
     <Compile Include="Objects\Relation.cs" />
     <Compile Include="Obstacles\Resolution.cs" />
@@ -91,13 +88,29 @@
     <Compile Include="SatisfactionRates\UncertaintyDistribution.cs" />
     <Compile Include="SatisfactionRates\UniformDistribution.cs" />
     <Compile Include="Goals\SoftGoal.cs" />
-    <Compile Include="SatisfactionRates\Calibration.cs" />
     <Compile Include="Model\Constraint.cs" />
     <Compile Include="Model\CostVariable.cs" />
     <Compile Include="Model\Expert.cs" />
     <Compile Include="Model\KAOSModel.cs" />
     <Compile Include="Model\KAOSModelHelpers.cs" />
     <Compile Include="Agents\ResponsibilityHelpers.cs" />
+    <Compile Include="Agents\GoalAgentAssignment.cs" />
+    <Compile Include="Model\Calibration.cs" />
+    <Compile Include="Model\QuantileList.cs" />
+    <Compile Include="Repositories\IGoalRepository.cs" />
+    <Compile Include="Repositories\IAgentRepository.cs" />
+    <Compile Include="Repositories\IDomainRepository.cs" />
+    <Compile Include="Repositories\IModelMetadataRepository.cs" />
+    <Compile Include="Repositories\IEntityRepository.cs" />
+    <Compile Include="Repositories\IObstacleRepository.cs" />
+    <Compile Include="Repositories\IFormalSpecRepository.cs" />
+    <Compile Include="Repositories\Memory\AgentRepository.cs" />
+    <Compile Include="Repositories\Memory\DomainRepository.cs" />
+    <Compile Include="Repositories\Memory\EntityRepository.cs" />
+    <Compile Include="Repositories\Memory\FormalSpecRepository.cs" />
+    <Compile Include="Repositories\Memory\GoalRepository.cs" />
+    <Compile Include="Repositories\Memory\ModelMetadataRepository.cs" />
+    <Compile Include="Repositories\Memory\ObstacleRepository.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -112,5 +125,7 @@
     <Folder Include="Domain\" />
     <Folder Include="FormalSpecs\" />
     <Folder Include="Model\" />
+    <Folder Include="Repositories\" />
+    <Folder Include="Repositories\Memory\" />
   </ItemGroup>
 </Project>

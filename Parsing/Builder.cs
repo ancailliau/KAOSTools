@@ -170,7 +170,7 @@ namespace KAOSTools.Parsing
         protected T Create<T> (IdentifierExpression identifier)
             where T : KAOSCoreElement
         {
-            var t = (T) Activator.CreateInstance (typeof(T), new Object[] { model });
+            dynamic t = (T) Activator.CreateInstance (typeof(T), new Object[] { model });
 
             t.Implicit = true;
             t.Identifier = identifier.Value;
@@ -186,7 +186,7 @@ namespace KAOSTools.Parsing
         protected T Create<T> (NameExpression name)
             where T : KAOSCoreElement
         {
-            var t = (T) Activator.CreateInstance (typeof(T), new Object[] { model });
+			dynamic t = (T) Activator.CreateInstance (typeof(T), new Object[] { model });
             t.Implicit = true;
 
             if (typeof(T).GetProperty ("Name") == null)

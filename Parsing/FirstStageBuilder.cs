@@ -102,54 +102,60 @@ namespace KAOSTools.Parsing
 
             throw new BuilderException (string.Format ("'{0}' not supported", element.GetType ()),
                                         element.Filename, element.Line, element.Col);
-        }
+		}
 
         public T BuildKAOSElement<T> (ParsedElementWithAttributes parsedElement) 
             where T: KAOSCoreElement
         {
-            var element = (T) Activator.CreateInstance (typeof(T), new object[] { model });
+            dynamic element = (T) Activator.CreateInstance (typeof(T), new object[] { model });
 
             string name, identifier, signature;
             var hasName = GetName (parsedElement, out name);
             var hasIdentifier = GetIdentifier (parsedElement, out identifier);
-            var hasSignature = GetSignature (parsedElement, out signature);
 
-            Func<KAOSCoreElement, bool> predicate = e => e.GetType () == typeof(T) && e.Identifier == identifier;
-            if (hasIdentifier 
-                && model.Elements.Any (predicate)) {
-                if (parsedElement.Override)
-                    return model.Elements.Single (predicate).OverrideKeys (element) as T;
+     //       if (hasIdentifier && parsedElement.Override)
+     //       {
                 
-                throw new BuilderException (string.Format ("Identifier '{0}' is declared multiple times", 
-                                                           identifier),
-                                            parsedElement.Filename, parsedElement.Line, parsedElement.Col);
-            }
-            
-            var hasNameProperty = typeof(T).GetProperty ("Name") != null;
-            predicate = e => e.GetType () == typeof(T) 
-                && typeof(T).GetProperty("Name").GetValue(e, null) as string == name;
+     //       }
 
-            if (hasName & !hasNameProperty)
-                throw new InvalidOperationException("Attempt to set a name to '" + element.GetType () + "' " +
-                    "on line " + parsedElement.Line + " at column " + parsedElement.Col + " in file '" + parsedElement.Filename + "'");
+     //       var hasSignature = GetSignature (parsedElement, out signature);
 
-            if (!hasIdentifier
-                && hasNameProperty 
-                && hasName 
-                && model.Elements.Any(predicate)) {
-                if (parsedElement.Override)
-                    return model.Elements.Single (predicate).OverrideKeys (element) as T;
+     //       Func<KAOSCoreElement, bool> predicate = e => e.GetType () == typeof(T) && e.Identifier == identifier;
+     //       if (hasIdentifier 
+     //           && model.Elements.Any (predicate)) {
+     //           if (parsedElement.Override)
+					//return KAOSTools.Parsing.Helpers.OverrideKeys(model.Elements.Single (predicate), element) as T;
                 
-                throw new BuilderException (string.Format ("Name '{0}' is declared multiple times", 
-                                                           name),
-                                            parsedElement.Filename, parsedElement.Line, parsedElement.Col);
-            }
-
-            if (hasIdentifier) 
-                typeof(T).GetProperty ("Identifier").SetValue (element, identifier, null);
+     //           throw new BuilderException (string.Format ("Identifier '{0}' is declared multiple times", 
+     //                                                      identifier),
+     //                                       parsedElement.Filename, parsedElement.Line, parsedElement.Col);
+     //       }
             
-            if (hasNameProperty & hasName) 
-                typeof(T).GetProperty ("Name").SetValue (element, name, null);
+     //       var hasNameProperty = typeof(T).GetProperty ("Name") != null;
+     //       predicate = e => e.GetType () == typeof(T) 
+     //           && typeof(T).GetProperty("Name").GetValue(e, null) as string == name;
+
+     //       if (hasName & !hasNameProperty)
+     //           throw new InvalidOperationException("Attempt to set a name to '" + element.GetType () + "' " +
+     //               "on line " + parsedElement.Line + " at column " + parsedElement.Col + " in file '" + parsedElement.Filename + "'");
+
+     //       if (!hasIdentifier
+     //           && hasNameProperty 
+     //           && hasName 
+     //           && model.Elements.Any(predicate)) {
+     //           if (parsedElement.Override)
+     //               return KAOSTools.Parsing.Helpers.OverrideKeys (model.Elements.Single (predicate), element) as T;
+                
+     //           throw new BuilderException (string.Format ("Name '{0}' is declared multiple times", 
+     //                                                      name),
+     //                                       parsedElement.Filename, parsedElement.Line, parsedElement.Col);
+     //       }
+
+     //       if (hasIdentifier) 
+     //           typeof(T).GetProperty ("Identifier").SetValue (element, identifier, null);
+            
+     //       if (hasNameProperty & hasName) 
+     //           typeof(T).GetProperty ("Name").SetValue (element, name, null);
 
             if (!declarations.ContainsKey(element)) {
                 declarations.Add (element, new List<Declaration> {

@@ -132,7 +132,7 @@ namespace KAOSTools.Core
 
         #region Agent assignments
 
-        public static IEnumerable<Agent> Agents (this AgentAssignment agentAssignement) {
+        public static IEnumerable<Agent> Agents (this GoalAgentAssignment agentAssignement) {
             return agentAssignement.AgentIdentifiers
                 .Select(x => agentAssignement.model.Agents().SingleOrDefault(y => y.Identifier == x));
         }
@@ -258,7 +258,7 @@ namespace KAOSTools.Core
                 (x => entity.model.Entities().SingleOrDefault(y => y.Identifier == x));
         }
         
-        public static IEnumerable<Attribute> Attributes (this Entity entity) {
+        public static IEnumerable<EntityAttribute> Attributes (this Entity entity) {
             return entity.model.Attributes().Where(x => x.EntityIdentifier == entity.Identifier);
         }
 
@@ -277,7 +277,7 @@ namespace KAOSTools.Core
 
         #region Entity
 
-        public static GivenType Type (this Attribute attribute) {
+        public static GivenType Type (this EntityAttribute attribute) {
             return attribute.model.GivenTypes().SingleOrDefault(y => y.Identifier == attribute.TypeIdentifier);
         }
 

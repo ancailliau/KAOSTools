@@ -7,7 +7,7 @@ namespace KAOSTools.Core
 {
     #region Object Model
 
-    public class Attribute : KAOSCoreElement {
+    public class EntityAttribute : KAOSCoreElement {
         public bool Derived { get; set; }
         public string Name { get; set; }
         public string Definition { get; set; }
@@ -25,7 +25,7 @@ namespace KAOSTools.Core
 
         public string TypeIdentifier { get; set; }
 
-        public Attribute (KAOSModel model) : base (model)
+        public EntityAttribute (KAOSModel model) : base (model)
         {
             Derived = false;
         }
@@ -42,7 +42,7 @@ namespace KAOSTools.Core
 
         public override KAOSCoreElement Copy ()
         {
-            return new Attribute (model) {
+            return new EntityAttribute (model) {
                 Identifier = Identifier,
                 Implicit = Implicit,
                 Derived = Derived,

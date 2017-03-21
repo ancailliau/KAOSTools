@@ -208,7 +208,7 @@ namespace KAOSTools.Parsing
             element.IsComplete = parsedAttribute.Value;
         }
 
-        public void Handle (KAOSTools.Core.Attribute attribute, ParsedDerivedAttribute parsedAttribute)
+        public void Handle (KAOSTools.Core.EntityAttribute attribute, ParsedDerivedAttribute parsedAttribute)
         {
             attribute.Derived = true;
         }
@@ -334,7 +334,7 @@ namespace KAOSTools.Parsing
 
         public void Handle (Entity element, ParsedAttributeAttribute attribute)
         {
-            var a = new KAOSTools.Core.Attribute (model);
+            var a = new KAOSTools.Core.EntityAttribute (model);
 
             Handle (a, new ParsedNameAttribute() { 
                 Value = attribute.Name
@@ -354,7 +354,7 @@ namespace KAOSTools.Parsing
 
         public void Handle (Entity element, ParsedAttributeDeclaration attribute)
         {
-            var a = new KAOSTools.Core.Attribute (model);
+            var a = new KAOSTools.Core.EntityAttribute (model);
             a.SetEntity (element);
 
             foreach (dynamic attr in attribute.Attributes) {
@@ -368,7 +368,7 @@ namespace KAOSTools.Parsing
             });
         }
 
-        public void Handle (KAOSTools.Core.Attribute element, 
+        public void Handle (KAOSTools.Core.EntityAttribute element, 
                             ParsedAttributeEntityTypeAttribute attribute) {
 
             GivenType givenType = null;
@@ -785,7 +785,7 @@ namespace KAOSTools.Parsing
             Handle (element, definition.Value.Verbatim ? definition.Value.Value : Sanitize (definition.Value.Value), "Definition");
         }
 
-        public void Handle (KAOSTools.Core.Attribute element, ParsedIdentifierAttribute identifier)
+        public void Handle (KAOSTools.Core.EntityAttribute element, ParsedIdentifierAttribute identifier)
         {
             Handle (element, element.EntityIdentifier + "." + identifier.Value, "Identifier");
         }

@@ -302,12 +302,12 @@ namespace KAOSTools.Core
     public class AttributeReference : Formula {
         public string Variable { get; set; }
         public Entity Entity { get; set; }
-        public Attribute Attribute { get; set; }
+        public EntityAttribute Attribute { get; set; }
 
         public AttributeReference ()
         {}
 
-        public AttributeReference (string variable, Entity entity, Attribute attribute)
+        public AttributeReference (string variable, Entity entity, EntityAttribute attribute)
         {
             this.Variable = variable;
             this.Entity = entity;

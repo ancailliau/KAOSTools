@@ -7,20 +7,32 @@ using UCLouvain.KAOSTools.Core.Agents;
 namespace KAOSTools.Core
 {
 
-    #region Goal Model
-
-    #region Meta entities
-
-    #endregion
-
-    #region Assignements
-
     [DataContract]
-    public class GoalAgentAssignment : AgentAssignment {
-        
+    public class GoalAgentAssignment : KAOSCoreElement {
+
         [DataMember]
         public string GoalIdentifier { get; set ; }
-        public GoalAgentAssignment  (KAOSModel model) : base (model) {}
+
+		[DataMember]
+		public IList<string> AgentIdentifiers { get; set; }
+
+		public bool IsEmpty
+		{
+			get
+			{
+				return AgentIdentifiers.Count == 0;
+			}
+		}
+
+		public GoalAgentAssignment(KAOSModel model) : base (model)
+        {
+			AgentIdentifiers = new List<string>();
+		}
+
+		public void Add(Agent agent)
+		{
+			this.AgentIdentifiers.Add(agent.Identifier);
+		}
 
         public override KAOSCoreElement Copy ()
         {
@@ -32,25 +44,5 @@ namespace KAOSTools.Core
             };
         }
     }
-
-    #endregion
-
-    #region Refinements
-
-    #endregion
-
-    #region Obstructions and resolutions
-
-    #endregion
-
-    #region Exceptions and assumptions
-
-    #endregion
-
-    #endregion
-
-    #region Object Model
-
-    #endregion
     
 }
