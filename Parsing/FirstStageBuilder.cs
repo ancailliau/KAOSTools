@@ -14,10 +14,8 @@ namespace KAOSTools.Parsing
     {
 
         public FirstStageBuilder (KAOSModel model, 
-                                  IDictionary<KAOSCoreElement, 
-                                  IList<Declaration>> declarations,
                                   Uri relativePath)
-            : base (model, declarations, relativePath)
+            : base (model, relativePath)
         {}
 
         public void BuildElementWithKeys (ParsedElements elements)

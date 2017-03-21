@@ -17,10 +17,7 @@ namespace ModelWebBrowser.Models
             set;
         }
 
-        public IDictionary<KAOSCoreElement, IList<Declaration>> Declarations {
-            get;
-            set;
-        }
+
     }
 }
 

@@ -49,8 +49,7 @@ namespace ModelWebBrowser.Controllers
         {
             return View (new KAOSModelPage {
                 Code = code,
-                Model = model,
-                Declarations = parser.Declarations
+                Model = model
             });
         }
         /*

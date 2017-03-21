@@ -12,11 +12,10 @@ namespace KAOSTools.Parsing
         FormulaBuilder fb;
 
         public SecondStageBuilder (KAOSModel model, 
-                                   IDictionary<KAOSCoreElement, IList<Declaration>> declarations,
                                    FirstStageBuilder fsb,
                                    FormulaBuilder fb,
                                    Uri relativePath)
-            : base (model, declarations, relativePath)
+            : base (model, relativePath)
         {
             this.fsb = fsb;
             this.fb = fb;
@@ -398,9 +397,7 @@ namespace KAOSTools.Parsing
             a.SetEntity (element);
             model.Add (a);
 
-            declarations.Add (a, new List<Declaration> {
-                new Declaration (attribute.Line, attribute.Col, attribute.Filename, relativePath, DeclarationType.Declaration)
-            });
+
         }
 
         public void Handle (Entity element, ParsedAttributeDeclaration attribute)
@@ -414,9 +411,7 @@ namespace KAOSTools.Parsing
 
             model.Add (a);
 
-            declarations.Add (a, new List<Declaration> {
-                new Declaration (attribute.Line, attribute.Col, attribute.Filename, relativePath, DeclarationType.Declaration)
-            });
+
         }
 
         public void Handle (KAOSTools.Core.EntityAttribute element, 

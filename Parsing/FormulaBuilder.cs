@@ -9,18 +9,14 @@ namespace KAOSTools.Parsing
     public class FormulaBuilder
     {
         private KAOSModel model;
-        private IDictionary<KAOSCoreElement, IList<Declaration>> Declarations;
         private FirstStageBuilder FSB;
         protected Uri relativePath;
 
         public FormulaBuilder (KAOSModel model, 
-                               IDictionary<KAOSCoreElement, 
-                               IList<Declaration>> declarations, 
                                FirstStageBuilder fsb,
                                Uri relativePath)
         {
             this.model = model;
-            this.Declarations = declarations;
             this.FSB = fsb;
             this.relativePath = relativePath;
         }
@@ -304,14 +300,9 @@ namespace KAOSTools.Parsing
 
                 model.Add (type);
 
-                Declarations.Add (type, new List<Declaration> () {
-                    new Declaration (idOrName.Line, idOrName.Col, idOrName.Filename, relativePath, DeclarationType.Reference)
-                });
 
             } else {
-                Declarations[type].Add (
-                    new Declaration (idOrName.Line, idOrName.Col, idOrName.Filename, relativePath, DeclarationType.Reference)
-                );
+                  
             }
 
             return type;
@@ -332,13 +323,9 @@ namespace KAOSTools.Parsing
                         attribute.SetEntity (entity);
                         model.Add (attribute);
 
-                        Declarations.Add (attribute, new List<Declaration> () {
-                            new Declaration (pref.Line, pref.Col, pref.Filename, relativePath, DeclarationType.Reference)
-                        });
+
                     } else {
-                        Declarations[attribute].Add (
-                            new Declaration (pref.Line, pref.Col, pref.Filename, relativePath, DeclarationType.Reference)
-                            );
+                        
                     }
                     return attribute;
 
@@ -352,13 +339,9 @@ namespace KAOSTools.Parsing
                         attribute.SetEntity (entity);
                         model.Add (attribute);
 
-                        Declarations.Add (attribute, new List<Declaration> () {
-                            new Declaration (pref.Line, pref.Col, pref.Filename, relativePath, DeclarationType.Reference)
-                        });
+
                     } else {
-                        Declarations[attribute].Add (
-                            new Declaration (pref.Line, pref.Col, pref.Filename, relativePath, DeclarationType.Reference)
-                            );
+                        
                     }
                     return attribute;
                 } else 
@@ -397,9 +380,7 @@ namespace KAOSTools.Parsing
 
                 model.Add (type);
 
-                Declarations.Add (type, new List<Declaration> () {
-                    new Declaration (identifierOrName.Line, identifierOrName.Col, identifierOrName.Filename, relativePath, DeclarationType.Reference)
-                });
+
             } else {
                 // Check that types matches
                 // TODO make this shit more robust. In the case of two links to a same entity, this
@@ -409,9 +390,6 @@ namespace KAOSTools.Parsing
                         throw new CompilationException ("Relation and formal spec are incompatible.");
                     }
                 }
-                Declarations[type].Add (
-                    new Declaration (identifierOrName.Line, identifierOrName.Col, identifierOrName.Filename, relativePath, DeclarationType.Reference)
-                    );
 
              }
 
@@ -444,9 +422,6 @@ namespace KAOSTools.Parsing
                 }
 
                 model.Add (predicate);
-                Declarations.Add (predicate, new List<Declaration> () {
-                    new Declaration (idOrName.Line, idOrName.Col, idOrName.Filename, relativePath, DeclarationType.Reference)
-                });
 
             } else {
                 // Check that same number of arguments are used (if none is already declared)
@@ -479,9 +454,7 @@ namespace KAOSTools.Parsing
                     }
                 }
 
-                Declarations[predicate].Add (
-                    new Declaration (idOrName.Line, idOrName.Col, idOrName.Filename, relativePath, DeclarationType.Reference)
-                    );
+
 
             }
             

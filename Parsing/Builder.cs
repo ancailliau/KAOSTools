@@ -9,15 +9,12 @@ namespace KAOSTools.Parsing
     public class Builder
     {
         protected KAOSModel model;
-        protected IDictionary<KAOSCoreElement, IList<Declaration>> declarations;
         protected Uri relativePath;
     
         public Builder (KAOSModel model, 
-                        IDictionary<KAOSCoreElement, IList<Declaration>> declarations,
                         Uri relativePath)
         {
             this.model = model;
-            this.declarations = declarations;
             this.relativePath = relativePath;
         }
 
@@ -145,13 +142,6 @@ namespace KAOSTools.Parsing
             where T : KAOSCoreElement
         {
             var val = Get (identifier.Value, out element, "Identifier");
-            if (val) {
-                if (!declarations.ContainsKey(element)) {
-                    declarations.Add (element, new List<Declaration> ());
-                }
-                declarations[element].Add (new Declaration (identifier.Line, identifier.Col, identifier.Filename, relativePath, DeclarationType.Reference));
-            }
-
             return val;
         }
 
@@ -159,13 +149,6 @@ namespace KAOSTools.Parsing
             where T : KAOSCoreElement
         {
             var val = Get (name.Value, out element, "Name");
-            if (val) {
-                if (!declarations.ContainsKey(element)) {
-                    declarations.Add (element, new List<Declaration> ());
-                }
-                declarations[element].Add (new Declaration (name.Line, name.Col, name.Filename, relativePath, DeclarationType.Reference));
-            }
-
             return val;
         }
 
@@ -182,10 +165,7 @@ namespace KAOSTools.Parsing
             t.Identifier = identifier.Value;
             
             model.Add (t);
-            declarations.Add (t, new List<Declaration> {
-                new Declaration (identifier.Line, identifier.Col, identifier.Filename, relativePath, DeclarationType.Reference)
-            });
-            
+
             return t;
         }
 
@@ -201,10 +181,6 @@ namespace KAOSTools.Parsing
             typeof(T).GetProperty ("Name").SetValue (t, name.Value, null);
 
             model.Add (t);
-            declarations.Add (t, new List<Declaration> {
-                new Declaration (name.Line, name.Col, name.Filename, relativePath, DeclarationType.Reference)
-            });
-            
             return t;
         }
 

@@ -13,12 +13,11 @@ namespace KAOSTools.Parsing
         IDictionary<Predicate, int> predicateArgumentCurrentPosition;
 
         public ThirdStageBuilder (KAOSModel model, 
-                                   IDictionary<KAOSCoreElement, IList<Declaration>> declarations,
                                    FirstStageBuilder fsb,
                                    SecondStageBuilder ssb,
                                   FormulaBuilder fb,
                                   Uri relativePath)
-            : base (model, declarations, relativePath)
+            : base (model, relativePath)
         {
             this.fsb = fsb;
             this.fb = fb;

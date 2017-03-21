@@ -14,25 +14,19 @@ namespace KAOSTools.Parsing
     /// </summary>
     public class ModelBuilder
     {
-        /// <summary>
-        /// The declarations for each elemnt of the model.
-        /// </summary>
-        public IDictionary<KAOSCoreElement, IList<Declaration>> Declarations { get; set; }
-
         public KAOSModel Parse (string input, string filename)
         {
             KAOSModel model = new KAOSModel();
-            Declarations = new Dictionary<KAOSCoreElement, IList<Declaration>> ();
             GoalModelParser _parser = new GoalModelParser ();
             
             Uri RelativePath = null;
             if (!string.IsNullOrEmpty (filename))
                 RelativePath = new Uri(Path.GetFullPath (Path.GetDirectoryName(filename) + "/"));
 
-            FirstStageBuilder FSB = new FirstStageBuilder (model, Declarations, RelativePath);
-            FormulaBuilder FB = new FormulaBuilder (model, Declarations, FSB, RelativePath);
-            SecondStageBuilder SSB = new SecondStageBuilder (model, Declarations, FSB, FB, RelativePath);
-            ThirdStageBuilder TSB = new ThirdStageBuilder (model, Declarations, FSB, SSB, FB, RelativePath);
+            FirstStageBuilder FSB = new FirstStageBuilder (model, RelativePath);
+            FormulaBuilder FB = new FormulaBuilder (model, FSB, RelativePath);
+            SecondStageBuilder SSB = new SecondStageBuilder (model, FSB, FB, RelativePath);
+            ThirdStageBuilder TSB = new ThirdStageBuilder (model, FSB, SSB, FB, RelativePath);
 
             var elements = _parser.Parse (input, filename) as ParsedElements;    
 

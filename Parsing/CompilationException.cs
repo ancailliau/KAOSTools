@@ -17,14 +17,6 @@ namespace KAOSTools.Parsing
 
     public class BuilderException : Exception
     {
-        public BuilderException (string message, Declaration declaration, Exception innerException = null)
-            : this (message, 
-                    declaration.Filename, 
-                    declaration.Line, 
-                    declaration.Col, 
-                    innerException)
-        {}
-
         public BuilderException (string message, string filename, int line, int col, Exception innerException = null)
             : base (string.Format ("{0}\nAt {1}:{2},{3}", 
                                    message, 

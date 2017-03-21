@@ -235,7 +235,6 @@ namespace KAOSTools.ModelAnalyzer
     class CheckResult {
         public CheckResultStatus Status { get; set; }
         public string Message { get; set; }
-        public Declaration Location { get; set; }
     }
 
     class JSONWriter {

@@ -39,7 +39,6 @@
     <Compile Include="GoalModelParser.cs" />
     <Compile Include="GoalModelParserExtension.cs" />
     <Compile Include="Helpers.cs" />
-    <Compile Include="Declaration.cs" />
     <Compile Include="ModelBuilder.cs" />
     <Compile Include="CompilationException.cs" />
     <Compile Include="FirstStageBuilder.cs" />

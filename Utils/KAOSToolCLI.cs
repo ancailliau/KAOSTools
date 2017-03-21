@@ -13,7 +13,6 @@ namespace KAOSTools.Utils
         protected static string input;
         protected static string filename;
         protected static KAOSModel model;
-        protected static IDictionary<KAOSCoreElement, IList<Declaration>> declarations;
         protected static List<string> reminderArgs;
 
         protected static void Init (string[] args)
@@ -63,7 +62,6 @@ namespace KAOSTools.Utils
             // try {
                 var parser = new KAOSTools.Parsing.ModelBuilder ();
                 var m = parser.Parse (input, filename);
-                declarations = parser.Declarations;
                 return m;
 
             // } catch (Exception e) {
