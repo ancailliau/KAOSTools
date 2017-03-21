@@ -56,119 +56,220 @@ namespace KAOSTools.Parsing
         public KAOSCoreElement BuildElementWithKeys (ParsedElementWithAttributes element)
         {
             if (element is ParsedGoal)
-                return BuildKAOSElement<Goal> (element);
+                return BuildGoal((KAOSTools.Parsing.ParsedGoal)element);
 
             if (element is ParsedSoftGoal)
-                return BuildKAOSElement<SoftGoal> (element);
+                return BuildSoftGoal ((KAOSTools.Parsing.ParsedSoftGoal)element);
 
             if (element is ParsedDomainProperty)
-                return BuildKAOSElement<DomainProperty> (element);
+                return BuildDomainProperty ((KAOSTools.Parsing.ParsedDomainProperty)element);
 
             if (element is ParsedDomainHypothesis)
-                return BuildKAOSElement<DomainHypothesis> (element);
+                return BuildDomainHypothesis ((KAOSTools.Parsing.ParsedDomainHypothesis)element);
 
             if (element is ParsedObstacle)
-                return BuildKAOSElement<Obstacle> (element);
+                return BuildObstacle ((KAOSTools.Parsing.ParsedObstacle)element);
 
             if (element is ParsedAgent)
-                return BuildKAOSElement<Agent> (element);
+                return BuildAgent ((KAOSTools.Parsing.ParsedAgent)element);
 
             if (element is ParsedPredicate)
-                return BuildKAOSElement<Predicate> (element);
+                return BuildPredicate ((KAOSTools.Parsing.ParsedPredicate)element);
 
             if (element is ParsedEntity)
-                return BuildKAOSElement<Entity> (element);
+                return BuildEntity ((KAOSTools.Parsing.ParsedEntity)element);
 
             if (element is ParsedGivenType)
-                return BuildKAOSElement<GivenType> (element);
+				return BuildGivenType ((KAOSTools.Parsing.ParsedGivenType)element);
 
             if (element is ParsedAssociation)
-                return BuildKAOSElement<Relation> (element);
-            
-            if (element is ParsedGoalRefinement)
-                return BuildKAOSElement<GoalRefinement> (element);
+				return BuildRelation ((KAOSTools.Parsing.ParsedAssociation)element);
 
             if (element is ParsedExpert)
-                return BuildKAOSElement<Expert> (element);
+                return BuildExpert ((KAOSTools.Parsing.ParsedExpert)element);
 
             if (element is ParsedCalibration)
-                return BuildKAOSElement<Calibration> (element);
+				return BuildCalibration ((KAOSTools.Parsing.ParsedCalibration)element);
             
             if (element is ParsedCostVariable)
-                return BuildKAOSElement<CostVariable> (element);
+				return BuildCostVariable ((KAOSTools.Parsing.ParsedCostVariable)element);
 
             if (element is ParsedConstraint)
-                return BuildKAOSElement<Constraint> (element);
+				return BuildConstraint((KAOSTools.Parsing.ParsedConstraint)element);
+
 
             throw new BuilderException (string.Format ("'{0}' not supported", element.GetType ()),
                                         element.Filename, element.Line, element.Col);
 		}
 
-        public T BuildKAOSElement<T> (ParsedElementWithAttributes parsedElement) 
-            where T: KAOSCoreElement
+		public Goal BuildGoal(ParsedGoal parsedElement)
         {
-            dynamic element = (T) Activator.CreateInstance (typeof(T), new object[] { model });
-
-            string name, identifier, signature;
-            var hasName = GetName (parsedElement, out name);
-            var hasIdentifier = GetIdentifier (parsedElement, out identifier);
-
-     //       if (hasIdentifier && parsedElement.Override)
-     //       {
-                
-     //       }
-
-     //       var hasSignature = GetSignature (parsedElement, out signature);
-
-     //       Func<KAOSCoreElement, bool> predicate = e => e.GetType () == typeof(T) && e.Identifier == identifier;
-     //       if (hasIdentifier 
-     //           && model.Elements.Any (predicate)) {
-     //           if (parsedElement.Override)
-					//return KAOSTools.Parsing.Helpers.OverrideKeys(model.Elements.Single (predicate), element) as T;
-                
-     //           throw new BuilderException (string.Format ("Identifier '{0}' is declared multiple times", 
-     //                                                      identifier),
-     //                                       parsedElement.Filename, parsedElement.Line, parsedElement.Col);
-     //       }
-            
-     //       var hasNameProperty = typeof(T).GetProperty ("Name") != null;
-     //       predicate = e => e.GetType () == typeof(T) 
-     //           && typeof(T).GetProperty("Name").GetValue(e, null) as string == name;
-
-     //       if (hasName & !hasNameProperty)
-     //           throw new InvalidOperationException("Attempt to set a name to '" + element.GetType () + "' " +
-     //               "on line " + parsedElement.Line + " at column " + parsedElement.Col + " in file '" + parsedElement.Filename + "'");
-
-     //       if (!hasIdentifier
-     //           && hasNameProperty 
-     //           && hasName 
-     //           && model.Elements.Any(predicate)) {
-     //           if (parsedElement.Override)
-     //               return KAOSTools.Parsing.Helpers.OverrideKeys (model.Elements.Single (predicate), element) as T;
-                
-     //           throw new BuilderException (string.Format ("Name '{0}' is declared multiple times", 
-     //                                                      name),
-     //                                       parsedElement.Filename, parsedElement.Line, parsedElement.Col);
-     //       }
-
-     //       if (hasIdentifier) 
-     //           typeof(T).GetProperty ("Identifier").SetValue (element, identifier, null);
-            
-     //       if (hasNameProperty & hasName) 
-     //           typeof(T).GetProperty ("Name").SetValue (element, name, null);
-
-            if (!declarations.ContainsKey(element)) {
-                declarations.Add (element, new List<Declaration> {
-                    new Declaration (parsedElement.Line, parsedElement.Col, parsedElement.Filename, relativePath, DeclarationType.Declaration)
-                });
-            } else {
-                declarations[element].Add(new Declaration (parsedElement.Line, parsedElement.Col, parsedElement.Filename, relativePath, DeclarationType.Override));
+            Goal g = model.goalRepository.GetGoal(parsedElement.Identifier);
+            if (g == null)
+            {
+                g = new Goal(model, parsedElement.Identifier);
+                model.goalRepository.Add(g);
             }
 
-            model.Add (element);
+            return g;
+		}
 
-            return element;
-        }
+		public SoftGoal BuildSoftGoal(ParsedSoftGoal parsedElement)
+		{
+			SoftGoal g = model.goalRepository.GetSoftGoal(parsedElement.Identifier);
+			if (g == null)
+			{
+				g = new SoftGoal(model, parsedElement.Identifier);
+				model.goalRepository.Add(g);
+			}
+
+			return g;
+		}
+
+        public DomainProperty BuildDomainProperty (ParsedDomainProperty parsedElement)
+		{
+            DomainProperty g = model.domainRepository.GetDomainProperty(parsedElement.Identifier);
+			if (g == null)
+			{
+				g = new DomainProperty(model, parsedElement.Identifier);
+				model.domainRepository.Add(g);
+			}
+
+			return g;
+		}
+
+        public DomainHypothesis BuildDomainHypothesis (ParsedDomainHypothesis parsedElement)
+		{
+            DomainHypothesis g = model.domainRepository.GetDomainHypothesis(parsedElement.Identifier);
+			if (g == null)
+			{
+				g = new DomainHypothesis(model, parsedElement.Identifier);
+				model.domainRepository.Add(g);
+			}
+
+			return g;
+		}
+
+        public Obstacle BuildObstacle(ParsedObstacle parsedElement)
+		{
+            Obstacle g = model.obstacleRepository.GetObstacle(parsedElement.Identifier);
+			if (g == null)
+			{
+				g = new Obstacle(model, parsedElement.Identifier);
+				model.obstacleRepository.Add(g);
+			}
+
+			return g;
+		}
+
+        public Agent BuildAgent (ParsedAgent parsedElement)
+		{
+            Agent g = model.agentRepository.GetAgent (parsedElement.Identifier);
+			if (g == null)
+			{
+				g = new Agent(model, parsedElement.Identifier);
+				model.agentRepository.Add(g);
+			}
+
+			return g;
+		}
+
+        public Predicate BuildPredicate(ParsedPredicate parsedElement)
+		{
+            Predicate g = model.formalSpecRepository.GetPredicate (parsedElement.Identifier);
+			if (g == null)
+			{
+				g = new Predicate(model, parsedElement.Identifier);
+				model.formalSpecRepository.Add(g);
+			}
+
+			return g;
+		}
+
+        public Entity BuildEntity(ParsedEntity parsedElement)
+		{
+			Entity g = model.entityRepository.GetEntity(parsedElement.Identifier);
+			if (g == null)
+			{
+				g = new Entity(model, parsedElement.Identifier);
+				model.entityRepository.Add(g);
+			}
+
+			return g;
+		}
+
+        public GivenType BuildGivenType(ParsedGivenType parsedElement)
+		{
+			GivenType g = model.entityRepository.GetGivenType(parsedElement.Identifier);
+			if (g == null)
+			{
+				g = new GivenType(model, parsedElement.Identifier);
+				model.entityRepository.Add(g);
+			}
+
+			return g;
+		}
+
+		public Relation BuildRelation(ParsedAssociation parsedElement)
+		{
+            Relation g = model.entityRepository.GetRelation(parsedElement.Identifier);
+			if (g == null)
+			{
+				g = new Relation(model, parsedElement.Identifier);
+				model.entityRepository.Add(g);
+			}
+
+			return g;
+		}
+
+        public Expert BuildExpert (ParsedExpert parsedElement)
+		{
+            Expert g = model.modelMetadataRepository.GetExpert(parsedElement.Identifier);
+			if (g == null)
+			{
+				g = new Expert(model, parsedElement.Identifier);
+				model.modelMetadataRepository.Add(g);
+			}
+
+			return g;
+		}
+
+        public Calibration BuildCalibration(ParsedCalibration parsedElement)
+		{
+            Calibration g = model.modelMetadataRepository.GetCalibration(parsedElement.Identifier);
+			if (g == null)
+			{
+				g = new Calibration(model, parsedElement.Identifier);
+				model.modelMetadataRepository.Add(g);
+			}
+
+			return g;
+		}
+
+        public CostVariable BuildCostVariable(ParsedCostVariable parsedElement)
+		{
+            CostVariable g = model.modelMetadataRepository.GetCostVariable(parsedElement.Identifier);
+			if (g == null)
+			{
+				g = new CostVariable(model, parsedElement.Identifier);
+				model.modelMetadataRepository.Add(g);
+			}
+
+			return g;
+		}
+
+        public Constraint BuildConstraint(ParsedConstraint parsedElement)
+		{
+            Constraint g = model.modelMetadataRepository.GetConstraint(parsedElement.Identifier);
+			if (g == null)
+			{
+				g = new Constraint(model, parsedElement.Identifier);
+				model.modelMetadataRepository.Add(g);
+			}
+
+			return g;
+		}
+
     }
 }
 

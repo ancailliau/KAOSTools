@@ -26,6 +26,10 @@ namespace KAOSTools.Core
         {
             }
 
+        public SoftGoal(KAOSModel model, string identifier) : base(model, identifier)
+		{
+		}
+
         public override KAOSCoreElement Copy ()
         {
             return new SoftGoal (null) {

@@ -95,5 +95,30 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 		{
             return Resolutions.ContainsKey(identifier);
         }
+
+        public Obstacle GetObstacle(string identifier)
+		{
+			return Obstacles.ContainsKey(identifier) ? Obstacles[identifier] : null;
+        }
+
+        public ObstacleAssumption GetObstacleAssumption(string identifier)
+		{
+			return ObstacleAssumptions.ContainsKey(identifier) ? ObstacleAssumptions[identifier] : null;
+        }
+
+        public ObstacleRefinement GetObstacleRefinement(string identifier)
+		{
+			return ObstacleRefinements.ContainsKey(identifier) ? ObstacleRefinements[identifier] : null;
+        }
+
+        public Obstruction GetObstruction(string identifier)
+		{
+			return Obstructions.ContainsKey(identifier) ? Obstructions[identifier] : null;
+        }
+
+        public Resolution GetResolution(string identifier)
+		{
+			return Resolutions.ContainsKey(identifier) ? Resolutions[identifier] : null;
+        }
     }
 }

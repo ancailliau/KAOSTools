@@ -18,6 +18,12 @@ namespace UCLouvain.KAOSTools.Core.Repositories
 		bool GivenTypeExists(string identifier);
 		bool LinkExists(string identifier);
 		bool RelationExists(string identifier);
+
+		EntityAttribute GetEntityAttribute(string identifier);
+		Entity GetEntity(string identifier);
+		GivenType GetGivenType(string identifier);
+		Link GetLink(string identifier);
+		Relation GetRelation(string identifier);
 	}
     
 }

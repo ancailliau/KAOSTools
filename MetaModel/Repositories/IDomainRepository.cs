@@ -9,8 +9,12 @@ namespace UCLouvain.KAOSTools.Core.Repositories
 	{
 		void Add(DomainProperty goal);
 		void Add(DomainHypothesis goal);
+
 		bool DomainPropertyExists(string identifier);
 		bool DomainHypothesisExists(string identifier);
+
+		DomainProperty GetDomainProperty(string identifier);
+		DomainHypothesis GetDomainHypothesis(string identifier);
 	}
     
 }

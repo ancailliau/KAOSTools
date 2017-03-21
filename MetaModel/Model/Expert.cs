@@ -46,7 +46,11 @@ namespace KAOSTools.Core
 
         public Expert  (KAOSModel model) : base (model)
         {
-        }
+		}
+
+        public Expert(KAOSModel model, string identifier) : base(model, identifier)
+		{
+		}
 
         public override KAOSCoreElement Copy ()
         {

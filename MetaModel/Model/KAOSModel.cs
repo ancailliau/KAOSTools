@@ -167,7 +167,7 @@ namespace KAOSTools.Core
 
         public void Add(Predicate v)
 		{
-			this.obstacleRepository.Add(v);
+            this.formalSpecRepository.Add(v);
         }
 
         /*

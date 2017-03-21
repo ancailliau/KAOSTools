@@ -79,35 +79,31 @@ namespace KAOSTools.Parsing {
 
         #region First-class declarations
 
-        ParsedElement BuildParsedElementWithAttributes<T> (List<Result> results)
-            where T: ParsedElementWithAttributes, new()
+        ParsedElement BuildParsedElementWithAttributes<T> (List<Result> results, T t)
+            where T: ParsedElementWithAttributes
         {
-            var t = new T () { 
-                Line = results[0].Line, 
-                Col = results[0].Col, 
-                Filename = m_file
-            };
+            t.Line = results[0].Line;
+            t.Col = results[0].Col;
+            t.Filename = m_file;
             
             if (results[0].Text == "override")
                 t.Override = true;
             
-            for (int i = 2; i < results.Count - 1; i++) {
+            for (int i = 5; i < results.Count - 1; i++) {
                 t.Attributes.Add (results[i].Value);
             }
             
             return t;
         }
 
-        ParsedElement BuildParsedElementWithAttributesInline<T> (List<Result> results)
-            where T: ParsedElementWithAttributes, new()
+        ParsedElement BuildParsedElementWithAttributesInline<T> (List<Result> results, T t)
+            where T: ParsedElementWithAttributes
         {
-            var t = new T () { 
-                Line = results[0].Line, 
-                Col = results[0].Col, 
-                Filename = m_file
-            };
+			t.Line = results[0].Line;
+			t.Col = results[0].Col;
+			t.Filename = m_file;
 
-            if (results[0].Text == "override")
+			if (results[0].Text == "override")
                 t.Override = true;
 
             for (int i = 1; i < results.Count - 1; i++) {
@@ -119,87 +115,87 @@ namespace KAOSTools.Parsing {
 
         ParsedElement BuildPredicate (List<Result> results)
         {
-            return BuildParsedElementWithAttributes<ParsedPredicate> (results);
+            return BuildParsedElementWithAttributes<ParsedPredicate>(results, new ParsedPredicate(results[3].Text));
         }
 
         ParsedElement BuildConstraint (List<Result> results)
         {
-            return BuildParsedElementWithAttributes<ParsedConstraint> (results);
+			return BuildParsedElementWithAttributes<ParsedConstraint>(results, new ParsedConstraint(results[3].Text));
         }
 
         ParsedElement BuildSystem (List<Result> results)
         {
-            return BuildParsedElementWithAttributes<ParsedSystem> (results);
+			return BuildParsedElementWithAttributes<ParsedSystem>(results, new ParsedSystem(results[3].Text));
         }
 
         ParsedElement BuildGoal (List<Result> results)
         {
-            return BuildParsedElementWithAttributes<ParsedGoal> (results);
+			return BuildParsedElementWithAttributes<ParsedGoal>(results, new ParsedGoal(results[3].Text));
         }
 
         ParsedElement BuildSoftGoal (List<Result> results)
         {
-            return BuildParsedElementWithAttributes<ParsedSoftGoal> (results);
+			return BuildParsedElementWithAttributes<ParsedSoftGoal>(results, new ParsedSoftGoal(results[3].Text));
         }
 
         ParsedElement BuildDomainProperty (List<Result> results)
         {
-            return BuildParsedElementWithAttributes<ParsedDomainProperty> (results);
+			return BuildParsedElementWithAttributes<ParsedDomainProperty>(results, new ParsedDomainProperty(results[3].Text));
         }
         
         ParsedElement BuildObstacle (List<Result> results)
         {
-            return BuildParsedElementWithAttributes<ParsedObstacle> (results);
+			return BuildParsedElementWithAttributes<ParsedObstacle>(results, new ParsedObstacle(results[3].Text));
         }
         
         ParsedElement BuildAgent (List<Result> results)
         {
-            return BuildParsedElementWithAttributes<ParsedAgent> (results);
+			return BuildParsedElementWithAttributes<ParsedAgent>(results, new ParsedAgent(results[3].Text));
         }
         
         ParsedElement BuildDomainHypothesis (List<Result> results)
         {
-            return BuildParsedElementWithAttributes<ParsedDomainHypothesis> (results);
+			return BuildParsedElementWithAttributes<ParsedDomainHypothesis>(results, new ParsedDomainHypothesis(results[3].Text));
         }
         
         ParsedElement BuildEntity (List<Result> results)
         {
-            return BuildParsedElementWithAttributes<ParsedEntity> (results);
+			return BuildParsedElementWithAttributes<ParsedEntity>(results, new ParsedEntity(results[3].Text));
         }
         
         ParsedElement BuildType (List<Result> results)
         {
-            return BuildParsedElementWithAttributes<ParsedGivenType> (results);
+			return BuildParsedElementWithAttributes<ParsedGivenType>(results, new ParsedGivenType(results[3].Text));
         }
         
         ParsedElement BuildAssociation (List<Result> results)
         {
-            return BuildParsedElementWithAttributes<ParsedAssociation> (results);
+			return BuildParsedElementWithAttributes<ParsedAssociation>(results, new ParsedAssociation(results[3].Text));
         }
 
         ParsedElement BuildAttribute (List<Result> results)
         {
-            return BuildParsedElementWithAttributes<ParsedAttributeDeclaration> (results);
+			return BuildParsedElementWithAttributes<ParsedAttributeDeclaration>(results, new ParsedAttributeDeclaration(results[3].Text));
         }
 
         ParsedElement BuildGoalRefinement (List<Result> results)
         {
-            return BuildParsedElementWithAttributesInline<ParsedGoalRefinement> (results);
+            return BuildParsedElementWithAttributesInline<ParsedGoalRefinement>(results, new ParsedGoalRefinement (Guid.NewGuid().ToString()));
         }
 
         ParsedElement BuildExpert (List<Result> results)
         {
-            return BuildParsedElementWithAttributes<ParsedExpert> (results);
+			return BuildParsedElementWithAttributes<ParsedExpert>(results, new ParsedExpert(results[3].Text));
         }
 
         ParsedElement BuildCalibration (List<Result> results)
         {
-            return BuildParsedElementWithAttributes<ParsedCalibration> (results);
+			return BuildParsedElementWithAttributes<ParsedCalibration>(results, new ParsedCalibration(results[3].Text));
         }
 
         ParsedElement BuildCostVariable (List<Result> results)
         {
-            return BuildParsedElementWithAttributes<ParsedCostVariable> (results);
+			return BuildParsedElementWithAttributes<ParsedCostVariable>(results, new ParsedCostVariable(results[3].Text));
         }
 
         #endregion
@@ -296,7 +292,7 @@ namespace KAOSTools.Parsing {
         {
             return BuildParsedAttributeWithValue<ParsedIdentifierAttribute> 
                 (results, results[1].Text);
-        }
+		}
 
         ParsedElement BuildNameAttribute (List<Result> results)
         {

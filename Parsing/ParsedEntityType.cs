@@ -24,8 +24,10 @@ namespace KAOSTools.Parsing
     public class ParsedElementWithAttributes : ParsedElement {
         public bool Override { get; set; }
         public List<dynamic> Attributes { get; set; }
-        public ParsedElementWithAttributes ()
+        public string Identifier;
+        public ParsedElementWithAttributes (string identifier)
         {
+            Identifier = identifier;
             Attributes = new List<dynamic>();
             Override = false;
         }
@@ -63,29 +65,29 @@ namespace KAOSTools.Parsing
 
     #region First class
 
-    public class ParsedPredicate            : ParsedElementWithAttributes {}
-    public class ParsedSystem               : ParsedElementWithAttributes {}
-    public class ParsedGoal                 : ParsedElementWithAttributes {}
-    public class ParsedSoftGoal             : ParsedElementWithAttributes {}
-    public class ParsedDomainProperty       : ParsedElementWithAttributes {}
-    public class ParsedDomainHypothesis     : ParsedElementWithAttributes {}
-    public class ParsedObstacle             : ParsedElementWithAttributes {}
-    public class ParsedAssociation          : ParsedElementWithAttributes {}
-    public class ParsedGivenType            : ParsedElementWithAttributes {}
-    public class ParsedAgent                : ParsedElementWithAttributes {}
-    public class ParsedAttributeDeclaration : ParsedElementWithAttributes {}
-    public class ParsedGoalRefinement       : ParsedElementWithAttributes {}
-
-    public class ParsedExpert               : ParsedElementWithAttributes {}
-    public class ParsedCalibration          : ParsedElementWithAttributes {}
-    public class ParsedCostVariable         : ParsedElementWithAttributes {}
-
-    public class ParsedConstraint           : ParsedElementWithAttributes {}
+    public class ParsedPredicate : ParsedElementWithAttributes { public ParsedPredicate (string identifier) : base(identifier) {} }
+	public class ParsedSystem : ParsedElementWithAttributes { public ParsedSystem (string identifier) : base(identifier) {} }
+	public class ParsedGoal : ParsedElementWithAttributes { public ParsedGoal (string identifier) : base(identifier) {} }
+	public class ParsedSoftGoal : ParsedElementWithAttributes { public ParsedSoftGoal (string identifier) : base(identifier) {} }
+	public class ParsedDomainProperty : ParsedElementWithAttributes { public ParsedDomainProperty (string identifier) : base(identifier) {} }
+	public class ParsedDomainHypothesis : ParsedElementWithAttributes { public ParsedDomainHypothesis (string identifier) : base(identifier) {} }
+	public class ParsedObstacle : ParsedElementWithAttributes { public ParsedObstacle (string identifier) : base(identifier) {} }
+	public class ParsedAssociation : ParsedElementWithAttributes { public ParsedAssociation (string identifier) : base(identifier) {} }
+	public class ParsedGivenType : ParsedElementWithAttributes { public ParsedGivenType (string identifier) : base(identifier) {} }
+	public class ParsedAgent : ParsedElementWithAttributes { public ParsedAgent (string identifier) : base(identifier) {} }
+	public class ParsedAttributeDeclaration : ParsedElementWithAttributes { public ParsedAttributeDeclaration (string identifier) : base(identifier) {} }
+	public class ParsedGoalRefinement : ParsedElementWithAttributes { public ParsedGoalRefinement (string identifier) : base(identifier) {} }
+                                                                            
+    public class ParsedExpert : ParsedElementWithAttributes { public ParsedExpert (string identifier) : base(identifier) {} }
+	public class ParsedCalibration : ParsedElementWithAttributes { public ParsedCalibration (string identifier) : base(identifier) {} }
+	public class ParsedCostVariable : ParsedElementWithAttributes { public ParsedCostVariable (string identifier) : base(identifier) {} }
+                                                                            
+    public class ParsedConstraint : ParsedElementWithAttributes { public ParsedConstraint (string identifier) : base(identifier) {} }
 
     public class ParsedEntity : ParsedElementWithAttributes
     {
         public ParsedEntityType EntityType { get; set; }
-        public ParsedEntity () {
+        public ParsedEntity (string identifier) : base (identifier) {
             EntityType = ParsedEntityType.None;
         }
     }

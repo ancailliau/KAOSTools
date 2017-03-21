@@ -68,6 +68,8 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 				throw new ArgumentException(string.Format("Goal identifier already exist: {0}", goal.Identifier));
 			}
 
+            Console.WriteLine("Adding goal " + goal.Identifier );
+
 			Goals.Add(goal.Identifier, goal);
         }
 
@@ -94,6 +96,31 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
         public bool SoftGoalExists(string identifier)
 		{
 			return SoftGoals.ContainsKey(identifier);
+        }
+
+        public Goal GetGoal(string identifier)
+        {
+            return Goals.ContainsKey(identifier) ? Goals[identifier] : null;
+        }
+
+        public SoftGoal GetSoftGoal(string identifier)
+		{
+			return SoftGoals.ContainsKey(identifier) ? SoftGoals[identifier] : null;
+        }
+
+        public GoalRefinement GetGoalRefinement(string identifier)
+		{
+			return GoalRefinements.ContainsKey(identifier) ? GoalRefinements[identifier] : null;
+        }
+
+        public GoalException GetGoalException(string identifier)
+		{
+			return GoalExceptions.ContainsKey(identifier) ? GoalExceptions[identifier] : null;
+        }
+
+        public GoalReplacement GetGoalReplacement(string identifier)
+		{
+			return GoalReplacements.ContainsKey(identifier) ? GoalReplacements[identifier] : null;
         }
     }
 }

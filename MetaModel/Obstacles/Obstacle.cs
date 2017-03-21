@@ -40,7 +40,11 @@ namespace KAOSTools.Core
             ExpertEstimates = new Dictionary<Expert, QuantileList> ();
         }
 
-        public override KAOSCoreElement Copy ()
+        public Obstacle(KAOSModel model, string identifier) : base(model, identifier)
+		{
+		}
+
+		public override KAOSCoreElement Copy ()
         {
             return new Obstacle (null) {
                 Identifier = Identifier,

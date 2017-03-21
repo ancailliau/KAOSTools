@@ -53,7 +53,12 @@ namespace UCLouvain.KAOSTools.Core.Agents
             Type = AgentType.None;
         }
 
-        public override KAOSCoreElement Copy ()
+        public Agent(KAOSModel model, string identifier) : base(model, identifier)
+		{
+			Type = AgentType.None;
+		}
+
+		public override KAOSCoreElement Copy ()
         {
             return new Agent(null) {
                 Identifier = Identifier,

@@ -50,7 +50,11 @@ namespace KAOSTools.Core
 
         public Calibration  (KAOSModel model) : base (model)
         {
-        }
+		}
+
+		public Calibration(KAOSModel model, string identifier) : base(model, identifier)
+		{
+		}
 
         public override KAOSCoreElement Copy ()
         {

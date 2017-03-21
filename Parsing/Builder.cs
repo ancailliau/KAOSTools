@@ -63,6 +63,7 @@ namespace KAOSTools.Parsing
         }
         
         protected bool GetIdentifier (ParsedElementWithAttributes parsedElement, out string identifier) {
+            /*
             if (parsedElement == null)
                 throw new ArgumentNullException ("parsedElement");
             
@@ -73,11 +74,16 @@ namespace KAOSTools.Parsing
             }
             
             identifier = (expr as ParsedIdentifierAttribute).Value;
+            */
+
+            identifier = parsedElement.Identifier;
+
             return true;
         }
         
         protected dynamic GetByIdentifier (ParsedElementWithAttributes element, string identifier)
         {
+            throw new NotImplementedException();
             return model.Elements.SingleOrDefault (e => e.Identifier == identifier);
         }
         
@@ -110,14 +116,14 @@ namespace KAOSTools.Parsing
             if (GetIdentifier (element, out identifier))
                 return GetByIdentifier (element, identifier);
             
-            if (GetName (element, out name))
-                return GetByName (element, name);
+            //if (GetName (element, out name))
+            //    return GetByName (element, name);
             
-            if (GetSignature (element, out signature))
-                return GetBySignature (element, signature);
+            //if (GetSignature (element, out signature))
+            //    return GetBySignature (element, signature);
 
             throw new InvalidOperationException (string.Format (
-                "Element '{0}' has no identifier, no name, no signature.", element));
+                "Element '{0}' has no identifier.", element));
         }
 
 

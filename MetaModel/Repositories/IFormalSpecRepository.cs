@@ -8,5 +8,6 @@ namespace UCLouvain.KAOSTools.Core.Repositories
 	{
         void Add(Predicate goal);
 		bool PredicateExists(string identifier);
+        Predicate GetPredicate(string identifier);
 	}
 }

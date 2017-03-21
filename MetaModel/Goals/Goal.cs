@@ -39,7 +39,12 @@ namespace KAOSTools.Core
         public Goal (KAOSModel model) : base(model)
         {
             Costs = new Dictionary<CostVariable, double> ();
-        }
+		}
+
+        public Goal(KAOSModel model, string identifier) : base(model, identifier)
+		{
+			Costs = new Dictionary<CostVariable, double>();
+		}
 
         public override KAOSCoreElement Copy ()
         {

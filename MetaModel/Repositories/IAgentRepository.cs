@@ -9,7 +9,10 @@ namespace UCLouvain.KAOSTools.Core.Repositories
 	{
 		void Add(Agent goal);
 		void Add(GoalAgentAssignment goal);
+
 		bool Exists(string identifier);
+
+        Agent GetAgent(string identifier);
 	}
     
 }

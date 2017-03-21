@@ -22,72 +22,73 @@ Import :=
 # First-class declarations
     
 Predicate := 
-    ( 'declare' / 'override' ) S 'predicate' S (PredicateAttribute S)* 'end' 
+    ( 'declare' / 'override' ) S 'predicate' S '[' S Identifier S ']' S (PredicateAttribute S)* 'end' 
     `value = BuildPredicate(results);`
 
 Constraint := 
-    ( 'declare' / 'override' ) S 'constraint' S (ConstraintAttribute S)* 'end' 
+    ( 'declare' / 'override' ) S 'constraint' S '[' S Identifier S ']' S (ConstraintAttribute S)* 'end' 
     `value = BuildConstraint(results);`
 
 System := 
-    ( 'declare' / 'override' ) S 'system' S (SystemAttribute S)* 'end' 
+    ( 'declare' / 'override' ) S 'system' S '[' S Identifier S ']' S (SystemAttribute S)* 'end' 
     `value = BuildSystem(results);`
     
 Goal := 
-    ( 'declare' / 'override' ) S 'goal' S (GoalAttribute S)* 'end'
+    ( 'declare' / 'override' ) S 'goal' S '[' S Identifier S ']' S (GoalAttribute S)* 'end'
     `value = BuildGoal(results);`
     
 SoftGoal := 
-    ( 'declare' / 'override' ) S 'softgoal' S (SoftGoalAttribute S)* 'end'
+    ( 'declare' / 'override' ) S 'softgoal' S '[' S Identifier S ']' S (SoftGoalAttribute S)* 'end'
     `value = BuildSoftGoal(results);`
     
 DomProp := 
-    ( 'declare' / 'override' ) S ('domainproperty' / 'domprop' ) S (DomPropAttribute S)* 'end'
+    ( 'declare' / 'override' ) S ('domainproperty' / 'domprop' ) S '[' S Identifier S ']' S (DomPropAttribute S)* 'end'
     `value = BuildDomainProperty(results);`
     
 Obstacle := 
-    ( 'declare' / 'override' ) S 'obstacle' S (ObstacleAttribute S)* 'end'
+    ( 'declare' / 'override' ) S 'obstacle' S '[' S Identifier S ']' S (ObstacleAttribute S)* 'end'
     `value = BuildObstacle(results);`
 
 Agent := 
-    ( 'declare' / 'override' ) S 'agent' S (AgentAttribute S)* 'end'
+    ( 'declare' / 'override' ) S 'agent' S '[' S Identifier S ']' S (AgentAttribute S)* 'end'
     `value = BuildAgent(results);`
 
 DomHyp := 
-    ( 'declare' / 'override' ) S ('domainhypothesis' / 'domhyp' ) S (DomHypAttribute S)* 'end'
+    ( 'declare' / 'override' ) S ('domainhypothesis' / 'domhyp' ) S '[' S Identifier S ']' S (DomHypAttribute S)* 'end'
     `value = BuildDomainHypothesis(results);`
+
+Entity := 
+    ( 'declare' / 'override' ) S ( 'entity' / 'object' ) S '[' S Identifier S ']' S (EntityAttribute S)* 'end'
+    `value = BuildEntity(results);`
+
+Type := 
+    ( 'declare' / 'override' ) S 'type' S '[' S Identifier S ']' S (TypeAttribute S)* 'end'
+    `value = BuildType(results);`
+
+Association := 
+    ( 'declare' / 'override' ) S ( 'association' / 'relation' ) S '[' S Identifier S ']' S (AssociationAttribute S)* 'end'
+    `value = BuildAssociation(results);`
+    
+Attribute := 
+    ( 'declare' / 'override' ) S ( 'attribute' ) S '[' S Identifier S ']' S (AttributeAttribute S)* 'end'
+    `value = BuildAttribute(results);`
+
+Expert := 
+    ( 'declare' / 'override' ) S 'expert' S '[' S Identifier S ']' S (ExpertAttribute S)* 'end'
+    `value = BuildExpert(results);`
+
+Calibration := 
+    ( 'declare' / 'override' ) S 'calibration' S '[' S Identifier S ']' S (CalibrationAttribute S)* 'end'
+    `value = BuildCalibration(results);`
+
+CostVariable := 
+    ( 'declare' / 'override' ) S 'cost_variable' S '[' S Identifier S ']' S (CostVariableAttribute S)* 'end'
+    `value = BuildCostVariable(results);`
+
 
 GoalRefinement := 
     'declare' S (GoalRefinementAttribute S)* 'end'
     `value = BuildGoalRefinement(results);`
-
-Entity := 
-    ( 'declare' / 'override' ) S ( 'entity' / 'object' ) S (EntityAttribute S)* 'end'
-    `value = BuildEntity(results);`
-
-Type := 
-    ( 'declare' / 'override' ) S 'type' S (TypeAttribute S)* 'end'
-    `value = BuildType(results);`
-
-Association := 
-    ( 'declare' / 'override' ) S ( 'association' / 'relation' ) S (AssociationAttribute S)* 'end'
-    `value = BuildAssociation(results);`
-    
-Attribute := 
-    ( 'declare' / 'override' ) S ( 'attribute' ) S (AttributeAttribute S)* 'end'
-    `value = BuildAttribute(results);`
-
-Expert := 
-    ( 'declare' / 'override' ) S 'expert' S (ExpertAttribute S)* 'end'
-    `value = BuildExpert(results);`
-
-Calibration := 
-    ( 'declare' / 'override' ) S 'calibration' S (CalibrationAttribute S)* 'end'
-    `value = BuildCalibration(results);`
-
-CostVariable := 
-    ( 'declare' / 'override' ) S 'cost_variable' S (CostVariableAttribute S)* 'end'
-    `value = BuildCostVariable(results);`
 
 # Attribute collection
                                                                                                                                                                                                          
@@ -174,9 +175,6 @@ CostVariableAttribute :=
 DefaultValueAttribute := 'default' S Bool
     `value = BuildDefaultValueAttribute(results);`
 
-
-
-
 CustomAttribute := '$' Identifier S '"' String? '"'
     `value = BuildCustomAttribute(results);`
     
@@ -236,16 +234,16 @@ EntityTypeAttribute := 'type' S ( 'software' / 'environment' / 'shared' )
     
 RefinedByObstacle := 
     'refinedby' S 
-    ( Obstacle / DomProp / DomHyp / Name / Identifier ) 
-    (S ',' S ( Obstacle / DomProp / DomHyp / Name / Identifier ) )*
+    ( Identifier ) 
+    (S ',' S ( Identifier ) )*
     `value = BuildRefinedBy(results);`
     
 RefinedByGoal := 
     ( 'refinedby' S 
     	( GoalRefinement
     	  / ( (RefinedByPattern S)? (RefinedByAlternative S)?
-    		( Goal / DomProp / DomHyp / Name / Identifier ) 
-    		(S ',' S ( Goal / DomProp / DomHyp / Name / Identifier ) )* )
+    		( Identifier ) 
+    		(S ',' S ( Identifier ) )* )
         )
     )
     `value = BuildRefinedBy(results);`
@@ -264,7 +262,7 @@ RefinedByAlternative := ('[' S ( Name / Identifier ) S ']')
     
 AssignedTo := 
     'assignedto' ('[' S ( Name / Identifier ) S ']')? S 
-    ( Agent / Name / Identifier ) (S ',' S ( Agent / Name / Identifier ) )*
+    ( Identifier ) (S ',' S ( Identifier ) )*
     `value = BuildAssignedTo(results);`
 
 AttributeEntity := 'attribute' S ( Attribute / ( Name S (':' S ( Type / Name / Identifier ) )? ) )

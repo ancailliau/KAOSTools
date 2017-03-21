@@ -16,6 +16,11 @@ namespace UCLouvain.KAOSTools.Core.Repositories
 		bool CostVariableExists(string identifier);
 		bool ExpertExists(string identifier);
 		bool CalibrationExists(string identifier);
+
+		Constraint GetConstraint(string identifier);
+		CostVariable GetCostVariable(string identifier);
+		Expert GetExpert(string identifier);
+		Calibration GetCalibration(string identifier);
 	}
     
 }

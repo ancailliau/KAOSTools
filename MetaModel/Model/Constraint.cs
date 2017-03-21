@@ -36,7 +36,8 @@ namespace KAOSTools.Core
 
     public class Constraint : KAOSCoreElement
     {
-        public string Name { get; set; }
+
+		public string Name { get; set; }
         public string Definition { get; set; }
         public List<string> Conflict  { get; set; }
         public List<string> Or  { get; set; }
@@ -47,7 +48,11 @@ namespace KAOSTools.Core
             Or = new List<string> ();
         }
 
-        public override KAOSCoreElement Copy ()
+        public Constraint(KAOSModel model, string identifier) : base(model, identifier)
+		{
+		}
+
+		public override KAOSCoreElement Copy ()
         {
 			return new Constraint(model) {
 				Identifier = Identifier,

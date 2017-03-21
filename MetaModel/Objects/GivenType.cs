@@ -22,6 +22,10 @@ namespace KAOSTools.Core
         {
             
         }
+        public GivenType  (KAOSModel model, string identifier) : base(model, identifier)
+		{
+
+		}
 
         public override KAOSCoreElement Copy ()
         {

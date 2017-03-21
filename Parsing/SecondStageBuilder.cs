@@ -39,8 +39,59 @@ namespace KAOSTools.Parsing
                                                              element.GetType().Name));
         }
 
+#region
+
+        public void BuildElement(ParsedGoal goal)
+        {
+			var e = model.goalRepository.GetGoal(goal.Identifier);
+			if (e == null)
+                throw new InvalidOperationException(string.Format("Goal '{0}' was not pre-built.", goal.Identifier));
+            
+			BuildElement(goal, e);
+		}
+
+        public void BuildElement(ParsedObstacle obstacle)
+		{
+            var e = model.obstacleRepository.GetObstacle(obstacle.Identifier);
+			if (e == null)
+				throw new InvalidOperationException(string.Format("Obstacle '{0}' was not pre-built.", obstacle.Identifier));
+
+			BuildElement(obstacle, e);
+		}
+
+        public void BuildElement(ParsedAgent agent)
+		{
+            var e = model.agentRepository.GetAgent(agent.Identifier);
+			if (e == null)
+				throw new InvalidOperationException(string.Format("Agent '{0}' was not pre-built.", agent.Identifier));
+
+			BuildElement(agent, e);
+		}
+
+        public void BuildElement(ParsedDomainProperty domprop)
+		{
+            var e = model.domainRepository.GetDomainProperty(domprop.Identifier);
+			if (e == null)
+				throw new InvalidOperationException(string.Format("Domain property '{0}' was not pre-built.", domprop.Identifier));
+
+			BuildElement(domprop, e);
+		}
+
+        public void BuildElement(ParsedDomainHypothesis domhyp)
+		{
+            var e = model.domainRepository.GetDomainHypothesis(domhyp.Identifier);
+			if (e == null)
+				throw new InvalidOperationException(string.Format("Domain hypothesis '{0}' was not pre-built.", domhyp.Identifier));
+
+			BuildElement(domhyp, e);
+		}
+
+#endregion
+
         public void BuildElement (ParsedElementWithAttributes element)
         {
+            throw new NotImplementedException("BuildElement " + element.GetType().FullName);
+
             var e = GetElement (element);
             if (e == null) 
                 throw new InvalidOperationException (string.Format ("Element '{0}' was not pre-built.", element));
@@ -399,16 +450,19 @@ namespace KAOSTools.Parsing
             var obstruction = new Obstruction (model);
             obstruction.SetObstructedGoal (element);
 
-            if (obstructedBy.Value is IdentifierExpression | obstructedBy.Value is NameExpression) {
-                Obstacle obstacle;
-                if (!Get (obstructedBy.Value, out obstacle)) {
-                    obstacle = Create<Obstacle> (obstructedBy.Value);
-                }
-                obstruction.SetObstacle (obstacle);
+            if (obstructedBy.Value is IdentifierExpression) {
+                var id = ((IdentifierExpression)obstructedBy.Value).Value;
 
-            } else if (obstructedBy.Value is ParsedObstacle) {
-                obstruction.SetObstacle (fsb.BuildElementWithKeys (obstructedBy.Value));
-                BuildElement (obstructedBy.Value);
+                Obstacle obstacle;
+                if ((obstacle = model.obstacleRepository.GetObstacle(id)) != null)
+                {
+                    obstruction.SetObstacle(obstacle);
+                }
+                else
+                {
+                    throw new ParserException(obstructedBy.Line, obstructedBy.Col, obstructedBy.Filename, 
+                                              "The obstacle '{0}' was not found", id);
+                }
 
             } else {
                 
@@ -430,26 +484,19 @@ namespace KAOSTools.Parsing
 
 
             foreach (var child in assignedTo.Values) {
-                if (child is IdentifierExpression | child is NameExpression) {
+                if (child is IdentifierExpression)
+                {
+                    var id = ((IdentifierExpression)child).Value;
+                    
                     Agent agent;
-                    if (!Get (child, out agent)) {
-                        agent = Create<Agent> (child);
+                    if ((agent = model.agentRepository.GetAgent(id)) != null)
+                    {
+                        assignment.Add(agent);
+                        continue;
                     }
-                    assignment.Add (agent);
-
-                } else if (child is ParsedAgent) {
-                    assignment.Add (fsb.BuildElementWithKeys (child));
-                    BuildElement (child);
-
-                } else {
-
-                    // TODO use string.Format
-                    throw new NotImplementedException (
-                        "'" + child.GetType().Name 
-                        + "' is not supported in '" 
-                        + assignedTo.GetType().Name + "' on '" 
-                        + element.GetType().Name + "'");
                 }
+
+                throw new NotImplementedException (string.Format("'{0}' is not supported in '{1}' on '{2}'", child.GetType().Name, assignedTo.GetType().Name, element.GetType().Name));
             }
 
             if (!assignment.IsEmpty)
@@ -461,61 +508,38 @@ namespace KAOSTools.Parsing
             var refinement = new GoalRefinement (model);
             refinement.SetParentGoal(element);
 
-
+            // Parse the reference to children
             foreach (var child in refinedBy.Values) {
-                if (child is IdentifierExpression | child is NameExpression) {
+                if (child is IdentifierExpression)
+                {
+                    var id = ((IdentifierExpression)child).Value;
+
+                    Goal goal;
+                    if ((goal = model.goalRepository.GetGoal(id)) != null)
+                    {
+                        refinement.Add(goal);
+                        continue;
+                    }
+
                     DomainProperty domprop;
-                    if (Get (child, out domprop)) {
-                        refinement.Add (domprop);
+                    if ((domprop = model.domainRepository.GetDomainProperty(id)) != null)
+                    {
+                        refinement.Add(domprop);
                         continue;
                     }
 
                     DomainHypothesis domhyp;
-                    if (Get (child, out domhyp)) {
-                        refinement.Add (domhyp);
+                    if ((domhyp = model.domainRepository.GetDomainHypothesis(id)) != null)
+                    {
+                        refinement.Add(domhyp);
                         continue;
                     }
-
-                    Goal goal;
-                    if (!Get (child, out goal)) {
-                        goal = Create<Goal> (child);
-                    }
-                    refinement.Add (goal);
-
-                } else if (child is ParsedGoal) {
-                    refinement.Add (fsb.BuildElementWithKeys (child));
-                    BuildElement (child);
-                    
-                } else if (child is ParsedDomainProperty) {
-                    refinement.Add (fsb.BuildElementWithKeys (child));
-                    BuildElement (child);
-                    
-                } else if (child is ParsedDomainHypothesis) {
-                    refinement.Add (fsb.BuildElementWithKeys (child));
-                    BuildElement (child);
-                    
-                } else if (child is ParsedGoalRefinement) {
-
-                    var goalRefinement = new GoalRefinement (model) { 
-                        ParentGoalIdentifier = element.Identifier
-                    };
-
-                    model.Add (goalRefinement);
-                    BuildElement (child, goalRefinement);
-
-                    return;
-
-                } else {
-                    
-                    // TODO use string.Format
-                    throw new NotImplementedException (
-                        "'" + child.GetType().Name 
-                        + "' is not supported in '" 
-                        + refinedBy.GetType().Name + "' on '" 
-                        + element.GetType().Name + "'");
                 }
+
+                throw new NotImplementedException(string.Format("'{0}' is not supported in '{1}' on '{2}'", child.GetType().Name, refinedBy.GetType().Name, element.GetType().Name));
             }
 
+            // Parse the refinement pattern provided
             if (refinedBy.RefinementPattern != null) {
                 if (refinedBy.RefinementPattern.Name == ParsedRefinementPatternName.Milestone) {
                     refinement.RefinementPattern = RefinementPattern.Milestone;
@@ -523,6 +547,7 @@ namespace KAOSTools.Parsing
 
                 else if (refinedBy.RefinementPattern.Name == ParsedRefinementPatternName.Case) {
                     refinement.RefinementPattern = RefinementPattern.Case;
+                    // TODO Refactor that allowing to specify how much the subgoal contribute (alone) to the parent goal.
                     foreach (var p in refinedBy.RefinementPattern.Parameters) {
                         refinement.Parameters.Add ((p as ParsedFloat).Value);    
                     }
@@ -558,54 +583,41 @@ namespace KAOSTools.Parsing
                 model.Add (refinement);
         }
 
-
-
         public void Handle (Obstacle element, ParsedRefinedByAttribute refinedBy)
         {
             var refinement = new ObstacleRefinement (model);
             refinement.SetParentObstacle(element);
             
             foreach (var child in refinedBy.Values) {
-                if (child is IdentifierExpression | child is NameExpression) {
-                    DomainProperty domprop;
-                    if (Get (child, out domprop)) {
-                        refinement.Add (domprop);
-                        continue;
-                    }
-                    
-                    DomainHypothesis domhyp;
-                    if (Get (child, out domhyp)) {
-                        refinement.Add (domhyp);
-                        continue;
-                    }
-                    
-                    Obstacle obstacle;
-                    if (!Get (child, out obstacle)) {
-                        obstacle = Create<Obstacle> (child);
-                    }
-                    refinement.Add (obstacle);
-                    
-                } else if (child is ParsedObstacle) {
-                    refinement.Add (fsb.BuildElementWithKeys (child));
-                    BuildElement (child);
-                    
-                } else if (child is ParsedDomainProperty) {
-                    refinement.Add (fsb.BuildElementWithKeys (child));
-                    BuildElement (child);
-                    
-                } else if (child is ParsedDomainHypothesis) {
-                    refinement.Add (fsb.BuildElementWithKeys (child));
-                    BuildElement (child);
-                    
-                } else {
+                if (child is IdentifierExpression)
+                {
+                    var id = ((IdentifierExpression)child).Value;
 
-                // TODO use string.Format
-                throw new NotImplementedException (
-                    "'" + child.GetType().Name 
-                    + "' is not supported in '" 
-                    + refinedBy.GetType().Name + "' on '" 
-                    + element.GetType().Name + "'");
+                    DomainProperty domprop;
+                    if ((domprop = model.domainRepository.GetDomainProperty(id)) != null)
+                    {
+                        refinement.Add(domprop);
+                        continue;
+                    }
+
+                    DomainHypothesis domhyp;
+                    if ((domhyp = model.domainRepository.GetDomainHypothesis(id)) != null)
+                    {
+                        refinement.Add(domhyp);
+                        continue;
+                    }
+
+                    Obstacle obstacle;
+                    if ((obstacle = model.obstacleRepository.GetObstacle(id)) != null)
+                    {
+                        refinement.Add(obstacle);
+                        continue;
+                    }
+
                 }
+
+                throw new NotImplementedException (
+string.Format("'{0}' is not supported in '{1}' on '{2}'", child.GetType().Name, refinedBy.GetType().Name, element.GetType().Name));
             }
             
             if (!refinement.IsEmpty)

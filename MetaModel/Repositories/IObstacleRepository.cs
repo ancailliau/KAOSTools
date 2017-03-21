@@ -18,5 +18,11 @@ namespace UCLouvain.KAOSTools.Core.Repositories
 		bool ObstacleRefinementExists(string identifier);
 		bool ObstructionExists(string identifier);
 		bool ResolutionExists(string identifier);
+
+		Obstacle GetObstacle(string identifier);
+		ObstacleAssumption GetObstacleAssumption(string identifier);
+		ObstacleRefinement GetObstacleRefinement(string identifier);
+		Obstruction GetObstruction(string identifier);
+		Resolution GetResolution(string identifier);
 	}
 }

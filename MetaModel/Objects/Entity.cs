@@ -24,7 +24,12 @@ namespace KAOSTools.Core
         public Entity (KAOSModel model) : base (model)
         {
             ParentIdentifiers    = new HashSet<string> ();
-        }
+		}
+
+        public Entity(KAOSModel model, string identifier) : base(model, identifier)
+		{
+			ParentIdentifiers = new HashSet<string>();
+		}
 
         public void AddParent (Entity parent)
         {

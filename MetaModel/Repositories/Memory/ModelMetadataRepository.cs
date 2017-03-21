@@ -78,5 +78,25 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 		{
             return Experts.ContainsKey(identifier);
         }
+
+        public Constraint GetConstraint(string identifier)
+        {
+            return Constraints.ContainsKey(identifier) ? Constraints[identifier] : null;
+        }
+
+        public CostVariable GetCostVariable(string identifier)
+		{
+			return CostVariables.ContainsKey(identifier) ? CostVariables[identifier] : null;
+        }
+
+        public Expert GetExpert(string identifier)
+		{
+			return Experts.ContainsKey(identifier) ? Experts[identifier] : null;
+        }
+
+        public Calibration GetCalibration(string identifier)
+		{
+			return Calibrations.ContainsKey(identifier) ? Calibrations[identifier] : null;
+        }
     }
 }

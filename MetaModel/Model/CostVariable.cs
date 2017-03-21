@@ -40,7 +40,10 @@ namespace KAOSTools.Core
 
         public CostVariable  (KAOSModel model) : base (model)
         {
-        }
+		}
+		public CostVariable(KAOSModel model, string identifier) : base(model, identifier)
+		{
+		}
 
         public override KAOSCoreElement Copy ()
         {

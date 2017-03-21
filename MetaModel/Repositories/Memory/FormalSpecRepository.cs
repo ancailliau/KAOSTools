@@ -26,6 +26,11 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
         public bool PredicateExists(string identifier)
         {
             return Predicates.ContainsKey(identifier);
-        }
+		}
+
+		public Predicate GetPredicate(string identifier)
+		{
+            return Predicates.ContainsKey(identifier) ? Predicates[identifier] : null;
+		}
     }
 }

@@ -14,6 +14,10 @@ namespace KAOSTools.Core
         {
             Links = new HashSet<Link> ();
         }
+        public Relation(KAOSModel model, string identifier) : base(model, identifier)
+		{
+			Links = new HashSet<Link>();
+		}
     }
 
     #endregion

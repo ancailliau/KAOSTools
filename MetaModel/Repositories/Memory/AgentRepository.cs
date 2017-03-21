@@ -40,5 +40,10 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
         {
             return Agents.ContainsKey(identifier);
         }
+
+        public Agent GetAgent(string identifier)
+        {
+            return Agents.ContainsKey(identifier) ? Agents[identifier] : null;
+        }
     }
 }

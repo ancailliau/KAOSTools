@@ -43,16 +43,56 @@ namespace KAOSTools.Parsing
         {
         }
 
-        public void BuildElement (ParsedElementWithAttributes element)
-        {
-            var e = GetElement (element);
-            if (e == null) 
-                throw new InvalidOperationException (string.Format ("Element '{0}' was not pre-built.", element));
+		#region
 
-            BuildElement (element, e);
-        }
+		public void BuildElement(ParsedGoal goal)
+		{
+			var e = model.goalRepository.GetGoal(goal.Identifier);
+			if (e == null)
+				throw new InvalidOperationException(string.Format("Goal '{0}' was not pre-built.", goal.Identifier));
 
-        public void BuildElement (ParsedElementWithAttributes element, dynamic e)
+			BuildElement(goal, e);
+		}
+
+		public void BuildElement(ParsedObstacle obstacle)
+		{
+			var e = model.obstacleRepository.GetObstacle(obstacle.Identifier);
+			if (e == null)
+				throw new InvalidOperationException(string.Format("Obstacle '{0}' was not pre-built.", obstacle.Identifier));
+
+			BuildElement(obstacle, e);
+		}
+
+		public void BuildElement(ParsedAgent agent)
+		{
+			var e = model.agentRepository.GetAgent(agent.Identifier);
+			if (e == null)
+				throw new InvalidOperationException(string.Format("Agent '{0}' was not pre-built.", agent.Identifier));
+
+			BuildElement(agent, e);
+		}
+
+		public void BuildElement(ParsedDomainProperty domprop)
+		{
+			var e = model.domainRepository.GetDomainProperty(domprop.Identifier);
+			if (e == null)
+				throw new InvalidOperationException(string.Format("Domain property '{0}' was not pre-built.", domprop.Identifier));
+
+			BuildElement(domprop, e);
+		}
+
+		public void BuildElement(ParsedDomainHypothesis domhyp)
+		{
+			var e = model.domainRepository.GetDomainHypothesis(domhyp.Identifier);
+			if (e == null)
+				throw new InvalidOperationException(string.Format("Domain hypothesis '{0}' was not pre-built.", domhyp.Identifier));
+
+			BuildElement(domhyp, e);
+		}
+
+		#endregion
+
+		public void BuildElement (ParsedElementWithAttributes element, dynamic e)
         {
             foreach (dynamic attribute in element.Attributes) {
                 Handle (e, attribute);

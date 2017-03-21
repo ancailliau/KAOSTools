@@ -95,5 +95,30 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 		{
             return Relations.ContainsKey(identifier);
         }
+
+        public EntityAttribute GetEntityAttribute(string identifier)
+        {
+            return EntityAttributes.ContainsKey(identifier) ? EntityAttributes[identifier] : null;
+        }
+
+        public Entity GetEntity(string identifier)
+		{
+			return Entities.ContainsKey(identifier) ? Entities[identifier] : null;
+        }
+
+        public GivenType GetGivenType(string identifier)
+		{
+			return GivenTypes.ContainsKey(identifier) ? GivenTypes[identifier] : null;
+        }
+
+        public Link GetLink(string identifier)
+		{
+			return Links.ContainsKey(identifier) ? Links[identifier] : null;
+        }
+
+        public Relation GetRelation(string identifier)
+		{
+			return Relations.ContainsKey(identifier) ? Relations[identifier] : null;
+        }
     }
 }

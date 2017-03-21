@@ -11,7 +11,7 @@ namespace KAOSTools.Core
 
     public class Predicate : KAOSCoreElement
     {
-        public string Name { get; set; }
+		public string Name { get; set; }
 
         public bool DefaultValue {
             get;
@@ -36,7 +36,11 @@ namespace KAOSTools.Core
             DefaultValue = false;
         }
 
-        public override KAOSCoreElement Copy ()
+        public Predicate(KAOSModel model, string identifier) : base(model, identifier)
+		{
+		}
+
+		public override KAOSCoreElement Copy ()
         {
 			return new Predicate(model) {
 				Identifier = Identifier,

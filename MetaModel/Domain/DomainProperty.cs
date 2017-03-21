@@ -29,7 +29,8 @@ namespace KAOSTools.Core
 
         public double EPS { get; set; }
 
-        public DomainProperty (KAOSModel model) : base (model) {}
+		public DomainProperty(KAOSModel model) : base(model) { }
+        public DomainProperty(KAOSModel model, string identifier) : base(model, identifier) { }
 
         public override KAOSCoreElement Copy ()
         {

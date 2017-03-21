@@ -44,5 +44,15 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 		{
             return DomainProperties.ContainsKey(identifier);
         }
+
+        public DomainProperty GetDomainProperty(string identifier)
+        {
+            return DomainProperties.ContainsKey(identifier) ? DomainProperties[identifier] : null;
+        }
+
+        public DomainHypothesis GetDomainHypothesis(string identifier)
+		{
+			return DomainHypotheses.ContainsKey(identifier) ? DomainHypotheses[identifier] : null;
+        }
     }
 }
