@@ -12,7 +12,7 @@ namespace KAOSTools.Parsing
     public class FirstStageBuilder : Builder
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:KAOSTools.Parsing.FirstStageBuilder"/> class.
+        /// Initializes a new instance of the <see cref="T:FirstStageBuilder"/> class.
         /// </summary>
         /// <param name="model">Model.</param>
         /// <param name="relativePath">Relative path.</param>
@@ -51,52 +51,57 @@ namespace KAOSTools.Parsing
             model.Parameters.Add(element.Name, element.Value);
         }
 
+        /// <summary>
+        /// Build the elements corresponding to the parsed declare. This does not handle the attributes, which
+        /// will be handled by the second stage builder.
+        /// </summary>
+        /// <returns>The element corresponding to the declared element.</returns>
+        /// <param name="element">The parsed declare element.</param>
         public KAOSCoreElement BuildDeclare (ParsedDeclare element)
         {
             if (element is ParsedGoal)
-                return BuildGoal((KAOSTools.Parsing.ParsedGoal)element);
+                return BuildGoal((ParsedGoal)element);
 
             if (element is ParsedSoftGoal)
-                return BuildSoftGoal ((KAOSTools.Parsing.ParsedSoftGoal)element);
+                return BuildSoftGoal ((ParsedSoftGoal)element);
 
             if (element is ParsedDomainProperty)
-                return BuildDomainProperty ((KAOSTools.Parsing.ParsedDomainProperty)element);
+                return BuildDomainProperty ((ParsedDomainProperty)element);
 
             if (element is ParsedDomainHypothesis)
-                return BuildDomainHypothesis ((KAOSTools.Parsing.ParsedDomainHypothesis)element);
+                return BuildDomainHypothesis ((ParsedDomainHypothesis)element);
 
             if (element is ParsedObstacle)
-                return BuildObstacle ((KAOSTools.Parsing.ParsedObstacle)element);
+                return BuildObstacle ((ParsedObstacle)element);
 
             if (element is ParsedAgent)
-                return BuildAgent ((KAOSTools.Parsing.ParsedAgent)element);
+                return BuildAgent ((ParsedAgent)element);
 
             if (element is ParsedPredicate)
-                return BuildPredicate ((KAOSTools.Parsing.ParsedPredicate)element);
+                return BuildPredicate ((ParsedPredicate)element);
 
             if (element is ParsedEntity)
-                return BuildEntity ((KAOSTools.Parsing.ParsedEntity)element);
+                return BuildEntity ((ParsedEntity)element);
 
             if (element is ParsedGivenType)
-				return BuildGivenType ((KAOSTools.Parsing.ParsedGivenType)element);
+				return BuildGivenType ((ParsedGivenType)element);
 
             if (element is ParsedAssociation)
-				return BuildRelation ((KAOSTools.Parsing.ParsedAssociation)element);
+				return BuildRelation ((ParsedAssociation)element);
 
             if (element is ParsedExpert)
-                return BuildExpert ((KAOSTools.Parsing.ParsedExpert)element);
+                return BuildExpert ((ParsedExpert)element);
 
             if (element is ParsedCalibration)
-				return BuildCalibration ((KAOSTools.Parsing.ParsedCalibration)element);
+				return BuildCalibration ((ParsedCalibration)element);
             
             if (element is ParsedCostVariable)
-				return BuildCostVariable ((KAOSTools.Parsing.ParsedCostVariable)element);
+				return BuildCostVariable ((ParsedCostVariable)element);
 
             if (element is ParsedConstraint)
-				return BuildConstraint((KAOSTools.Parsing.ParsedConstraint)element);
-
-
-            throw new BuilderException (string.Format ("'{0}' not supported", element.GetType ()),
+				return BuildConstraint((ParsedConstraint)element);
+            
+            throw new BuilderException (string.Format ("Parsed element '{0}' is not supported", element.GetType ()),
                                         element.Filename, element.Line, element.Col);
 		}
 
@@ -267,7 +272,5 @@ namespace KAOSTools.Parsing
 
 			return g;
 		}
-
     }
 }
-
