@@ -9,9 +9,28 @@ namespace KAOSTools.Core
 {
     public class KAOSModel
     {
-        public string Author { get; set; }
-        public string Title { get; set; }
-        public string Version { get; set; }
+        public string Author
+        {
+            get
+            {
+                return Parameters["author"];
+            }
+        }
+
+		public string Title
+		{
+			get
+			{
+				return Parameters["title"];
+			}
+		}
+		public string Version
+		{
+			get
+			{
+				return Parameters["version"];
+			}
+		}
 
         public Dictionary<string,string> Parameters {
             get;
