@@ -35,8 +35,6 @@ namespace KAOSTools.Parsing
 
         public void BuildElement (ParsedElement element)
         {
-            throw new NotImplementedException (string.Format("'{0}' is not yet supported", 
-                                                             element.GetType().Name));
         }
 
         public void BuildElement (ParsedModelAttribute element)
@@ -44,6 +42,8 @@ namespace KAOSTools.Parsing
         }
 
 		#region
+
+        // Only elements with a formal spec attribute are concerned by the third stage.
 
 		public void BuildElement(ParsedGoal goal)
 		{
@@ -61,15 +61,6 @@ namespace KAOSTools.Parsing
 				throw new InvalidOperationException(string.Format("Obstacle '{0}' was not pre-built.", obstacle.Identifier));
 
 			BuildElement(obstacle, e);
-		}
-
-		public void BuildElement(ParsedAgent agent)
-		{
-			var e = model.agentRepository.GetAgent(agent.Identifier);
-			if (e == null)
-				throw new InvalidOperationException(string.Format("Agent '{0}' was not pre-built.", agent.Identifier));
-
-			BuildElement(agent, e);
 		}
 
 		public void BuildElement(ParsedDomainProperty domprop)
