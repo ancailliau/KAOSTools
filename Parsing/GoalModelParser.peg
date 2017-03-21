@@ -298,7 +298,7 @@ SoftGoalContributionAttribute := 'contribute' S
 
 
 
-CostAttribute := 'cost' S ('[' S ( Name / Identifier ) S ']') S Float
+CostAttribute := 'cost' S ('[' S ( Identifier ) S ']') S Float
     `value = BuildCostAttribute(results);`
 
 

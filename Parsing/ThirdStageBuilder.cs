@@ -99,13 +99,9 @@ namespace KAOSTools.Parsing
             var arg_name = ppa.Name;
             Entity arg_type = null;
             if (ppa.Type != null) {
-                if (ppa.Type is IdentifierExpression | ppa.Type is NameExpression) {
-                    if (!Get<Entity>(ppa.Type, out arg_type)) {
-                        arg_type = Create<Entity> (ppa.Type);
-                    }
-                } else if (ppa.Type is ParsedEntity) {
-                    arg_type = fsb.BuildElementWithKeys (ppa.Type);
-                    BuildElement (ppa.Type);
+                if (ppa.Type is IdentifierExpression) {
+                    var id = ((IdentifierExpression)ppa.Type).Value;
+                    arg_type = model.entityRepository.GetEntity(id);
 
                 } else {
                     throw new NotImplementedException (string.Format ("'{0}' is not supported in '{1}' on '{2}'", 

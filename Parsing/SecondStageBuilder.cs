@@ -87,16 +87,6 @@ namespace KAOSTools.Parsing
 
 #endregion
 
-        public void BuildElement (ParsedElementWithAttributes element)
-        {
-            throw new NotImplementedException("BuildElement " + element.GetType().FullName);
-
-            var e = GetElement (element);
-            if (e == null) 
-                throw new InvalidOperationException (string.Format ("Element '{0}' was not pre-built.", element));
-
-            BuildElement (element, e);
-        }
 
         public void BuildElement (ParsedElementWithAttributes element, dynamic e)
         {
@@ -121,7 +111,9 @@ namespace KAOSTools.Parsing
         public void Handle (Goal element, ParsedCostAttribute attribute)
         {
             CostVariable v;
-            if (Get<CostVariable> (attribute.CostVariable, out v)) {
+            string id = ((IdentifierExpression)attribute.CostVariable).Value;
+
+            if ((v = model.modelMetadataRepository.GetCostVariable(id)) != null) {
                 element.Costs.Add (v, attribute.Value.Value);
             } else {
                 throw new NotImplementedException ();
@@ -143,9 +135,11 @@ namespace KAOSTools.Parsing
 
                 SoftGoal goal;
 
-                if (child is IdentifierExpression | child is NameExpression) {
-                    if (!Get (child, out goal)) {
-                        goal = Create<SoftGoal> (child);
+                if (child is IdentifierExpression) {
+                    var id = ((IdentifierExpression)child).Value;
+                    if ((goal = model.goalRepository.GetSoftGoal (id)) == null) {
+                        throw new ParserException(parsedAttribute.Line, parsedAttribute.Col, parsedAttribute.Filename,
+                                                  string.Format("Soft goal '{0}' was not found", id));
                     }
 
                 } else if (child is ParsedSoftGoal) {
@@ -207,50 +201,6 @@ namespace KAOSTools.Parsing
                 throw new NotImplementedException ();
             }
         }
-        
-        public void Handle (GoalRefinement element, 
-                            ParsedGoalRefinementChildrenAttribute parsedAttribute)
-        {
-            foreach (var child in parsedAttribute.Values) {
-                if (child is IdentifierExpression | child is NameExpression) {
-                    DomainProperty domprop;
-                    if (Get (child, out domprop)) {
-                        element.Add (domprop);
-                        continue;
-                    }
-
-                    DomainHypothesis domhyp;
-                    if (Get (child, out domhyp)) {
-                        element.Add (domhyp);
-                        continue;
-                    }
-
-                    Goal goal;
-                    if (!Get (child, out goal)) {
-                        goal = Create<Goal> (child);
-                    }
-                    element.Add (goal);
-
-                } else if (child is ParsedGoal) {
-                    element.Add (fsb.BuildElementWithKeys (child));
-                    BuildElement (child);
-
-                } else if (child is ParsedDomainProperty) {
-                    element.Add (fsb.BuildElementWithKeys (child));
-                    BuildElement (child);
-
-                } else if (child is ParsedDomainHypothesis) {
-                    element.Add (fsb.BuildElementWithKeys (child));
-                    BuildElement (child);
-
-                } else {
-                    // TODO use string.Format
-                    throw new NotImplementedException (
-                        "'" + child.GetType().Name + "' is not supported in '" 
-                        + parsedAttribute.GetType().Name + "' on '" + element.GetType().Name + "'");
-                }
-            }
-        }
 
         public void Handle (GoalRefinement element, 
                             ParsedIsComplete parsedAttribute)
@@ -272,14 +222,10 @@ namespace KAOSTools.Parsing
                 goal = null;
 
             } else {
-                if (exception.ResolvingGoal is IdentifierExpression | exception.ResolvingGoal is NameExpression) {
-                    if (!Get (exception.ResolvingGoal, out goal)) {
-                        goal = Create<Goal> (exception.ResolvingGoal);
-                    }
+                if (exception.ResolvingGoal is IdentifierExpression) {
+                    var id = ((IdentifierExpression)exception.ResolvingGoal).Value;
+                    goal = model.goalRepository.GetGoal(id);
 
-                } else if (exception.ResolvingGoal is ParsedGoal) {
-                        goal = fsb.BuildElementWithKeys (exception.ResolvingGoal);
-                        BuildElement (exception.ResolvingGoal);
                 } else {
                     throw new NotImplementedException (string.Format ("'{0}' is not supported in '{1}' on '{2}'",
                                                                       exception.ResolvingGoal.GetType().Name,
@@ -288,14 +234,10 @@ namespace KAOSTools.Parsing
                 }
             }
 
-            if (exception.ResolvedObstacle is IdentifierExpression | exception.ResolvedObstacle is NameExpression) {
-                if (!Get (exception.ResolvedObstacle, out obstacle)) {
-                    obstacle = Create<Obstacle> (exception.ResolvedObstacle);
-                }
+            if (exception.ResolvedObstacle is IdentifierExpression) {
+				var id = ((IdentifierExpression)exception.ResolvedObstacle).Value;
+                    obstacle = model.obstacleRepository.GetObstacle (id);
 
-            } else if (exception.ResolvingGoal is ParsedGoal) {
-                obstacle = fsb.BuildElementWithKeys (exception.ResolvedObstacle);
-                BuildElement (exception.ResolvedObstacle);
             } else {
                 throw new NotImplementedException (string.Format ("'{0}' is not supported in '{1}' on '{2}'",
                                                                   exception.ResolvedObstacle.GetType().Name,
@@ -315,15 +257,11 @@ namespace KAOSTools.Parsing
         public void Handle (Obstacle element, ParsedResolvedByAttribute resolvedBy)
         {
             Goal goal;
-            if (resolvedBy.Value is IdentifierExpression 
-                | resolvedBy.Value is NameExpression) {
-                if (!Get (resolvedBy.Value, out goal)) {
-                    goal = Create<Goal> (resolvedBy.Value);
-                }
+            if (resolvedBy.Value is IdentifierExpression ) {
 
-            } else if (resolvedBy.Value is ParsedGoal) {
-                goal = fsb.BuildElementWithKeys (resolvedBy.Value);
-                BuildElement (resolvedBy.Value);
+				var id = ((IdentifierExpression)resolvedBy.Value).Value;
+
+				goal = model.goalRepository.GetGoal(id);
 
             } else {
                 throw new NotImplementedException (string.Format ("'{0}' is not supported in '{1}' on '{2}'", 
@@ -364,18 +302,19 @@ namespace KAOSTools.Parsing
                 else
                     throw new NotImplementedException ();
 
-                foreach (var parameter in resolvedBy.Pattern.Parameters) {
-                    DomainHypothesis hypothesis;
-                    if (!Get (parameter, out hypothesis)) {
-                        Goal goalAsParameter;
-                        if (!Get (parameter, out goalAsParameter)) {
-                            goalAsParameter = Create<Goal> (parameter);
-                        }
-                        resolution.Parameters.Add (goalAsParameter);
-                    } else {
-                        resolution.Parameters.Add (hypothesis);
-                    }
-                }
+                // TODO WTF is that doing???
+                //foreach (var parameter in resolvedBy.Pattern.Parameters) {
+                //    DomainHypothesis hypothesis;
+                //    if (!Get (parameter, out hypothesis)) {
+                //        Goal goalAsParameter;
+                //        if (!Get (parameter, out goalAsParameter)) {
+                //            goalAsParameter = Create<Goal> (parameter);
+                //        }
+                //        resolution.Parameters.Add (goalAsParameter);
+                //    } else {
+                //        resolution.Parameters.Add (hypothesis);
+                //    }
+                //}
             }
 
             model.Add (resolution);
@@ -419,14 +358,9 @@ namespace KAOSTools.Parsing
 
             GivenType givenType = null;
             if (attribute.Value != null) {
-                if (attribute.Value is IdentifierExpression | attribute.Value is NameExpression) {
-                    if (!Get (attribute.Value, out givenType)) {
-                        givenType = Create<GivenType> (attribute.Value);
-                    }
-
-                } else if (attribute.Value is ParsedGivenType) {
-                    givenType = fsb.BuildElementWithKeys (attribute.Value);
-                    BuildElement (attribute.Value);
+                if (attribute.Value is IdentifierExpression) {
+                    string id = ((IdentifierExpression)attribute.Value).Value;
+                    givenType = model.entityRepository.GetGivenType(id);
 
                 } else {
                     throw new NotImplementedException (string.Format ("'{0}' is not supported in '{1}' on '{2}'", 
@@ -621,16 +555,13 @@ string.Format("'{0}' is not supported in '{1}' on '{2}'", child.GetType().Name, 
         
         public void Handle (Entity element, ParsedIsAAttribute attribute)
         {
-            if (attribute.Value is IdentifierExpression | attribute.Value is NameExpression) {
+            if (attribute.Value is IdentifierExpression) {
                 Entity entity;
-                if (!Get (attribute.Value, out entity)) {
-                    entity = Create<Entity> (attribute.Value);
-                }
+                string id = ((IdentifierExpression)attribute.Value).Value;
+				entity = model.entityRepository.GetEntity(id);
+
                 element.AddParent (entity);
-                
-            } else if (attribute.Value is ParsedEntity) {
-                element.AddParent (fsb.BuildElementWithKeys (attribute.Value));
-                BuildElement (attribute.Value);
+
                 
             } else {
                 throw new NotImplementedException (string.Format ("'{0}' is not supported in '{1}' on '{2}'", 
@@ -644,14 +575,10 @@ string.Format("'{0}' is not supported in '{1}' on '{2}'", child.GetType().Name, 
         {
             Entity entity;
             if (attribute.Target is IdentifierExpression | attribute.Target is NameExpression) {
-                if (!Get (attribute.Target, out entity)) {
-                    entity = Create<Entity> (attribute.Target);
-                }
-                
-            } else if (attribute.Target is ParsedEntity) {
-                entity = fsb.BuildElementWithKeys (attribute.Target);
-                BuildElement (attribute.Target);
-                
+
+				string id = ((IdentifierExpression)attribute.Target).Value;
+				entity = model.entityRepository.GetEntity(id);
+
             } else {
                 throw new NotImplementedException (string.Format ("'{0}' is not supported in '{1}' on '{2}'", 
                                                                   attribute.Target.GetType().Name,
@@ -741,41 +668,41 @@ string.Format("'{0}' is not supported in '{1}' on '{2}'", child.GetType().Name, 
                 throw new NotImplementedException ();
             }
             */
-                var expertEstimates = o.ExpertEstimates ?? new Dictionary<Expert, QuantileList> ();
+                //var expertEstimates = o.ExpertEstimates ?? new Dictionary<Expert, QuantileList> ();
 
-                var child = attribute.IdOrNAme;
-                if (child is IdentifierExpression | child is NameExpression) {
-                    Expert expert;
-                    if (Get (child, out expert)) {
-                        expertEstimates.Add (expert, new QuantileList {
-                            Quantiles = (attribute.Estimate as ParsedQuantileList).Quantiles
-                        });
-                    }
+                //var child = attribute.IdOrNAme;
+                //if (child is IdentifierExpression | child is NameExpression) {
+                //    Expert expert;
+                //    if (Get (child, out expert)) {
+                //        expertEstimates.Add (expert, new QuantileList {
+                //            Quantiles = (attribute.Estimate as ParsedQuantileList).Quantiles
+                //        });
+                //    }
 
-                } else {
-                    throw new NotImplementedException ();
-                }
+                //} else {
+                //    throw new NotImplementedException ();
+                //}
 
-                Handle (element, expertEstimates, "ExpertEstimates");
+                //Handle (element, expertEstimates, "ExpertEstimates");
             } else if (element is Calibration) {
 
-                var o = (Calibration)element;
-                var expertEstimates = o.ExpertEstimates ?? new Dictionary<Expert, QuantileList> ();
+                //var o = (Calibration)element;
+                //var expertEstimates = o.ExpertEstimates ?? new Dictionary<Expert, QuantileList> ();
 
-                var child = attribute.IdOrNAme;
-                if (child is IdentifierExpression | child is NameExpression) {
-                    Expert expert;
-                    if (Get (child, out expert)) {
-                        expertEstimates.Add (expert, new QuantileList {
-                            Quantiles = (attribute.Estimate as ParsedQuantileList).Quantiles
-                        });
-                    }
+                //var child = attribute.IdOrNAme;
+                //if (child is IdentifierExpression | child is NameExpression) {
+                //    Expert expert;
+                //    if (Get (child, out expert)) {
+                //        expertEstimates.Add (expert, new QuantileList {
+                //            Quantiles = (attribute.Estimate as ParsedQuantileList).Quantiles
+                //        });
+                //    }
 
-                } else {
-                    throw new NotImplementedException ();
-                }
+                //} else {
+                //    throw new NotImplementedException ();
+                //}
 
-                Handle (element, expertEstimates, "ExpertEstimates");
+                //Handle (element, expertEstimates, "ExpertEstimates");
 
             } else {
                 throw new NotSupportedException ();
