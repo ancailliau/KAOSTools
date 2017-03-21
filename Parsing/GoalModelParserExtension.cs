@@ -80,7 +80,7 @@ namespace KAOSTools.Parsing {
         #region First-class declarations
 
         ParsedElement BuildParsedElementWithAttributes<T> (List<Result> results, T t)
-            where T: ParsedElementWithAttributes
+            where T: ParsedDeclare
         {
             t.Line = results[0].Line;
             t.Col = results[0].Col;
@@ -97,7 +97,7 @@ namespace KAOSTools.Parsing {
         }
 
         ParsedElement BuildParsedElementWithAttributesInline<T> (List<Result> results, T t)
-            where T: ParsedElementWithAttributes
+            where T: ParsedDeclare
         {
 			t.Line = results[0].Line;
 			t.Col = results[0].Col;

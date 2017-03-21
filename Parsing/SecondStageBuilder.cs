@@ -88,7 +88,7 @@ namespace KAOSTools.Parsing
 #endregion
 
 
-        public void BuildElement (ParsedElementWithAttributes element, dynamic e)
+        public void BuildElement (ParsedDeclare element, dynamic e)
         {
             foreach (dynamic attribute in element.Attributes) {
                 Handle (e, attribute);

@@ -6,42 +6,52 @@ using UCLouvain.KAOSTools.Core.Agents;
 
 namespace KAOSTools.Parsing
 {
-
     /// <summary>
     /// First stage builder.
     /// </summary>
     public class FirstStageBuilder : Builder
     {
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:KAOSTools.Parsing.FirstStageBuilder"/> class.
+        /// </summary>
+        /// <param name="model">Model.</param>
+        /// <param name="relativePath">Relative path.</param>
         public FirstStageBuilder (KAOSModel model, 
                                   Uri relativePath)
             : base (model, relativePath)
         {}
 
         public void BuildElementWithKeys (ParsedElements elements)
-        {
-            foreach (var element in elements.Values.Where (x => x is ParsedElementWithAttributes).Cast<ParsedElementWithAttributes>()) {
-                BuildElementWithKeys (element);
-            }
-            foreach (var element in elements.Values.Where (x => x is ParsedModelAttribute).Cast<ParsedModelAttribute>()) {
-                BuildModelAttributes (element);
+		{
+            // Build the model attributes
+			foreach (var element in elements.Values.OfType<ParsedModelAttribute>())
+			{
+				BuildModelAttributes(element);
+			}
+
+            // Build the "level-0" elements 
+            foreach (var element in elements.Values.OfType<ParsedDeclare>())
+            {
+                BuildDeclare (element);
             }
         }
 
-
+        /// <summary>
+        /// Parse the model attributes (author, name, version, etc.)
+        /// </summary>
+        /// <param name="element">Element.</param>
         public void BuildModelAttributes (ParsedModelAttribute element)
         {
             if (model.Parameters.ContainsKey(element.Name))
             {
                 throw new BuilderException(string.Format("'{0}' is already defined", element.Name),
                     element.Filename, element.Line, element.Col);
-
             }
 
             model.Parameters.Add(element.Name, element.Value);
         }
 
-        public KAOSCoreElement BuildElementWithKeys (ParsedElementWithAttributes element)
+        public KAOSCoreElement BuildDeclare (ParsedDeclare element)
         {
             if (element is ParsedGoal)
                 return BuildGoal((KAOSTools.Parsing.ParsedGoal)element);

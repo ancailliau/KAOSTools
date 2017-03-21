@@ -21,11 +21,11 @@ namespace KAOSTools.Parsing
         }
     }
 
-    public class ParsedElementWithAttributes : ParsedElement {
+    public class ParsedDeclare : ParsedElement {
         public bool Override { get; set; }
         public List<dynamic> Attributes { get; set; }
         public string Identifier;
-        public ParsedElementWithAttributes (string identifier)
+        public ParsedDeclare (string identifier)
         {
             Identifier = identifier;
             Attributes = new List<dynamic>();
@@ -65,26 +65,26 @@ namespace KAOSTools.Parsing
 
     #region First class
 
-    public class ParsedPredicate : ParsedElementWithAttributes { public ParsedPredicate (string identifier) : base(identifier) {} }
-	public class ParsedSystem : ParsedElementWithAttributes { public ParsedSystem (string identifier) : base(identifier) {} }
-	public class ParsedGoal : ParsedElementWithAttributes { public ParsedGoal (string identifier) : base(identifier) {} }
-	public class ParsedSoftGoal : ParsedElementWithAttributes { public ParsedSoftGoal (string identifier) : base(identifier) {} }
-	public class ParsedDomainProperty : ParsedElementWithAttributes { public ParsedDomainProperty (string identifier) : base(identifier) {} }
-	public class ParsedDomainHypothesis : ParsedElementWithAttributes { public ParsedDomainHypothesis (string identifier) : base(identifier) {} }
-	public class ParsedObstacle : ParsedElementWithAttributes { public ParsedObstacle (string identifier) : base(identifier) {} }
-	public class ParsedAssociation : ParsedElementWithAttributes { public ParsedAssociation (string identifier) : base(identifier) {} }
-	public class ParsedGivenType : ParsedElementWithAttributes { public ParsedGivenType (string identifier) : base(identifier) {} }
-	public class ParsedAgent : ParsedElementWithAttributes { public ParsedAgent (string identifier) : base(identifier) {} }
-	public class ParsedAttributeDeclaration : ParsedElementWithAttributes { public ParsedAttributeDeclaration (string identifier) : base(identifier) {} }
-	public class ParsedGoalRefinement : ParsedElementWithAttributes { public ParsedGoalRefinement (string identifier) : base(identifier) {} }
+    public class ParsedPredicate : ParsedDeclare { public ParsedPredicate (string identifier) : base(identifier) {} }
+	public class ParsedSystem : ParsedDeclare { public ParsedSystem (string identifier) : base(identifier) {} }
+	public class ParsedGoal : ParsedDeclare { public ParsedGoal (string identifier) : base(identifier) {} }
+	public class ParsedSoftGoal : ParsedDeclare { public ParsedSoftGoal (string identifier) : base(identifier) {} }
+	public class ParsedDomainProperty : ParsedDeclare { public ParsedDomainProperty (string identifier) : base(identifier) {} }
+	public class ParsedDomainHypothesis : ParsedDeclare { public ParsedDomainHypothesis (string identifier) : base(identifier) {} }
+	public class ParsedObstacle : ParsedDeclare { public ParsedObstacle (string identifier) : base(identifier) {} }
+	public class ParsedAssociation : ParsedDeclare { public ParsedAssociation (string identifier) : base(identifier) {} }
+	public class ParsedGivenType : ParsedDeclare { public ParsedGivenType (string identifier) : base(identifier) {} }
+	public class ParsedAgent : ParsedDeclare { public ParsedAgent (string identifier) : base(identifier) {} }
+	public class ParsedAttributeDeclaration : ParsedDeclare { public ParsedAttributeDeclaration (string identifier) : base(identifier) {} }
+	public class ParsedGoalRefinement : ParsedDeclare { public ParsedGoalRefinement (string identifier) : base(identifier) {} }
                                                                             
-    public class ParsedExpert : ParsedElementWithAttributes { public ParsedExpert (string identifier) : base(identifier) {} }
-	public class ParsedCalibration : ParsedElementWithAttributes { public ParsedCalibration (string identifier) : base(identifier) {} }
-	public class ParsedCostVariable : ParsedElementWithAttributes { public ParsedCostVariable (string identifier) : base(identifier) {} }
+    public class ParsedExpert : ParsedDeclare { public ParsedExpert (string identifier) : base(identifier) {} }
+	public class ParsedCalibration : ParsedDeclare { public ParsedCalibration (string identifier) : base(identifier) {} }
+	public class ParsedCostVariable : ParsedDeclare { public ParsedCostVariable (string identifier) : base(identifier) {} }
                                                                             
-    public class ParsedConstraint : ParsedElementWithAttributes { public ParsedConstraint (string identifier) : base(identifier) {} }
+    public class ParsedConstraint : ParsedDeclare { public ParsedConstraint (string identifier) : base(identifier) {} }
 
-    public class ParsedEntity : ParsedElementWithAttributes
+    public class ParsedEntity : ParsedDeclare
     {
         public ParsedEntityType EntityType { get; set; }
         public ParsedEntity (string identifier) : base (identifier) {
