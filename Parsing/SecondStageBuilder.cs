@@ -8,17 +8,9 @@ namespace KAOSTools.Parsing
 {
     public class SecondStageBuilder : Builder
     {
-        FirstStageBuilder fsb;
-        FormulaBuilder fb;
-
-        public SecondStageBuilder (KAOSModel model, 
-                                   FirstStageBuilder fsb,
-                                   FormulaBuilder fb,
-                                   Uri relativePath)
+        public SecondStageBuilder (KAOSModel model, Uri relativePath)
             : base (model, relativePath)
         {
-            this.fsb = fsb;
-            this.fb = fb;
         }
 
         public void BuildElement (ParsedElements elements)
@@ -141,10 +133,6 @@ namespace KAOSTools.Parsing
                         throw new ParserException(parsedAttribute.Line, parsedAttribute.Col, parsedAttribute.Filename,
                                                   string.Format("Soft goal '{0}' was not found", id));
                     }
-
-                } else if (child is ParsedSoftGoal) {
-                    goal = fsb.BuildElementWithKeys (child) as SoftGoal;
-                    BuildElement (child);
 
                 } else {
                     // TODO use string.Format
