@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using KAOSTools.Parsing;
 using System.IO;
 using KAOSTools.Parsing.Plugins;
+using System.Text.RegularExpressions;
 
 namespace KAOSTools.Parsing {
     sealed partial class GoalModelParser
@@ -13,9 +14,9 @@ namespace KAOSTools.Parsing {
         partial void OnCtorEpilog()
         {
             Console.WriteLine("Adding the plugins...");
-			Add("goal", new GoalParserPlugin());
-			Add("agent", new AgentParserPlugin());
-			Add("obstacle", new ObstacleParserPlugin());
+			Add(new GoalParserPlugin());
+			Add(new AgentParserPlugin());
+			Add(new ObstacleParserPlugin());
         }
 
         ParsedElement BuildElements (List<Result> results)
@@ -69,11 +70,11 @@ namespace KAOSTools.Parsing {
 
         #region First-class declarations
 
-        public Dictionary<string, ParserPlugin> level0Parser = new Dictionary<string, ParserPlugin>();
+        public List<ParserPlugin> level0Parser = new List<ParserPlugin>();
 
-		public void Add(string declareName, ParserPlugin parser)
+		public void Add(ParserPlugin parser)
         {
-            level0Parser.Add(declareName, parser);
+            level0Parser.Add(parser);
         }
 
         ParsedElement BuildDeclareItem (List<Result> results)
@@ -81,24 +82,26 @@ namespace KAOSTools.Parsing {
             var declaredItem = results[1].Text;
             Console.WriteLine("BuildDeclareItem [ "  + declaredItem + " ]");
 
-            if (level0Parser.ContainsKey(declaredItem))
-			{
-                var parser = level0Parser[declaredItem];
-				var identifier = results[3].Text;
-
-				var attributes = new List<dynamic>();
-				for (int i = 5; i < results.Count - 1; i++)
-				{
-                    var attributeValue = (NParsedAttribute) results[i].Value;
-                    attributes.Add(parser.ParsedAttribute (attributeValue.AttributeName, attributeValue.Parameters, attributeValue.AttributeValue));
-				}
-
-				return parser.ParsedDeclare(identifier, attributes);
-            }
-            else
+            foreach (var parser in level0Parser)
             {
-                throw new NotImplementedException(string.Format ("declare '{0}' is not supported.", declaredItem));
+                var regex = new Regex(@"^"+parser.GetIdentifier()+"$");
+                var match = regex.Match(declaredItem);
+                if (match.Success)
+				{
+					var identifier = results[3].Text;
+
+					var attributes = new List<dynamic>();
+					for (int i = 5; i < results.Count - 1; i++)
+					{
+						var attributeValue = (NParsedAttribute)results[i].Value;
+						attributes.Add(parser.ParsedAttribute(attributeValue.AttributeName, attributeValue.Parameters, attributeValue.AttributeValue));
+					}
+
+					return parser.ParsedDeclare(identifier, attributes);
+                }
             }
+
+            throw new NotImplementedException(string.Format ("declare '{0}' is not supported.", declaredItem));
 		}
 
 		ParsedElement BuildAttribute (List<Result> results)

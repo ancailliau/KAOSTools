@@ -23,7 +23,7 @@ namespace KAOSTools.Parsing.Plugins
 			};
 		}
 
-		protected override string GetName()
+        public override string GetIdentifier()
 		{
 			return "obstacle";
 		}

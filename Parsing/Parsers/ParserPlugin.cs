@@ -26,17 +26,16 @@ namespace KAOSTools.Parsing.Plugins
                 }
             }
 
-            throw new NotImplementedException("The attribute " + identifier + " is not valid for " + GetName() + ".");
+            throw new NotImplementedException("The attribute " + identifier + " is not valid for " + GetIdentifier() + ".");
         }
 
-        protected abstract string GetName();
+        public abstract string GetIdentifier();
 
 		protected void Add(IParserAttribute parser)
 		{
-            Console.WriteLine("Adding attribute parser to '" + GetName() + "' for '" + parser.GetIdentifier() + "'");
+            Console.WriteLine("Adding attribute parser to '" + GetIdentifier() + "' for '" + parser.GetIdentifier() + "'");
 			attributeParsers.Add(parser);
 		}
-
-    }
+	}
     
 }
