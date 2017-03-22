@@ -14,9 +14,9 @@ namespace KAOSTools.Parsing {
         partial void OnCtorEpilog()
         {
             Console.WriteLine("Adding the plugins...");
-			Add(new GoalParserPlugin());
-			Add(new AgentParserPlugin());
-			Add(new ObstacleParserPlugin());
+			Add(new GoalDeclareParser());
+			Add(new AgentDeclareParser());
+			Add(new ObstacleDeclareParser());
         }
 
         ParsedElement BuildElements (List<Result> results)
@@ -70,9 +70,9 @@ namespace KAOSTools.Parsing {
 
         #region First-class declarations
 
-        public List<ParserPlugin> level0Parser = new List<ParserPlugin>();
+        public List<DeclareParser> level0Parser = new List<DeclareParser>();
 
-		public void Add(ParserPlugin parser)
+		public void Add(DeclareParser parser)
         {
             level0Parser.Add(parser);
         }

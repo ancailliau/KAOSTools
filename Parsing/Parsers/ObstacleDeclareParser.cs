@@ -6,9 +6,9 @@ using KAOSTools.Parsing.Parsers.Attributes;
 
 namespace KAOSTools.Parsing.Plugins
 {
-	public class ObstacleParserPlugin : ParserPlugin
+	public class ObstacleDeclareParser : DeclareParser
 	{
-		public ObstacleParserPlugin()
+		public ObstacleDeclareParser()
 		{
 			Add(new NameAttributeParser());
 			Add(new DefinitionAttributeParser());

@@ -6,11 +6,11 @@ using KAOSTools.Parsing.Parsers.Attributes;
 
 namespace KAOSTools.Parsing.Plugins
 {
-    public class GoalParserPlugin : ParserPlugin
+	public class GoalDeclareParser : DeclareParser
     {
 		string name = "goal";
 
-        public GoalParserPlugin()
+		public GoalDeclareParser()
         {
 			Add(new NameAttributeParser());
 			Add(new DefinitionAttributeParser());

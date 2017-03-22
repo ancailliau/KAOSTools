@@ -47,18 +47,18 @@
     <Compile Include="SecondStageBuilder.cs" />
     <Compile Include="ParsedEntityType.cs" />
     <Compile Include="ThirdStageBuilder.cs" />
-    <Compile Include="Parsers\GoalParserPlugin.cs" />
+    <Compile Include="Parsers\GoalDeclareParser.cs" />
     <Compile Include="Parsers\Attributes\CustomAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\DefinitionAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\NameAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\RefinedByAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\RSRAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\IParserAttribute.cs" />
-    <Compile Include="Parsers\ParserPlugin.cs" />
+    <Compile Include="Parsers\DeclareParser.cs" />
     <Compile Include="Parsers\Attributes\ObstructedByAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\AssignedToAttributeParser.cs" />
-    <Compile Include="Parsers\AgentParserPlugin.cs" />
-    <Compile Include="Parsers\ObstacleParserPlugin.cs" />
+    <Compile Include="Parsers\AgentDeclareParser.cs" />
+    <Compile Include="Parsers\ObstacleDeclareParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

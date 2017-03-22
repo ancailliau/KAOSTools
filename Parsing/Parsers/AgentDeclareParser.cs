@@ -6,9 +6,9 @@ using KAOSTools.Parsing.Parsers.Attributes;
 
 namespace KAOSTools.Parsing.Plugins
 {
-	public class AgentParserPlugin : ParserPlugin
+	public class AgentDeclareParser : DeclareParser
 	{
-		public AgentParserPlugin()
+		public AgentDeclareParser()
 		{
 			Add(new NameAttributeParser());
 			Add(new DefinitionAttributeParser());

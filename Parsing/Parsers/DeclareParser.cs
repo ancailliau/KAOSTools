@@ -6,7 +6,7 @@ using KAOSTools.Parsing.Parsers.Attributes;
 
 namespace KAOSTools.Parsing.Plugins
 {
-    public abstract class ParserPlugin
+    public abstract class DeclareParser
     {
         protected List<IParserAttribute> attributeParsers = new List<IParserAttribute>();
 
