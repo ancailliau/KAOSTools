@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -6,21 +6,18 @@ using KAOSTools.Parsing.Parsers.Attributes;
 
 namespace KAOSTools.Parsing.Plugins
 {
-	public class ObstacleDeclareParser : DeclareParser
-	{
-		public ObstacleDeclareParser()
-		{
+    public class SoftGoalDeclareParser : DeclareParser
+    {
+		public SoftGoalDeclareParser()
+        {
 			Add(new NameAttributeParser());
 			Add(new DefinitionAttributeParser());
-            Add(new RefinedByAttributeParser());
-			Add(new FormalSpecAttributeParser());
-            Add(new ResolvedByAttributeParser());
-			Add(new CustomAttributeParser());
-		}
+            Add(new CustomAttributeParser());
+        }
 
 		public override ParsedElement ParsedDeclare(string identifier, List<dynamic> attributes)
 		{
-			return new ParsedObstacle(identifier)
+            return new ParsedSoftGoal(identifier)
 			{
 				Attributes = attributes
 			};
@@ -28,7 +25,11 @@ namespace KAOSTools.Parsing.Plugins
 
         public override string GetIdentifier()
 		{
-			return "obstacle";
+			return "softgoal";
 		}
-	}
+    }
+
+    
+
+    
 }

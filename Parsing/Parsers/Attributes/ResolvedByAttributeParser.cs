@@ -5,11 +5,11 @@ using System.Linq;
 namespace KAOSTools.Parsing.Parsers.Attributes
 {
 
-	public class ResolvedByAttributeParser : IParserAttribute
+	public class ObstructedByAttributeParser : IParserAttribute
     {
         public string GetIdentifier()
         {
-            return "resolved[bB]y";
+            return "obstructed[bB]y";
         }
 
         public ParsedElement ParsedAttribute(string identifier, NParsedAttributeValue parameters, NParsedAttributeValue value)
@@ -25,7 +25,7 @@ namespace KAOSTools.Parsing.Parsers.Attributes
             if (!(v is IdentifierExpression))
 				throw new NotImplementedException("Attribute '" + identifier + "' only accept identifier value");
 
-            return new ParsedResolvedByAttribute() { Value = ((NParsedAttributeAtomic)value).Value };
+            return new ParsedObstructedByAttribute() { Value = ((NParsedAttributeAtomic)value).Value };
         }
 	}
     

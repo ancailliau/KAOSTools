@@ -6,21 +6,19 @@ using KAOSTools.Parsing.Parsers.Attributes;
 
 namespace KAOSTools.Parsing.Plugins
 {
-	public class ObstacleDeclareParser : DeclareParser
+	public class DomainPropertyDeclareParser : DeclareParser
 	{
-		public ObstacleDeclareParser()
+		public DomainPropertyDeclareParser()
 		{
 			Add(new NameAttributeParser());
 			Add(new DefinitionAttributeParser());
-            Add(new RefinedByAttributeParser());
 			Add(new FormalSpecAttributeParser());
-            Add(new ResolvedByAttributeParser());
 			Add(new CustomAttributeParser());
 		}
 
 		public override ParsedElement ParsedDeclare(string identifier, List<dynamic> attributes)
 		{
-			return new ParsedObstacle(identifier)
+            return new ParsedDomainProperty(identifier)
 			{
 				Attributes = attributes
 			};
@@ -28,7 +26,7 @@ namespace KAOSTools.Parsing.Plugins
 
         public override string GetIdentifier()
 		{
-			return "obstacle";
+            return "(domainproperty|domprop)";
 		}
 	}
 }

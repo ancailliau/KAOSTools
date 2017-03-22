@@ -15,8 +15,11 @@ namespace KAOSTools.Parsing {
         {
             Console.WriteLine("Adding the plugins...");
 			Add(new GoalDeclareParser());
+			Add(new SoftGoalDeclareParser());
 			Add(new AgentDeclareParser());
 			Add(new ObstacleDeclareParser());
+            Add(new DomainPropertyDeclareParser());
+            Add(new DomainHypothesisDeclareParser());
         }
 
         ParsedElement BuildElements (List<Result> results)

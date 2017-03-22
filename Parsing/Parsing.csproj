@@ -59,6 +59,11 @@
     <Compile Include="Parsers\Attributes\AssignedToAttributeParser.cs" />
     <Compile Include="Parsers\AgentDeclareParser.cs" />
     <Compile Include="Parsers\ObstacleDeclareParser.cs" />
+    <Compile Include="Parsers\Attributes\FormalSpecAttributeParser.cs" />
+    <Compile Include="Parsers\Attributes\ResolvedByAttributeParser.cs" />
+    <Compile Include="Parsers\DomainPropertyDeclareParser.cs" />
+    <Compile Include="Parsers\DomainHypothesisDeclareParser.cs" />
+    <Compile Include="Parsers\SoftGoalDeclareParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

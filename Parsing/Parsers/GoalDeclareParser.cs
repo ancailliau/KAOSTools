@@ -8,8 +8,6 @@ namespace KAOSTools.Parsing.Plugins
 {
 	public class GoalDeclareParser : DeclareParser
     {
-		string name = "goal";
-
 		public GoalDeclareParser()
         {
 			Add(new NameAttributeParser());
@@ -17,7 +15,8 @@ namespace KAOSTools.Parsing.Plugins
             Add(new RefinedByAttributeParser());
 			Add(new RSRAttributeParser());
             Add(new ObstructedByAttributeParser());
-            Add(new AssignedToAttributeParser());
+			Add(new AssignedToAttributeParser());
+            Add(new FormalSpecAttributeParser());
             Add(new CustomAttributeParser());
         }
 

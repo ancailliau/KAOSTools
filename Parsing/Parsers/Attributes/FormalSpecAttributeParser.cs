@@ -5,11 +5,11 @@ using System.Linq;
 namespace KAOSTools.Parsing.Parsers.Attributes
 {
 
-	public class ResolvedByAttributeParser : IParserAttribute
+	public class FormalSpecAttributeParser : IParserAttribute
     {
         public string GetIdentifier()
         {
-            return "resolved[bB]y";
+            return "formal[sS]pec";
         }
 
         public ParsedElement ParsedAttribute(string identifier, NParsedAttributeValue parameters, NParsedAttributeValue value)
@@ -22,10 +22,11 @@ namespace KAOSTools.Parsing.Parsers.Attributes
 
 			var v = ((NParsedAttributeAtomic)value).Value;
 
-            if (!(v is IdentifierExpression))
-				throw new NotImplementedException("Attribute '" + identifier + "' only accept identifier value");
+            // TODO this shall be stronger
+			if (!(v is ParsedElement))
+				throw new NotImplementedException("Attribute '" + identifier + "' only accept formula values");
 
-            return new ParsedResolvedByAttribute() { Value = ((NParsedAttributeAtomic)value).Value };
+            return new ParsedFormalSpecAttribute() { Value = ((NParsedAttributeAtomic)value).Value };
         }
 	}
     
