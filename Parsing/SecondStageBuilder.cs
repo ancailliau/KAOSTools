@@ -451,6 +451,9 @@ namespace KAOSTools.Parsing
                         refinement.Add(domhyp);
                         continue;
                     }
+
+                    throw new BuilderException("Could not find goal, domain property or domain hypothesis corresponding " +
+                                               "to " + id + ".", ((IdentifierExpression)child).Filename, ((IdentifierExpression)child).Line, ((IdentifierExpression)child).Col);
                 }
 
                 throw new NotImplementedException(string.Format("'{0}' is not supported in '{1}' on '{2}'", child.GetType().Name, refinedBy.GetType().Name, element.GetType().Name));

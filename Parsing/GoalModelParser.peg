@@ -7,8 +7,7 @@ debug =
 Start := S Elements S;
 
 Elements := 
-    ( ( ModelAttribute / Predicate / Goal / SoftGoal / DomProp / Obstacle / Agent / Import / DomHyp 
-        / Entity / Type / Association / Expert / Calibration / CostVariable / Constraint ) S )*
+    ( ( DeclareItem / ModelAttribute / Import ) S )*
     `value = BuildElements (results);`
 
 ModelAttribute :=
@@ -21,269 +20,96 @@ Import :=
     
 # Declare
     
-Predicate := 
-    ( 'declare' / 'override' ) S 'predicate' S '[' S Identifier S ']' S (PredicateAttribute S)* 'end' 
-    `value = BuildPredicate(results);`
-
-Constraint := 
-    ( 'declare' / 'override' ) S 'constraint' S '[' S Identifier S ']' S (ConstraintAttribute S)* 'end' 
-    `value = BuildConstraint(results);`
-
-Goal := 
-    ( 'declare' / 'override' ) S 'goal' S '[' S Identifier S ']' S (GoalAttribute S)* 'end'
-    `value = BuildGoal(results);`
-    
-SoftGoal := 
-    ( 'declare' / 'override' ) S 'softgoal' S '[' S Identifier S ']' S (SoftGoalAttribute S)* 'end'
-    `value = BuildSoftGoal(results);`
-    
-DomProp := 
-    ( 'declare' / 'override' ) S ('domainproperty' / 'domprop' ) S '[' S Identifier S ']' S (DomPropAttribute S)* 'end'
-    `value = BuildDomainProperty(results);`
-    
-Obstacle := 
-    ( 'declare' / 'override' ) S 'obstacle' S '[' S Identifier S ']' S (ObstacleAttribute S)* 'end'
-    `value = BuildObstacle(results);`
-
-Agent := 
-    ( 'declare' / 'override' ) S 'agent' S '[' S Identifier S ']' S (AgentAttribute S)* 'end'
-    `value = BuildAgent(results);`
-
-DomHyp := 
-    ( 'declare' / 'override' ) S ('domainhypothesis' / 'domhyp' ) S '[' S Identifier S ']' S (DomHypAttribute S)* 'end'
-    `value = BuildDomainHypothesis(results);`
-
-Entity := 
-    ( 'declare' / 'override' ) S ( 'entity' / 'object' ) S '[' S Identifier S ']' S (EntityAttribute S)* 'end'
-    `value = BuildEntity(results);`
-
-Type := 
-    ( 'declare' / 'override' ) S 'type' S '[' S Identifier S ']' S (TypeAttribute S)* 'end'
-    `value = BuildType(results);`
-
-Association := 
-    ( 'declare' / 'override' ) S ( 'association' / 'relation' ) S '[' S Identifier S ']' S (AssociationAttribute S)* 'end'
-    `value = BuildAssociation(results);`
-    
-Attribute := 
-    ( 'declare' / 'override' ) S ( 'attribute' ) S '[' S Identifier S ']' S (AttributeAttribute S)* 'end'
-    `value = BuildAttribute(results);`
-
-Expert := 
-    ( 'declare' / 'override' ) S 'expert' S '[' S Identifier S ']' S (ExpertAttribute S)* 'end'
-    `value = BuildExpert(results);`
-
-Calibration := 
-    ( 'declare' / 'override' ) S 'calibration' S '[' S Identifier S ']' S (CalibrationAttribute S)* 'end'
-    `value = BuildCalibration(results);`
-
-CostVariable := 
-    ( 'declare' / 'override' ) S 'cost_variable' S '[' S Identifier S ']' S (CostVariableAttribute S)* 'end'
-    `value = BuildCostVariable(results);`
+DeclareItem := 
+    ( 'declare' / 'override' ) S Identifier S '[' S Identifier S ']' S (Attribute S)* 'end' 
+    `value = BuildDeclareItem(results);`
 
 # Attribute collection
                                                                                                                                                                                                          
-GoalAttribute := 
-    ( NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByGoal 
-      / ObstructedBy / AssignedTo / RDSAttribute / ExceptionAttribute / AssumptionAttribute
-      / CustomAttribute )
-    `value = results[0].Value;`            
-                                                                                                                                             
-SoftGoalAttribute := 
-    ( NameAttribute / DefinitionAttribute / CustomAttribute)
-    `value = results[0].Value;`
-    
-DomPropAttribute := 
-    ( NameAttribute / DefinitionAttribute / FormalSpecAttribute / ExpertProbability / Probability / CustomAttribute)
-    `value = results[0].Value;`
-    
-DomHypAttribute := 
-    ( NameAttribute / DefinitionAttribute / ExpertProbability / Probability / CustomAttribute )
-    `value = results[0].Value;`
+Attribute := 
+    AttributeIdentifier S (AttributeParameters S)? AttributeValue
+    `value = BuildAttribute(results);`
 
-ObstacleAttribute := 
-    ( NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByObstacle 
-      / ResolvedBy / ExpertProbability / Probability / CustomAttribute)
+AttributeParameters :=
+    '(' S AttributeValue (S ',' S AttributeValue )* S')'
+    `value = BuildAttributeParameters(results);`          
+
+AttributeValue :=
+    ( AttributeAtomicValue ( S ',' S AttributeAtomicValue ) * ) /
+    ( AttributeAtomicValue S ':' S AttributeAtomicValue ) / 
+    ( AttributeAtomicValue S '[' S AttributeAtomicValue S ']' )
+    `value = BuildAttributeValue(results);`
+
+AttributeAtomicValue := 
+    Bool / QuotedString / Formula / Percentage / Integer / Float / Identifier
     `value = results[0].Value;`
 
-AgentAttribute := 
-    ( NameAttribute / DefinitionAttribute / AgentTypeAttribute / CustomAttribute)
-    `value = results[0].Value;`
-                                                                         
-PredicateAttribute := 
-    ( NameAttribute / DefinitionAttribute / Argument 
-      / FormalSpecAttribute / DefaultValueAttribute / CustomAttribute) 
-    `value = results[0].Value;`       
-
-ConstraintAttribute := 
-    ( NameAttribute / DefinitionAttribute / Conflict / OrCst
-      / FormalSpecAttribute / CustomAttribute) 
-    `value = results[0].Value;`
-
-EntityAttribute := 
-    ( NameAttribute / DefinitionAttribute / AttributeEntity / IsA / EntityTypeAttribute ) 
-    `value = results[0].Value;`
-    
-TypeAttribute := 
-    ( NameAttribute / DefinitionAttribute ) 
-    `value = results[0].Value;`
-    
-AssociationAttribute :=
-    ( NameAttribute / DefinitionAttribute / AttributeEntity / Link ) 
-    `value = results[0].Value;`
-    
-AttributeAttribute :=
-	( NameAttribute / DefinitionAttribute / AttributeEntityTypeAttribute / DerivedAttribute )
-    `value = results[0].Value;`
-
-ExpertAttribute :=
-	( NameAttribute )
-    `value = results[0].Value;`
-        
-CalibrationAttribute :=
-	( NameAttribute / ExpertProbability / Probability )
-    `value = results[0].Value;`
-        
-CostVariableAttribute :=
-	( NameAttribute )
-    `value = results[0].Value;`
-
-# Attribute
-
-DefaultValueAttribute := 'default' S Bool
-    `value = BuildDefaultValueAttribute(results);`
-
-CustomAttribute := '$' Identifier S '"' String? '"'
-    `value = BuildCustomAttribute(results);`
-
-NameAttribute := 'name' S '"' String? '"'
-    `value = BuildNameAttribute(results);`
-    
-FormalSpecAttribute := 'formalspec' S Formula
-    `value = BuildFormalSpecAttribute(results);`
-    
-DefinitionAttribute := 'definition' S QuotedString
-    `value = BuildDefinitionAttribute(results);`
-
-RDSAttribute := 'rds' S (Percentage / Float)
-    `value = BuildRDS(results);`
-
-Probability := ('probability' / 'eps') S ( Percentage / Float / UDistribution )
-    `value = BuildProbability(results);`
-
-ExpertProbability := ('probability') ( S '[' S (Name / Identifier) S ']' ) S ( QuantileList / UDistribution )
-    `value = BuildExpertProbability(results);`
-
-ObstructedBy := 'obstructedby' S ( Obstacle / Name / Identifier ) 
-    `value = BuildObstructedBy(results);`
-
-AssumptionAttribute := 'assumption' S ( ( 'not' ( Obstacle / Name / Identifier ) ) / ( DomHyp / Goal / Name / Identifier ))
-    `value = BuildAssumptionAttribute(results);`    
-    
-ExceptionAttribute := 'exception' S ( Obstacle / Name / Identifier ) (S 'then' S ( Goal / Name / Identifier ))?
-    `value = BuildExceptionAttribute(results);`    
-    
-ResolvedBy := 'resolvedby' ( S '(' S ResolutionPattern S ')' )? S ( Goal / Name / Identifier )
-    `value = BuildResolvedBy(results);`
-
-IsA := 'is' S ( Entity / Name / Identifier )
-    `value = BuildIsA(results);`
-                                                                         
-AgentTypeAttribute := 'type' S ( 'software' / 'environment' / 'malicious' )
-    `value = BuildAgentTypeAttribute (results);`
-    
-EntityTypeAttribute := 'type' S ( 'software' / 'environment' / 'shared' )
-    `value = BuildEntityTypeAttribute (results);`
-
-RefinedByObstacle := 
-    'refinedby' S Identifier (S ',' S ( Identifier ) )*
-    `value = BuildRefinedBy(results);`
-    
-RefinedByGoal := 
-    'refinedby' S (RefinedByPattern S)? Identifier (S ',' S ( Identifier ) )*
-    `value = BuildRefinedBy(results);`
-    
-RefinedByPattern := '(' S RefinementPattern S ')'
-    `value = BuildRefinedByPattern(results);`
-
-AssignedTo := 
-    'assignedto' S Identifier (S ',' S Identifier )*
-    `value = BuildAssignedTo(results);`
-
-AttributeEntity := 
-    'attribute' S ( Attribute / ( Name S (':' S ( Type / Name / Identifier ) )? ) )
-    `value = BuildAttributeAttribute(results);`
-
-Argument := 'argument' S Identifier S (':' S ( Entity / Name / Identifier ) )?
-    `value = BuildArgument(results);`
-
-Conflict := 'conflict' S Identifier (S ',' S Identifier)*
-    `value = BuildConflict(results);`
-
-OrCst := 'or' S Identifier (S ',' S Identifier)*
-    `value = BuildOrCst(results);`
-
-Link := 'link' S Multiplicity? S ( Entity / Name / Identifier )
-    `value = BuildLink(results);`
-
-AttributeEntityTypeAttribute := 'type' S ( Type / Name / Identifier )
-    `value = BuildAttributeEntityTypeAttribute(results);`
-
-DerivedAttribute := 'derived'
-    `value = BuildDerivedAttribute(results);`
-
-# 
-
-ResolutionPattern := 
-	( 'substitution' / 'prevention' / 'obstacle_reduction' / 'restoration'
-	  / 'weakening' / 'mitigation' / 'weak_mitigation' / 'strong_mitigation' )
-	  ( S '[' S ( DomHyp / Goal / Name / Identifier ) ( S ',' S ( DomHyp / Goal / Name / Identifier ))* S ']' )?
-    `value = BuildResolutionPattern(results);`
-    
-RefinementPattern := 
-	( 'milestone' 
-	/ ( 'case' S '[' S ( Float ( S ',' S ( Float ))* ) S ']' ) 
-	/ 'introduce_guard' 
-	/ 'divide_and_conquer' 
-	/ 'unmonitorability' 
-	/ 'uncontrollability'
-	/ 'redundant' )
-    `value = BuildRefinementPattern(results);`
-    
 # Expressions                                
 
-Multiplicity :=
-    '(' S MultiplicityLowerBound S ('..' S MultiplicityUpperBound S )? ')'
-    `value = BuildMultiplicity(results);`
-
-MultiplicityLowerBound := 
-    ( [0-9] / 'M' / 'N' )
-    `value = results[0].Value;`
-
-MultiplicityUpperBound := 
-    ( [0-9] / 'M' / 'N' / '*' )
-    `value = results[0].Value;`
-
-Identifier := [a-zA-Z] [a-zA-Z0-9_-]*
+AttributeIdentifier := !ReservedKeyword [a-zA-Z$] [a-zA-Z0-9_-]*
     `value = BuildIdentifier(results);`
+    `expected = "Identifier"`
 
-Name := '"' String '"' 
-    `value = BuildName(results);`
-    
+Identifier := !ReservedKeyword [a-zA-Z] [a-zA-Z0-9_-]*
+    `value = BuildIdentifier(results);`
+    `expected = "Identifier"`
+
+ReservedKeyword := 'end'
+    `value = null`
+
 QuotedString := '@'? '"' String? '"'
     `value = BuildQuotedString(results);`
+    `expected = "QuotedString"`
 
 String := ( ( '""' / [^"] )+ )
-    `value = BuildString(results)` `expected = "string"`
+    `value = BuildString(results)`
+    `expected = "String"`
     
 Float := ('.' [0-9]+) / ( [0-9]+ ('.' [0-9]+)? )
-    `value = BuildFloat(results)` `expected = "float"`
+    `value = BuildFloat(results)` 
+    `expected = "Float"`
+
+Integer := [0-9]+
+    `value = null` 
+    `expected = "Integer"`
+
+Percentage := ( Integer / Float ) '%'
+    `value = BuildPercentage(results)` 
+    `expected = "Percentage"`
+
+Bool := 'true' / 'false'
+    `value = null`
+    `expected = "Bool"`
+
+ModelAttributeName := [a-zA-Z0-9\\._-]+
+    `value = null`
+    `expected = "ModelAttributeName"`
+
+# Spaces and comments
+
+S := 
+    (Space* Comment+ Space*)+ / Space*
+    `text = null`
+
+Space := 
+    [ \t\r\n]
+    `text = null`
+    `expected = "Whitespace"`
+
+Comment := 
+    '#' [^\r\n]* 
+    `text = null`
+    `expected = "Comment"`
 
 # Formal specification
 
+Variable := 
+    [a-z]+ [a-zA-Z0-9]*
+    `value = null`
+
 Formula := 
-    'forall' S Variable S ':' S (Identifier / Name) ( ',' S Variable S ':' S (Identifier / Name) )* S '.' S Formula
-    / 'exists' S Variable S ':' S (Identifier / Name) ( ',' S Variable S ':' S (Identifier / Name) )* S '.' S Formula
+    'forall' S Variable S ':' S (Identifier) ( ',' S Variable S ':' S (Identifier) )* S '.' S Formula
+    / 'exists' S Variable S ':' S (Identifier) ( ',' S Variable S ':' S (Identifier) )* S '.' S Formula
     / StrongBinary
     `value = BuildFormula(results);`
     `expected = "temporal formula"`
@@ -349,25 +175,23 @@ Comparator :=
     `value = null;`
     `expected = "comparator"`
 
-
 ComparisonMember := 
-	AttributeReference / PredicateReference / VariableReference / '"' String? '"' / Number / Bool
+	AttributeReference / PredicateReference / VariableReference / '"' String? '"' / Integer / Float / Bool
     `value = BuildComparisonMember(results);`
     `expected = "comparison member"`
 
 AttributeReference :=
-	Variable '.' (Identifier / Name)
+	Variable '.' (Identifier)
     `value = BuildAttributeReference(results);`
     `expected = "attribute reference"`
 
 RelationReference :=
-	'(' S Variable ( S ',' S Variable )* S ')' S 'in' S (Identifier / Name)
+	'(' S Variable ( S ',' S Variable )* S ')' S 'in' S (Identifier)
     `value = BuildRelationReference(results);`
     `expected = "relation reference"`
 
 PredicateReference :=  
 	Identifier ( S '(' S (Variable ( S ',' S Variable )*)? S ')' )
-	/ Name  S '(' S (Variable ( S ',' S Variable )*)? S ')'
     `value = BuildPredicateReference(results);`
     `expected = "predicate reference"`
 
@@ -411,8 +235,6 @@ TimeUnit :=
 	/ ( 'milisecond' 's'? / 'ms' )
     `value = null` `expected = "time unit"`
 
-
-
 LogicFormula := 
 	LogicFormulaBinary
     `value = BuildLogicFormula(results);`
@@ -452,40 +274,3 @@ LogicFormulaAtom :=
     / '(' S LogicFormula S ')'
     `value = BuildLogicFormulaAtom(results);`
     `expected = "atomic formula"`
-
-
-
-Integer := [0-9]+
-    `value = null` `expected = "integer"`
-
-Number := ( '.' [0-9]+ / [0-9]+ ( '.' [0-9]+ )? )
-    `value = null` `expected = "number"`
-
-Percentage := Number '%'
-    `value = null` `expected = "percentage"`
-
-Variable := [a-z]+ [a-zA-Z0-9]*
-    `value = null` `expected = "number"`
-
-Bool := 'true' / 'false'
-    `value = null` `expected = "bool"`
-
-QuantileList := '(' S ( Percentage / Number ) ( S ',' S ( Percentage / Number ) )* S ')'
-    `value = BuildQuantileList(results);` `expected = "list of quantiles"`
-
-UDistribution := 
-    ( 'uniform' S '(' S Number S ',' S Number S ')' )
-    / ( 'triangular' S '(' S Number S ',' S Number S ',' S Number S ')' )
-    / ( 'pert' S '(' S Number S ',' S Number S ',' S Number S ')' )
-    / ( 'beta' S '(' S Number S ',' S Number S ')' )
-    `value = BuildUDistribution(results);` `expected = "uncertainty distribution"`
-
-
-ModelAttributeName := [a-zA-Z0-9\\._-]+
-    `value = null` `expected = "ModelAttributeName"`
-
-# Spaces and comments
-
-S := (Space* Comment+ Space*)+ / Space* `text = null`
-Space := [ \t\r\n] `;` `expected = "whitespace"`
-Comment := '#' [^\r\n]* `text = null` `expected = "comment"`

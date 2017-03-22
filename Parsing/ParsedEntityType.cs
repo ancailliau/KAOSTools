@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace KAOSTools.Parsing
 {
@@ -23,17 +24,57 @@ namespace KAOSTools.Parsing
 
     public class ParsedDeclare : ParsedElement {
         public bool Override { get; set; }
-        public List<dynamic> Attributes { get; set; }
-        public string Identifier;
+        public string Identifier; // TODO readonly
+        public string DeclaredItem;
+
+		public List<dynamic> Attributes { get; set; }
+		
         public ParsedDeclare (string identifier)
         {
             Identifier = identifier;
             Attributes = new List<dynamic>();
             Override = false;
         }
+	}
+
+	public class NParsedAttribute : ParsedElement {
+		public string AttributeName { get; set; }
+		public NParsedAttributeValue Parameters { get; set; }
+		public NParsedAttributeValue AttributeValue { get; set; }
     }
 
-    public class ParsedAttribute : ParsedElement {}
+	public abstract class NParsedAttributeValue : ParsedElement {
+    }
+
+	public class NParsedAttributeAtomic : NParsedAttributeValue {
+        public ParsedElement Value { get; set; }
+		public NParsedAttributeAtomic(ParsedElement value)
+        {
+            Value = value;   
+        }
+    }
+
+	public class NParsedAttributeColon : NParsedAttributeValue
+	{
+	}
+
+	public class NParsedAttributeBracket : NParsedAttributeValue
+	{
+    }
+    
+	public class NParsedAttributeList : NParsedAttributeValue
+	{
+        public List<ParsedElement> Values { get; set; }
+        public NParsedAttributeList(List<ParsedElement> values)
+		{
+			Values = values;
+		}
+    }
+
+
+
+	public class ParsedAttribute : ParsedElement {}
+
     public class ParsedAttributeWithElements : ParsedAttribute {
         public List<dynamic> Values { get; set; }
         public ParsedAttributeWithElements ()
@@ -273,7 +314,12 @@ namespace KAOSTools.Parsing
     public class ParsedFloat : ParsedElement
     {
         public double Value { get; set; }
-    }
+	}
+
+	public class ParsedPercentage : ParsedElement
+	{
+		public double Value { get; set; }
+	}
     
     public class ParsedString : ParsedElement
     {

@@ -3,11 +3,20 @@ using System.Linq;
 using System.Collections.Generic;
 using KAOSTools.Parsing;
 using System.IO;
+using KAOSTools.Parsing.Plugins;
 
 namespace KAOSTools.Parsing {
     sealed partial class GoalModelParser
     {   
         List<string> files_imported = new List<string> ();
+
+        partial void OnCtorEpilog()
+        {
+            Console.WriteLine("Adding the plugins...");
+			Add("goal", new GoalParserPlugin());
+			Add("agent", new AgentParserPlugin());
+			Add("obstacle", new ObstacleParserPlugin());
+        }
 
         ParsedElement BuildElements (List<Result> results)
         {
@@ -35,25 +44,6 @@ namespace KAOSTools.Parsing {
 
         ParsedElement ModelAttribute (List<Result> results)
         {
-            /*
-            if (results[0].Text == "@author") {
-                return new ParsedModelAttribute { Value = results[2].Text };
-            }
-
-            if (results[0].Text == "@title") {
-                return new ParsedModelAttribute { Value = results[2].Text };
-            }
-
-            if (results[0].Text == "@version") {
-                return new ParsedModelAttribute { Value = results[2].Text };
-            }*/
-
-//            Console.WriteLine ("<pre>");
-//            for (int i = 0; i < results.Count; i++) {
-//                Console.WriteLine (i + " : " + results[i].Text);
-//            }
-//            Console.WriteLine ("</pre>");
-
             return new ParsedModelAttribute { Value = results[3].Text, Name = results[1].Text };
         }
 
@@ -79,624 +69,107 @@ namespace KAOSTools.Parsing {
 
         #region First-class declarations
 
-        ParsedElement BuildParsedElementWithAttributes<T> (List<Result> results, T t)
-            where T: ParsedDeclare
+        public Dictionary<string, ParserPlugin> level0Parser = new Dictionary<string, ParserPlugin>();
+
+		public void Add(string declareName, ParserPlugin parser)
         {
-            t.Line = results[0].Line;
-            t.Col = results[0].Col;
-            t.Filename = m_file;
-            
-            if (results[0].Text == "override")
-                t.Override = true;
-            
-            for (int i = 5; i < results.Count - 1; i++) {
-                t.Attributes.Add (results[i].Value);
+            level0Parser.Add(declareName, parser);
+        }
+
+        ParsedElement BuildDeclareItem (List<Result> results)
+		{
+            var declaredItem = results[1].Text;
+            Console.WriteLine("BuildDeclareItem [ "  + declaredItem + " ]");
+
+            if (level0Parser.ContainsKey(declaredItem))
+			{
+                var parser = level0Parser[declaredItem];
+				var identifier = results[3].Text;
+
+				var attributes = new List<dynamic>();
+				for (int i = 5; i < results.Count - 1; i++)
+				{
+                    var attributeValue = (NParsedAttribute) results[i].Value;
+                    attributes.Add(parser.ParsedAttribute (attributeValue.AttributeName, attributeValue.Parameters, attributeValue.AttributeValue));
+				}
+
+				return parser.ParsedDeclare(identifier, attributes);
             }
-            
-            return t;
-        }
-
-        ParsedElement BuildParsedElementWithAttributesInline<T> (List<Result> results, T t)
-            where T: ParsedDeclare
-        {
-			t.Line = results[0].Line;
-			t.Col = results[0].Col;
-			t.Filename = m_file;
-
-			if (results[0].Text == "override")
-                t.Override = true;
-
-            for (int i = 1; i < results.Count - 1; i++) {
-                t.Attributes.Add (results[i].Value);
+            else
+            {
+                throw new NotImplementedException(string.Format ("declare '{0}' is not supported.", declaredItem));
             }
-
-            return t;
-        }
-
-        ParsedElement BuildPredicate (List<Result> results)
-        {
-            return BuildParsedElementWithAttributes<ParsedPredicate>(results, new ParsedPredicate(results[3].Text));
-        }
-
-        ParsedElement BuildConstraint (List<Result> results)
-        {
-			return BuildParsedElementWithAttributes<ParsedConstraint>(results, new ParsedConstraint(results[3].Text));
-        }
-
-        ParsedElement BuildSystem (List<Result> results)
-        {
-			return BuildParsedElementWithAttributes<ParsedSystem>(results, new ParsedSystem(results[3].Text));
-        }
-
-        ParsedElement BuildGoal (List<Result> results)
-        {
-			return BuildParsedElementWithAttributes<ParsedGoal>(results, new ParsedGoal(results[3].Text));
-        }
-
-        ParsedElement BuildSoftGoal (List<Result> results)
-        {
-			return BuildParsedElementWithAttributes<ParsedSoftGoal>(results, new ParsedSoftGoal(results[3].Text));
-        }
-
-        ParsedElement BuildDomainProperty (List<Result> results)
-        {
-			return BuildParsedElementWithAttributes<ParsedDomainProperty>(results, new ParsedDomainProperty(results[3].Text));
-        }
-        
-        ParsedElement BuildObstacle (List<Result> results)
-        {
-			return BuildParsedElementWithAttributes<ParsedObstacle>(results, new ParsedObstacle(results[3].Text));
-        }
-        
-        ParsedElement BuildAgent (List<Result> results)
-        {
-			return BuildParsedElementWithAttributes<ParsedAgent>(results, new ParsedAgent(results[3].Text));
-        }
-        
-        ParsedElement BuildDomainHypothesis (List<Result> results)
-        {
-			return BuildParsedElementWithAttributes<ParsedDomainHypothesis>(results, new ParsedDomainHypothesis(results[3].Text));
-        }
-        
-        ParsedElement BuildEntity (List<Result> results)
-        {
-			return BuildParsedElementWithAttributes<ParsedEntity>(results, new ParsedEntity(results[3].Text));
-        }
-        
-        ParsedElement BuildType (List<Result> results)
-        {
-			return BuildParsedElementWithAttributes<ParsedGivenType>(results, new ParsedGivenType(results[3].Text));
-        }
-        
-        ParsedElement BuildAssociation (List<Result> results)
-        {
-			return BuildParsedElementWithAttributes<ParsedAssociation>(results, new ParsedAssociation(results[3].Text));
-        }
-
-        ParsedElement BuildAttribute (List<Result> results)
-        {
-			return BuildParsedElementWithAttributes<ParsedAttributeDeclaration>(results, new ParsedAttributeDeclaration(results[3].Text));
-        }
-
-        ParsedElement BuildGoalRefinement (List<Result> results)
-        {
-            return BuildParsedElementWithAttributesInline<ParsedGoalRefinement>(results, new ParsedGoalRefinement (Guid.NewGuid().ToString()));
-        }
-
-        ParsedElement BuildExpert (List<Result> results)
-        {
-			return BuildParsedElementWithAttributes<ParsedExpert>(results, new ParsedExpert(results[3].Text));
-        }
-
-        ParsedElement BuildCalibration (List<Result> results)
-        {
-			return BuildParsedElementWithAttributes<ParsedCalibration>(results, new ParsedCalibration(results[3].Text));
-        }
-
-        ParsedElement BuildCostVariable (List<Result> results)
-        {
-			return BuildParsedElementWithAttributes<ParsedCostVariable>(results, new ParsedCostVariable(results[3].Text));
-        }
-
-        #endregion
-
-        #region Attributes
-
-        T1 BuildParsedAttributeWithValue<T1> (List<Result> results, string value)
-            where T1: ParsedAttributeWithValue<string>, new()
-        {
-            return BuildParsedAttributeWithValue<T1, string> (results, value);
-        }
-
-        T1 BuildParsedAttributeWithValue<T1> (List<Result> results, double value)
-            where T1: ParsedAttributeWithValue<double>, new()
-        {
-            return BuildParsedAttributeWithValue<T1, double> (results, value);
-        }
-
-        T1 BuildParsedAttributeWithValue<T1,T2> (List<Result> results, T2 value)
-            where T1: ParsedAttributeWithValue<T2>, new()
-        {
-            return new T1 { 
-                Value = value,
-                Line = results[0].Line, 
-                Col = results[0].Col, 
-                Filename = m_file
-            };
-        }
-
-        ParsedElement BuildParsedAttributeWithElements<T> (List<Result> results)
-            where T: ParsedAttributeWithElements, new()
-        {
-            var t = new T () { 
-                Line = results[0].Line, 
-                Col = results[0].Col, 
-                Filename = m_file
-            };
-
-            for (int i = 1; i < results.Count; i = i + 2) {
-                t.Values.Add (results[i].Value);
-            }
-
-            return t;
-        }
-
-        ParsedElement BuildParsedAttributeWithElementsAndSystemIdentifier<T> (List<Result> results)
-            where T: ParsedAttributeWithElementsAndSystemIdentifier, new()
-        {
-            var t = new T () { 
-                Line = results[0].Line, 
-                Col = results[0].Col, 
-                Filename = m_file
-            };
-            
-            if (results[1].Text == "[") {
-                t.SystemIdentifier = results[2].Value;
-                for (int i = 4; i < results.Count; i = i + 2) {
-                    t.Values.Add (results[i].Value);
-                }
-                
-            } else {
-                for (int i = 1; i < results.Count; i = i + 2) {
-                    t.Values.Add (results[i].Value);
-                }
-            }
-            
-            return t;
-        }
-
-
-        ParsedElement BuildCostAttribute (List<Result> results)
-        {
-            /*for (int i = 0; i < results.Count; i++) {
-                var r = results [i];
-                Console.WriteLine (i + " > " + r.Text);
-            }*/
-
-            var parsedElement = new ParsedCostAttribute ();
-
-            parsedElement.Value = (results [4].Value as ParsedFloat);
-            parsedElement.CostVariable = results[2].Value;
-
-            return parsedElement;
-        }
-
-        ParsedElement BuildCustomAttribute (List<Result> results)
-        {
-            var parsedElement = BuildParsedAttributeWithValue<ParsedCustomAttribute> (results, results.Count == 4 ? "" : results[3].Text);
-            parsedElement.Key = results [1].Text;
-            return parsedElement;
-        }
-
-        ParsedElement BuildIdentifierAttribute (List<Result> results)
-        {
-            return BuildParsedAttributeWithValue<ParsedIdentifierAttribute> 
-                (results, results[1].Text);
 		}
 
-        ParsedElement BuildNameAttribute (List<Result> results)
-        {
-            return BuildParsedAttributeWithValue<ParsedNameAttribute> 
-                (results, results.Count == 3 ? "" : results[2].Text);
-        }
-
-        ParsedElement BuildSignatureAttribute (List<Result> results)
-        {
-            return BuildParsedAttributeWithValue<ParsedSignatureAttribute> 
-                (results, results.Count == 3 ? "" : results[2].Text);
-        }
-
-        ParsedElement BuildFormalSpecAttribute (List<Result> results)
-        {
-            return BuildParsedAttributeWithValue<ParsedFormalSpecAttribute, ParsedElement> 
-                (results, results[1].Value);
-        }
-
-        ParsedElement BuildDefinitionAttribute (List<Result> results)
-        {
-            return BuildParsedAttributeWithValue<ParsedDefinitionAttribute, ParsedString> 
-                (results, results[1].Value as ParsedString);
-        }
-
-        ParsedElement BuildRDS (List<Result> results)
-        {
-            var r = results[1].Text;
-            var parsedNumber = 0d;
-            if (r.EndsWith ("%", StringComparison.Ordinal)) {
-                parsedNumber = double.Parse (r.Remove (r.Length - 1)) / 100d;
-            } else {
-                parsedNumber = double.Parse (results [1].Text);
-            }
-
-            return BuildParsedAttributeWithValue<ParsedRDSAttribute> 
-                (results, parsedNumber);
-        }
-        
-        ParsedElement BuildProbability (List<Result> results)
-        {
-            var r = results[1].Text;
-            var parsedNumber = 0d;
-            if (r.EndsWith ("%", StringComparison.Ordinal)) {
-                parsedNumber = double.Parse (r.Remove (r.Length - 1)) / 100d;
-            } else {
-                parsedNumber = double.Parse (results [1].Text);
-            }
-
-            return BuildParsedAttributeWithValue<ParsedProbabilityAttribute> 
-                (results, parsedNumber);
-        }
-        
-        ParsedElement BuildExpertProbability (List<Result> results)
-        {
-            return new ParsedExpertProbabilityAttribute () {
-                IdOrNAme = results [2].Value,
-                Estimate = results [4].Value
-            };
-        }
-
-        ParsedElement BuildObstructedBy (List<Result> results)
-        {
-            return BuildParsedAttributeWithValue<ParsedObstructedByAttribute, dynamic> 
-                (results, results[1].Value);
-        }
-
-        ParsedElement BuildExceptionAttribute (List<Result> results)
-        {
-            return new ParsedExceptionAttribute { 
-                ResolvingGoal = results.Count > 2 ? results[3].Value : null,
-                ResolvedObstacle = results[1].Value,
-                Line = results[0].Line, 
-                Col = results[0].Col, 
-                Filename = m_file
-            };
-        }
-        
-        ParsedElement BuildAssumptionAttribute (List<Result> results)
-        {
+		ParsedElement BuildAttribute (List<Result> results)
+		{
             if (results.Count == 2)
-                return BuildParsedAttributeWithValue<ParsedAssumptionAttribute, dynamic> 
-                    (results, results[1].Value);
-
-            return BuildParsedAttributeWithValue<ParsedNegativeAssumptionAttribute, dynamic> 
-                (results, results[2].Value);
-        }
-
-        ParsedElement BuildResolvedBy (List<Result> results)
-        {
-            if (results.Count > 2) {
-                var element = BuildParsedAttributeWithValue<ParsedResolvedByAttribute, dynamic> 
-                    (results, results[4].Value) as ParsedResolvedByAttribute;
-                element.Pattern = results[2].Value as ParsedResolutionPattern;
-                return element;
-            }
-            return BuildParsedAttributeWithValue<ParsedResolvedByAttribute, dynamic> 
-                (results, results[1].Value);
-        }
-
-
-        ParsedElement BuildRefinementPattern (List<Result> results)
-        {
-            ParsedRefinementPattern parsedRefinementPattern = null;
-
-            if (results[0].Text == "milestone") {
-                parsedRefinementPattern = new ParsedRefinementPattern { 
-                    Name = ParsedRefinementPatternName.Milestone 
-                } ;
+            {
+                return new NParsedAttribute()
+                {
+                    AttributeName = results[0].Text,
+                    AttributeValue = (NParsedAttributeValue)results[1].Value
+                };
             }
 
-            else if (results[0].Text == "case") {
-                parsedRefinementPattern = new ParsedRefinementPattern { 
-                    Name = ParsedRefinementPatternName.Case 
-                } ;
-                for (int i = 2; i < results.Count - 1; i=i+2) {
-                    parsedRefinementPattern.Parameters.Add (results[i].Value);
-                }
+			if (results.Count == 3)
+			{
+                return new NParsedAttribute()
+                {
+                    AttributeName = results[0].Text,
+                    Parameters = (NParsedAttributeValue)results[1].Value,
+                    AttributeValue = (NParsedAttributeValue)results[2].Value
+                };
+			}
+
+			throw new NotImplementedException("BuildAttribute");
+		}
+		
+        ParsedElement BuildAttributeParameters(List<Result> results)
+		{
+			throw new NotImplementedException("BuildAttributeParameters");
+		}
+
+		ParsedElement BuildAttributeValue(List<Result> results)
+		{
+            Console.WriteLine(results.Count);
+            Console.WriteLine("--");
+            Console.WriteLine(string.Join("\n", results.Select(x => x.Text.ToString())));
+            Console.WriteLine("--");
+
+            if (results.Count == 1)
+            {
+				return new NParsedAttributeAtomic(results[0].Value);
             }
 
-            else if (results[0].Text == "introduce_guard") {
-                parsedRefinementPattern = new ParsedRefinementPattern { 
-                    Name = ParsedRefinementPatternName.IntroduceGuard } ;
-            }
+            if (results[1].Text == ":")
+            {
+                return new NParsedAttributeColon();
+			}
 
-            else if (results[0].Text == "divide_and_conquer") {
-                parsedRefinementPattern = new ParsedRefinementPattern { 
-                    Name = ParsedRefinementPatternName.DivideAndConquer } ;
-            }
+			if (results[1].Text == "[")
+			{
+				return new NParsedAttributeBracket();
+			}
 
-            else if (results[0].Text == "unmonitorability") {
-                parsedRefinementPattern = new ParsedRefinementPattern { 
-                    Name = ParsedRefinementPatternName.Unmonitorability } ;
-            }
+			if (results[1].Text == ",")
+			{
+                var elements = new List<ParsedElement>();
+				for (int i = 0; i < results.Count - 1; i = i + 2)
+				{
+                    var attributeValue = (ParsedElement) results[i].Value;
+					elements.Add(attributeValue);
+				}
 
-            else if (results[0].Text == "uncontrollability") {
-                parsedRefinementPattern = new ParsedRefinementPattern { 
-                    Name = ParsedRefinementPatternName.Uncontrollability } ;
-            }
+                return new NParsedAttributeList(elements);
+			}
 
-            else if (results[0].Text == "redundant") {
-                parsedRefinementPattern = new ParsedRefinementPattern { 
-                    Name = ParsedRefinementPatternName.Redundant } ;
-            }
-
-            else {
-                throw new NotImplementedException (results[0].Text);
-            }
-            return parsedRefinementPattern;
-        }
-
-        ParsedElement BuildResolutionPattern (List<Result> results)
-        {
-            ParsedResolutionPattern parsedRefinementPattern = null;
-
-            if (results[0].Text == "substitution")
-                parsedRefinementPattern = new ParsedResolutionPattern { Name = "substitution" } ;
-
-            if (results[0].Text == "prevention")
-                parsedRefinementPattern = new ParsedResolutionPattern { Name = "prevention" } ;
-
-            if (results[0].Text == "obstacle_reduction")
-                parsedRefinementPattern = new ParsedResolutionPattern { Name = "obstacle_reduction" } ;
-
-            if (results[0].Text == "restoration")
-                parsedRefinementPattern = new ParsedResolutionPattern { Name = "restoration" } ;
-
-            if (results[0].Text == "weakening")
-                parsedRefinementPattern = new ParsedResolutionPattern { Name = "weakening" } ;
-
-            if (results[0].Text == "mitigation")
-                parsedRefinementPattern = new ParsedResolutionPattern { Name = "mitigation" } ;
-
-            if (results[0].Text == "weak_mitigation")
-                parsedRefinementPattern = new ParsedResolutionPattern { Name = "weak_mitigation" } ;
-
-            if (results[0].Text == "strong_mitigation")
-                parsedRefinementPattern = new ParsedResolutionPattern { Name = "strong_mitigation" } ;;
-            
-            if (results[0].Text == "strong_mitigation")
-                parsedRefinementPattern = new ParsedResolutionPattern { Name = "strong_mitigation" } ;
-
-            if (parsedRefinementPattern == null)
-                throw new NotImplementedException ();
-
-            if (results.Count > 1) {
-                for (int i = 2; i < results.Count - 1; i = i + 2) {
-                    parsedRefinementPattern.Parameters.Add (results[i].Value);
-                }
-            }
-
-            return parsedRefinementPattern;
-        }
-
-        ParsedElement BuildAlternativeAttribute (List<Result> results)
-        {
-            return BuildParsedAttributeWithValue<ParsedAlternativeAttribute, dynamic> 
-                (results, results[1].Value);
-        }
-
-        ParsedElement BuildIsA (List<Result> results)
-        {
-            return BuildParsedAttributeWithValue<ParsedIsAAttribute, dynamic> 
-                (results, results[1].Value);
-        }
-
-        ParsedElement BuildAgentTypeAttribute (List<Result> results)
-        {
-            ParsedAgentType type;
-            if (results[1].Text == "software") 
-                type = ParsedAgentType.Software;
-            else if (results[1].Text == "environment") 
-                type = ParsedAgentType.Environment;
-            else if (results[1].Text == "malicious") 
-                type = ParsedAgentType.Malicious;
-            else
-                type = ParsedAgentType.None;
-            
-            return BuildParsedAttributeWithValue<ParsedAgentTypeAttribute,ParsedAgentType> 
-                (results, type);
-        }
-        
-        ParsedElement BuildEntityTypeAttribute (List<Result> results)
-        {
-            ParsedEntityType type;
-            if (results[1].Text == "software") 
-                type = ParsedEntityType.Software;
-            else if (results[1].Text == "environment") 
-                type = ParsedEntityType.Environment;
-            else if (results[1].Text == "shared") 
-                type = ParsedEntityType.Shared;
-            else
-                type = ParsedEntityType.None;
-            
-            
-            return BuildParsedAttributeWithValue<ParsedEntityTypeAttribute,ParsedEntityType> 
-                (results, type);
-        }
-
-        ParsedElement BuildRefinedBy (List<Result> results)
-        {
-            var attribute = new ParsedRefinedByAttribute () { 
-                Line = results[0].Line, 
-                Col = results[0].Col, 
-                Filename = m_file
-            };
-
-            int start = 1;
-            if (results.Count > start && results[start].Value is ParsedRefinementPattern) {
-                attribute.RefinementPattern = results[start].Value as ParsedRefinementPattern;
-                start++;
-            }
-
-            if (results.Count > start && results[start].Value is ParsedSystemReference) {
-                attribute.SystemIdentifier = (results[start].Value as ParsedSystemReference).Name;
-                start++;
-            }
-
-            for (int i = start; i < results.Count; i = i + 2) {
-                attribute.Values.Add (results[i].Value);
-            }
-
-            return attribute;
-        }
-
-        ParsedElement BuildRefinedByPattern (List<Result> results)
-        {
-            return results[1].Value;
-        }
-
-        ParsedElement BuildRefinedByAlternative (List<Result> results)
-        {
-            var systemIdentifier = new ParsedSystemReference { 
-                Name = results[1].Value
-            };
-            for (int i = 4; i < results.Count; i = i + 2) {
-                systemIdentifier.Values.Add (results[i].Value);
-            }
-
-            return systemIdentifier;
-        }
-
-        ParsedElement BuildAssignedTo (List<Result> results)
-        {
-            return BuildParsedAttributeWithElementsAndSystemIdentifier<ParsedAssignedToAttribute> 
-                (results);
-        }
-
-        ParsedElement BuildAttributeAttribute (List<Result> results)
-        {
-            if (results[1].Value is ParsedAttributeDeclaration) {
-                return results[1].Value;
-            }
-
-            var name = results [1].Value as NameExpression;
-            
-            dynamic type = null;
-            if (results.Count == 4) {
-                type = results [3].Value;
-            }
-            return new ParsedAttributeAttribute (name.Value, type);
-        }
-        
-        ParsedElement BuildArgument (List<Result> results)
-        {
-            var name = results [1].Value as IdentifierExpression;
-            
-            dynamic type = null;
-            if (results.Count == 4) {
-                type = results [3].Value;
-            }
-            return new ParsedPredicateArgumentAttribute (name.Value, type) { 
-                Line = results[0].Line, 
-                Col = results[0].Col, 
-                Filename = m_file
-            };
-        }
-        
-        ParsedElement BuildLink (List<Result> results)
-        {
-            var link = new KAOSTools.Parsing.ParsedLinkAttribute () { 
-                Line = results[0].Line, 
-                Col = results[0].Col, 
-                Filename = m_file
-            };
-            
-            if (results.Count == 2) {
-                link.Target = results[1].Value;
-            } else if (results.Count == 3) {
-                link.Multiplicity = (results[1].Value as MultiplictyExpression).Value;
-                link.Target = results[2].Value;
-            }
-            
-            return link;
-        }
-
-        ParsedElement BuildAttributeEntityTypeAttribute (List<Result> results)
-        {
-            return BuildParsedAttributeWithValue<ParsedAttributeEntityTypeAttribute,dynamic> 
-                (results, results[1].Value);
-        }
-
-        ParsedElement BuildSysRefAttribute (List<Result> results)
-        {
-            return BuildParsedAttributeWithValue<ParsedSysRefAttribute,dynamic> 
-                (results, results[1].Value);
-        }
-
-        ParsedElement BuildGoalRefinementChildren (List<Result> results)
-        {
-            return BuildParsedAttributeWithElements<ParsedGoalRefinementChildrenAttribute> (results);
-        }
-        
-        ParsedElement BuildPatternAttribute (List<Result> results)
-        {
-            return BuildParsedAttributeWithValue<ParsedPatternAttribute,ParsedRefinementPattern> 
-                (results, (ParsedRefinementPattern) results[1].Value);
-        }
-
-        
-
-        ParsedElement BuildDerivedAttribute (List<Result> results) 
-        {
-            return BuildParsedAttributeWithValue<ParsedDerivedAttribute,dynamic> 
-                (results, null);
-        }
-
-        ParsedElement BuildIsCompleteAttribute (List<Result> results) 
-        {
-            return BuildParsedAttributeWithValue<ParsedIsComplete,bool> 
-                (results, results[1].Text == "yes" | results[1].Text == "true");
-        }
-
-        ParsedElement BuildSoftGoalContributionAttribute (List<Result> results) 
-        {
-            var attribute = new ParsedSoftGoalContributionAttribute () { 
-                Line = results[0].Line, 
-                Col = results[0].Col, 
-                Filename = m_file
-            };
-
-            int start = 1;
-            for (int i = start; i < results.Count; i = i + 3) {
-                attribute.Values.Add (new ParsedSoftGoalContribution { 
-                    SoftGoal = results[i+1].Value, 
-                    Contribution = results[i].Text == "+" ? ParsedContribution.Positive : ParsedContribution.Negative
-                });
-            }
-
-            return attribute;
-        }
-
-
+			throw new NotImplementedException("BuildAttributeValue");
+		}
+		
         #endregion
 
         #region Expressions
-        
-        ParsedElement BuildMultiplicity (List<Result> results)
-        {
-            if (results.Count > 3) 
-                return new MultiplictyExpression { Value = results[1].Text + ".." + results[3].Text };
-
-            return new MultiplictyExpression { Value = results[1].Text };
-        }
 
         ParsedElement BuildVariable (List<Result> results)
         {
@@ -710,15 +183,6 @@ namespace KAOSTools.Parsing {
         ParsedElement BuildIdentifier (List<Result> results)
         {
             return new IdentifierExpression (string.Join ("", results.Select (x => x.Text))) { 
-                Line = results[0].Line, 
-                Col = results[0].Col, 
-                Filename = m_file
-            };
-        }
-        
-        ParsedElement BuildName (List<Result> results)
-        {
-            return new NameExpression (results[1].Text) { 
                 Line = results[0].Line, 
                 Col = results[0].Col, 
                 Filename = m_file
@@ -763,7 +227,18 @@ namespace KAOSTools.Parsing {
                 Col = results[0].Col, 
                 Filename = m_file
             };
-        }
+		}
+
+		ParsedElement BuildPercentage(List<Result> results)
+		{
+            return new ParsedPercentage
+			{
+                Value = double.Parse(string.Join("", results[0].Text)),
+				Line = results[0].Line,
+				Col = results[0].Col,
+				Filename = m_file
+			};
+		}
 
         #endregion
 
@@ -1196,98 +671,5 @@ namespace KAOSTools.Parsing {
         }
 
         #endregion
-
-        ParsedElement BuildQuantileList (List<Result> results)
-        {
-            var ql = new ParsedQuantileList ();
-
-            for (int i = 1; i < results.Count - 1; i = i + 2) {
-                var r = results [i].Text;
-                if (r.EndsWith ("%")) {
-                    ql.Quantiles.Add (float.Parse (r.Remove (r.Length - 1)) / 100f);
-                } else {
-                    ql.Quantiles.Add (float.Parse (r));
-                }
-            }
-
-            return ql;
-        }
-
-        ParsedElement BuildUDistribution (List<Result> results)
-        {
-            if (results[0].Text == "uniform")
-               return new ParsedUniformDistribution { 
-                    LowerBound = float.Parse (results[2].Text), 
-                    UpperBound = float.Parse (results[4].Text)
-                };
-            else if (results[0].Text == "triangular")
-               return new ParsedTriangularDistribution { 
-                    Min = float.Parse (results[2].Text), 
-                    Mode = float.Parse (results[4].Text), 
-                    Max = float.Parse (results[6].Text)
-                };
-            else if (results[0].Text == "pert")
-               return new ParsedPertDistribution { 
-                    Min = float.Parse (results[2].Text), 
-                    Mode = float.Parse (results[4].Text), 
-                    Max = float.Parse (results[6].Text)
-                };
-            else if (results[0].Text == "beta")
-               return new ParsedBetaDistribution { 
-                    Alpha = float.Parse (results[2].Text), 
-                    Beta = float.Parse (results[4].Text)
-               };
-            else
-                throw new NotImplementedException ();
-        }
-
-
-        ParsedElement BuildConflict (List<Result> results)
-        {
-            var attribute = new ParsedConflictAttribute () { 
-                Line = results[0].Line, 
-                Col = results[0].Col, 
-                Filename = m_file
-            };
-
-            int start = 1;
-            for (int i = start; i < results.Count; i = i + 2) {
-                attribute.Values.Add (results[i].Value);
-            }
-
-            return attribute;
-        }
-
-        ParsedElement BuildOrCst (List<Result> results)
-        {
-            var attribute = new ParsedOrCstAttribute () { 
-                Line = results[0].Line, 
-                Col = results[0].Col, 
-                Filename = m_file
-            };
-
-            int start = 1;
-            for (int i = start; i < results.Count; i = i + 2) {
-                attribute.Values.Add (results[i].Value);
-            }
-
-            return attribute;
-        }
-
-
-
-
-        ParsedElement BuildDefaultValueAttribute (List<Result> results)
-        {
-            var item = new DefaultValueAttribute { 
-                Value = results[1].Text.Equals ("true") ? true : false,
-                Line = results[0].Line, 
-                Col = results[0].Col, 
-                Filename = m_file
-            };
-            return item;
-        }
-
-
     }
 }
