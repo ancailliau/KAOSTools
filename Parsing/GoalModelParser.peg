@@ -7,7 +7,7 @@ debug =
 Start := S Elements S;
 
 Elements := 
-    ( ( ModelAttribute / System / Predicate / Goal / SoftGoal / DomProp / Obstacle / Agent / Import / DomHyp 
+    ( ( ModelAttribute / Predicate / Goal / SoftGoal / DomProp / Obstacle / Agent / Import / DomHyp 
         / Entity / Type / Association / Expert / Calibration / CostVariable / Constraint ) S )*
     `value = BuildElements (results);`
 
@@ -19,7 +19,7 @@ Import :=
     'import' S '"' String '"' 
     `value = Import(results[2].Text);`
     
-# First-class declarations
+# Declare
     
 Predicate := 
     ( 'declare' / 'override' ) S 'predicate' S '[' S Identifier S ']' S (PredicateAttribute S)* 'end' 
@@ -29,10 +29,6 @@ Constraint :=
     ( 'declare' / 'override' ) S 'constraint' S '[' S Identifier S ']' S (ConstraintAttribute S)* 'end' 
     `value = BuildConstraint(results);`
 
-System := 
-    ( 'declare' / 'override' ) S 'system' S '[' S Identifier S ']' S (SystemAttribute S)* 'end' 
-    `value = BuildSystem(results);`
-    
 Goal := 
     ( 'declare' / 'override' ) S 'goal' S '[' S Identifier S ']' S (GoalAttribute S)* 'end'
     `value = BuildGoal(results);`
@@ -85,101 +81,80 @@ CostVariable :=
     ( 'declare' / 'override' ) S 'cost_variable' S '[' S Identifier S ']' S (CostVariableAttribute S)* 'end'
     `value = BuildCostVariable(results);`
 
-
-GoalRefinement := 
-    'declare' S (GoalRefinementAttribute S)* 'end'
-    `value = BuildGoalRefinement(results);`
-
 # Attribute collection
                                                                                                                                                                                                          
 GoalAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByGoal 
-      / ObstructedBy / AssignedTo / RDSAttribute / ExceptionAttribute / AssumptionAttribute / 
-      CostAttribute / CustomAttribute )
+    ( NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByGoal 
+      / ObstructedBy / AssignedTo / RDSAttribute / ExceptionAttribute / AssumptionAttribute
+      / CustomAttribute )
     `value = results[0].Value;`            
                                                                                                                                              
 SoftGoalAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / CustomAttribute)
+    ( NameAttribute / DefinitionAttribute / CustomAttribute)
     `value = results[0].Value;`
     
 DomPropAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / ExpertProbability / Probability / CustomAttribute)
+    ( NameAttribute / DefinitionAttribute / FormalSpecAttribute / ExpertProbability / Probability / CustomAttribute)
     `value = results[0].Value;`
     
 DomHypAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / ExpertProbability / Probability / CustomAttribute )
+    ( NameAttribute / DefinitionAttribute / ExpertProbability / Probability / CustomAttribute )
     `value = results[0].Value;`
 
 ObstacleAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByObstacle 
+    ( NameAttribute / DefinitionAttribute / FormalSpecAttribute / RefinedByObstacle 
       / ResolvedBy / ExpertProbability / Probability / CustomAttribute)
     `value = results[0].Value;`
 
 AgentAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / AgentTypeAttribute / CustomAttribute)
+    ( NameAttribute / DefinitionAttribute / AgentTypeAttribute / CustomAttribute)
     `value = results[0].Value;`
                                                                          
 PredicateAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / Argument 
+    ( NameAttribute / DefinitionAttribute / Argument 
       / FormalSpecAttribute / DefaultValueAttribute / CustomAttribute) 
     `value = results[0].Value;`       
 
 ConstraintAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / Conflict / OrCst
+    ( NameAttribute / DefinitionAttribute / Conflict / OrCst
       / FormalSpecAttribute / CustomAttribute) 
     `value = results[0].Value;`
 
-SystemAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / AlternativeAttribute / CustomAttribute ) 
-    `value = results[0].Value;`
-
-GoalRefinementAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / GoalRefinementChildren 
-    / PatternAttribute / SysRefAttribute / IsCompleteAttribute / SoftGoalContributionAttribute ) 
-    `value = results[0].Value;`
-    
-
 EntityAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute / AttributeEntity / IsA / EntityTypeAttribute ) 
+    ( NameAttribute / DefinitionAttribute / AttributeEntity / IsA / EntityTypeAttribute ) 
     `value = results[0].Value;`
     
 TypeAttribute := 
-    ( IdAttribute / NameAttribute / DefinitionAttribute ) 
+    ( NameAttribute / DefinitionAttribute ) 
     `value = results[0].Value;`
     
 AssociationAttribute :=
-    ( IdAttribute / NameAttribute / DefinitionAttribute / AttributeEntity / Link ) 
+    ( NameAttribute / DefinitionAttribute / AttributeEntity / Link ) 
     `value = results[0].Value;`
     
 AttributeAttribute :=
-	( IdAttribute / NameAttribute / DefinitionAttribute / AttributeEntityTypeAttribute / DerivedAttribute )
+	( NameAttribute / DefinitionAttribute / AttributeEntityTypeAttribute / DerivedAttribute )
     `value = results[0].Value;`
 
-
-    
 ExpertAttribute :=
-	( IdAttribute / NameAttribute )
+	( NameAttribute )
     `value = results[0].Value;`
         
 CalibrationAttribute :=
-	( IdAttribute / NameAttribute / ExpertProbability / Probability )
+	( NameAttribute / ExpertProbability / Probability )
     `value = results[0].Value;`
         
 CostVariableAttribute :=
-	( IdAttribute / NameAttribute )
+	( NameAttribute )
     `value = results[0].Value;`
 
-    
-# Attributes
+# Attribute
 
 DefaultValueAttribute := 'default' S Bool
     `value = BuildDefaultValueAttribute(results);`
 
 CustomAttribute := '$' Identifier S '"' String? '"'
     `value = BuildCustomAttribute(results);`
-    
-IdAttribute := 'id' S Identifier
-    `value = BuildIdentifierAttribute(results);`
 
 NameAttribute := 'name' S '"' String? '"'
     `value = BuildNameAttribute(results);`
@@ -210,62 +185,33 @@ ExceptionAttribute := 'exception' S ( Obstacle / Name / Identifier ) (S 'then' S
     
 ResolvedBy := 'resolvedby' ( S '(' S ResolutionPattern S ')' )? S ( Goal / Name / Identifier )
     `value = BuildResolvedBy(results);`
-        
-AlternativeAttribute := 'alternative' S ( System / Name / Identifier ) 
-    `value = BuildAlternativeAttribute(results);`
 
-SysRefAttribute := 'sysref' S ( System / Name / Identifier ) 
-    `value = BuildSysRefAttribute(results);`
-    
-PatternAttribute := 'pattern' S RefinementPattern
-    `value = BuildPatternAttribute(results);`
-    
-    
 IsA := 'is' S ( Entity / Name / Identifier )
     `value = BuildIsA(results);`
                                                                          
-
 AgentTypeAttribute := 'type' S ( 'software' / 'environment' / 'malicious' )
     `value = BuildAgentTypeAttribute (results);`
     
 EntityTypeAttribute := 'type' S ( 'software' / 'environment' / 'shared' )
     `value = BuildEntityTypeAttribute (results);`
-    
-    
+
 RefinedByObstacle := 
-    'refinedby' S 
-    ( Identifier ) 
-    (S ',' S ( Identifier ) )*
+    'refinedby' S Identifier (S ',' S ( Identifier ) )*
     `value = BuildRefinedBy(results);`
     
 RefinedByGoal := 
-    ( 'refinedby' S 
-    	( GoalRefinement
-    	  / ( (RefinedByPattern S)? (RefinedByAlternative S)?
-    		( Identifier ) 
-    		(S ',' S ( Identifier ) )* )
-        )
-    )
+    'refinedby' S (RefinedByPattern S)? Identifier (S ',' S ( Identifier ) )*
     `value = BuildRefinedBy(results);`
-    
-GoalRefinementChildren := 
-    'children' S 
-    ( Goal / DomProp / DomHyp / Name / Identifier ) 
-    (S ',' S ( Goal / DomProp / DomHyp / Name / Identifier ) )*
-    `value = BuildGoalRefinementChildren(results);`
     
 RefinedByPattern := '(' S RefinementPattern S ')'
     `value = BuildRefinedByPattern(results);`
-    
-RefinedByAlternative := ('[' S ( Name / Identifier ) S ']')
-    `value = BuildRefinedByAlternative(results);`
-    
+
 AssignedTo := 
-    'assignedto' ('[' S ( Name / Identifier ) S ']')? S 
-    ( Identifier ) (S ',' S ( Identifier ) )*
+    'assignedto' S Identifier (S ',' S Identifier )*
     `value = BuildAssignedTo(results);`
 
-AttributeEntity := 'attribute' S ( Attribute / ( Name S (':' S ( Type / Name / Identifier ) )? ) )
+AttributeEntity := 
+    'attribute' S ( Attribute / ( Name S (':' S ( Type / Name / Identifier ) )? ) )
     `value = BuildAttributeAttribute(results);`
 
 Argument := 'argument' S Identifier S (':' S ( Entity / Name / Identifier ) )?
@@ -280,27 +226,11 @@ OrCst := 'or' S Identifier (S ',' S Identifier)*
 Link := 'link' S Multiplicity? S ( Entity / Name / Identifier )
     `value = BuildLink(results);`
 
-
 AttributeEntityTypeAttribute := 'type' S ( Type / Name / Identifier )
     `value = BuildAttributeEntityTypeAttribute(results);`
 
 DerivedAttribute := 'derived'
     `value = BuildDerivedAttribute(results);`
-
-IsCompleteAttribute := 'iscomplete' S ( 'yes' / 'no' / 'true' / 'false' )
-    `value = BuildIsCompleteAttribute(results);`
-
-SoftGoalContributionAttribute := 'contribute' S 
-	( ( '+' / '-' ) S ( SoftGoal / Name / Identifier ) )
-    (S ',' S ( ( '+' / '-' ) S ( SoftGoal / Name / Identifier ) ) )*
-    `value = BuildSoftGoalContributionAttribute(results);`
-
-
-
-
-CostAttribute := 'cost' S ('[' S ( Identifier ) S ']') S Float
-    `value = BuildCostAttribute(results);`
-
 
 # 
 
