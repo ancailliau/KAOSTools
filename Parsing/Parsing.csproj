@@ -47,40 +47,71 @@
     <Compile Include="SecondStageBuilder.cs" />
     <Compile Include="ParsedEntityType.cs" />
     <Compile Include="ThirdStageBuilder.cs" />
-    <Compile Include="Parsers\GoalDeclareParser.cs" />
     <Compile Include="Parsers\Attributes\CustomAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\DefinitionAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\NameAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\RefinedByAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\RSRAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\IParserAttribute.cs" />
-    <Compile Include="Parsers\DeclareParser.cs" />
     <Compile Include="Parsers\Attributes\ObstructedByAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\AssignedToAttributeParser.cs" />
-    <Compile Include="Parsers\AgentDeclareParser.cs" />
-    <Compile Include="Parsers\ObstacleDeclareParser.cs" />
     <Compile Include="Parsers\Attributes\FormalSpecAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\ResolvedByAttributeParser.cs" />
-    <Compile Include="Parsers\DomainPropertyDeclareParser.cs" />
-    <Compile Include="Parsers\DomainHypothesisDeclareParser.cs" />
-    <Compile Include="Parsers\SoftGoalDeclareParser.cs" />
-    <Compile Include="Parsers\PredicateDeclareParser.cs" />
     <Compile Include="Parsers\Attributes\ArgumentAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\DefaultValueAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\AgentTypeAttributeParser.cs" />
-    <Compile Include="Parsers\EntityDeclareParser.cs" />
     <Compile Include="Parsers\Attributes\EntityTypeAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\IsAAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\AttributeAttributeParser.cs" />
-    <Compile Include="Parsers\TypeDeclareParser.cs" />
-    <Compile Include="Parsers\AssociationDeclareParser.cs" />
     <Compile Include="Parsers\Attributes\LinkAttributeParser.cs" />
-    <Compile Include="Parsers\ExpertDeclareParser.cs" />
-    <Compile Include="Parsers\CalibrationDeclareParser.cs" />
+    <Compile Include="Parsers\Declarations\AgentDeclareParser.cs" />
+    <Compile Include="Parsers\Declarations\AssociationDeclareParser.cs" />
+    <Compile Include="Parsers\Declarations\CalibrationDeclareParser.cs" />
+    <Compile Include="Parsers\Declarations\DeclareParser.cs" />
+    <Compile Include="Parsers\Declarations\DomainHypothesisDeclareParser.cs" />
+    <Compile Include="Parsers\Declarations\DomainPropertyDeclareParser.cs" />
+    <Compile Include="Parsers\Declarations\EntityDeclareParser.cs" />
+    <Compile Include="Parsers\Declarations\ExpertDeclareParser.cs" />
+    <Compile Include="Parsers\Declarations\GoalDeclareParser.cs" />
+    <Compile Include="Parsers\Declarations\ObstacleDeclareParser.cs" />
+    <Compile Include="Parsers\Declarations\PredicateDeclareParser.cs" />
+    <Compile Include="Parsers\Declarations\SoftGoalDeclareParser.cs" />
+    <Compile Include="Parsers\Declarations\TypeDeclareParser.cs" />
+    <Compile Include="Builders\Declarations\DeclareBuilder.cs" />
+    <Compile Include="Builders\Declarations\AgentDeclareBuilder.cs" />
+    <Compile Include="Builders\Declarations\AssociationDeclareBuilder.cs" />
+    <Compile Include="Builders\Declarations\CalibrationDeclareBuilder.cs" />
+    <Compile Include="Builders\Declarations\DomainHypothesisDeclareBuilder.cs" />
+    <Compile Include="Builders\Declarations\DomainPropertyDeclareBuilder.cs" />
+    <Compile Include="Builders\Declarations\ExpertDeclareBuilder.cs" />
+    <Compile Include="Builders\Declarations\EntityDeclareBuilder.cs" />
+    <Compile Include="Builders\Declarations\GoalDeclareBuilder.cs" />
+    <Compile Include="Builders\Declarations\ObstacleDeclareBuilder.cs" />
+    <Compile Include="Builders\Declarations\SoftGoalDeclareParser.cs" />
+    <Compile Include="Builders\Declarations\TypeDeclareBuilder.cs" />
+    <Compile Include="Builders\Declarations\PredicateDeclareBuilder.cs" />
+    <Compile Include="Builders\Attributes\AttributeBuilder.cs" />
+    <Compile Include="Builders\Attributes\AgentTypeAttributeBuilder.cs" />
+    <Compile Include="Builders\Attributes\ArgumentAttributeBuilder.cs" />
+    <Compile Include="Builders\Attributes\AssignedToAttributeBuilder.cs" />
+    <Compile Include="Builders\Attributes\AttributeAttributeBuilder.cs" />
+    <Compile Include="Builders\Attributes\CustomAttributeBuilder.cs" />
+    <Compile Include="Builders\Attributes\DefaultValueAttributeBuilder.cs" />
+    <Compile Include="Builders\Attributes\DefinitionAttributeBuilder.cs" />
+    <Compile Include="Builders\Attributes\EntityTypeAttributeBuilder.cs" />
+    <Compile Include="Builders\Attributes\IsAAttributeBuilder.cs" />
+    <Compile Include="Builders\Attributes\LinkAttributeBuilder.cs" />
+    <Compile Include="Builders\Attributes\NameAttributeBuilder.cs" />
+    <Compile Include="Builders\Attributes\ObstructedByAttributeBuilder.cs" />
+    <Compile Include="Builders\Attributes\RefinedByAttributeBuilder.cs" />
+    <Compile Include="Builders\Attributes\ResolvedByAttributeBuilder.cs" />
+    <Compile Include="Builders\Attributes\RSRAttributeBuilder.cs" />
+    <Compile Include="Builders\Attributes\IAttributeBuilder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="GoalModelParser.peg" />
+    <None Include="TODO.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MetaModel\UCLouvain.KAOSTools.Core.csproj">
@@ -91,5 +122,9 @@
   <ItemGroup>
     <Folder Include="Parsers\" />
     <Folder Include="Parsers\Attributes\" />
+    <Folder Include="Parsers\Declarations\" />
+    <Folder Include="Builders\" />
+    <Folder Include="Builders\Attributes\" />
+    <Folder Include="Builders\Declarations\" />
   </ItemGroup>
 </Project>

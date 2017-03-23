@@ -1,0 +1,11 @@
+﻿Terminate to implement builders
+Implement infrastructure to use builders
+
+Move 3d stage to builders
+Implement infrastructure to use 3d stage builders
+
+Implements getters
+Write tests
+
+Add support for probability estimations
+Removes Collections from Core class to enable the transition to fully relationnel model
