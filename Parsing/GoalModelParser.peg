@@ -31,7 +31,7 @@ Attribute :=
     `value = BuildAttribute(results);`
 
 AttributeParameters :=
-    '(' S AttributeValue (S ',' S AttributeValue )* S')'
+    '[' S AttributeValue S ']'
     `value = BuildAttributeParameters(results);`          
 
 AttributeValue :=
@@ -74,7 +74,7 @@ Float := ('.' [0-9]+) / ( [0-9]+ ('.' [0-9]+)? )
     `expected = "Float"`
 
 Integer := [0-9]+
-    `value = null` 
+    `value = BuildInteger(results)` 
     `expected = "Integer"`
 
 Percentage := ( Integer / Float ) '%'

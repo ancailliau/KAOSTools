@@ -95,6 +95,33 @@ namespace KAOSTools.Parsing
 			BuildElement(predicate, e);
 		}
 
+        public void BuildElement(ParsedEntity entity)
+		{
+			var e = model.entityRepository.GetEntity(entity.Identifier);
+			if (e == null)
+				throw new InvalidOperationException(string.Format("Entity '{0}' was not pre-built.", entity.Identifier));
+
+			BuildElement(entity, e);
+		}
+
+        public void BuildElement(ParsedGivenType givenType)
+		{
+			var e = model.entityRepository.GetGivenType(givenType.Identifier);
+			if (e == null)
+				throw new InvalidOperationException(string.Format("Given type '{0}' was not pre-built.", givenType.Identifier));
+
+			BuildElement(givenType, e);
+		}
+
+        public void BuildElement(ParsedAssociation association)
+		{
+            var e = model.entityRepository.GetRelation(association.Identifier);
+			if (e == null)
+				throw new InvalidOperationException(string.Format("Association '{0}' was not pre-built.", association.Identifier));
+
+			BuildElement(association, e);
+		}
+
 #endregion
 
 

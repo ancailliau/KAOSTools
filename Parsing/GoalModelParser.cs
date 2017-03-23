@@ -258,24 +258,18 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// AttributeParameters := '(' S AttributeValue (S ',' S AttributeValue)* S ')'
+		// AttributeParameters := '[' S AttributeValue S ']'
 		private State DoParseAttributeParametersRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
 			List<Result> results = new List<Result>();
 			
 			_state = DoSequence(_state, results,
-			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "(");},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "[");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "AttributeValue");},
-			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,
-				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
-					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, ",");},
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
-					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "AttributeValue");});});},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "S");},
-			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, ")");});
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "]");});
 			
 			if (_state.Parsed)
 			{
@@ -556,7 +550,7 @@ namespace KAOSTools.Parsing
 			if (_state.Parsed)
 			{
 				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
-				value = null;
+				value = BuildInteger(results);
 				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 			}
 			else

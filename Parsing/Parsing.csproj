@@ -68,6 +68,15 @@
     <Compile Include="Parsers\Attributes\ArgumentAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\DefaultValueAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\AgentTypeAttributeParser.cs" />
+    <Compile Include="Parsers\EntityDeclareParser.cs" />
+    <Compile Include="Parsers\Attributes\EntityTypeAttributeParser.cs" />
+    <Compile Include="Parsers\Attributes\IsAAttributeParser.cs" />
+    <Compile Include="Parsers\Attributes\AttributeAttributeParser.cs" />
+    <Compile Include="Parsers\TypeDeclareParser.cs" />
+    <Compile Include="Parsers\AssociationDeclareParser.cs" />
+    <Compile Include="Parsers\Attributes\LinkAttributeParser.cs" />
+    <Compile Include="Parsers\ExpertDeclareParser.cs" />
+    <Compile Include="Parsers\CalibrationDeclareParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

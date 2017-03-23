@@ -33,7 +33,6 @@ namespace KAOSTools.Parsing.Plugins
 
 		protected void Add(IParserAttribute parser)
 		{
-            Console.WriteLine("Adding attribute parser to '" + GetIdentifier() + "' for '" + parser.GetIdentifier() + "'");
 			attributeParsers.Add(parser);
 		}
 	}

@@ -318,6 +318,11 @@ namespace KAOSTools.Parsing
         public double Value { get; set; }
 	}
 
+	public class ParsedInteger : ParsedElement
+	{
+		public int Value { get; set; }
+	}
+
 	public class ParsedPercentage : ParsedElement
 	{
 		public double Value { get; set; }

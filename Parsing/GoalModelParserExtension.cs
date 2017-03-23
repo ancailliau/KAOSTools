@@ -13,14 +13,18 @@ namespace KAOSTools.Parsing {
 
         partial void OnCtorEpilog()
         {
-            Console.WriteLine("Adding the plugins...");
-			Add(new GoalDeclareParser());
-			Add(new SoftGoalDeclareParser());
 			Add(new AgentDeclareParser());
-			Add(new ObstacleDeclareParser());
-            Add(new DomainPropertyDeclareParser());
+			Add(new AssociationDeclareParser());
+            Add(new CalibrationDeclareParser());
+			Add(new DomainPropertyDeclareParser());
 			Add(new DomainHypothesisDeclareParser());
-            Add(new PredicateDeclareParser());
+            Add(new EntityDeclareParser());
+            Add(new ExpertDeclareParser());
+			Add(new GoalDeclareParser());
+			Add(new ObstacleDeclareParser());
+			Add(new PredicateDeclareParser());
+			Add(new SoftGoalDeclareParser());
+            Add(new TypeDeclareParser());
         }
 
         ParsedElement BuildElements (List<Result> results)
@@ -134,7 +138,7 @@ namespace KAOSTools.Parsing {
 		
         ParsedElement BuildAttributeParameters(List<Result> results)
 		{
-			throw new NotImplementedException("BuildAttributeParameters");
+            return results[1].Value;
 		}
 
 		ParsedElement BuildAttributeValue(List<Result> results)
@@ -150,7 +154,7 @@ namespace KAOSTools.Parsing {
             }
 
 		    var elements = new List<ParsedElement>();
-			for (int i = 0; i < results.Count - 1; i = i + 2)
+			for (int i = 0; i < results.Count; i = i + 2)
 			{
                 var attributeValue = (ParsedElement) results[i].Value;
 				elements.Add(attributeValue);
@@ -243,6 +247,17 @@ namespace KAOSTools.Parsing {
                 Col = results[0].Col, 
                 Filename = m_file
             };
+		}
+
+		ParsedElement BuildInteger(List<Result> results)
+		{
+            return new ParsedInteger
+			{
+				Value = int.Parse(string.Join("", results.Select(x => x.Text))),
+				Line = results[0].Line,
+				Col = results[0].Col,
+				Filename = m_file
+			};
 		}
 
 		ParsedElement BuildPercentage(List<Result> results)

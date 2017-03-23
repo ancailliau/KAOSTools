@@ -5,11 +5,11 @@ using System.Linq;
 namespace KAOSTools.Parsing.Parsers.Attributes
 {
 
-	public class ArgumentAttributeParser : IParserAttribute
+	public class AttributeAttributeParser : IParserAttribute
     {
         public string GetIdentifier()
         {
-            return "argument";
+            return "attribute";
         }
 
         public ParsedElement ParsedAttribute(string identifier, NParsedAttributeValue parameters, NParsedAttributeValue value)
@@ -30,10 +30,10 @@ namespace KAOSTools.Parsing.Parsers.Attributes
 
 				var leftIdentifier = ((IdentifierExpression)left).Value;
 
-				return new ParsedPredicateArgumentAttribute(leftIdentifier, right);
+                return new ParsedAttributeAttribute(leftIdentifier, right);
             }
 
-			throw new NotImplementedException("Attribute '" + identifier + "' only accept a single identifiers:identifier.");
+            throw new NotImplementedException("Attribute '" + identifier + "' only accept a single identifiers:identifier.");
         }
    }
     
