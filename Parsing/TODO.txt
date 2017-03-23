@@ -1,7 +1,4 @@
-﻿Terminate to implement builders
-Implement infrastructure to use builders
-
-Move 3d stage to builders
+﻿Move 3d stage to builders
 Implement infrastructure to use 3d stage builders
 
 Implements getters
