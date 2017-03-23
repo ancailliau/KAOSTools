@@ -19,7 +19,8 @@ namespace KAOSTools.Parsing {
 			Add(new AgentDeclareParser());
 			Add(new ObstacleDeclareParser());
             Add(new DomainPropertyDeclareParser());
-            Add(new DomainHypothesisDeclareParser());
+			Add(new DomainHypothesisDeclareParser());
+            Add(new PredicateDeclareParser());
         }
 
         ParsedElement BuildElements (List<Result> results)
@@ -140,17 +141,38 @@ namespace KAOSTools.Parsing {
 		{
             Console.WriteLine(results.Count);
             Console.WriteLine("--");
-            Console.WriteLine(string.Join("\n", results.Select(x => x.Text.ToString())));
+            Console.WriteLine(string.Join("\n", results.Select(x => x.Text.ToString() + "("+x.Value?.GetType()+")")));
             Console.WriteLine("--");
 
             if (results.Count == 1)
             {
-				return new NParsedAttributeAtomic(results[0].Value);
+				return results[0].Value;
             }
 
-            if (results[1].Text == ":")
-            {
-                return new NParsedAttributeColon();
+		    var elements = new List<ParsedElement>();
+			for (int i = 0; i < results.Count - 1; i = i + 2)
+			{
+                var attributeValue = (ParsedElement) results[i].Value;
+				elements.Add(attributeValue);
+			}
+
+            return new NParsedAttributeList(elements);
+		}
+
+		ParsedElement BuildAttributeDecoratedValue(List<Result> results)
+		{
+			if (results.Count == 1)
+			{
+				return new NParsedAttributeAtomic(results[0].Value);
+			}
+
+			if (results[1].Text == ":")
+			{
+				return new NParsedAttributeColon()
+				{
+					Left = results[0].Value,
+					Right = results[2].Value
+				};
 			}
 
 			if (results[1].Text == "[")
@@ -158,19 +180,7 @@ namespace KAOSTools.Parsing {
 				return new NParsedAttributeBracket();
 			}
 
-			if (results[1].Text == ",")
-			{
-                var elements = new List<ParsedElement>();
-				for (int i = 0; i < results.Count - 1; i = i + 2)
-				{
-                    var attributeValue = (ParsedElement) results[i].Value;
-					elements.Add(attributeValue);
-				}
-
-                return new NParsedAttributeList(elements);
-			}
-
-			throw new NotImplementedException("BuildAttributeValue");
+			throw new NotImplementedException("BuildAttributeDecoratedValue");
 		}
 		
         #endregion
@@ -240,6 +250,17 @@ namespace KAOSTools.Parsing {
             return new ParsedPercentage
 			{
                 Value = double.Parse(string.Join("", results[0].Text)),
+				Line = results[0].Line,
+				Col = results[0].Col,
+				Filename = m_file
+			};
+		}
+
+		ParsedElement BuildBool(List<Result> results)
+		{
+            return new ParsedBool
+			{
+                Value = bool.Parse(results[0].Text),
 				Line = results[0].Line,
 				Col = results[0].Col,
 				Filename = m_file

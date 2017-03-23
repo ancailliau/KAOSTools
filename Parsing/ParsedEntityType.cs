@@ -56,6 +56,8 @@ namespace KAOSTools.Parsing
 
 	public class NParsedAttributeColon : NParsedAttributeValue
 	{
+        public ParsedElement Left { get; set; }
+		public ParsedElement Right { get; set; }
 	}
 
 	public class NParsedAttributeBracket : NParsedAttributeValue
@@ -325,7 +327,12 @@ namespace KAOSTools.Parsing
     {
         public bool Verbatim { get; set; }
         public string Value { get; set; }
-    }
+	}
+
+	public class ParsedBool : ParsedElement
+	{
+		public bool Value { get; set; }
+	}
 
     
     public class MultiplictyExpression : ParsedAttribute

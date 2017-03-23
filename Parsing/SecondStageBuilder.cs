@@ -77,6 +77,24 @@ namespace KAOSTools.Parsing
 			BuildElement(domhyp, e);
 		}
 
+        public void BuildElement(ParsedSoftGoal softgoal)
+		{
+            var e = model.goalRepository.GetSoftGoal(softgoal.Identifier);
+			if (e == null)
+				throw new InvalidOperationException(string.Format("Soft goal '{0}' was not pre-built.", softgoal.Identifier));
+
+			BuildElement(softgoal, e);
+		}
+
+        public void BuildElement(ParsedPredicate predicate)
+		{
+            var e = model.formalSpecRepository.GetPredicate(predicate.Identifier);
+			if (e == null)
+				throw new InvalidOperationException(string.Format("Predicate '{0}' was not pre-built.", predicate.Identifier));
+
+			BuildElement(predicate, e);
+		}
+
 #endregion
 
 

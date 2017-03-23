@@ -49,6 +49,7 @@ namespace KAOSTools.Parsing
 			m_nonterminals.Add("Attribute", new ParseMethod[]{this.DoParseAttributeRule});
 			m_nonterminals.Add("AttributeParameters", new ParseMethod[]{this.DoParseAttributeParametersRule});
 			m_nonterminals.Add("AttributeValue", new ParseMethod[]{this.DoParseAttributeValueRule});
+			m_nonterminals.Add("AttributeDecoratedValue", new ParseMethod[]{this.DoParseAttributeDecoratedValueRule});
 			m_nonterminals.Add("AttributeAtomicValue", new ParseMethod[]{this.DoParseAttributeAtomicValueRule});
 			m_nonterminals.Add("AttributeIdentifier", new ParseMethod[]{this.DoParseAttributeIdentifierRule});
 			m_nonterminals.Add("Identifier", new ParseMethod[]{this.DoParseIdentifierRule});
@@ -286,21 +287,38 @@ namespace KAOSTools.Parsing
 			return _state;
 		}
 		
-		// AttributeValue := (AttributeAtomicValue (S ',' S AttributeAtomicValue)*) / (AttributeAtomicValue S ':' S AttributeAtomicValue) / (AttributeAtomicValue S '[' S AttributeAtomicValue S ']')
+		// AttributeValue := AttributeDecoratedValue (S ',' S AttributeDecoratedValue)*
 		private State DoParseAttributeValueRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
 			List<Result> results = new List<Result>();
 			
+			_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoParse(s, r, "AttributeDecoratedValue");},
+			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 2147483647,
+				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
+					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, ",");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "S");},
+					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "AttributeDecoratedValue");});});});
+			
+			if (_state.Parsed)
+			{
+				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
+				value = BuildAttributeValue(results);
+				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+			}
+			
+			return _state;
+		}
+		
+		// AttributeDecoratedValue := (AttributeAtomicValue S ':' S AttributeAtomicValue) / (AttributeAtomicValue S '[' S AttributeAtomicValue S ']') / AttributeAtomicValue
+		private State DoParseAttributeDecoratedValueRule(State _state, List<Result> _outResults)
+		{
+			State _start = _state;
+			List<Result> results = new List<Result>();
+			
 			_state = DoChoice(_state, results,
-			delegate (State s, List<Result> r) {return DoSequence(s, r,
-				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "AttributeAtomicValue");},
-				delegate (State s2, List<Result> r2) {return DoRepetition(s2, r2, 0, 2147483647,
-					delegate (State s3, List<Result> r3) {return DoSequence(s3, r3,
-						delegate (State s4, List<Result> r4) {return DoParse(s4, r4, "S");},
-						delegate (State s4, List<Result> r4) {return DoParseLiteral(s4, r4, ",");},
-						delegate (State s4, List<Result> r4) {return DoParse(s4, r4, "S");},
-						delegate (State s4, List<Result> r4) {return DoParse(s4, r4, "AttributeAtomicValue");});});});},
 			delegate (State s, List<Result> r) {return DoSequence(s, r,
 				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "AttributeAtomicValue");},
 				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
@@ -314,12 +332,13 @@ namespace KAOSTools.Parsing
 				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
 				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "AttributeAtomicValue");},
 				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
-				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "]");});});
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "]");});},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "AttributeAtomicValue");});
 			
 			if (_state.Parsed)
 			{
 				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
-				value = BuildAttributeValue(results);
+				value = BuildAttributeDecoratedValue(results);
 				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 			}
 			
@@ -593,7 +612,7 @@ namespace KAOSTools.Parsing
 			if (_state.Parsed)
 			{
 				KAOSTools.Parsing.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.ParsedElement);
-				value = null;
+				value = BuildBool(results);
 				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 			}
 			else

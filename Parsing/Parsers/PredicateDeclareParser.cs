@@ -6,19 +6,21 @@ using KAOSTools.Parsing.Parsers.Attributes;
 
 namespace KAOSTools.Parsing.Plugins
 {
-	public class AgentDeclareParser : DeclareParser
-	{
-		public AgentDeclareParser()
-		{
+	public class PredicateDeclareParser : DeclareParser
+    {
+		public PredicateDeclareParser()
+        {
 			Add(new NameAttributeParser());
 			Add(new DefinitionAttributeParser());
-            Add(new AgentTypeAttributeParser());
-			Add(new CustomAttributeParser());
-		}
+			Add(new FormalSpecAttributeParser());
+            Add(new ArgumentAttributeParser());
+            Add(new DefaultValueAttributeParser());
+            Add(new CustomAttributeParser());
+        }
 
 		public override ParsedElement ParsedDeclare(string identifier, List<dynamic> attributes)
 		{
-			return new ParsedAgent(identifier)
+            return new ParsedPredicate(identifier)
 			{
 				Attributes = attributes
 			};
@@ -26,7 +28,11 @@ namespace KAOSTools.Parsing.Plugins
 
         public override string GetIdentifier()
 		{
-			return "agent";
+			return "predicate";
 		}
-	}
+    }
+
+    
+
+    
 }

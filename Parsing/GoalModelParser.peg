@@ -35,10 +35,14 @@ AttributeParameters :=
     `value = BuildAttributeParameters(results);`          
 
 AttributeValue :=
-    ( AttributeAtomicValue ( S ',' S AttributeAtomicValue ) * ) /
-    ( AttributeAtomicValue S ':' S AttributeAtomicValue ) / 
-    ( AttributeAtomicValue S '[' S AttributeAtomicValue S ']' )
+    ( AttributeDecoratedValue ( S ',' S AttributeDecoratedValue ) * )
     `value = BuildAttributeValue(results);`
+
+AttributeDecoratedValue := 
+    ( AttributeAtomicValue S ':' S AttributeAtomicValue ) /
+    ( AttributeAtomicValue S '[' S AttributeAtomicValue S ']' ) /
+    AttributeAtomicValue
+    `value = BuildAttributeDecoratedValue(results);`
 
 AttributeAtomicValue := 
     Bool / QuotedString / Formula / Percentage / Integer / Float / Identifier
@@ -78,7 +82,7 @@ Percentage := ( Integer / Float ) '%'
     `expected = "Percentage"`
 
 Bool := 'true' / 'false'
-    `value = null`
+    `value = BuildBool(results)`
     `expected = "Bool"`
 
 ModelAttributeName := [a-zA-Z0-9\\._-]+
