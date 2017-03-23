@@ -7,21 +7,15 @@ namespace KAOSTools.Parsing
 {
     public class ThirdStageBuilder : Builder
     {
-        FirstStageBuilder fsb;
-        SecondStageBuilder ssb;
         FormulaBuilder fb;
         IDictionary<Predicate, int> predicateArgumentCurrentPosition;
 
         public ThirdStageBuilder (KAOSModel model, 
-                                   FirstStageBuilder fsb,
-                                   SecondStageBuilder ssb,
                                   FormulaBuilder fb,
                                   Uri relativePath)
             : base (model, relativePath)
         {
-            this.fsb = fsb;
             this.fb = fb;
-            this.ssb = ssb;
             this.predicateArgumentCurrentPosition = new Dictionary<Predicate, int> ();
         }
 
