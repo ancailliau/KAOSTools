@@ -13,7 +13,7 @@ namespace KAOSTools.Parsing.Builders.Attributes
 
         public override void Handle(KAOSCoreElement element, ParsedCustomAttribute attribute, KAOSModel model)
 		{
-            element.CustomData.Add (attribute.Key, attribute.Value);
+            element.CustomData.Add (attribute.Key.Substring (1), attribute.Value);
         }
     }
 }

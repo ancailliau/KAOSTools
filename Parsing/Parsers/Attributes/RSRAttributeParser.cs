@@ -24,11 +24,13 @@ namespace KAOSTools.Parsing.Parsers.Attributes
 
             double rds = 1;
             if (v is ParsedFloat)
-                rds = ((ParsedFloat)v).Value;
+				rds = ((ParsedFloat)v).Value;
+            else if (v is ParsedInteger)
+				rds = ((ParsedInteger)v).Value * 1d;
             else if (v is ParsedPercentage)
                 rds = ((ParsedPercentage)v).Value / 100;
 			else
-				throw new NotImplementedException("Attribute 'rsr' only accept float or percentage value");
+                throw new NotImplementedException("Attribute 'rsr' only accept float or percentage value. (Received: "+v.GetType()+")");
 
             return new ParsedRDSAttribute() { Value = rds };
         }

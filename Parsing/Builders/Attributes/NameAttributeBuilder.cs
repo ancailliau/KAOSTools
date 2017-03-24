@@ -14,7 +14,14 @@ namespace KAOSTools.Parsing.Builders.Attributes
 
 		public override void Handle(KAOSCoreElement element, ParsedNameAttribute attribute, KAOSModel model)
 		{
-			Handle(element, attribute.Value, "Name");
-        }
+            Handle(element, Sanitize(attribute.Value), "Name");
+		}
+
+		protected string Sanitize(string text)
+		{
+			var t = Regex.Replace(text, @"\s+", " ", RegexOptions.Multiline).Trim();
+			t = Regex.Replace(t, "\"\"", "\"", RegexOptions.Multiline);
+			return t;
+		}
     }
 }

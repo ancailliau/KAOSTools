@@ -1,5 +1,4 @@
-﻿Implements getters
-Write tests
+﻿Write tests
 
 Add support for probability estimations
 Removes Collections from Core class to enable the transition to fully relationnel model

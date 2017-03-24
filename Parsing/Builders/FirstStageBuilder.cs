@@ -33,7 +33,8 @@ namespace KAOSTools.Parsing
             declareBuilders.Add(new ExpertDeclareBuilder());
 			declareBuilders.Add(new GoalDeclareBuilder());
             declareBuilders.Add(new SoftGoalDeclareParser());
-            declareBuilders.Add(new TypeDeclareBuilder());
+			declareBuilders.Add(new TypeDeclareBuilder());
+            declareBuilders.Add(new ObstacleDeclareBuilder());
         }
 
         public void BuildElementWithKeys (ParsedElements elements)

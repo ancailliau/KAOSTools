@@ -339,7 +339,7 @@ namespace KAOSTools.Parsing.Parsers
 			return _state;
 		}
 		
-		// AttributeAtomicValue := Bool / QuotedString / Formula / Percentage / Integer / Float / Identifier
+		// AttributeAtomicValue := Bool / QuotedString / Formula / Percentage / Float / Integer / Identifier
 		private State DoParseAttributeAtomicValueRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -350,8 +350,8 @@ namespace KAOSTools.Parsing.Parsers
 			delegate (State s, List<Result> r) {return DoParse(s, r, "QuotedString");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Formula");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Percentage");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Integer");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Float");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Integer");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Identifier");});
 			
 			if (_state.Parsed)

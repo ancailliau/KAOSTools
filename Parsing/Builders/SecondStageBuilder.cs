@@ -24,6 +24,7 @@ namespace KAOSTools.Parsing
 			declareBuilders.Add(new GoalDeclareBuilder());
 			declareBuilders.Add(new SoftGoalDeclareParser());
 			declareBuilders.Add(new TypeDeclareBuilder());
+			declareBuilders.Add(new ObstacleDeclareBuilder());
 
 			attributeBuilders.Add(new AgentTypeAttributeBuilder());
             attributeBuilders.Add(new AssignedToAttributeBuilder());

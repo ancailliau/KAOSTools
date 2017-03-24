@@ -45,7 +45,7 @@ AttributeDecoratedValue :=
     `value = BuildAttributeDecoratedValue(results);`
 
 AttributeAtomicValue := 
-    Bool / QuotedString / Formula / Percentage / Integer / Float / Identifier
+    Bool / QuotedString / Formula / Percentage / Float / Integer / Identifier
     `value = results[0].Value;`
 
 # Expressions                                

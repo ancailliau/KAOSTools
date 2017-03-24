@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevrityMatrix", "SevrityMat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuaCodeGenerator", "LuaCodeGenerator\LuaCodeGenerator.csproj", "{DDBAFC0F-AF93-4469-B4CE-AD3B9B0264D5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Parsing.Tests", "Parsing.Tests\UCLouvain.KAOSTools.Parsing.Tests.csproj", "{283D3679-A09D-4FDC-AB94-2B55A0C4493A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -273,6 +275,20 @@ Global
 		{DDBAFC0F-AF93-4469-B4CE-AD3B9B0264D5}.CLI|Any CPU.Build.0 = Debug|Any CPU
 		{DDBAFC0F-AF93-4469-B4CE-AD3B9B0264D5}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
 		{DDBAFC0F-AF93-4469-B4CE-AD3B9B0264D5}.AppStore|Any CPU.Build.0 = Debug|Any CPU
+		{283D3679-A09D-4FDC-AB94-2B55A0C4493A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{283D3679-A09D-4FDC-AB94-2B55A0C4493A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{283D3679-A09D-4FDC-AB94-2B55A0C4493A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{283D3679-A09D-4FDC-AB94-2B55A0C4493A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{283D3679-A09D-4FDC-AB94-2B55A0C4493A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{283D3679-A09D-4FDC-AB94-2B55A0C4493A}.Debug|x86.Build.0 = Debug|Any CPU
+		{283D3679-A09D-4FDC-AB94-2B55A0C4493A}.Release|x86.ActiveCfg = Release|Any CPU
+		{283D3679-A09D-4FDC-AB94-2B55A0C4493A}.Release|x86.Build.0 = Release|Any CPU
+		{283D3679-A09D-4FDC-AB94-2B55A0C4493A}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{283D3679-A09D-4FDC-AB94-2B55A0C4493A}.Default|Any CPU.Build.0 = Debug|Any CPU
+		{283D3679-A09D-4FDC-AB94-2B55A0C4493A}.CLI|Any CPU.ActiveCfg = Debug|Any CPU
+		{283D3679-A09D-4FDC-AB94-2B55A0C4493A}.CLI|Any CPU.Build.0 = Debug|Any CPU
+		{283D3679-A09D-4FDC-AB94-2B55A0C4493A}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
+		{283D3679-A09D-4FDC-AB94-2B55A0C4493A}.AppStore|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0

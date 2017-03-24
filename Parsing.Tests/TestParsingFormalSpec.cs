@@ -2,10 +2,9 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using KAOSTools.Parsing;
-using ShallTests;
 using KAOSTools.Core;
 
-namespace KAOSTools.Parsing.Tests
+namespace UCLouvain.KAOSTools.Parsing.Tests
 {
     [TestFixture()]
     public class TestParsingFormalSpec

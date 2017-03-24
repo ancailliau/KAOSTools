@@ -3,10 +3,10 @@ using System.Linq;
 using NUnit.Framework;
 using KAOSTools.Parsing;
 using System.Collections.Generic;
-using ShallTests;
 using KAOSTools.Core;
+using KAOSTools.Parsing.Parsers;
 
-namespace KAOSTools.Parsing.Tests
+namespace UCLouvain.KAOSTools.Parsing.Tests
 {
     [TestFixture()]
     public class TestParsingObstacle

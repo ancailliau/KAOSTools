@@ -26,9 +26,16 @@ namespace KAOSTools.Parsing.Parsers.Attributes
             else if (value is NParsedAttributeList)
             {
                 v = ((NParsedAttributeList)value).Values;
+                if (!(v.All(x => x is NParsedAttributeAtomic)))
+					throw new NotImplementedException("Attribute '" + identifier + "' only accept a list of atomic values. (Received: " +
+													  string.Join(",", v.Select(x => x.GetType().ToString())) + ")");
 
-                if (!(v.All(x => x is IdentifierExpression)))
-                    throw new NotImplementedException("Attribute '" + identifier + "' only accept a list of identifiers.");
+                v = v.OfType<NParsedAttributeAtomic>().Select(x => x.Value).ToList ();
+				if (!(v.All(x => x is IdentifierExpression)))
+                    throw new NotImplementedException("Attribute '" + identifier + "' only accept a list of identifiers. (Received: "+
+                                                      string.Join(",", v.Select(x => x.GetType().ToString()))+")");
+
+
             }
             else
             {

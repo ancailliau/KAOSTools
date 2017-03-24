@@ -2,27 +2,23 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using KAOSTools.Parsing;
-using ShallTests;
 using KAOSTools.Core;
+using KAOSTools.Parsing.Parsers;
 
-namespace KAOSTools.Parsing.Tests
+namespace UCLouvain.KAOSTools.Parsing.Tests
 {
     [TestFixture()]
     public class TestParsingGoal
     {
         private static ModelBuilder parser = new ModelBuilder ();
        
-        [TestCase(@"declare goal
-                        id test
+        [TestCase(@"declare goal [ test ]
                     end", "test")]
-        [TestCase(@"declare goal
-                        id test_long_identifier
+        [TestCase(@"declare goal [ test_long_identifier ]
                     end", "test_long_identifier")]
-        [TestCase(@"declare goal
-                        id test-long-identifier
+        [TestCase(@"declare goal [ test-long-identifier ]
                     end", "test-long-identifier")]
-        [TestCase(@"declare goal
-                        id test12
+        [TestCase(@"declare goal [ test12 ]
                     end", "test12")]
         public void TestIdentifier (string input, string expectedIdentifier)
         {
@@ -30,17 +26,13 @@ namespace KAOSTools.Parsing.Tests
             model.Goals().Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
         }
 
-        [TestCase(@"declare goal
-                        id 
+        [TestCase(@"declare goal []
                     end")]
-        [TestCase(@"declare goal
-                        id -
+        [TestCase(@"declare goal [-]
                     end")]
-        [TestCase(@"declare goal
-                        id _
+        [TestCase(@"declare goal [_]
                     end")]
-        [TestCase(@"declare goal
-                        id $
+        [TestCase(@"declare goal [$]
                     end")]
         public void TestInvalidIdentifier (string input)
         {
@@ -49,29 +41,27 @@ namespace KAOSTools.Parsing.Tests
             });
         }
 
-        [TestCase(@"declare goal
+        [TestCase(@"declare goal [ test ]
                         name ""test""
                     end", "test")]
-        [TestCase(@"declare goal
+		[TestCase(@"declare goal [ test ]
                         name ""Long name with spaces and numbers 123""
                     end", "Long name with spaces and numbers 123")]
-        [TestCase(@"declare goal
+		[TestCase(@"declare goal [ test ]
                         name ""[-_-]""
                     end", "[-_-]")]
-        [TestCase(@"declare goal
+		[TestCase(@"declare goal [ test ]
                         name ""multi
                                line""
                     end", "multi line")]
-        [TestCase("declare goal name \"quoted \"\"name\"\"\" end", @"quoted ""name""")]
+		[TestCase("declare goal [ test ] name \"quoted \"\"name\"\"\" end", @"quoted ""name""")]
         public void TestName (string input, string expectedName)
         {
             var model = parser.Parse (input);
-            model.Goals()
-                .Where (x => x.Name == expectedName)
-                    .ShallBeSingle ();
+            model.Goals().Where (x => x.Name == expectedName).ShallBeSingle ();
         }
 
-        [TestCase(@"declare goal
+        [TestCase(@"declare goal [ test ]
                         name """"""
                     end")]
         public void TestInvalidName (string input)
@@ -81,20 +71,17 @@ namespace KAOSTools.Parsing.Tests
             });
         }
 
-        [TestCase(@"declare goal
-                        id test
+		[TestCase(@"declare goal [ test ]
                         definition ""test""
                     end", "test")]
-        [TestCase(@"declare goal
-                        id test
+		[TestCase(@"declare goal [ test ]
                         definition """"
                     end", "")]
-        [TestCase(@"declare goal
-                        id test
+		[TestCase(@"declare goal [ test ]
                         definition ""on multiple
                                      lines.""
                     end", "on multiple lines.")]
-        [TestCase("declare goal id test definition \"with a \"\"quote\"\" !\" end", "with a \"quote\" !")]
+        [TestCase("declare goal [ test ] definition \"with a \"\"quote\"\" !\" end", "with a \"quote\" !")]
         public void TestDefinition (string input, string expectedDefinition)
         {
             var model = parser.Parse (input);
@@ -102,8 +89,7 @@ namespace KAOSTools.Parsing.Tests
             g.Definition.ShallEqual (expectedDefinition);
         }
 
-        [TestCase(@"declare goal
-                        id test
+		[TestCase(@"declare goal [ test ]
                         name ""old name""
                         definition ""old definition""
                         refinedby old_child1, old_child2
@@ -111,35 +97,24 @@ namespace KAOSTools.Parsing.Tests
                         assignedto old_agent
                     end
 
-                    override goal
-                        id test
+                    override goal [ test ]
                         name ""new name""
                         definition ""new definition""
                         refinedby new_child1, new_child2
                         obstructedby new_obstacle
                         assignedto new_agent
-                    end")]
-        [TestCase(@"declare goal
-                        id test
                     end
 
-                    override goal 
-                        id test
-                        name ""old name""
-                        definition ""old definition""
-                        refinedby old_child1, old_child2
-                        obstructedby old_obstacle
-                        assignedto old_agent
-                    end
+                    declare goal [ old_child1 ] end 
+                    declare goal [ new_child1 ] end
+                    declare goal [ old_child2 ] end 
+                    declare goal [ new_child2 ] end
 
-                    override goal
-                        id test
-                        name ""new name""
-                        definition ""new definition""
-                        refinedby new_child1, new_child2
-                        obstructedby new_obstacle
-                        assignedto new_agent
-                    end")]
+                    declare obstacle [ old_obstacle ] end 
+                    declare obstacle [ new_obstacle ] end
+
+                    declare agent [ old_agent ] end 
+                    declare agent [ new_agent ] end")]
         public void TestMerge (string input)
         {
             var model = parser.Parse (input);
@@ -167,8 +142,8 @@ namespace KAOSTools.Parsing.Tests
         [Test()]
         public void TestMultipleGoals ()
         {
-            var input = @"declare goal id test  end
-                          declare goal id test2 end";
+            var input = @"declare goal [ test ] end
+                          declare goal [ test2 ] end";
 
             var model = parser.Parse (input);
 
@@ -177,39 +152,11 @@ namespace KAOSTools.Parsing.Tests
             model.Goals().ShallContain (x => x.Identifier == "test2");
         }
             
-        [TestCase(@"declare goal 
-                        id test
+        [TestCase(@"declare goal [ test ]
                         refinedby child1, child2
-                    end")]
-        public void TestImplicit (string input)
-        {
-            var model = parser.Parse (input);
-            
-            var goal = model.Goals().Single (x => x.Identifier == "test");
-            var refinement = goal.Refinements().Single ();
-            foreach (var item in refinement.SubGoals()) {
-                item.Implicit.ShallBeTrue ();
-            }
-        }
-
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby child1, child2
-                    end")]
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby declare goal id child1 end, child2
-                    end")]
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby declare goal id child1 end, declare goal id child2 end
-                    end")]
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby declare
-                                      children child1, child2
-                                  end
-                    end")]
+                    end
+                    declare goal [ child1 ] end
+                    declare goal [ child2 ] end")]
         public void TestRefinement (string input)
         {
             var model = parser.Parse (input);
@@ -222,38 +169,14 @@ namespace KAOSTools.Parsing.Tests
             refinement.SubGoalIdentifiers.ShallOnlyContain ( new string [] { "child1" , "child2" });
         }
 
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby declare
-                                      children child1, child2
-                                      iscomplete yes
-                                  end
-                    end")]
-        public void TestCompleteRefinement (string input)
-        {
-            var model = parser.Parse (input);
 
-            var goal = model.Goals()
-                .ShallContain (x => x.Identifier == "test")
-                    .ShallBeSingle ();
-
-            var refinement = goal.Refinements().Single ();
-            refinement.IsComplete.ShallBeTrue();
-        }
-
-        [TestCase(@"declare goal 
-                        id test
+		[TestCase(@"declare goal [ test ]
                         refinedby child1, child2
                     end
-                    declare goal id child1 refinedby child3, child4 end")]
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby declare goal id child1 refinedby child3, child4 end, child2
-                    end")]
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby declare goal id child1 refinedby declare goal id child3 end, child4 end, child2
-                    end")]
+                    declare goal [ child1 ] refinedby child3, child4 end
+                    declare goal [ child2 ] end
+                    declare goal [ child3 ] end
+                    declare goal [ child4 ] end")]
         public void TestRefinementRecursive (string input)
         {
             var model = parser.Parse (input);
@@ -275,26 +198,11 @@ namespace KAOSTools.Parsing.Tests
                                               .OnlyContains ( new string [] { "child3" , "child4" }));
         }
 
-        [TestCase(@"declare goal
-                        id         test
-                        refinedby  test2, domprop
+		[TestCase(@"declare goal [ test ]
+                        refinedby  child2, domprop
                     end
-                    declare domainproperty id domprop end")]
-        [TestCase(@"declare goal
-                        id         test
-                        refinedby  test2, ""domprop""
-                    end
-                    declare domainproperty id domprop name ""domprop"" end")]
-        [TestCase(@"declare goal
-                        id         test
-                        refinedby  test2, declare domainproperty id domprop name ""domprop"" end
-                    end")]
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby declare
-                                      children test2, declare domainproperty id domprop name ""domprop"" end
-                                  end
-                    end")]
+                    declare goal [ child2 ] end
+                    declare domainproperty [ domprop ] end")]
         public void TestRefinementWithDomainProperty (string input)
         {
             var model = parser.Parse (input);
@@ -304,26 +212,11 @@ namespace KAOSTools.Parsing.Tests
         }
 
         
-        [TestCase(@"declare goal
-                        id         test
-                        refinedby  test2, domhyp
+        [TestCase(@"declare goal [ test ]
+                        refinedby  child2, domhyp
                     end
-                    declare domhyp id domhyp end")]
-        [TestCase(@"declare goal
-                        id         test
-                        refinedby  test2, ""domhyp""
-                    end
-                    declare domhyp id domhyp name ""domhyp"" end")]
-        [TestCase(@"declare goal
-                        id         test
-                        refinedby  test2, declare domhyp id domhyp name ""domhyp"" end
-                    end")]
-        [TestCase(@"declare goal
-                        id         test
-                        refinedby  declare 
-                                       children test2, declare domhyp id domhyp name ""domhyp"" end
-                                   end
-                    end")]
+                    declare domhyp [ domhyp ] end
+                    declare goal [ child2 ] end")]
         public void TestRefinementWithDomainHypothesis (string input)
         {
             var model = parser.Parse (input);
@@ -331,103 +224,37 @@ namespace KAOSTools.Parsing.Tests
             var test = model.Goals().ShallContain (x => x.Identifier == "test").ShallBeSingle ();
             test.Refinements().ShallBeSingle ().DomainHypothesisIdentifiers.ShallOnlyContain (new string [] { "domhyp" });
         }
-            
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby child1, ""child2""
-                    end
-                    declare goal id child1 name ""child1"" end")]
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby ""child1"", ""child2""
-                    end")]
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby declare goal name ""child1"" end, ""child2""
-                    end")]
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby declare goal name ""child1"" end, declare goal name ""child2"" end
-                    end")]
-        public void TestRefinementByName (string input)
-        {
-            var model = parser.Parse (input);
-            
-            var goal = model.Goals()
-                .ShallContain (x => x.Identifier == "test")
-                    .ShallBeSingle ();
-            
-            goal.Refinements()
-                .ShallContain (x => x.SubGoals().Select(y => y.Name)
-                               .OnlyContains ( new string [] { "child1" , "child2" }));
-        }
 
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby(milestone) goal1, goal2
-                    end", RefinementPattern.Milestone)]
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby declare 
-                                      pattern milestone
-                                      children goal1, goal2
-                                  end
-                    end", RefinementPattern.Milestone)]
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby(case[.5]) goal1, goal2
-                    end", RefinementPattern.Case)]
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby declare 
-                                      pattern case[.5]
-                                      children goal1, goal2
-                                  end
-                    end", RefinementPattern.Case)]
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby(introduce_guard) goal1, goal2
-                    end", RefinementPattern.IntroduceGuard)]
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby declare 
-                                      pattern introduce_guard
-                                      children goal1, goal2
-                                  end
-                    end", RefinementPattern.IntroduceGuard)]
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby(divide_and_conquer) goal1, goal2
-                    end", RefinementPattern.DivideAndConquer)]
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby declare 
-                                      pattern divide_and_conquer
-                                      children goal1, goal2
-                                  end
-                    end", RefinementPattern.DivideAndConquer)]
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby(unmonitorability) goal1, goal2
-                    end", RefinementPattern.Unmonitorability)]
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby declare 
-                                      pattern unmonitorability
-                                      children goal1, goal2
-                                  end
-                    end", RefinementPattern.Unmonitorability)]
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby(uncontrollability) goal1, goal2
-                    end", RefinementPattern.Uncontrollability)]
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby declare 
-                                      pattern uncontrollability
-                                      children goal1, goal2
-                                  end
-                    end", RefinementPattern.Uncontrollability)]
+        [TestCase(@"declare goal [ test ]
+                        refinedby [ milestone ] goal1, goal2
+                    end
+                    declare goal [ goal1 ] end
+                    declare goal [ goal2 ] end", RefinementPattern.Milestone)]
+        [TestCase(@"declare goal [ test ]
+                        refinedby [ case ] goal1 [.5], goal2 [.5]
+                    end
+                    declare goal [ goal1 ] end
+                    declare goal [ goal2 ] end", RefinementPattern.Case)]
+        [TestCase(@"declare goal [ test ]
+                        refinedby [ introduce_guard ] goal1, goal2
+                    end
+                    declare goal [ goal1 ] end
+                    declare goal [ goal2 ] end", RefinementPattern.IntroduceGuard)]
+        [TestCase(@"declare goal [ test ]
+                        refinedby [ divide_and_conquer ] goal1, goal2
+                    end
+                    declare goal [ goal1 ] end
+                    declare goal [ goal2 ] end", RefinementPattern.DivideAndConquer)]
+        [TestCase(@"declare goal [ test ]
+                        refinedby [ unmonitorability ] goal1, goal2
+                    end
+                    declare goal [ goal1 ] end
+                    declare goal [ goal2 ] end", RefinementPattern.Unmonitorability)]
+        [TestCase(@"declare goal [ test ]
+                        refinedby [ uncontrollability ] goal1, goal2
+                    end
+                    declare goal [ goal1 ] end
+                    declare goal [ goal2 ] end", RefinementPattern.Uncontrollability)]
         public void TestRefinementPatterns (string input, RefinementPattern pattern)
         {
             var model = parser.Parse (input);
@@ -445,91 +272,17 @@ namespace KAOSTools.Parsing.Tests
             }
         }
 
-        [TestCase(@"declare goal 
-                        id test
-                        refinedby declare 
-                                      pattern uncontrollability
-                                      children goal1, goal2
-                                      contribute +soft1
-                                  end
-                    end")]
-        public void TestSoftGoalContribution (string input)
-        {
-            var model = parser.Parse (input);
-
-            var goal = model.Goals()
-                .ShallContain (x => x.Identifier == "test")
-                    .ShallBeSingle ();
-
-            var refinement = goal.Refinements().Single ();
-        }
-        
-        [TestCase(@"declare goal 
-                        id test
-                        exception o then rg
-                    end")]
-        [TestCase(@"declare goal 
-                        id test
-                        exception ""O"" then ""RG""
-                    end
-                    declare goal name ""RG"" id rg end
-                    declare obstacle name ""O"" id o end")]
-        [TestCase(@"declare goal 
-                        id test
-                        exception declare obstacle id o end then declare goal id rg end
-                    end")]
-        public void TestException (string input)
-        {
-            var model = parser.Parse (input);
-
-            var goal = model.Goals()
-                .ShallContain (x => x.Identifier == "test")
-                    .ShallBeSingle ();
-
-            var e = goal.Exceptions().ShallBeSingle ();
-            e.ResolvingGoalIdentifier.ShallEqual ("rg");
-            e.ResolvedObstacleIdentifier.ShallEqual ("o");
-        }
-
-        
-        [TestCase(@"declare goal 
-                        id test
-                        assumption rg
-                    end")]
-        [TestCase(@"declare goal 
-                        id test
-                        assumption ""RG""
-                    end
-                    declare goal name ""RG"" id rg end")]
-        [TestCase(@"declare goal 
-                        id test
-                        assumption declare goal id rg end
-                    end")]
-        public void TestAssumption (string input)
-        {
-            /*var model = parser.Parse (input);
-
-            var goal = model.Goals()
-                .ShallContain (x => x.Identifier == "test")
-                    .ShallBeSingle ();
-
-            var e = goal.Assumptions.ShallBeSingle ();
-            Assert.AreEqual ("rg", e.Assumed.Identifier);*/
-            Assert.Fail ();
-        }
-
-        [TestCase(@"declare goal id test rds 0.95 end", 0.95)]
-        [TestCase(@"declare goal id test rds 1    end", 1)]
-        [TestCase(@"declare goal id test rds 0    end", 0)]
-        [TestCase(@"declare goal id test rds .01  end", .01)]
+		[TestCase(@"declare goal [ test ] rsr 0.95    end", 0.95)]
+        [TestCase(@"declare goal [ test ] rsr 1    end", 1)]
+        [TestCase(@"declare goal [ test ] rsr 0    end", 0)]
+        [TestCase(@"declare goal [ test ] rsr .01  end", .01)]
         public void TestRequiredDegreeOfSatisfaction (string input, double expected)
         {
             var model = parser.Parse (input);
             model.Goals().ShallContain (x => x.Identifier == "test").ShallBeSingle ().RDS.ShallEqual (expected);
         }
 
-        [TestCase(@"declare goal
-                        id test
+        [TestCase(@"declare goal [ test ]
                         $custom ""My string""
                     end", "test")]
         public void TestCustomAttribute (string input, string expectedIdentifier)

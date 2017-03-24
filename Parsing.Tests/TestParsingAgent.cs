@@ -1,11 +1,11 @@
-using System;
 using System.Linq;
-using NUnit.Framework;
-using ShallTests;
 using KAOSTools.Core;
+using NUnit.Framework;
 using UCLouvain.KAOSTools.Core.Agents;
+using KAOSTools.Parsing;
+using KAOSTools.Parsing.Parsers;
 
-namespace KAOSTools.Parsing.Tests
+namespace UCLouvain.KAOSTools.Parsing.Tests
 {
     [TestFixture()]
     public class TestParsingAgent
@@ -62,7 +62,7 @@ namespace KAOSTools.Parsing.Tests
                     end")]
         public void TestInvalidIdentifier (string input)
         {
-            Assert.Throws<ParserException> (() => {
+            Assert.Throws<BuilderException> (() => {
                 parser.Parse (input);
             });
         }
@@ -89,7 +89,7 @@ namespace KAOSTools.Parsing.Tests
                     end")]
         public void TestInvalidName (string input)
         {
-            Assert.Throws<ParserException> (() => {
+            Assert.Throws<BuilderException> (() => {
                 parser.Parse (input);
             });
         }
