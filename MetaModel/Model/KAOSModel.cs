@@ -37,14 +37,6 @@ namespace KAOSTools.Core
             set;
         }
 
-        private Dictionary<string, KAOSCoreElement> _elements;
-
-        public IEnumerable<KAOSCoreElement> Elements {
-            get {
-                return _elements.Values;
-            }
-        }
-
         public IAgentRepository agentRepository;
         public IDomainRepository domainRepository;
         public IGoalRepository goalRepository;
@@ -55,9 +47,7 @@ namespace KAOSTools.Core
 
 		public KAOSModel ()
         {
-            this._elements = new Dictionary<string, KAOSCoreElement> ();
-
-			agentRepository = new AgentRepository();
+            agentRepository = new AgentRepository();
 			domainRepository = new DomainRepository();
 			goalRepository = new GoalRepository();
 			modelMetadataRepository = new ModelMetadataRepository();
@@ -206,11 +196,6 @@ namespace KAOSTools.Core
         }
         */
 
-        public void Remove (KAOSCoreElement element)
-        {
-            if (this._elements.ContainsKey(element.Identifier))
-                this._elements.Remove (element.Identifier);
-        }
 
 		public KAOSModel Copy()
 		{

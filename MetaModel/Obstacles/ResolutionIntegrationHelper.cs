@@ -45,7 +45,7 @@ namespace KAOSTools.Core
             if (resolution.ResolutionPattern == ResolutionPattern.GoalSubstitution
                 | resolution.ResolutionPattern == ResolutionPattern.GoalWeakening) {
 
-				var replacement = resolution.model.Elements.OfType<GoalReplacement>()
+                var replacement = resolution.model.Replacements()
 											.Where(x => x.ResolvedObstacleIdentifier == resolution.ObstacleIdentifier
 												   & x.ResolvingGoalIdentifier == resolution.ResolvingGoalIdentifier
 												   & x.AnchorGoalIdentifier == anchor.Identifier).ToList();
@@ -127,25 +127,28 @@ namespace KAOSTools.Core
 			if (resolution.ResolutionPattern == ResolutionPattern.GoalSubstitution
 				| resolution.ResolutionPattern == ResolutionPattern.GoalWeakening) {
 				
-				var replacement = resolution.model.Elements.OfType<GoalReplacement>()
+                var replacement = resolution.model.Replacements()
 				                            .Where(x => x.ResolvedObstacleIdentifier == resolution.ObstacleIdentifier
 				                                   & x.ResolvingGoalIdentifier == resolution.ResolvingGoalIdentifier
 				                                   & x.AnchorGoalIdentifier == anchor.Identifier).ToList ();
 
 				foreach (var r in replacement) {
-					resolution.model.Remove(r);
+                    throw new NotImplementedException();
+					// resolution.model.Remove(r);
 				}
 				//logger.Info("Remove replacement " + resolution.ResolvingGoal().FriendlyName);
 
 			} else {
 
-				var exception = resolution.model.Elements.OfType<GoalException>()
+                var exception = resolution.model.Exceptions()
 											.Where(x => x.ResolvedObstacleIdentifier == resolution.ObstacleIdentifier
 												   & x.ResolvingGoalIdentifier == resolution.ResolvingGoalIdentifier
 												   & x.AnchorGoalIdentifier == anchor.Identifier).ToList();
 
-				foreach (var r in exception) {
-					resolution.model.Remove(r);
+				foreach (var r in exception)
+				{
+					throw new NotImplementedException();
+					// resolution.model.Remove(r);
 				}
 
 
