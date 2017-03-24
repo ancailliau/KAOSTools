@@ -1,7 +1,4 @@
-﻿Move 3d stage to builders
-Implement infrastructure to use 3d stage builders
-
-Implements getters
+﻿Implements getters
 Write tests
 
 Add support for probability estimations

@@ -106,6 +106,8 @@
     <Compile Include="Builders\Attributes\ResolvedByAttributeBuilder.cs" />
     <Compile Include="Builders\Attributes\RSRAttributeBuilder.cs" />
     <Compile Include="Builders\Attributes\IAttributeBuilder.cs" />
+    <Compile Include="Builders\Attributes\FormalSpecAttributeBuilder.cs" />
+    <Compile Include="AttributeStageBuilder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
