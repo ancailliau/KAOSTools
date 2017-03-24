@@ -19,7 +19,7 @@ namespace KAOSTools.Parsing.Builders.Attributes
             GivenType givenType;
             if ((givenType = model.entityRepository.GetGivenType(attribute.Type)) != null)
             {
-                a.TypeIdentifier = attribute.Type;
+                a.TypeIdentifier = givenType.Identifier;
             }
             else
             {

@@ -10,15 +10,12 @@ namespace KAOSTools.Parsing
     public class FormulaBuilder
     {
         private KAOSModel model;
-        private FirstStageBuilder FSB;
         protected Uri relativePath;
 
         public FormulaBuilder (KAOSModel model, 
-                               FirstStageBuilder fsb,
                                Uri relativePath)
         {
             this.model = model;
-            this.FSB = fsb;
             this.relativePath = relativePath;
         }
         public Formula BuildFormula (ParsedElement value)

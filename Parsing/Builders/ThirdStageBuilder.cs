@@ -10,15 +10,12 @@ namespace KAOSTools.Parsing
 {
     public class ThirdStageBuilder : AttributeStageBuilder
     {
-		FormulaBuilder fb;
-
-        public ThirdStageBuilder (KAOSModel model, 
+		public ThirdStageBuilder (KAOSModel model, 
                                   FormulaBuilder fb,
                                   Uri relativePath)
             : base (model, relativePath)
         {
-            this.fb = fb;
-			declareBuilders.Add(new AgentDeclareBuilder());
+        	declareBuilders.Add(new AgentDeclareBuilder());
 			declareBuilders.Add(new AssociationDeclareBuilder());
 			declareBuilders.Add(new CalibrationDeclareBuilder());
 			declareBuilders.Add(new DomainHypothesisDeclareBuilder());

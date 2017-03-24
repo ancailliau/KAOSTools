@@ -18,8 +18,7 @@ namespace KAOSTools.Parsing.Parsers.Attributes
 				throw new NotImplementedException("Attribute '" + identifier + "' does not accept parameters.");
 
 
-			var v = new List<ParsedPredicateArgumentAttribute>();
-            if (value is NParsedAttributeColon)
+			if (value is NParsedAttributeColon)
             {
                 var colonValue = ((NParsedAttributeColon)value);
 				var left = colonValue.Left;
