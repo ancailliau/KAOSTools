@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using KAOSTools.Core;
+using System.Linq;
 
 namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 {
@@ -119,6 +120,81 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
         public Relation GetRelation(string identifier)
 		{
 			return Relations.ContainsKey(identifier) ? Relations[identifier] : null;
+        }
+
+        public EntityAttribute GetEntityAttribute(Predicate<EntityAttribute> predicate)
+        {
+            return EntityAttributes.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public Entity GetEntity(Predicate<Entity> predicate)
+		{
+            return Entities.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public GivenType GetGivenType(Predicate<GivenType> predicate)
+		{
+            return GivenTypes.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public Link GetLink(Predicate<Link> predicate)
+		{
+            return Links.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public Relation GetRelation(Predicate<Relation> predicate)
+        {
+            return Relations.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public IEnumerable<EntityAttribute> GetEntityAttributes()
+		{
+            return EntityAttributes.Values;
+        }
+
+        public IEnumerable<GivenType> GetGivenTypes()
+		{
+            return GivenTypes.Values;
+        }
+
+        public IEnumerable<Link> GetLinks()
+		{
+			return Links.Values;
+        }
+
+        public IEnumerable<Relation> GetRelations()
+		{
+			return Relations.Values;
+        }
+
+        public IEnumerable<Entity> GetEntities()
+		{
+            return Entities.Values;
+        }
+
+        public IEnumerable<EntityAttribute> GetEntityAttributes(Predicate<EntityAttribute> predicate)
+		{
+            return EntityAttributes.Values.Where (x => predicate(x));
+        }
+
+        public IEnumerable<GivenType> GetGivenTypes(Predicate<GivenType> predicate)
+		{
+            return GivenTypes.Values.Where(x => predicate(x));
+        }
+
+        public IEnumerable<Link> GetLinks(Predicate<Link> predicate)
+		{
+			return Links.Values.Where(x => predicate(x));
+        }
+
+        public IEnumerable<Relation> GetRelations(Predicate<Relation> predicate)
+		{
+            return Relations.Values.Where(x => predicate(x));
+        }
+
+        public IEnumerable<Entity> GetEntities(Predicate<Entity> predicate)
+		{
+            return Entities.Values.Where(x => predicate(x));
         }
     }
 }

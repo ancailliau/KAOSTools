@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using KAOSTools.Core;
 
 namespace UCLouvain.KAOSTools.Core.Repositories.Memory
@@ -121,6 +122,81 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
         public GoalReplacement GetGoalReplacement(string identifier)
 		{
 			return GoalReplacements.ContainsKey(identifier) ? GoalReplacements[identifier] : null;
+        }
+
+        public IEnumerable<Goal> GetGoals()
+        {
+            return Goals.Values;
+        }
+
+        public IEnumerable<GoalRefinement> GetGoalRefinements()
+        {
+            return GoalRefinements.Values;
+        }
+
+        public IEnumerable<GoalException> GetGoalExceptions()
+        {
+            return GoalExceptions.Values;
+        }
+
+        public IEnumerable<GoalReplacement> GetGoalReplacements()
+        {
+            return GoalReplacements.Values;
+        }
+
+        public IEnumerable<SoftGoal> GetSoftGoals()
+        {
+            return SoftGoals.Values;
+        }
+
+        public IEnumerable<Goal> GetGoals(Predicate<Goal> predicate)
+        {
+            return Goals.Values.Where(x => predicate(x));
+        }
+
+        public IEnumerable<GoalRefinement> GetGoalRefinements(Predicate<GoalRefinement> predicate)
+		{
+            return GoalRefinements.Values.Where(x => predicate(x));
+        }
+
+        public IEnumerable<GoalException> GetGoalExceptions(Predicate<GoalException> predicate)
+		{
+            return GoalExceptions.Values.Where(x => predicate(x));
+        }
+
+        public IEnumerable<GoalReplacement> GetGoalReplacements(Predicate<GoalReplacement> predicate)
+		{
+            return GoalReplacements.Values.Where(x => predicate(x));
+        }
+
+        public IEnumerable<SoftGoal> GetSoftGoals(Predicate<SoftGoal> predicate)
+		{
+            return SoftGoals.Values.Where(x => predicate(x));
+        }
+
+        public Goal GetGoal(Predicate<Goal> predicate)
+        {
+            return Goals.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public SoftGoal GetSoftGoal(Predicate<SoftGoal> predicate)
+		{
+            return SoftGoals.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public GoalRefinement GetGoalRefinement(Predicate<GoalRefinement> predicate)
+		{
+            return GoalRefinements.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public GoalException GetGoalException(Predicate<GoalException> predicate)
+		{
+            return GoalExceptions.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public GoalReplacement GetGoalReplacement(Predicate<GoalReplacement> predicate)
+		{
+            return GoalReplacements.Values.SingleOrDefault(x => predicate(x));
         }
     }
 }

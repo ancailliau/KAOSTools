@@ -7,153 +7,192 @@ namespace KAOSTools.Core
 {
     public static class KAOSModelHelpers
     {
-        #region Goal model
+        #region Goals
 
         public static IEnumerable<Goal> Goals (this KAOSModel model) {
-                return model.Elements.Where (x => x is Goal).Cast<Goal>();
+            return model.goalRepository.GetGoals();
         }
 
         public static IEnumerable<Goal> Goals (this KAOSModel model, Predicate<Goal> pred) {
-            return model.Elements.Where (x => x is Goal && pred (x as Goal)).Cast<Goal>();
-        }
-
-        public static Goal Goal (this KAOSModel model) {
-            return (Goal) model.Elements.SingleOrDefault (x => x is Goal);
+            return model.goalRepository.GetGoals (pred);
         }
 
         public static Goal Goal (this KAOSModel model, Predicate<Goal> pred) {
-            return (Goal) model.Elements.SingleOrDefault (x => x is Goal && pred (x as Goal));
+            return model.goalRepository.GetGoal (pred);
         }
 
-        public static IEnumerable<Obstacle> Obstacles (this KAOSModel model) {
-                return model.Elements.Where (x => x is Obstacle).Cast<Obstacle>();
-        }
-        public static IEnumerable<Obstacle> Obstacles (this KAOSModel model, Predicate<Obstacle> pred) {
-            return model.Elements.Where (x => x is Obstacle && pred (x as Obstacle)).Cast<Obstacle>();
-        }
+        public static IEnumerable<GoalRefinement> GoalRefinements(this KAOSModel model)
+		{
+			return model.goalRepository.GetGoalRefinements();
+		}
 
-        public static Obstacle Obstacle (this KAOSModel model) {
-            return (Obstacle) model.Elements.SingleOrDefault (x => x is Obstacle);
-        }
+		public static IEnumerable<GoalException> Exceptions(this KAOSModel model)
+		{
+            return model.goalRepository.GetGoalExceptions();
+		}
 
-        public static Obstacle Obstacle (this KAOSModel model, Predicate<Obstacle> pred) {
-            return (Obstacle) model.Elements.SingleOrDefault (x => x is Obstacle && pred (x as Obstacle));
-        }
-
-
-        public static IEnumerable<DomainProperty> DomainProperties (this KAOSModel model) {
-                return model.Elements.Where (x => x is DomainProperty).Cast<DomainProperty>();
-        }
-
-        public static IEnumerable<DomainHypothesis> DomainHypotheses (this KAOSModel model) {
-                return model.Elements.Where (x => x is DomainHypothesis).Cast<DomainHypothesis>();
-        }
-
-        // Relations
-
-        public static IEnumerable<GoalRefinement> GoalRefinements (this KAOSModel model) {
-			return model.Elements.OfType<GoalRefinement> ();
-        }
-
-
-        public static IEnumerable<ObstacleRefinement> ObstacleRefinements (this KAOSModel model) {
-                return model.Elements.Where (x => x is ObstacleRefinement).Cast<ObstacleRefinement>();
-        }
-
-        public static IEnumerable<Obstruction> Obstructions (this KAOSModel model) {
-                return model.Elements.Where (x => x is Obstruction).Cast<Obstruction>();
-        }
-
-        public static IEnumerable<Resolution> Resolutions (this KAOSModel model) {
-                return model.Elements.Where (x => x is Resolution).Cast<Resolution>();
-        }
-
-        public static IEnumerable<GoalAgentAssignment> GoalAgentAssignments (this KAOSModel model) {
-                return model.Elements.Where (x => x is GoalAgentAssignment).Cast<GoalAgentAssignment>();
-        }
-
-        public static IEnumerable<GoalException> Exceptions (this KAOSModel model) {
-            return model.Elements.Where (x => x is GoalException).Cast<GoalException>();
-        }
-
-        public static IEnumerable<GoalReplacement> Replacements (this KAOSModel model) {
-            return model.Elements.Where (x => x is GoalReplacement).Cast<GoalReplacement>();
-        }
-
-        public static IEnumerable<ObstacleAssumption> ObstacleAssumptions (this KAOSModel model) {
-            return model.Elements.Where (x => x is ObstacleAssumption).Cast<ObstacleAssumption>();
-        }
+		public static IEnumerable<GoalReplacement> Replacements(this KAOSModel model)
+		{
+            return model.goalRepository.GetGoalReplacements();
+		}
 
         #endregion
 
-        #region Agent model
+        #region Obtacles
+
+        public static IEnumerable<Obstacle> Obstacles (this KAOSModel model) {
+            return model.obstacleRepository.GetObstacles ();
+        }
+
+        public static IEnumerable<Obstacle> Obstacles (this KAOSModel model, Predicate<Obstacle> pred) {
+            return model.obstacleRepository.GetObstacles (pred);
+        }
+
+        public static Obstacle Obstacle (this KAOSModel model, Predicate<Obstacle> pred) {
+            return model.obstacleRepository.GetObstacle(pred);
+		}
+		
+        public static IEnumerable<ObstacleRefinement> ObstacleRefinements(this KAOSModel model)
+		{
+            return model.obstacleRepository.GetObstacleRefinements();
+		}
+
+		public static IEnumerable<Obstruction> Obstructions(this KAOSModel model)
+		{
+			return model.obstacleRepository.GetObstructions();
+		}
+		
+        public static IEnumerable<Resolution> Resolutions(this KAOSModel model)
+		{
+            return model.obstacleRepository.GetResolutions();
+		}
+
+		public static IEnumerable<ObstacleAssumption> ObstacleAssumptions(this KAOSModel model)
+		{
+            return model.obstacleRepository.GetObstacleAssumptions();
+		}
+
+		#endregion
+
+		#region Domain properties
+
+		public static IEnumerable<DomainProperty> DomainProperties (this KAOSModel model) {
+            return model.domainRepository.GetDomainProperties();
+        }
+
+        public static IEnumerable<DomainProperty> DomainProperties(this KAOSModel model, Predicate<DomainProperty> predicate)
+		{
+			return model.domainRepository.GetDomainProperties(predicate);
+		}
+		
+        public static DomainProperty DomainProperty(this KAOSModel model, Predicate<DomainProperty> predicate)
+		{
+			return model.domainRepository.GetDomainProperty(predicate);
+		}
+
+		#endregion
+
+		#region Domain Hypothesis
+
+		public static IEnumerable<DomainHypothesis> DomainHypotheses(this KAOSModel model)
+		{
+            return model.domainRepository.GetDomainHypotheses();
+        }
+		
+        public static IEnumerable<DomainHypothesis> DomainHypotheses(this KAOSModel model, Predicate<DomainHypothesis> predicate)
+		{
+			return model.domainRepository.GetDomainHypotheses(predicate);
+		}
+
+		public static DomainHypothesis DomainHypothesis(this KAOSModel model, Predicate<DomainHypothesis> predicate)
+		{
+			return model.domainRepository.GetDomainHypothesis(predicate);
+		}
+
+		#endregion
+
+        #region Agents
 
         public static IEnumerable<Agent> Agents (this KAOSModel model) {
-                return model.Elements.Where (x => x is Agent).Cast<Agent>();
-        }
+            return model.agentRepository.GetAgents();
+		}
+
+		public static IEnumerable<GoalAgentAssignment> GoalAgentAssignments(this KAOSModel model)
+		{
+            return model.agentRepository.GetAgentAssignments();
+		}
 
         #endregion
 
         #region Object model
 
         public static IEnumerable<Predicate> Predicates (this KAOSModel model) {
-                return model.Elements.Where (x => x is Predicate).Cast<Predicate>();
+            return model.formalSpecRepository.GetPredicates();
         }
         
         public static IEnumerable<EntityAttribute> Attributes (this KAOSModel model) {
-            return model.Elements.Where (x => x is EntityAttribute).Cast<EntityAttribute>();
+            return model.entityRepository.GetEntityAttributes();
         }
 
         public static IEnumerable<Entity> Entities (this KAOSModel model) {
-                return model.Elements.Where (x => x is Entity & !(x is Relation)).Cast<Entity>();
+            return model.entityRepository.GetEntities();
         }
 
         public static IEnumerable<Entity> Entities (this KAOSModel model, Predicate<Entity> pred) {
-            return model.Elements.Where (x => (x is Entity & !(x is Relation)) && pred(x as Entity)).Cast<Entity>();
+            return model.entityRepository.GetEntities(pred);
         }
 
-        public static Entity Entity (this KAOSModel model, Predicate<Entity> pred) {
-            return model.Elements.SingleOrDefault (x => (x is Entity & !(x is Relation)) && pred(x as Entity)) as Entity;
+		public static Entity Entity(this KAOSModel model, Predicate<Entity> pred)
+		{
+            return model.entityRepository.GetEntity(pred);
         }
 
-        public static IEnumerable<Relation> Relations (this KAOSModel model) {
-                return model.Elements.Where (x => x is Relation).Cast<Relation>();
+		public static IEnumerable<Relation> Relations(this KAOSModel model)
+		{
+            return model.entityRepository.GetRelations();
         }
 
-        public static IEnumerable<GivenType> GivenTypes (this KAOSModel model) {
-            return model.Elements.Where (x => x is GivenType).Cast<GivenType>();
+		public static IEnumerable<GivenType> GivenTypes(this KAOSModel model)
+		{
+            return model.entityRepository.GetGivenTypes();
         }
 
-        public static IEnumerable<GivenType> GivenTypes (this KAOSModel model, Predicate<GivenType> pred) {
-                return model.Elements.Where (x => x is GivenType && pred(x as GivenType)).Cast<GivenType>();
+		public static IEnumerable<GivenType> GivenTypes(this KAOSModel model, Predicate<GivenType> pred)
+		{
+            return model.entityRepository.GetGivenTypes(pred);
         }
         
-        public static GivenType GivenType (this KAOSModel model, Predicate<GivenType> pred) {
-            return model.Elements.SingleOrDefault (x => x is GivenType && pred(x as GivenType)) as GivenType;
-        }
+        public static GivenType GivenType(this KAOSModel model, Predicate<GivenType> pred)
+		{
+            return model.entityRepository.GetGivenType(pred);
+		}
 
+        #endregion
 
-        public static IEnumerable<Calibration> CalibrationVariables (this KAOSModel model) {
-            return model.Elements.Where (x => x is Calibration).Cast<Calibration>();
+        #region Metamodel data
+
+        public static IEnumerable<Calibration> CalibrationVariables(this KAOSModel model)
+		{
+            return model.modelMetadataRepository.GetCalibrations();
         }
 
         public static IEnumerable<Calibration> CalibrationVariables (this KAOSModel model, Predicate<Calibration> pred) {
-            return model.Elements.Where (x => x is Calibration && pred(x as Calibration)).Cast<Calibration>();
+            return model.modelMetadataRepository.GetCalibrations(pred);
         }
 
         public static IEnumerable<Expert> Experts (this KAOSModel model) {
-            return model.Elements.Where (x => x is Expert).Cast<Expert>();
+            return model.modelMetadataRepository.GetExperts();
         }
 
-        public static IEnumerable<Expert> Experts (this KAOSModel model, Predicate<Expert> pred) {
-            return model.Elements.Where (x => x is Expert && pred(x as Expert)).Cast<Expert>();
+		public static IEnumerable<Expert> Experts(this KAOSModel model, Predicate<Expert> pred)
+		{
+			return model.modelMetadataRepository.GetExperts(pred);
         }
 
         #endregion
 
 
-
-        public static ISet<Goal> RootGoals (this KAOSModel model) {
+		public static ISet<Goal> RootGoals (this KAOSModel model) {
                 var goals = new HashSet<Goal> (model.Goals());
                 foreach (var goal in model.Goals())
                     foreach (var refinement in goal.Refinements()) 

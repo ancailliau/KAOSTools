@@ -2,6 +2,7 @@
 using KAOSTools.Core;
 using UCLouvain.KAOSTools.Core.Agents;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 {
@@ -41,9 +42,39 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
             return Agents.ContainsKey(identifier);
         }
 
+        public Agent GetAgent(Predicate<Agent> predicate)
+        {
+            return Agents.Values.SingleOrDefault(x => predicate(x));
+        }
+
         public Agent GetAgent(string identifier)
         {
             return Agents.ContainsKey(identifier) ? Agents[identifier] : null;
+        }
+
+        public GoalAgentAssignment GetAgentAssignment(Predicate<GoalAgentAssignment> predicate)
+        {
+            return GoalAgentAssignments.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public IEnumerable<GoalAgentAssignment> GetAgentAssignments()
+		{
+            return GoalAgentAssignments.Values;
+        }
+
+        public IEnumerable<GoalAgentAssignment> GetAgentAssignments(Predicate<GoalAgentAssignment> predicate)
+		{
+			return GoalAgentAssignments.Values.Where(x => predicate(x));
+        }
+
+        public IEnumerable<Agent> GetAgents()
+        {
+            return Agents.Values;
+        }
+
+        public IEnumerable<Agent> GetAgents(Predicate<Agent> predicate)
+        {
+            return Agents.Values.Where(x => predicate(x));
         }
     }
 }

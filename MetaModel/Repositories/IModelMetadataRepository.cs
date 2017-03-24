@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using KAOSTools.Core;
 using UCLouvain.KAOSTools.Core.Agents;
 
@@ -21,6 +22,21 @@ namespace UCLouvain.KAOSTools.Core.Repositories
 		CostVariable GetCostVariable(string identifier);
 		Expert GetExpert(string identifier);
 		Calibration GetCalibration(string identifier);
+
+		Constraint GetConstraint(Predicate<Constraint> predicate);
+		CostVariable GetCostVariable(Predicate<CostVariable> predicate);
+		Expert GetExpert(Predicate<Expert> predicate);
+		Calibration GetCalibration(Predicate<Calibration> predicate);
+
+		IEnumerable<CostVariable> GetCostVariables();
+		IEnumerable<Expert> GetExperts();
+		IEnumerable<Calibration> GetCalibrations();
+		IEnumerable<Constraint> GetConstraints();
+
+		IEnumerable<CostVariable> GetCostVariables(Predicate<CostVariable> predicate);
+		IEnumerable<Expert> GetExperts(Predicate<Expert> predicate);
+		IEnumerable<Calibration> GetCalibrations(Predicate<Calibration> predicate);
+		IEnumerable<Constraint> GetConstraints(Predicate<Constraint> predicate);
 	}
     
 }

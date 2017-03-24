@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using KAOSTools.Core;
+using System.Linq;
 
 namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 {
@@ -53,6 +54,36 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
         public DomainHypothesis GetDomainHypothesis(string identifier)
 		{
 			return DomainHypotheses.ContainsKey(identifier) ? DomainHypotheses[identifier] : null;
+        }
+
+        public DomainProperty GetDomainProperty(Predicate<DomainProperty> predicate)
+        {
+            return DomainProperties.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public DomainHypothesis GetDomainHypothesis(Predicate<DomainHypothesis> predicate)
+		{
+            return DomainHypotheses.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public IEnumerable<DomainProperty> GetDomainProperties()
+		{
+			return DomainProperties.Values;
+        }
+
+        public IEnumerable<DomainHypothesis> GetDomainHypotheses()
+		{
+			return DomainHypotheses.Values;
+        }
+
+        public IEnumerable<DomainProperty> GetDomainProperties(Predicate<DomainProperty> predicate)
+		{
+            return DomainProperties.Values.Where(x => predicate(x));
+        }
+
+        public IEnumerable<DomainHypothesis> GetDomainHypotheses(Predicate<DomainHypothesis> predicate)
+		{
+			return DomainHypotheses.Values.Where(x => predicate(x));
         }
     }
 }

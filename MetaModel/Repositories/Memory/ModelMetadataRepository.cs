@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using KAOSTools.Core;
 
 namespace UCLouvain.KAOSTools.Core.Repositories.Memory
@@ -97,6 +98,66 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
         public Calibration GetCalibration(string identifier)
 		{
 			return Calibrations.ContainsKey(identifier) ? Calibrations[identifier] : null;
+        }
+
+        public Constraint GetConstraint(Predicate<Constraint> predicate)
+        {
+            return Constraints.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public CostVariable GetCostVariable(Predicate<CostVariable> predicate)
+		{
+            return CostVariables.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public Expert GetExpert(Predicate<Expert> predicate)
+		{
+			return Experts.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public Calibration GetCalibration(Predicate<Calibration> predicate)
+		{
+            return Calibrations.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public IEnumerable<CostVariable> GetCostVariables()
+		{
+			return CostVariables.Values;
+        }
+
+        public IEnumerable<Expert> GetExperts()
+		{
+            return Experts.Values;
+        }
+
+        public IEnumerable<Calibration> GetCalibrations()
+		{
+            return Calibrations.Values;
+        }
+
+        public IEnumerable<Constraint> GetConstraints()
+		{
+            return Constraints.Values;
+        }
+
+        public IEnumerable<CostVariable> GetCostVariables(Predicate<CostVariable> predicate)
+		{
+            return CostVariables.Values.Where (x => predicate(x));
+        }
+
+        public IEnumerable<Expert> GetExperts(Predicate<Expert> predicate)
+		{
+            return Experts.Values.Where(x => predicate(x));
+        }
+
+        public IEnumerable<Calibration> GetCalibrations(Predicate<Calibration> predicate)
+		{
+            return Calibrations.Values.Where(x => predicate(x));
+        }
+
+        public IEnumerable<Constraint> GetConstraints(Predicate<Constraint> predicate)
+		{
+            return Constraints.Values.Where(x => predicate(x));
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using KAOSTools.Core;
 
 namespace UCLouvain.KAOSTools.Core.Repositories.Memory
@@ -119,6 +120,81 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
         public Resolution GetResolution(string identifier)
 		{
 			return Resolutions.ContainsKey(identifier) ? Resolutions[identifier] : null;
+        }
+
+        public Obstacle GetObstacle(Predicate<Obstacle> predicate)
+        {
+            return Obstacles.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public ObstacleAssumption GetObstacleAssumption(Predicate<ObstacleAssumption> predicate)
+		{
+            return ObstacleAssumptions.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public ObstacleRefinement GetObstacleRefinement(Predicate<ObstacleRefinement> predicate)
+		{
+            return ObstacleRefinements.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public Obstruction GetObstruction(Predicate<Obstruction> predicate)
+		{
+            return Obstructions.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public Resolution GetResolution(Predicate<Resolution> predicate)
+		{
+            return Resolutions.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public IEnumerable<Obstacle> GetObstacles()
+		{
+            return Obstacles.Values;
+        }
+
+        public IEnumerable<ObstacleAssumption> GetObstacleAssumptions()
+		{
+            return ObstacleAssumptions.Values;
+        }
+
+        public IEnumerable<ObstacleRefinement> GetObstacleRefinements()
+		{
+            return ObstacleRefinements.Values;
+        }
+
+        public IEnumerable<Obstruction> GetObstructions()
+		{
+            return Obstructions.Values;
+        }
+
+        public IEnumerable<Resolution> GetResolutions()
+		{
+            return Resolutions.Values;
+        }
+
+        public IEnumerable<Obstacle> GetObstacles(Predicate<Obstacle> predicate)
+		{
+            return Obstacles.Values.Where(x => predicate(x));
+        }
+
+        public IEnumerable<ObstacleAssumption> GetObstacleAssumptions(Predicate<ObstacleAssumption> predicate)
+		{
+            return ObstacleAssumptions.Values.Where(x => predicate(x));
+        }
+
+        public IEnumerable<ObstacleRefinement> GetObstacleRefinements(Predicate<ObstacleRefinement> predicate)
+		{
+            return ObstacleRefinements.Values.Where(x => predicate(x));
+        }
+
+        public IEnumerable<Obstruction> GetObstructions(Predicate<Obstruction> predicate)
+		{
+            return Obstructions.Values.Where(x => predicate(x));
+        }
+
+        public IEnumerable<Resolution> GetResolutions(Predicate<Resolution> predicate)
+		{
+            return Resolutions.Values.Where(x => predicate(x));
         }
     }
 }

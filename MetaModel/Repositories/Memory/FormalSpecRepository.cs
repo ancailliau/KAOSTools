@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using KAOSTools.Core;
+using System.Linq;
 
 namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 {
@@ -32,5 +33,20 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 		{
             return Predicates.ContainsKey(identifier) ? Predicates[identifier] : null;
 		}
+
+        public Predicate GetPredicate(Predicate<Predicate> predicate)
+        {
+            return Predicates.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public IEnumerable<Predicate> GetPredicates()
+		{
+			return Predicates.Values;
+        }
+
+        public IEnumerable<Predicate> GetPredicates(Predicate<Predicate> predicate)
+		{
+            return Predicates.Values.Where(x => predicate(x));
+        }
     }
 }
