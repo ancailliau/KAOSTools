@@ -9,6 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>KAOSTools.Utils</RootNamespace>
     <AssemblyName>KAOSTools.Utils</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -40,13 +41,13 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\Parsing\Parsing.csproj">
-      <Project>{52C948A2-30AD-40A7-89A3-9D66B2FCDD9F}</Project>
-      <Name>Parsing</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MetaModel\UCLouvain.KAOSTools.Core.csproj">
       <Project>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</Project>
       <Name>UCLouvain.KAOSTools.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Parsing\UCLouvain.KAOSTools.Parsing.csproj">
+      <Project>{52C948A2-30AD-40A7-89A3-9D66B2FCDD9F}</Project>
+      <Name>UCLouvain.KAOSTools.Parsing</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

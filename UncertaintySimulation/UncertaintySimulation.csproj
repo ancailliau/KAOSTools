@@ -62,7 +62,7 @@
     </ProjectReference>
     <ProjectReference Include="..\Parsing\Parsing.csproj">
       <Project>{52C948A2-30AD-40A7-89A3-9D66B2FCDD9F}</Project>
-      <Name>Parsing</Name>
+      <Name>UCLouvain.KAOSTools.Parsing</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\BDDSharp\BDDSharp\BDDSharp.csproj">
       <Project>{0F303658-80AD-4637-B587-BD076A80DCF5}</Project>

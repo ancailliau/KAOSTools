@@ -7,9 +7,11 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{52C948A2-30AD-40A7-89A3-9D66B2FCDD9F}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>KAOSTools.Parsing</RootNamespace>
+    <RootNamespace>UCLouvain.KAOSTools.Parsing</RootNamespace>
     <AssemblyName>KAOSTools.Parsing</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <ReleaseVersion>0.2</ReleaseVersion>
+    <SynchReleaseVersion>false</SynchReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>

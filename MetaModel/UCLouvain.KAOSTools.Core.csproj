@@ -10,6 +10,7 @@
     <AssemblyName>KAOSTools.MetaModel</AssemblyName>
     <ReleaseVersion>0.2</ReleaseVersion>
     <SynchReleaseVersion>false</SynchReleaseVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -43,12 +44,12 @@
     <Reference Include="alglibnet2">
       <HintPath>..\Libraries\alglibnet2.dll</HintPath>
     </Reference>
-    <Reference Include="MathNet.Numerics">
-      <HintPath>..\packages\MathNet.Numerics.3.2.3\lib\net40\MathNet.Numerics.dll</HintPath>
-    </Reference>
     <Reference Include="System.Numerics" />
+    <Reference Include="MathNet.Numerics">
+      <HintPath>..\packages\MathNet.Numerics.3.17.0\lib\net40\MathNet.Numerics.dll</HintPath>
+    </Reference>
     <Reference Include="NLog">
-      <HintPath>..\..\..\Projects\MinePump\packages\NLog.4.3.5\lib\net40\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.4.4\lib\net45\NLog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -114,9 +115,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Objects\" />
     <Folder Include="Agents\" />
     <Folder Include="Goals\" />
@@ -127,5 +125,8 @@
     <Folder Include="Model\" />
     <Folder Include="Repositories\" />
     <Folder Include="Repositories\Memory\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
