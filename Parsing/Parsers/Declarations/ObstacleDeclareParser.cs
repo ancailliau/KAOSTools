@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using KAOSTools.Parsing.Parsers.Attributes;
 using KAOSTools.Parsing.Parsers;
 
-namespace KAOSTools.Parsing.Plugins
+namespace KAOSTools.Parsing.Parsers.Declarations
 {
 	public class ObstacleDeclareParser : DeclareParser
 	{
