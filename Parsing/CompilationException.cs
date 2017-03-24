@@ -2,19 +2,6 @@ using System;
 
 namespace KAOSTools.Parsing
 {
-    [Obsolete("Use BuilderException instead")]
-    public class CompilationException : Exception
-    {
-        public CompilationException () : base ()
-        {}
-        
-        public CompilationException (string message) : base (message)
-        {}
-
-        public CompilationException (string message, Exception e) : base (message, e)
-        {}
-    }
-
     public class BuilderException : Exception
     {
         public BuilderException (string message, string filename, int line, int col, Exception innerException = null)

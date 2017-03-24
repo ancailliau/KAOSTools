@@ -40,7 +40,8 @@ namespace KAOSTools.Parsing
                     var type = GetOrCreateEntity (arg.Type);
 
                     if (declaredVariables.ContainsKey (name)) {
-                        throw new CompilationException (string.Format ("'{0}' is already defined", name));
+                        throw new BuilderException (string.Format ("'{0}' is already defined", name),
+                                                    value.Filename, value.Line, value.Col);
                     }
 
                     a.Declarations.Add (new KAOSTools.Core.ArgumentDeclaration () {
@@ -59,7 +60,8 @@ namespace KAOSTools.Parsing
                     var type = GetOrCreateEntity (arg.Type);
 
                     if (declaredVariables.ContainsKey (name)) {
-                        throw new CompilationException (string.Format ("'{0}' is already defined", name));
+                        throw new BuilderException(string.Format("'{0}' is already defined", name),
+													value.Filename, value.Line, value.Col);
                     }
 
                     a.Declarations.Add (new KAOSTools.Core.ArgumentDeclaration () {
@@ -143,8 +145,8 @@ namespace KAOSTools.Parsing
                 // Check if arguments are all defined
                 foreach (var arg in prel.ActualArguments) {
                     if (!declaredVariables.ContainsKey (arg)) {
-                        throw new CompilationException (string.Format ("'{0}' is not declared ({1}:{2},{3})",
-                                                                      arg, prel.Filename, prel.Line, prel.Col));
+                        throw new BuilderException (string.Format ("'{0}' is not declared"),
+													value.Filename, value.Line, value.Col);
                     }
                 }
 
@@ -156,7 +158,8 @@ namespace KAOSTools.Parsing
                 var prel = value as ParsedInRelationExpression;
                 foreach (var arg in prel.Variables) {
                     if (!declaredVariables.ContainsKey (arg)) {
-                        throw new CompilationException (string.Format ("'{0}' is not declared", arg));
+                        throw new BuilderException(string.Format("'{0}' is not declared", arg),
+													value.Filename, value.Line, value.Col);
                     }
                 }
 
@@ -173,7 +176,8 @@ namespace KAOSTools.Parsing
                         Attribute = GetOrCreateAttribute (value as ParsedAttributeReferenceExpression, declaredVariables [pref.Variable])
                     };
                 } else {
-                    throw new CompilationException (string.Format ("Variable '{0}' is not declared", pref.Variable));
+					throw new BuilderException(string.Format("Variable '{0}' is not declared", pref.Variable),
+													value.Filename, value.Line, value.Col);
                 }
 
             } else if (value.GetType () == typeof (ParsedComparisonExpression)) {
@@ -209,7 +213,8 @@ namespace KAOSTools.Parsing
                 return new BoolConstant { Value = (value as ParsedBoolConstantExpression).Value };
             } else if (value.GetType () == typeof (ParsedVariableReference)) {
                 if (!declaredVariables.ContainsKey ((value as ParsedVariableReference).Value)) {
-                    throw new CompilationException (string.Format ("Variable '{0}' is not declared", (value as ParsedVariableReference).Value));
+					throw new BuilderException(string.Format("Variable '{0}' is not declared", (value as ParsedVariableReference).Value),
+													value.Filename, value.Line, value.Col);
                 }
 
                 return new VariableReference { Name = (value as ParsedVariableReference).Value };
@@ -388,7 +393,8 @@ namespace KAOSTools.Parsing
                 // check will fail...
                 foreach (var arg in rel.Variables) {
                     if (type.Links.Count(x => x.Target == declarations[arg]) == 0) {
-                        throw new CompilationException ("Relation and formal spec are incompatible.");
+						throw new BuilderException("Relation and formal spec are incompatible.",
+													rel.Filename, rel.Line, rel.Col);
                     }
                 }
 
@@ -427,8 +433,9 @@ namespace KAOSTools.Parsing
             } else {
                 // Check that same number of arguments are used (if none is already declared)
                 if (predicate.Arguments.Count > 0 && parsedPred.ActualArguments.Count != predicate.Arguments.Count) {
-                    throw new CompilationException ("Predicate '" + idOrName.Value + "' arguments mismatch. " +
-                                                    "Expect " + predicate.Arguments.Count + " arguments but " + parsedPred.ActualArguments.Count + " received.");
+                    throw new BuilderException ("Predicate '" + idOrName.Value + "' arguments mismatch. " +
+													"Expect " + predicate.Arguments.Count + " arguments but " + parsedPred.ActualArguments.Count + " received.",
+												parsedPred.Filename, parsedPred.Line, parsedPred.Col);
                 } else {
                     // Check that arguments match the declared type (if none is already declared)
                     if (predicate.Arguments.Count > 0) {
