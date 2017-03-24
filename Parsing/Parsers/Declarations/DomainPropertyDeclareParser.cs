@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using KAOSTools.Parsing.Parsers.Attributes;
+using KAOSTools.Parsing.Parsers;
 
 namespace KAOSTools.Parsing.Plugins
 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using KAOSTools.Core;
+using KAOSTools.Parsing.Parsers;
 namespace KAOSTools.Parsing.Builders.Declarations
 {
 	public class ObstacleDeclareBuilder : DeclareBuilder
@@ -18,7 +19,7 @@ namespace KAOSTools.Parsing.Builders.Declarations
 			}
 		}
 
-		public override KAOSCoreElement GetBuiltElement(Parsing.ParsedDeclare parsedElement, KAOSModel model)
+		public override KAOSCoreElement GetBuiltElement(ParsedDeclare parsedElement, KAOSModel model)
 		{
 			return model.obstacleRepository.GetObstacle(parsedElement.Identifier);
 		}

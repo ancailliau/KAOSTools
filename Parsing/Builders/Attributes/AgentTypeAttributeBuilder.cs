@@ -1,5 +1,6 @@
 ﻿using System;
 using KAOSTools.Core;
+using KAOSTools.Parsing.Parsers;
 using UCLouvain.KAOSTools.Core.Agents;
 
 namespace KAOSTools.Parsing.Builders.Attributes

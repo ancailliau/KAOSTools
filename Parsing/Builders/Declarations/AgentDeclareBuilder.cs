@@ -1,6 +1,7 @@
 ﻿using System;
 using KAOSTools.Core;
 using UCLouvain.KAOSTools.Core.Agents;
+using KAOSTools.Parsing.Parsers;
 
 namespace KAOSTools.Parsing.Builders.Declarations
 {
@@ -20,7 +21,7 @@ namespace KAOSTools.Parsing.Builders.Declarations
 			}
         }
 
-        public override KAOSCoreElement GetBuiltElement(Parsing.ParsedDeclare parsedElement, KAOSModel model)
+        public override KAOSCoreElement GetBuiltElement(ParsedDeclare parsedElement, KAOSModel model)
         {
 			return model.agentRepository.GetAgent(parsedElement.Identifier);
         }

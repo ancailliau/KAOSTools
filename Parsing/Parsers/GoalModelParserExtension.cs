@@ -5,8 +5,9 @@ using KAOSTools.Parsing;
 using System.IO;
 using KAOSTools.Parsing.Plugins;
 using System.Text.RegularExpressions;
+using KAOSTools.Parsing.Parsers;
 
-namespace KAOSTools.Parsing {
+namespace KAOSTools.Parsing.Parsers {
     sealed partial class GoalModelParser
     {   
         List<string> files_imported = new List<string> ();
@@ -366,7 +367,7 @@ namespace KAOSTools.Parsing {
             if (results[0].Text == "forall") {
                 var f = new ParsedForallExpression ();
                 for (int i = 1; i < results.Count - 1; i = i + 4) {
-                    f.arguments.Add (new KAOSTools.Parsing.ParsedVariableDeclaration(results[i].Text, results[i+2].Value));
+                    f.arguments.Add (new ParsedVariableDeclaration(results[i].Text, results[i+2].Value));
                 }
                 f.Enclosed = results.Last().Value;
                 return f;
@@ -376,7 +377,7 @@ namespace KAOSTools.Parsing {
             if (results[0].Text == "exists") {
                 var f = new ParsedExistsExpression ();
                 for (int i = 1; i < results.Count - 1; i = i + 4) {
-                    f.arguments.Add (new KAOSTools.Parsing.ParsedVariableDeclaration(results[i].Text, results[i+2].Value));
+                    f.arguments.Add (new ParsedVariableDeclaration(results[i].Text, results[i+2].Value));
                 }
                 f.Enclosed = results.Last().Value;
                 return f;

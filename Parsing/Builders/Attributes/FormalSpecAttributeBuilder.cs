@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using KAOSTools.Core;
 using UCLouvain.KAOSTools.Core.Agents;
+using KAOSTools.Parsing.Parsers;
 
 namespace KAOSTools.Parsing.Builders.Attributes
 {

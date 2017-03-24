@@ -4,6 +4,7 @@ using System.Reflection;
 using KAOSTools.Core;
 using KAOSTools.Parsing.Builders.Attributes;
 using KAOSTools.Parsing.Builders.Declarations;
+using KAOSTools.Parsing.Parsers;
 
 namespace KAOSTools.Parsing
 {

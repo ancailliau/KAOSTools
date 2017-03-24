@@ -36,16 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="GoalModelParser.cs" />
-    <Compile Include="GoalModelParserExtension.cs" />
-    <Compile Include="ModelBuilder.cs" />
     <Compile Include="CompilationException.cs" />
-    <Compile Include="FirstStageBuilder.cs" />
-    <Compile Include="Builder.cs" />
-    <Compile Include="FormulaBuilder.cs" />
-    <Compile Include="SecondStageBuilder.cs" />
-    <Compile Include="ParsedEntityType.cs" />
-    <Compile Include="ThirdStageBuilder.cs" />
     <Compile Include="Parsers\Attributes\CustomAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\DefinitionAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\NameAttributeParser.cs" />
@@ -107,12 +98,21 @@
     <Compile Include="Builders\Attributes\RSRAttributeBuilder.cs" />
     <Compile Include="Builders\Attributes\IAttributeBuilder.cs" />
     <Compile Include="Builders\Attributes\FormalSpecAttributeBuilder.cs" />
-    <Compile Include="AttributeStageBuilder.cs" />
+    <Compile Include="Builders\AttributeStageBuilder.cs" />
+    <Compile Include="Builders\Builder.cs" />
+    <Compile Include="Builders\FirstStageBuilder.cs" />
+    <Compile Include="Builders\SecondStageBuilder.cs" />
+    <Compile Include="Builders\ThirdStageBuilder.cs" />
+    <Compile Include="Builders\ModelBuilder.cs" />
+    <Compile Include="Builders\FormulaBuilder.cs" />
+    <Compile Include="Parsers\GoalModelParser.cs" />
+    <Compile Include="Parsers\GoalModelParserExtension.cs" />
+    <Compile Include="Parsers\ParsedEntityType.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <None Include="GoalModelParser.peg" />
     <None Include="TODO.txt" />
+    <None Include="Parsers\GoalModelParser.peg" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MetaModel\UCLouvain.KAOSTools.Core.csproj">

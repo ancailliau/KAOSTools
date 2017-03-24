@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UCLouvain.KAOSTools.Core.Agents;
 using KAOSTools.Parsing.Builders.Declarations;
+using KAOSTools.Parsing.Parsers;
 
 namespace KAOSTools.Parsing
 {

@@ -5,6 +5,7 @@ using KAOSTools.Parsing;
 using KAOSTools.Core;
 using System.Text.RegularExpressions;
 using System.IO;
+using KAOSTools.Parsing.Parsers;
 
 namespace KAOSTools.Parsing
 {

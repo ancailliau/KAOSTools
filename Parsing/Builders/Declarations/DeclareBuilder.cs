@@ -1,5 +1,6 @@
 ﻿using System;
 using KAOSTools.Core;
+using KAOSTools.Parsing.Parsers;
 
 namespace KAOSTools.Parsing.Builders.Declarations
 {

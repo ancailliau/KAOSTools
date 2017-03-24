@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace KAOSTools.Parsing
+namespace KAOSTools.Parsing.Parsers
 {
     public class ParsedElement {
         public int Line { get; set; }
