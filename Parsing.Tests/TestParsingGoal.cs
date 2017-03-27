@@ -263,8 +263,8 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             refinement.RefinementPattern.ShallEqual (pattern);
 
             if (pattern == RefinementPattern.Case) {
-                var probability = refinement.Parameters.Single();
-                Assert.AreEqual(.5, probability);
+				Assert.AreEqual(.5, refinement.Parameters[0]);
+				Assert.AreEqual(.5, refinement.Parameters[1]);
             }
         }
 

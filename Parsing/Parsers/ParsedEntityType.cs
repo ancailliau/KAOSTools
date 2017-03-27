@@ -62,6 +62,8 @@ namespace KAOSTools.Parsing.Parsers
 
 	public class NParsedAttributeBracket : NParsedAttributeValue
 	{
+		public ParsedElement Item { get; set; }
+		public ParsedElement Parameter { get; set; }
     }
     
 	public class NParsedAttributeList : NParsedAttributeValue
@@ -299,6 +301,7 @@ namespace KAOSTools.Parsing.Parsers
         {
             Values = new List<dynamic>();
         }
+
     }
 
 
@@ -307,6 +310,10 @@ namespace KAOSTools.Parsing.Parsers
         public string Value { get; set; }
         public IdentifierExpression (string value) {
             Value = value;
+        }
+        public override string ToString()
+        {
+            return string.Format("[IdentifierExpression: Value={0}]", Value);
         }
     }
     

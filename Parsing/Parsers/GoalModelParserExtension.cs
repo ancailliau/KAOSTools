@@ -182,7 +182,10 @@ namespace KAOSTools.Parsing.Parsers {
 
 			if (results[1].Text == "[")
 			{
-				return new NParsedAttributeBracket();
+				return new NParsedAttributeBracket() {
+                    Item = results[0].Value,
+                    Parameter = results[2].Value
+				};
 			}
 
 			throw new NotImplementedException("BuildAttributeDecoratedValue");

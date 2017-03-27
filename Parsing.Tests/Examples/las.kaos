@@ -7,7 +7,7 @@ declare goal [ achieve_ambulance_on_scene_when_incident_reported ]
   definition  "Sooner-or-later, ambulance shall be on scene when incident is reported."
   formalspec  when incidentReported() then sooner-or-later ambulanceOnScene()
   
-  refinedby # [milestone]
+  refinedby [milestone]
   			  achieve_ambulance_allocated_when_incident_reported, 
               achieve_ambulance_on_scene_when_ambulance_allocated
 end
@@ -24,7 +24,7 @@ declare goal [ achieve_ambulance_on_scene_when_ambulance_allocated ]
   definition  "Sooner-or-later, ambulance shall be on scene when allocated."
   formalspec  when ambulanceAllocated() then sooner-or-later ambulanceOnScene()
   
-  refinedby # [milestone]
+  refinedby [milestone]
   			  achieve_ambulance_mobilized_when_ambulance_allocated, 
               achieve_ambulance_on_scene_when_ambulance_mobilized
 end
@@ -34,9 +34,9 @@ declare goal [ achieve_ambulance_mobilized_when_ambulance_allocated ]
   definition  "Sooner-or-later, ambulance shall be mobilized when allocated."
   formalspec  when ambulanceAllocated() then sooner-or-later ambulanceMobilized()
   
-  refinedby # [case] # [.8,.2])  
-  			  achieve_ambulance_mobilized_when_ambulance_allocated_on_road, 
-              achieve_ambulance_mobilized_when_ambulance_allocated_at_station
+  refinedby [case]
+  			  achieve_ambulance_mobilized_when_ambulance_allocated_on_road [.8], 
+              achieve_ambulance_mobilized_when_ambulance_allocated_at_station [.2]
 end
 
 declare goal [  achieve_ambulance_on_scene_when_ambulance_mobilized ]
