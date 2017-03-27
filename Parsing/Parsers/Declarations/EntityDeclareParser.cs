@@ -29,7 +29,7 @@ namespace KAOSTools.Parsing.Parsers.Declarations
 
         public override string GetIdentifier()
 		{
-			return "entity";
+            return "(entity|object)";
 		}
 	}
 }

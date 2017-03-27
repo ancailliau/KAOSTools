@@ -18,21 +18,33 @@ namespace KAOSTools.Parsing.Parsers.Attributes
 				throw new NotImplementedException("Attribute '" + identifier + "' does not accept parameters.");
 
 
-			if (value is NParsedAttributeColon)
-            {
+            if (value is NParsedAttributeColon) {
                 var colonValue = ((NParsedAttributeColon)value);
-				var left = colonValue.Left;
-				var right = colonValue.Right;
+                var left = colonValue.Left;
+                var right = colonValue.Right;
 
 				if (!(left is IdentifierExpression) | !(right is IdentifierExpression))
-					throw new NotImplementedException("Attribute '" + identifier + "' only accept a single identifiers:identifier.");
+					throw new NotImplementedException(
+                        string.Format("Attribute '{0}' only accept a single identifier or a pair identifiers:identifier.", 
+                                      identifier));
 
-				var leftIdentifier = ((IdentifierExpression)left).Value;
+                var leftIdentifier = ((IdentifierExpression)left).Value;
 
                 return new ParsedAttributeAttribute(leftIdentifier, right);
+            } else if (value is NParsedAttributeAtomic) {
+                var leftIdentifier = ((NParsedAttributeAtomic)value).Value;
+                if (leftIdentifier is IdentifierExpression) {
+                    return new ParsedAttributeAttribute(((IdentifierExpression)leftIdentifier).Value, null);
+				}
+
+                    throw new NotImplementedException(
+                        string.Format("Attribute '{0}' only accept a single identifier or a pair identifiers:identifier.", 
+                                      identifier));
             }
 
-            throw new NotImplementedException("Attribute '" + identifier + "' only accept a single identifiers:identifier.");
+			throw new NotImplementedException(
+				string.Format("Attribute '{0}' only accept a single identifier or a pair identifiers:identifier.",
+							  identifier));
         }
    }
     

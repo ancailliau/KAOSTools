@@ -12,17 +12,13 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
     {
         private static ModelBuilder parser = new ModelBuilder ();
 
-        [TestCase(@"declare entity
-                        id test
+        [TestCase(@"declare entity [ test ]
                     end", "test")]
-        [TestCase(@"declare entity
-                        id test_long_identifier
+        [TestCase(@"declare entity [ test_long_identifier ]
                     end", "test_long_identifier")]
-        [TestCase(@"declare entity
-                        id test-long-identifier
+        [TestCase(@"declare entity [ test-long-identifier ]
                     end", "test-long-identifier")]
-        [TestCase(@"declare entity
-                        id test12
+        [TestCase(@"declare entity [ test12 ]
                     end", "test12")]
         public void TestIdentifier (string input, string identifier)
         {
@@ -32,8 +28,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                 .ShallBeSingle ();
         }
 
-        [TestCase(@"declare object
-                        id test
+        [TestCase(@"declare object [ test ]
                     end", "test")]
         public void TestObject (string input, string identifier)
         {
@@ -43,18 +38,10 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                     .ShallBeSingle ();
         }
         
-        [TestCase(@"declare entity
-                        id 
-                    end")]
-        [TestCase(@"declare entity
-                        id -
-                    end")]
-        [TestCase(@"declare entity
-                        id _
-                    end")]
-        [TestCase(@"declare entity
-                        id $
-                    end")]
+        [TestCase(@"declare entity [] end")]
+		[TestCase(@"declare entity [-] end")]
+		[TestCase(@"declare entity [_] end")]
+		[TestCase(@"declare entity [end] end")]
         public void TestInvalidIdentifier (string input)
         {
             Assert.Throws<ParserException> (() => {
@@ -62,13 +49,13 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             });
         }
 
-        [TestCase(@"declare entity
+        [TestCase(@"declare entity [ test ]
                         name ""test""
                     end", "test")]
-        [TestCase(@"declare entity
+		[TestCase(@"declare entity [ test ]
                         name ""Long name with spaces and numbers 123""
                     end", "Long name with spaces and numbers 123")]
-        [TestCase(@"declare entity
+		[TestCase(@"declare entity [ test ]
                         name ""[-_-]""
                     end", "[-_-]")]
         public void TestName (string input, string expectedName)
@@ -79,7 +66,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                 .ShallBeSingle ();
         }
 
-        [TestCase(@"declare entity
+		[TestCase(@"declare entity [ test ]
                         name """"""
                     end")]
         public void TestInvalidName (string input)
@@ -89,16 +76,13 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             });
         }
 
-        [TestCase(@"declare entity
-                        id test
+        [TestCase(@"declare entity [ test ]
                         definition ""My description""
                     end", "My description")]
-        [TestCase(@"declare entity
-                        id test
+        [TestCase(@"declare entity [ test ]
                         definition """"
                     end", "")]
-        [TestCase(@"declare entity
-                        id test
+        [TestCase(@"declare entity [ test ]
                         definition ""multi
                                      line""
                     end", "multi line")]
@@ -110,7 +94,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                 .ShallBeSuchThat (x => x.Definition == expectedDescription);
         }
 
-        [TestCase(@"declare entity
+		[TestCase(@"declare entity [ test ]
                         definition "" "" "" 
                     end")]
         public void TestInvalidDescription (string input)
@@ -120,80 +104,27 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             });
         }
 
-        [TestCase(@"declare entity
-                        id test
-                        attribute ""My attribute""
-                    end", new string[] { "My attribute" })]
-        [TestCase(@"declare entity
-                        id test
-                        attribute ""My attribute"" : ""My Type""
-                    end", new string[] { "My attribute" })]
-        [TestCase(@"declare entity
-                        id test
-                        attribute ""My attribute 1"" : ""My Type""
-                        attribute ""My attribute 2"" : ""My Type""
-                    end", new string[] { "My attribute 1", "My attribute 2" })]
-        [TestCase(@"declare entity
-                        id test
-                        attribute ""My attribute 1""
-                        attribute ""My attribute 2""
-                    end", new string[] { "My attribute 1", "My attribute 2" })]
-        [TestCase(@"declare entity
-                        id test
-                        attribute ""test""
-                        attribute ""test""
-                    end", new string[] { "test", "test" })]
-        [TestCase(@"declare entity
-                        id test
-                        attribute ""My attribute 1"" : declare type name ""MyType"" end
-                    end", new string[] { "My attribute 1" })]
-        [TestCase(@"declare entity
-                        id test
-                        attribute declare attribute name ""My attribute 1"" type ""MyType"" end
-                    end", new string[] { "My attribute 1" })]
+        [TestCase(@"declare entity [ test ]
+                        attribute my_attribute
+                    end", new string[] { "my_attribute" })]
+        [TestCase(@"declare entity [ test ]
+                        attribute my_attribute:my_type
+                    end", new string[] { "my_attribute" })]
+        [TestCase(@"declare entity [ test ]
+                        attribute my_attribute1 : my_type1
+                        attribute my_attribute2 : my_type1
+                    end", new string[] { "my_attribute1", "my_attribute2" })]
         public void TestAttribute (string input, string[] attributes)
         {
             var model = parser.Parse (input);
             var entity = model.Entities().Single (x => x.Identifier == "test");
-            entity.Attributes().Select (x => x.Name).ShallOnlyContain (attributes);
-        }
-        
-        [TestCase(@"declare entity
-                        id test
-                        attribute """" : ""My Type""
-                    end")]
-        public void TestInvalidAttribute (string input)
-        {
-            Assert.Throws<ParserException> (() => {
-                parser.Parse (input);
-            });
+            entity.Attributes().Select (x => x.Identifier).ShallOnlyContain (attributes);
         }
 
-        [TestCase(@"declare entity
-                        id test
-                        is test2
-                    end", true)]
-        [TestCase(@"declare entity
-                        id test
-                        is ""Entity 2""
+        [TestCase(@"declare entity [ test ]
+                        isa test2
                     end
-
-                    declare entity
-                        id test2
-                        name ""Entity 2""
-                    end", false)]
-        [TestCase(@"declare entity
-                        id test
-                        is test2
-                    end
-
-                    declare entity
-                        id test2
-                    end", false)]
-        [TestCase(@"declare entity
-                        id test
-                        is declare entity id test2 end
-                    end", false)]
+                    declare entity [ test2 ] end", false)]
         public void TestIsA (string input, bool implicitParent)
         {
             var model = parser.Parse (input);
@@ -204,12 +135,10 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             parentEntity.Implicit.ShallEqual (implicitParent);
         }
 
-        [TestCase(@"declare entity
-                        id test
+        [TestCase(@"declare entity [ test ]
                         type software
                     end", EntityType.Software)]
-        [TestCase(@"declare entity
-                        id test
+        [TestCase(@"declare entity [ test ]
                         type environment
                     end", EntityType.Environment)]
         public void TestEntityType (string input, EntityType type)
