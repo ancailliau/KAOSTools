@@ -12,17 +12,13 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
     {
         private static ModelBuilder parser = new ModelBuilder ();
         
-        [TestCase(@"declare domainhypothesis
-                        id test
+        [TestCase(@"declare domainhypothesis [ test ]
                     end", "test")]
-        [TestCase(@"declare domainhypothesis
-                        id test_long_identifier
+		[TestCase(@"declare domainhypothesis [ test_long_identifier ]
                     end", "test_long_identifier")]
-        [TestCase(@"declare domainhypothesis
-                        id test-long-identifier
+		[TestCase(@"declare domainhypothesis [ test-long-identifier ]
                     end", "test-long-identifier")]
-        [TestCase(@"declare domainhypothesis
-                        id test12
+		[TestCase(@"declare domainhypothesis [ test12 ]
                     end", "test12")]
         public void TestIdentifier (string input, string expectedIdentifier)
         {
@@ -30,10 +26,10 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             model.DomainHypotheses().Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
         }
         
-        [TestCase(@"declare domainhypothesis id   end")]
-        [TestCase(@"declare domainhypothesis id - end")]
-        [TestCase(@"declare domainhypothesis id _ end")]
-        [TestCase(@"declare domainhypothesis id $ end")]
+        [TestCase(@"declare domainhypothesis [] end")]
+		[TestCase(@"declare domainhypothesis [-] end")]
+		[TestCase(@"declare domainhypothesis [_] end")]
+		[TestCase(@"declare domainhypothesis [end] end")]
         public void TestInvalidIdentifier (string input)
         {
             Assert.Throws<ParserException> (() => {
@@ -41,13 +37,13 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             });
         }
         
-        [TestCase(@"declare domainhypothesis
+        [TestCase(@"declare domainhypothesis [ test ]
                         name ""test""
                     end", "test")]
-        [TestCase(@"declare domainhypothesis
+		[TestCase(@"declare domainhypothesis [ test ]
                         name ""Long name with spaces and numbers 123""
                     end", "Long name with spaces and numbers 123")]
-        [TestCase(@"declare domainhypothesis
+		[TestCase(@"declare domainhypothesis [ test ]
                         name ""[-_-]""
                     end", "[-_-]")]
         public void TestName (string input, string expectedName)
@@ -58,7 +54,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                     .ShallBeSingle ();
         }
 
-        [TestCase(@"declare domainhypothesis
+		[TestCase(@"declare domainhypothesis [ test ]
                         name """"""
                     end")]
         public void TestInvalidName (string input)
@@ -68,23 +64,19 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             });
         }        
             
-        [TestCase(@"declare domhyp
-                        id test
+        [TestCase(@"declare domhyp [ test ]
                         name ""old name""
                         definition ""old definition""
                     end
 
-                    override domhyp
-                        id test
+                    override domhyp [ test ]
                         name ""new name""
                         definition ""new definition""
                     end")]
-        [TestCase(@"declare domhyp
-                        id test
+        [TestCase(@"declare domhyp [ test ]
                     end
 
-                    override domhyp
-                        id test
+                    override domhyp [ test ]
                         name ""new name""
                         definition ""new definition""
                     end")]
@@ -97,10 +89,10 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             domhyp.Definition.ShallEqual ("new definition");
         }
         
-        [TestCase(@"declare domainhypothesis id test  end
-                    declare domainhypothesis id test2 end")]
-        [TestCase(@"declare domhyp id test  end
-                    declare domhyp id test2 end")]
+        [TestCase(@"declare domainhypothesis [ test ] end
+                    declare domainhypothesis [ test2 ] end")]
+		[TestCase(@"declare domhyp [ test ] end
+                    declare domhyp [ test2 ] end")]
         public void TestMultiple (string input)
         {
             var model = parser.Parse (input);
@@ -108,9 +100,8 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             model.DomainHypotheses().ShallContain (x => x.Identifier == "test2");
         }
 
-        [TestCase(@"declare goal id g refinedby test end
-                    declare domhyp id test end")]
-        [TestCase(@"declare goal id g refinedby declare domhyp id test end end")]
+		[TestCase(@"declare goal [ g ] refinedby test end
+                    declare domhyp [ test ] end")]
         public void TestRefinementWithDomainHypothesis (string input)
         {
             var model = parser.Parse (input);
