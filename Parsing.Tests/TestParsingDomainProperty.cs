@@ -12,17 +12,13 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
     {
         private static ModelBuilder parser = new ModelBuilder ();
         
-        [TestCase(@"declare domainproperty
-                        id test
+        [TestCase(@"declare domainproperty [ test ]
                     end", "test")]
-        [TestCase(@"declare domainproperty
-                        id test_long_identifier
+		[TestCase(@"declare domainproperty [ test_long_identifier ]
                     end", "test_long_identifier")]
-        [TestCase(@"declare domainproperty
-                        id test-long-identifier
+		[TestCase(@"declare domainproperty [ test-long-identifier ]
                     end", "test-long-identifier")]
-        [TestCase(@"declare domainproperty
-                        id test12
+        [TestCase(@"declare domainproperty [ test12 ]
                     end", "test12")]
         public void TestIdentifier (string input, string expectedIdentifier)
         {
@@ -30,10 +26,10 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             model.DomainProperties().Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
         }
         
-        [TestCase(@"declare domainproperty id   end")]
-        [TestCase(@"declare domainproperty id - end")]
-        [TestCase(@"declare domainproperty id _ end")]
-        [TestCase(@"declare domainproperty id $ end")]
+        [TestCase(@"declare domainproperty [] end")]
+        [TestCase(@"declare domainproperty [-] end")]
+        [TestCase(@"declare domainproperty [_] end")]
+        [TestCase(@"declare domainproperty [end] end")]
         public void TestInvalidIdentifier (string input)
         {
             Assert.Throws<ParserException> (() => {
@@ -41,13 +37,13 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             });
         }
         
-        [TestCase(@"declare domainproperty
+        [TestCase(@"declare domainproperty [ test ]
                         name ""test""
                     end", "test")]
-        [TestCase(@"declare domainproperty
+		[TestCase(@"declare domainproperty [ test ]
                         name ""Long name with spaces and numbers 123""
                     end", "Long name with spaces and numbers 123")]
-        [TestCase(@"declare domainproperty
+		[TestCase(@"declare domainproperty [ test ]
                         name ""[-_-]""
                     end", "[-_-]")]
         public void TestName (string input, string expectedName)
@@ -58,7 +54,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                     .ShallBeSingle ();
         }
 
-        [TestCase(@"declare domainproperty
+		[TestCase(@"declare domainproperty [ test ]
                         name """"""
                     end")]
         public void TestInvalidName (string input)
@@ -68,23 +64,19 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             });
         }      
                 
-        [TestCase(@"declare domprop
-                        id test
+        [TestCase(@"declare domprop [ test ]
                         name ""old name""
                         definition ""old definition""
                     end
 
-                    override domprop
-                        id test
+                    override domprop [ test ]
                         name ""new name""
                         definition ""new definition""
                     end")]
-        [TestCase(@"declare domprop
-                        id test
+        [TestCase(@"declare domprop [ test ]
                     end
 
-                    override domprop
-                        id test
+                    override domprop [ test ]
                         name ""new name""
                         definition ""new definition""
                     end")]
@@ -97,10 +89,10 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             domprop.Definition.ShallEqual ("new definition");
         }
         
-        [TestCase(@"declare domainproperty id test  end
-                    declare domainproperty id test2 end")]
-        [TestCase(@"declare domprop id test  end
-                    declare domprop id test2 end")]
+        [TestCase(@"declare domainproperty [ test ] end
+                    declare domainproperty [ test2 ] end")]
+		[TestCase(@"declare domprop [ test ] end
+                    declare domprop [ test2 ] end")]
         public void TestMultiple (string input)
         {
             var model = parser.Parse (input);
@@ -108,14 +100,14 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             model.DomainProperties().ShallContain (x => x.Identifier == "test2");
         }
 
-        [TestCase(@"declare domprop id test probability 0.95 end", 0.95)]
-        [TestCase(@"declare domprop id test probability 1    end", 1)]
-        [TestCase(@"declare domprop id test probability 0    end", 0)]
-        [TestCase(@"declare domprop id test probability .01  end", .01)]
-        [TestCase(@"declare domprop id test eps 0.95 end", 0.95)]
-        [TestCase(@"declare domprop id test eps 1    end", 1)]
-        [TestCase(@"declare domprop id test eps 0    end", 0)]
-        [TestCase(@"declare domprop id test eps .01  end", .01)]
+        [TestCase(@"declare domprop [ test ] probability 0.95 end", 0.95)]
+        [TestCase(@"declare domprop [ test ] probability 1    end", 1)]
+        [TestCase(@"declare domprop [ test ] probability 0    end", 0)]
+        [TestCase(@"declare domprop [ test ] probability .01  end", .01)]
+        [TestCase(@"declare domprop [ test ] eps 0.95 end", 0.95)]
+        [TestCase(@"declare domprop [ test ] eps 1    end", 1)]
+        [TestCase(@"declare domprop [ test ] eps 0    end", 0)]
+        [TestCase(@"declare domprop [ test ] eps .01  end", .01)]
         public void TestProbability (string input, double expected)
         {
             var model = parser.Parse (input);
