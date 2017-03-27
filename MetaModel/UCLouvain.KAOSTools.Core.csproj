@@ -112,6 +112,10 @@
     <Compile Include="Repositories\Memory\GoalRepository.cs" />
     <Compile Include="Repositories\Memory\ModelMetadataRepository.cs" />
     <Compile Include="Repositories\Memory\ObstacleRepository.cs" />
+    <Compile Include="SatisfactionRates\ISatisfactionRate.cs" />
+    <Compile Include="SatisfactionRates\DoubleSatisfactionRate.cs" />
+    <Compile Include="Repositories\ISatisfactionRateRepository.cs" />
+    <Compile Include="Repositories\Memory\SatisfactionRateRepository.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

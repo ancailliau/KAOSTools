@@ -14,6 +14,7 @@ namespace KAOSTools.Parsing.Parsers.Declarations
 			Add(new NameAttributeParser());
 			Add(new DefinitionAttributeParser());
 			Add(new FormalSpecAttributeParser());
+            Add(new ESRAttributeParser());
 			Add(new CustomAttributeParser());
 		}
 

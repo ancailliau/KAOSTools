@@ -4,6 +4,7 @@ using NUnit.Framework;
 using KAOSTools.Parsing;
 using KAOSTools.Core;
 using KAOSTools.Parsing.Parsers;
+using UCLouvain.KAOSTools.Core.SatisfactionRates;
 
 namespace UCLouvain.KAOSTools.Parsing.Tests
 {
@@ -104,14 +105,17 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
         [TestCase(@"declare domprop [ test ] probability 1    end", 1)]
         [TestCase(@"declare domprop [ test ] probability 0    end", 0)]
         [TestCase(@"declare domprop [ test ] probability .01  end", .01)]
-        [TestCase(@"declare domprop [ test ] eps 0.95 end", 0.95)]
-        [TestCase(@"declare domprop [ test ] eps 1    end", 1)]
-        [TestCase(@"declare domprop [ test ] eps 0    end", 0)]
-        [TestCase(@"declare domprop [ test ] eps .01  end", .01)]
+        [TestCase(@"declare domprop [ test ] esr 0.95 end", 0.95)]
+        [TestCase(@"declare domprop [ test ] esr 1    end", 1)]
+        [TestCase(@"declare domprop [ test ] esr 0    end", 0)]
+        [TestCase(@"declare domprop [ test ] esr .01  end", .01)]
         public void TestProbability (string input, double expected)
         {
-            var model = parser.Parse (input);
-            model.DomainProperties().ShallContain (x => x.Identifier == "test").ShallBeSingle ().EPS.ShallEqual (expected);
+			var model = parser.Parse(input);
+
+            var sr = model.satisfactionRateRepository.GetDomPropSatisfactionRate("test");
+			Assert.IsInstanceOf(typeof(DoubleSatisfactionRate), sr);
+			Assert.AreEqual(expected, ((DoubleSatisfactionRate)sr).SatisfactionRate);
         }
 
     }

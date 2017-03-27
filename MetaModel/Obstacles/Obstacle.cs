@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
+using UCLouvain.KAOSTools.Core.SatisfactionRates;
 
 namespace KAOSTools.Core
 {
@@ -30,6 +31,7 @@ namespace KAOSTools.Core
         public double EPS { get; set; }
 
         public double CPS { get; set; }
+
 
         public UncertaintyDistribution SatisfactionUncertainty { get; set; }
 

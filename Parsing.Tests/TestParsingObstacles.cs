@@ -5,6 +5,7 @@ using KAOSTools.Parsing;
 using System.Collections.Generic;
 using KAOSTools.Core;
 using KAOSTools.Parsing.Parsers;
+using UCLouvain.KAOSTools.Core.SatisfactionRates;
 
 namespace UCLouvain.KAOSTools.Parsing.Tests
 {
@@ -268,14 +269,18 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
         [TestCase(@"declare obstacle [ test ] probability 1    end", 1)]
         [TestCase(@"declare obstacle [ test ] probability 0    end", 0)]
         [TestCase(@"declare obstacle [ test ] probability .01  end", .01)]
-        [TestCase(@"declare obstacle [ test ] eps 0.95 end", 0.95)]
-        [TestCase(@"declare obstacle [ test ] eps 1    end", 1)]
-        [TestCase(@"declare obstacle [ test ] eps 0    end", 0)]
-        [TestCase(@"declare obstacle [ test ] eps .01  end", .01)]
+        [TestCase(@"declare obstacle [ test ] esr 0.95 end", 0.95)]
+        [TestCase(@"declare obstacle [ test ] esr 1    end", 1)]
+        [TestCase(@"declare obstacle [ test ] esr 0    end", 0)]
+        [TestCase(@"declare obstacle [ test ] esr .01  end", .01)]
         public void TestProbability (string input, double expected)
         {
             var model = parser.Parse (input);
-            model.Obstacles().ShallContain (x => x.Identifier == "test").ShallBeSingle ().EPS.ShallEqual (expected);
+            // model.Obstacles().ShallContain (x => x.Identifier == "test").ShallBeSingle ().EPS.ShallEqual (expected);
+
+            var sr = model.satisfactionRateRepository.GetObstacleSatisfactionRate ("test");
+            Assert.IsInstanceOf(typeof(DoubleSatisfactionRate), sr);
+            Assert.AreEqual(expected, ((DoubleSatisfactionRate)sr).SatisfactionRate);
         }
     }
 }

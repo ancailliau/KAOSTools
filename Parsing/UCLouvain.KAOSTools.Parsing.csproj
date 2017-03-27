@@ -111,6 +111,8 @@
     <Compile Include="Parsers\GoalModelParserExtension.cs" />
     <Compile Include="Parsers\ParsedEntityType.cs" />
     <Compile Include="Builders\Attributes\RefinedByGoalAttributeBuilder.cs" />
+    <Compile Include="Parsers\Attributes\ESRAttributeParser.cs" />
+    <Compile Include="Builders\Attributes\ESRAttributeBuilder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

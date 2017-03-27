@@ -44,6 +44,7 @@ namespace KAOSTools.Core
         public IEntityRepository entityRepository;
         public IObstacleRepository obstacleRepository;
         public IFormalSpecRepository formalSpecRepository;
+        public ISatisfactionRateRepository satisfactionRateRepository;
 
 		public KAOSModel ()
         {
@@ -54,7 +55,7 @@ namespace KAOSTools.Core
 			entityRepository = new EntityRepository();
 			obstacleRepository = new ObstacleRepository();
             formalSpecRepository = new FormalSpecRepository ();
-
+            satisfactionRateRepository = new SatisfactionRateRepository();
 
             Parameters = new Dictionary<string, string> ();
         }
