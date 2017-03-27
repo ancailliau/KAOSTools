@@ -12,12 +12,10 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
     {
         private static ModelBuilder parser = new ModelBuilder ();
 
-        [TestCase(@"declare agent
-                        id test
+		[TestCase(@"declare agent [ test ]
                         type software
                     end", AgentType.Software)]
-        [TestCase(@"declare agent
-                        id test
+        [TestCase(@"declare agent [ test ]
                         type environment
                     end", AgentType.Environment)]
         public void TestTypeOfAgent (string input, AgentType type)
@@ -28,17 +26,13 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                 .ShallBeSingle ();
         }
 
-        [TestCase(@"declare agent
-                        id test
+        [TestCase(@"declare agent [ test ]
                     end", "test")]
-        [TestCase(@"declare agent
-                        id test_long_identifier
+		[TestCase(@"declare agent [ test_long_identifier ]
                     end", "test_long_identifier")]
-        [TestCase(@"declare agent
-                        id test-long-identifier
+		[TestCase(@"declare agent [ test-long-identifier ]
                     end", "test-long-identifier")]
-        [TestCase(@"declare agent
-                        id test12
+		[TestCase(@"declare agent [ test12 ]
                     end", "test12")]
         public void TestIdentifier (string input, string identifier)
         {
@@ -48,32 +42,24 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                 .ShallBeSingle ();
         }
         
-        [TestCase(@"declare agent
-                        id 
-                    end")]
-        [TestCase(@"declare agent
-                        id -
-                    end")]
-        [TestCase(@"declare agent
-                        id _
-                    end")]
-        [TestCase(@"declare agent
-                        id $
-                    end")]
+        [TestCase(@"declare agent [] end")]
+		[TestCase(@"declare agent [-] end")]
+		[TestCase(@"declare agent [_] end")]
+		[TestCase(@"declare agent [end] end")]
         public void TestInvalidIdentifier (string input)
         {
-            Assert.Throws<BuilderException> (() => {
+			Assert.Throws<ParserException> (() => {
                 parser.Parse (input);
             });
         }
 
-        [TestCase(@"declare agent
+        [TestCase(@"declare agent [ test ]
                         name ""test""
                     end", "test")]
-        [TestCase(@"declare agent
+		[TestCase(@"declare agent [ test ]
                         name ""Long name with spaces and numbers 123""
                     end", "Long name with spaces and numbers 123")]
-        [TestCase(@"declare agent
+		[TestCase(@"declare agent [ test ]
                         name ""[-_-]""
                     end", "[-_-]")]
         public void TestName (string input, string expectedName)
@@ -84,26 +70,23 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                 .ShallBeSingle ();
         }
 
-        [TestCase(@"declare agent
+		[TestCase(@"declare agent [ test ]
                         name """"""
                     end")]
         public void TestInvalidName (string input)
         {
-            Assert.Throws<BuilderException> (() => {
+            Assert.Throws<ParserException> (() => {
                 parser.Parse (input);
             });
         }
 
-        [TestCase(@"declare agent
-                        id test
+        [TestCase(@"declare agent [ test ]
                         definition ""My description""
                     end", "My description")]
-        [TestCase(@"declare agent
-                        id test
+        [TestCase(@"declare agent [ test ]
                         definition """"
                     end", "")]
-        [TestCase(@"declare agent
-                        id test
+        [TestCase(@"declare agent [ test ]
                         definition ""multi
                                      line""
                     end", "multi line")]
@@ -115,7 +98,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                 .ShallBeSuchThat (x => x.Definition == expectedDescription);
         }
 
-        [TestCase(@"declare agent
+		[TestCase(@"declare agent [ test ]
                         definition "" "" "" 
                     end")]
         public void TestInvalidDescription (string input)
@@ -125,16 +108,10 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             });
         }
 
-        [TestCase(@"declare goal
-                        id goal
+		[TestCase(@"declare goal [ goal ]
                         assignedto agent
-                    end")]
-        [TestCase(@"declare goal
-                        id goal
-                        assignedto declare agent
-                                     id agent
-                                   end
-                    end")]
+                    end
+                    declare agent [ agent ] end")]
         public void TestAssignedTo (string input)
         {
             var model = parser.Parse (input);
@@ -146,24 +123,11 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                 .ShallBeSuchThat (x => x.Identifier == "agent");
         }
 
-        [TestCase(@"declare goal
-                        id goal
+        [TestCase(@"declare goal [ goal ]
                         assignedto agent1, agent2
-                    end")]
-        [TestCase(@"declare goal
-                        id goal
-                        assignedto declare agent
-                                     id agent1
-                                   end, agent2
-                    end")]
-        [TestCase(@"declare goal
-                        id goal
-                        assignedto declare agent
-                                     id agent1
-                                   end, declare agent
-                                     id agent2
-                                   end
-                    end")]
+                    end
+                    declare agent [ agent1 ] end
+                    declare agent [ agent2 ] end")]
         public void TestAssignedToMultipleAgents (string input)
         {
             var model = parser.Parse (input);
@@ -174,18 +138,6 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                 .SelectMany (x => x.Agents())
                 .Select (x => x.Identifier)
                 .ShallOnlyContain (new string[] { "agent1", "agent2" });
-        }
-
-        [TestCase(@"declare goal 
-                        id test
-                        assignedto agent1
-                    end")]
-        public void TestImplicit (string input)
-        {
-            var model = parser.Parse (input);
-            
-            var agent = model.Agents().Single (x => x.Identifier == "agent1");
-            agent.Implicit.ShallBeTrue ();
         }
     }
 }
