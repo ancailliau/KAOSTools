@@ -6,9 +6,9 @@ using KAOSTools.Parsing.Parsers;
 
 namespace KAOSTools.Parsing.Builders.Attributes
 {
-	public class RefinedByAttributeBuilder : AttributeBuilder<Goal, ParsedRefinedByAttribute>
+	public class RefinedByGoalAttributeBuilder : AttributeBuilder<Goal, ParsedRefinedByAttribute>
     {
-		public RefinedByAttributeBuilder()
+		public RefinedByGoalAttributeBuilder()
         {
         }
 

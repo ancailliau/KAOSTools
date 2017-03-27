@@ -228,6 +228,11 @@ namespace KAOSTools.Parsing.Parsers
         {
             Parameters = new List<dynamic> ();
         }
+
+        public ParsedResolutionPattern(string name) : base ()
+        {
+            Name = name;
+        }
     }
 
     public class ParsedRefinementPattern : ParsedElement

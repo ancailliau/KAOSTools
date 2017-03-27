@@ -26,14 +26,10 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             model.Goals().Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
         }
 
-        [TestCase(@"declare goal []
-                    end")]
-        [TestCase(@"declare goal [-]
-                    end")]
-        [TestCase(@"declare goal [_]
-                    end")]
-        [TestCase(@"declare goal [$]
-                    end")]
+        [TestCase(@"declare goal [] end")]
+        [TestCase(@"declare goal [-] end")]
+        [TestCase(@"declare goal [_] end")]
+        [TestCase(@"declare goal [$] end")]
         public void TestInvalidIdentifier (string input)
         {
             Assert.Throws<ParserException> (() => {

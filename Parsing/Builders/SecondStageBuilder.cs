@@ -37,7 +37,8 @@ namespace KAOSTools.Parsing
             attributeBuilders.Add(new LinkAttributeBuilder());
             attributeBuilders.Add(new NameAttributeBuilder());
             attributeBuilders.Add(new ObstructedByAttributeBuilder());
-            attributeBuilders.Add(new RefinedByAttributeBuilder());
+			attributeBuilders.Add(new RefinedByGoalAttributeBuilder());
+			attributeBuilders.Add(new RefinedByObstacleAttributeBuilder());
             attributeBuilders.Add(new ResolvedByAttributeBuilder());
             attributeBuilders.Add(new RSRAttributeBuilder());
         }

@@ -5,17 +5,27 @@ using System.Linq;
 namespace KAOSTools.Parsing.Parsers.Attributes
 {
 
-	public class ObstructedByAttributeParser : IParserAttribute
+	public class ResolvedByAttributeParser : IParserAttribute
     {
         public string GetIdentifier()
         {
-            return "obstructed[bB]y";
+            return "resolved[bB]y";
         }
 
         public ParsedElement ParsedAttribute(string identifier, NParsedAttributeValue parameters, NParsedAttributeValue value)
         {
-			if (parameters != null)
-				throw new NotImplementedException("Attribute '" + identifier + "' does not accept parameters.");
+            ParsedResolutionPattern pattern = null;
+            if (parameters != null) {
+                if (parameters is NParsedAttributeAtomic) {
+                    var parameter = ((NParsedAttributeAtomic)parameters).Value;
+                    if (parameter is IdentifierExpression) {
+                        var patternId = ((IdentifierExpression)parameter).Value;
+                        pattern = new ParsedResolutionPattern(patternId);
+                    }
+                } else {
+                    throw new NotImplementedException("Attribute '" + identifier + "' only accept a single parameter.");
+                }
+            }
 
 			if (!(value is NParsedAttributeAtomic))
 				throw new NotImplementedException("Attribute '" + identifier + "' only accept a single atomic value");
@@ -25,7 +35,7 @@ namespace KAOSTools.Parsing.Parsers.Attributes
             if (!(v is IdentifierExpression))
 				throw new NotImplementedException("Attribute '" + identifier + "' only accept identifier value");
 
-            return new ParsedObstructedByAttribute() { Value = ((NParsedAttributeAtomic)value).Value };
+            return new ParsedResolvedByAttribute() { Value = ((NParsedAttributeAtomic)value).Value, Pattern = pattern };
         }
 	}
     

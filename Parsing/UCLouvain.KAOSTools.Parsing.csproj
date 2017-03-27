@@ -45,10 +45,10 @@
     <Compile Include="Parsers\Attributes\RefinedByAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\RSRAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\IParserAttribute.cs" />
-    <Compile Include="Parsers\Attributes\ObstructedByAttributeParser.cs" />
+    <Compile Include="Parsers\Attributes\ResolvedByAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\AssignedToAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\FormalSpecAttributeParser.cs" />
-    <Compile Include="Parsers\Attributes\ResolvedByAttributeParser.cs" />
+    <Compile Include="Parsers\Attributes\ObstructedByAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\ArgumentAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\DefaultValueAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\AgentTypeAttributeParser.cs" />
@@ -95,7 +95,7 @@
     <Compile Include="Builders\Attributes\LinkAttributeBuilder.cs" />
     <Compile Include="Builders\Attributes\NameAttributeBuilder.cs" />
     <Compile Include="Builders\Attributes\ObstructedByAttributeBuilder.cs" />
-    <Compile Include="Builders\Attributes\RefinedByAttributeBuilder.cs" />
+    <Compile Include="Builders\Attributes\RefinedByObstacleAttributeBuilder.cs" />
     <Compile Include="Builders\Attributes\ResolvedByAttributeBuilder.cs" />
     <Compile Include="Builders\Attributes\RSRAttributeBuilder.cs" />
     <Compile Include="Builders\Attributes\IAttributeBuilder.cs" />
@@ -110,6 +110,7 @@
     <Compile Include="Parsers\GoalModelParser.cs" />
     <Compile Include="Parsers\GoalModelParserExtension.cs" />
     <Compile Include="Parsers\ParsedEntityType.cs" />
+    <Compile Include="Builders\Attributes\RefinedByGoalAttributeBuilder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
