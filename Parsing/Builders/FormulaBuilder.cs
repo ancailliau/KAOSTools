@@ -165,6 +165,7 @@ namespace KAOSTools.Parsing
                     ActualArguments = prel.Variables
                 };
             } else if (value.GetType () == typeof (ParsedAttributeReferenceExpression)) {
+                
                 var pref = value as ParsedAttributeReferenceExpression;
                 if (declaredVariables.ContainsKey (pref.Variable)) {
                     var boolType = GetOrCreateGivenType("boolean");
@@ -367,7 +368,7 @@ namespace KAOSTools.Parsing
                     throw new NotImplementedException (pref.AttributeSignature.GetType() + " is not yet supported");
                 
             } else {
-                throw new Exception (string.Format("Entity '{0}' not found", pref.Variable));
+                throw new Exception (string.Format("Entity '{0}' not found", entity.Identifier));
             }
         }
         

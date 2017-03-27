@@ -65,7 +65,10 @@ namespace KAOSTools.Parsing.Builders.Attributes
 				// if a type was already declared, it shall be the same (or an ancestor)
 				else if (!arg_type.Ancestors().Contains(element.Arguments[currentPosition].Type))
 				{
-					throw new BuilderException(string.Format("Argument at index {0} does not match. Actual has identifier '{1}' and name '{2}' but expected has identifier '{3}' and name '{4}'. Check that you don't mix name and identifier references on implicit declarations.",
+					throw new BuilderException(
+                        string.Format("Argument at index {0} does not match. Actual has identifier '{1}' and name " +
+                                      "'{2}' but expected has identifier '{3}' and name '{4}'. Check that you don't " +
+                                      "mix name and identifier references on implicit declarations.",
 															   currentPosition,
 															   element.Arguments[currentPosition].Type.Identifier,
 															   element.Arguments[currentPosition].Type.Name,
@@ -83,9 +86,10 @@ namespace KAOSTools.Parsing.Builders.Attributes
 				// if a name was already defined, it shall be the same
 				else if (element.Arguments[currentPosition].Name != arg_name)
 				{
-					throw new BuilderException(string.Format("Argument at index {0} shall be named '{1}' but is '{2}'",
-															   currentPosition, element.Arguments[currentPosition].Name, arg_name),
-												attribute.Filename, attribute.Line, attribute.Col);
+					throw new BuilderException(
+                        string.Format("Argument at index {0} shall be named '{1}' but is '{2}'",
+                                      currentPosition, element.Arguments[currentPosition].Name, arg_name),
+                        attribute.Filename, attribute.Line, attribute.Col);
 				}
 			}
 

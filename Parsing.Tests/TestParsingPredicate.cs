@@ -13,36 +13,24 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
         private static ModelBuilder parser = new ModelBuilder ();
 
         
-        [TestCase(@"declare predicate
-                        id test
+        [TestCase(@"declare predicate [ test ]
                     end", "test")]
-        [TestCase(@"declare predicate
-                        id test_long_identifier
+        [TestCase(@"declare predicate [ test_long_identifier ]
                     end", "test_long_identifier")]
-        [TestCase(@"declare predicate
-                        id test-long-identifier
+        [TestCase(@"declare predicate [ test-long-identifier ]
                     end", "test-long-identifier")]
-        [TestCase(@"declare predicate
-                        id test12
+        [TestCase(@"declare predicate [ test12 ]
                     end", "test12")]
         public void TestIdentifier (string input, string expectedIdentifier)
         {
             var model = parser.Parse (input);
             model.Predicates().Where (x => x.Identifier == expectedIdentifier).ShallBeSingle ();
-        }
-        
-        [TestCase(@"declare predicate
-                        id 
-                    end")]
-        [TestCase(@"declare predicate
-                        id -
-                    end")]
-        [TestCase(@"declare predicate
-                        id _
-                    end")]
-        [TestCase(@"declare predicate
-                        id $
-                    end")]
+		}
+
+		[TestCase(@"declare predicate [] end")]
+		[TestCase(@"declare predicate [-] end")]
+		[TestCase(@"declare predicate [_] end")]
+		[TestCase(@"declare predicate [$] end")]
         public void TestInvalidIdentifier (string input)
         {
             Assert.Throws<ParserException> (() => {
@@ -50,13 +38,13 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             });
         }
         
-        [TestCase(@"declare predicate
+        [TestCase(@"declare predicate [ test ]
                         name ""test""
                     end", "test")]
-        [TestCase(@"declare predicate
+		[TestCase(@"declare predicate [ test ]
                         name ""Long name with spaces and numbers 123""
                     end", "Long name with spaces and numbers 123")]
-        [TestCase(@"declare predicate
+		[TestCase(@"declare predicate [ test ]
                         name ""[-_-]""
                     end", "[-_-]")]
         public void TestName (string input, string expectedName)
@@ -66,7 +54,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                     .ShallBeSingle ();
         }
 
-        [TestCase(@"declare predicate
+		[TestCase(@"declare predicate [ test ]
                         name """"""
                     end")]
         public void TestInvalidName (string input)
@@ -76,28 +64,23 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             });
         }
         
-        [TestCase(@"declare predicate
-                        id test
+        [TestCase(@"declare predicate [ test ]
                         name ""old name""
                         definition ""old definition""
                     end
 
-                    override predicate
-                        id test
+                    override predicate [ test ]
                         name ""new name""
                         definition ""new definition""
                     end")]
-        [TestCase(@"declare predicate
-                        id test
+		[TestCase(@"declare predicate [ test ]
                     end
 
-                    override predicate 
-                        id test
+                    override predicate  [ test ]
                         name ""old name""
                     end
 
-                    override predicate
-                        id test
+                    override predicate [ test ]
                         name ""new name""
                         definition ""new definition""
                     end")]
@@ -110,22 +93,13 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             predicate.Definition.ShallEqual ("new definition");
         }
 
-        [TestCase(@"declare predicate
-                        name ""Test""
-                        argument c: ""MyType""
-                    end")]
-        [TestCase(@"declare predicate
+		[TestCase(@"declare predicate [ test ]
                         name ""Test""
                         argument c: mytype
                     end
 
-                    declare object
-                        id mytype
+                    declare object [ mytype ]
                         name ""MyType""
-                    end")]
-        [TestCase(@"declare predicate
-                        name ""Test""
-                        argument c: declare object id myType name ""MyType"" end
                     end")]
         public void TestArgument (string input)
         {
@@ -138,18 +112,19 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             model.Entities().Select (x => x.Name).ShallOnlyContain (new string[] { "MyType" });
         }
         
-        [TestCase(@"declare predicate
+        [TestCase(@"declare predicate [ test ]
                         name ""Test""
-                        argument c: ""MyType""
-                        formalspec c.""MyAttribute""
-                    end")]
+                        argument c: my_type
+                        formalspec c.my_attribute
+                    end
+                    declare entity [ my_type ] end")]
         public void TestFormalSpec (string input)
         {
             var model = parser.Parse (input);
             var predicate = model.Predicates().Single (x => x.Name == "Test");
             
-            var entity = model.Entities().Single (x => x.Name == "MyType");
-            var attribute = entity.Attributes().Single (x => x.Name == "MyAttribute");
+            var entity = model.Entities().Single(x => x.Identifier == "my_type");
+            var attribute = entity.Attributes().Single(x => x.Identifier == "my_attribute");
 
             ((AttributeReference) predicate.FormalSpec).Variable.ShallEqual ("c");
             ((AttributeReference) predicate.FormalSpec).Entity.ShallEqual (entity);

@@ -26,6 +26,7 @@ namespace KAOSTools.Parsing
 			declareBuilders.Add(new SoftGoalDeclareParser());
 			declareBuilders.Add(new TypeDeclareBuilder());
 			declareBuilders.Add(new ObstacleDeclareBuilder());
+            declareBuilders.Add(new PredicateDeclareBuilder());
 
             attributeBuilders.Add(new ArgumentAttributeBuilder());
             attributeBuilders.Add(new FormalSpecAttributeBuilder(fb));

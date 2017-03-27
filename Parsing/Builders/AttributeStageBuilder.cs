@@ -79,6 +79,7 @@ namespace KAOSTools.Parsing
 					}
 					catch (TargetInvocationException e)
 					{
+                        Console.WriteLine(e.InnerException);
 						throw e.InnerException;
 					}
 				}

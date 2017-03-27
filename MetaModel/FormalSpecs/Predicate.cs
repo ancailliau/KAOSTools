@@ -38,6 +38,8 @@ namespace KAOSTools.Core
 
         public Predicate(KAOSModel model, string identifier) : base(model, identifier)
 		{
+			Arguments = new List<PredicateArgument>();
+			DefaultValue = false;
 		}
 
 		public override KAOSCoreElement Copy ()
