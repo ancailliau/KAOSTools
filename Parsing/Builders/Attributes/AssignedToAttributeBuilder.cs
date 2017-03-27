@@ -37,10 +37,10 @@ namespace KAOSTools.Parsing.Builders.Attributes
                 }
                 else
                 {
-					throw new NotImplementedException(string.Format("'{0}' is not supported in '{1}' on '{2}'", 
+                    throw new NotImplementedException(string.Format("'{0}' is not supported in '{1}' on '{2}'. ({3},{4})", 
                                                                     child.GetType().Name, 
                                                                     attribute.GetType().Name, 
-                                                                    element.GetType().Name));
+                                                                    element.GetType().Name, attribute.Line, attribute.Col));
                 }
 			}
 

@@ -1,4 +1,3 @@
-override goal
-  id          achieve_destination_reached_if_passenger_has_been_taken
+override goal [ achieve_destination_reached_if_passenger_has_been_taken ]
   definition  "If the passenger has been taken in charge by the driver, he will arrive at m.atdest time"
 end

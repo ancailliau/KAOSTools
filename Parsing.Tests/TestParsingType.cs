@@ -12,17 +12,13 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
     {
         private static ModelBuilder parser = new ModelBuilder ();
 
-        [TestCase(@"declare type
-                        id test
+        [TestCase(@"declare type[ test ]
                     end", "test")]
-        [TestCase(@"declare type
-                        id test_long_identifier
+		[TestCase(@"declare type[ test_long_identifier ]
                     end", "test_long_identifier")]
-        [TestCase(@"declare type
-                        id test-long-identifier
+		[TestCase(@"declare type[ test-long-identifier ]
                     end", "test-long-identifier")]
-        [TestCase(@"declare type
-                        id test12
+        [TestCase(@"declare type[ test12 ]
                     end", "test12")]
         public void TestIdentifier (string input, string identifier)
         {
@@ -31,19 +27,12 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                 .Where (x => x.Identifier == identifier)
                 .ShallBeSingle ();
         }
-        
-        [TestCase(@"declare type
-                        id 
-                    end")]
-        [TestCase(@"declare type
-                        id -
-                    end")]
-        [TestCase(@"declare type
-                        id _
-                    end")]
-        [TestCase(@"declare type
-                        id $
-                    end")]
+
+
+        [TestCase(@"declare type [] end")]
+        [TestCase(@"declare type [-] end")]
+        [TestCase(@"declare type [_] end")]
+        [TestCase(@"declare type [$] end")]
         public void TestInvalidIdentifier (string input)
         {
             Assert.Throws<ParserException> (() => {
@@ -51,13 +40,13 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             });
         }
 
-        [TestCase(@"declare type
+		[TestCase(@"declare type [ test ]
                         name ""test""
                     end", "test")]
-        [TestCase(@"declare type
+		[TestCase(@"declare type [ test ]
                         name ""Long name with spaces and numbers 123""
                     end", "Long name with spaces and numbers 123")]
-        [TestCase(@"declare type
+		[TestCase(@"declare type [ test ]
                         name ""[-_-]""
                     end", "[-_-]")]
         public void TestName (string input, string expectedName)
@@ -68,7 +57,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                 .ShallBeSingle ();
         }
 
-        [TestCase(@"declare type
+		[TestCase(@"declare type [ test ]
                         name """"""
                     end")]
         public void TestInvalidName (string input)
@@ -78,16 +67,13 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             });
         }
 
-        [TestCase(@"declare type
-                        id test
+        [TestCase(@"declare type[ test ]
                         definition ""My description""
                     end", "My description")]
-        [TestCase(@"declare type
-                        id test
+        [TestCase(@"declare type[ test ]
                         definition """"
                     end", "")]
-        [TestCase(@"declare type
-                        id test
+        [TestCase(@"declare type[ test ]
                         definition ""multi
                                      line""
                     end", "multi line")]
@@ -99,7 +85,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                 .ShallBeSuchThat (x => x.Definition == expectedDescription);
         }
 
-        [TestCase(@"declare type
+		[TestCase(@"declare type [ test ]
                         definition "" "" "" 
                     end")]
         public void TestInvalidDescription (string input)
@@ -107,18 +93,6 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             Assert.Throws<ParserException> (() => {
                 parser.Parse (input);
             });
-        }
-
-        [TestCase(@"declare entity 
-                        id test
-                        attribute ""myagent"": type1
-                    end")]
-        public void TestImplicit (string input)
-        {
-            var model = parser.Parse (input);
-            
-            var agent = model.GivenTypes().Single (x => x.Identifier == "type1");
-            agent.Implicit.ShallBeTrue ();
         }
     }
 }

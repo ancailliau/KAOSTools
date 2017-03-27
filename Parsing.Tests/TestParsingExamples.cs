@@ -14,19 +14,20 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
     {
         private static ModelBuilder parser = new ModelBuilder ();
 
-        [Test()]
-        public void TestBCMS ()
-        {
-            string input = File.ReadAllText ("/Users/acailliau/Dropbox/bCMS/model/Goal Model/Z-whole-model.kaos");
-            var model = parser.Parse (input, "/Users/acailliau/Dropbox/bCMS/model/Goal Model/Z-whole-model.kaos");
+        //[Test()]
+        //public void TestBCMS ()
+        //{
+        //    string input = File.ReadAllText ("/Users/acailliau/Dropbox/bCMS/model/Goal Model/Z-whole-model.kaos");
+        //    var model = parser.Parse (input, "/Users/acailliau/Dropbox/bCMS/model/Goal Model/Z-whole-model.kaos");
 
-            Assert.IsNotNull (model);
-        }
+        //    Assert.IsNotNull (model);
+        //}
 
 
         [Test()]
         public void TestLAS ()
-        {
+		{
+			Directory.SetCurrentDirectory(TestContext.CurrentContext.TestDirectory);
             string input = File.ReadAllText ("./Examples/las.kaos");
             var model = parser.Parse (input, "./Examples/las.kaos");
 
@@ -36,8 +37,9 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
         [Test()]
         public void TestInclude ()
         {
-            string input = File.ReadAllText ("./Examples/include.kaos");
-            var model = parser.Parse (input, "./Examples/include.kaos");
+            Directory.SetCurrentDirectory(TestContext.CurrentContext.TestDirectory);
+            string input = File.ReadAllText (@"./Examples/include.kaos");
+			var model = parser.Parse(input, @"./Examples/include.kaos");
             
             Assert.IsNotNull (model);
             Assert.IsNotEmpty (model.Goals().First ().Name);
@@ -46,7 +48,8 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
 
         [Test()]
         public void TestIssue7 ()
-        {
+		{
+			Directory.SetCurrentDirectory(TestContext.CurrentContext.TestDirectory);
             string input = File.ReadAllText ("./Examples/issue7.kaos");
             var model = parser.Parse (input, "./Examples/issue7.kaos");
             

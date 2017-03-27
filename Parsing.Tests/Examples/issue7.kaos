@@ -1,17 +1,14 @@
-declare goal
-  id          achieve_destination_reached_if_passenger_has_been_taken
+declare goal [ achieve_destination_reached_if_passenger_has_been_taken ]
   name        "Achieve[Destination reached if passenger has been taken]"
   definition  "If the passenger has been taken in charge by the driver, he will arrive at m.atdest time"
   refinedby  driver_now_route
   refinedby  achieve_destination_reached_if_gps_support
 end
 
-declare domainproperty
-   id     driver_now_route
+declare domainproperty [ driver_now_route ]
    name   "The driver knows the route"
 end
 
-declare goal
-  id      achieve_destination_reached_if_gps_support
+declare goal [ achieve_destination_reached_if_gps_support ]
   name    "Achieve [Destination Reached If GPS Support]"
 end
