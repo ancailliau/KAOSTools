@@ -11,12 +11,10 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
     {
         static ModelBuilder parser = new ModelBuilder ();
        
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  forall amb: Ambulance . Test(amb)
                           end", new string[] { "amb" })]
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  forall amb1: Ambulance, amb2: Ambulance . Test(amb1, amb2)
                           end", new string[] { "amb1", "amb2" })]
         public void TestForAll (string input, string[] variables)
@@ -33,12 +31,10 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             model.Entities().Count (x => x.Identifier == "Ambulance").ShallEqual (1);
         }
 
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  exists amb: Ambulance . Test(amb)
                           end", new string[] { "amb" })]
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  exists amb1: Ambulance, amb2: Ambulance . Test(amb1, amb2)
                           end", new string[] { "amb1", "amb2" })]
         public void TestExists (string input, string[] variables)
@@ -55,8 +51,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             model.Entities().Count (x => x.Identifier == "Ambulance").ShallEqual (1);
         }
 
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  when Allocated() then Mobilized()
                           end")]
         public void TestStrongImply (string input)
@@ -70,8 +65,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             Assert.NotNull (expression.Right);
         }
 
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  if Allocated() then Mobilized()
                           end")]
         public void TestImplication (string input)
@@ -85,8 +79,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             Assert.NotNull (expression.Right);
         }
 
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  Allocated() iff Mobilized()
                           end")]
         public void TestEquivalence (string input)
@@ -100,8 +93,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             Assert.NotNull (expression.Right);
         }
         
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  Allocated() until Mobilized()
                           end")]
         public void TestUntil (string input)
@@ -115,8 +107,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             Assert.NotNull (expression.Right);
         }
         
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  Allocated() release Mobilized()
                           end")]
         public void TestRelease (string input)
@@ -130,8 +121,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             Assert.NotNull (expression.Right);
         }
         
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  Allocated() unless Mobilized()
                           end")]
         public void TestUnless (string input)
@@ -145,8 +135,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             Assert.NotNull (expression.Right);
         }
         
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  Allocated() and Mobilized()
                           end")]
         public void TestAnd (string input)
@@ -160,8 +149,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             Assert.NotNull (expression.Right);
         }
         
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  Allocated() or Mobilized()
                           end")]
         public void TestOr (string input)
@@ -175,8 +163,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             Assert.NotNull (expression.Right);
         }
 
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  not Mobilized()
                           end")]
         public void TestNot (string input)
@@ -189,8 +176,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             Assert.NotNull (expression.Enclosed);
         }
 
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  next Mobilized()
                           end")]
         public void TestNext (string input)
@@ -203,12 +189,10 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             Assert.NotNull (expression.Enclosed);
         }
 
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  sooner-or-later Mobilized()
                           end")]
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  eventually Mobilized()
                           end")]
         public void TestEventually (string input)
@@ -221,12 +205,10 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             Assert.NotNull (expression.Enclosed);
         }
 
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  always Mobilized()
                           end")]
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  globally Mobilized()
                           end")]
         public void TestGlobally (string input)
@@ -239,24 +221,19 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             Assert.NotNull (expression.Enclosed);
         }
 
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  when Mobilized() then sooner-or-later, before 12 minutes, OnScene()
                           end", TimeComparator.less)]
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  when Mobilized() then sooner-or-later, strictly before 12 minutes, OnScene()
                           end", TimeComparator.strictly_less)]
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  when Mobilized() then sooner-or-later, in 12 minutes, OnScene()
                           end", TimeComparator.equal)]
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  when Mobilized() then sooner-or-later, after 12 minutes, OnScene()
                           end", TimeComparator.greater)]
-        [TestCase(@"declare goal
-                              id          test
+        [TestCase(@"declare goal [ test ]
                               formalspec  when Mobilized() then sooner-or-later, strictly after 12 minutes, OnScene()
                           end", TimeComparator.strictly_greater)]
         public void TestEventuallyTimeBound (string input, TimeComparator comparator)
@@ -274,24 +251,19 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             sooner_or_later.TimeBound.Bound.ShallEqual (new TimeSpan (0, 12, 0));
         }
 
-        [TestCase(@"declare obstacle
-                              id          test
+        [TestCase(@"declare obstacle [ test ]
                               formalspec  sooner-or-later ( Mobilized() and always, for more than 12 minutes, not OnScene() )
                           end", TimeComparator.greater)]
-        [TestCase(@"declare obstacle
-                              id          test
+        [TestCase(@"declare obstacle [ test ]
                               formalspec  sooner-or-later ( Mobilized() and always, for strictly more than 12 minutes, not OnScene() )
                           end", TimeComparator.strictly_greater)]
-        [TestCase(@"declare obstacle
-                              id          test
+        [TestCase(@"declare obstacle [ test ]
                               formalspec  sooner-or-later ( Mobilized() and always, for 12 minutes, not OnScene() )
                           end", TimeComparator.equal)]
-        [TestCase(@"declare obstacle
-                              id          test
+        [TestCase(@"declare obstacle [ test ]
                               formalspec  sooner-or-later ( Mobilized() and always, for less than 12 minutes, not OnScene() )
                           end", TimeComparator.less)]
-        [TestCase(@"declare obstacle
-                              id          test
+        [TestCase(@"declare obstacle [ test ]
                               formalspec  sooner-or-later ( Mobilized() and always, for strictly less than 12 minutes, not OnScene() )
                           end", TimeComparator.strictly_less)]
         public void TestGloballyTimeBound (string input, TimeComparator comparator)
@@ -312,15 +284,13 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             globally.TimeBound.Bound.ShallEqual (new TimeSpan (0, 12, 0));
         }
 
-        [TestCase(@"declare goal 
-                        id goal 
+        [TestCase(@"declare goal [ test ]
                         formalspec predicate()
                     end", "predicate", null)]
-        [TestCase("declare goal id goal formalspec \"Predicate\"() end", null, "Predicate")]
         public void TestPredicateReference (string input, string id, string name)
         {
             var model = parser.Parse (input);
-            var root = model.Goals().Where (x => x.Identifier == "goal").ShallBeSingle ();
+            var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var predicateReference = root.FormalSpec as PredicateReference;
 
             if (id != null)
@@ -332,8 +302,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             model.Predicates().Count().ShallEqual(1);
         }
 
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . \"Predicate\"(arg1) end", null, "Predicate")]
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . predicate(arg1) end", "predicate", null)]
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . predicate(arg1) end", "predicate", null)]
         public void TestPredicateReferenceWithParameters (string input, string id, string name)
         {
             var model = parser.Parse (input);
@@ -351,8 +320,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             model.Predicates().Count().ShallEqual(1);
         }
 
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . (arg1) in \"Predicate\" end", null, "Predicate")]
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . (arg1) in predicate end", "predicate", null)]
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . (arg1) in predicate end", "predicate", null)]
         public void TestRelationReferenceWithParameters (string input, string id, string name)
         {
             var model = parser.Parse (input);
@@ -370,43 +338,43 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             model.Relations().Count().ShallEqual(1);
         }
 
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" end", null, "Test")]
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.test end", "test", null)]
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . arg1.test end", "test", null)]
         public void TestAttributeReference (string input, string id, string name)
         {
             var model = parser.Parse (input);
             var root = model.Goals().Where (x => x.Identifier == "test").ShallBeSingle ();
             var expression = (root.FormalSpec as Exists).Enclosed as AttributeReference;
 
-            Assert.NotNull (expression);
+			Assert.NotNull(expression);
+			Assert.NotNull(expression.Attribute);
 
             if (id != null)
-                Assert.AreEqual (model.Entity(x => x.Name == "Type").Identifier + "." + id, expression.Attribute.Identifier);
+                Assert.AreEqual(id, expression.Attribute.Identifier);
 
             if (name != null)
                 Assert.AreEqual (name, expression.Attribute.Name);
 
-            var entity = model.Entities().Single (x => x.Name == "Type");
+			var entity = model.Entities().Single(x => x.Identifier == "my_type");
             model.Attributes().Where (x => x.EntityIdentifier == entity.Identifier).Count().ShallEqual(1);
         }
         
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" == 0.5 end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . arg1.test == 0.5 end", 
                   ComparisonCriteria.Equals, 0.5)]
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" == .5 end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . arg1.test == .5 end", 
                   ComparisonCriteria.Equals, 0.5)]
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" == 124 end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . arg1.test == 124 end", 
                   ComparisonCriteria.Equals, 124)]
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" == 0 end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . arg1.test == 0 end", 
                   ComparisonCriteria.Equals, 0)]
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" > 0 end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . arg1.test > 0 end", 
                   ComparisonCriteria.BiggerThan, 0)]
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" >= 0 end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . arg1.test >= 0 end", 
                   ComparisonCriteria.BiggerThanOrEquals, 0)]
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" < 0 end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . arg1.test < 0 end", 
                   ComparisonCriteria.LessThan, 0)]
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" <= 0 end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . arg1.test <= 0 end", 
                   ComparisonCriteria.LessThanOrEquals, 0)]
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" != 0 end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . arg1.test != 0 end", 
                   ComparisonCriteria.NotEquals, 0)]
         public void TestComparisonPredicateNumeric (string input, ComparisonCriteria criteria, double value)
         {
@@ -420,21 +388,21 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             (expression.Right as NumericConstant).Value.ShallEqual (value);
         }
 
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" == \"This is \"\"my quote!\"\"\" end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . arg1.test == \"This is \"\"my quote!\"\"\" end", 
                   ComparisonCriteria.Equals, "This is \"my quote!\"")]
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" == \"\" end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . arg1.test == \"\" end", 
                   ComparisonCriteria.Equals, "")]
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" == \"0\" end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . arg1.test == \"0\" end", 
                   ComparisonCriteria.Equals, "0")]
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" > \"0\" end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . arg1.test > \"0\" end", 
                   ComparisonCriteria.BiggerThan, "0")]
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" >= \"0\" end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . arg1.test >= \"0\" end", 
                   ComparisonCriteria.BiggerThanOrEquals, "0")]
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" < \"0\" end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . arg1.test < \"0\" end", 
                   ComparisonCriteria.LessThan, "0")]
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" <= \"0\" end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . arg1.test <= \"0\" end", 
                   ComparisonCriteria.LessThanOrEquals, "0")]
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" != \"0\" end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . arg1.test != \"0\" end", 
                   ComparisonCriteria.NotEquals, "0")]
         public void TestComparisonPredicateString (string input, ComparisonCriteria criteria, string value)
         {
@@ -449,9 +417,9 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
 
         }
         
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" == false end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . arg1.test == false end", 
                   ComparisonCriteria.Equals, false)]
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" != true end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . arg1.test != true end", 
                   ComparisonCriteria.NotEquals, true)]
         public void TestComparisonPredicateBool (string input, ComparisonCriteria criteria, bool value)
         {
@@ -467,7 +435,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
         }
 
         [TestCase(@"declare goal 
-                      id test
+                      [ test ]
                       formalspec exists arg1 : T,  arg2 : T . arg1 != arg2
                     end", 
                   ComparisonCriteria.NotEquals)]
@@ -484,11 +452,11 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             (expression.Right as VariableReference).Name.ShallEqual ("arg2");
         }
         
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . \"MyString\" == true end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . \"MyString\" == true end", 
                   ComparisonCriteria.Equals)]
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . 0 != true end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . 0 != true end", 
                   ComparisonCriteria.NotEquals)]
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . 0 >= 1 end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . 0 >= 1 end", 
                   ComparisonCriteria.BiggerThanOrEquals)]
         public void TestComparisonPredicateReverse (string input, ComparisonCriteria criteria)
         {
@@ -501,7 +469,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             expression.Criteria.ShallEqual (criteria);
         }
 
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" != arg1.\"Test\" end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . arg1.test != arg1.test end", 
                   ComparisonCriteria.NotEquals)]
         public void TestComparisonPredicateOtherAttribute (string input, ComparisonCriteria criteria)
         {
@@ -513,11 +481,11 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
 
             expression.Criteria.ShallEqual (criteria);
             (expression.Right as AttributeReference).Variable.ShallEqual ("arg1");
-            (expression.Right as AttributeReference).Attribute.Name.ShallEqual ("Test");
+            (expression.Right as AttributeReference).Attribute.Identifier.ShallEqual ("test");
 
         }
 
-        [TestCase("declare goal id test formalspec exists arg1 : \"Type\" . arg1.\"Test\" != \"Predicate\"(arg1) end", 
+        [TestCase("declare goal [ test ] formalspec exists arg1 : my_type . arg1.test != predicate(arg1) end", 
                   ComparisonCriteria.NotEquals)]
         public void TestComparisonPredicateOtherPredicate (string input, ComparisonCriteria criteria)
         {
@@ -528,7 +496,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             Assert.NotNull (expression);
 
             expression.Criteria.ShallEqual (criteria);
-            (expression.Right as PredicateReference).Predicate.Name.ShallEqual ("Predicate");
+			(expression.Right as PredicateReference).Predicate.Identifier.ShallEqual("predicate");
             (expression.Right as PredicateReference).ActualArguments.ShallOnlyContain (new string[] { "arg1" });
 
         }

@@ -45,7 +45,7 @@ AttributeDecoratedValue :=
     `value = BuildAttributeDecoratedValue(results);`
 
 AttributeAtomicValue := 
-    Bool / QuotedString / Formula / Percentage / Float / Integer / Identifier
+    Formula / Bool / QuotedString / Percentage / Float / Integer / Identifier
     `value = results[0].Value;`
 
 # Expressions                                
@@ -180,7 +180,7 @@ Comparator :=
     `expected = "comparator"`
 
 ComparisonMember := 
-	AttributeReference / PredicateReference / VariableReference / '"' String? '"' / Integer / Float / Bool
+	AttributeReference / PredicateReference / VariableReference / '"' String? '"' / Float / Integer / Bool
     `value = BuildComparisonMember(results);`
     `expected = "comparison member"`
 

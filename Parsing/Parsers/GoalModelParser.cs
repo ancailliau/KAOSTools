@@ -339,16 +339,16 @@ namespace KAOSTools.Parsing.Parsers
 			return _state;
 		}
 		
-		// AttributeAtomicValue := Bool / QuotedString / Formula / Percentage / Float / Integer / Identifier
+		// AttributeAtomicValue := Formula / Bool / QuotedString / Percentage / Float / Integer / Identifier
 		private State DoParseAttributeAtomicValueRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
 			List<Result> results = new List<Result>();
 			
 			_state = DoChoice(_state, results,
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Formula");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Bool");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "QuotedString");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Formula");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Percentage");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Float");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Integer");},
@@ -1163,7 +1163,7 @@ namespace KAOSTools.Parsing.Parsers
 			return _state;
 		}
 		
-		// ComparisonMember := AttributeReference / PredicateReference / VariableReference / ('"' String? '"') / Integer / Float / Bool
+		// ComparisonMember := AttributeReference / PredicateReference / VariableReference / ('"' String? '"') / Float / Integer / Bool
 		private State DoParseComparisonMemberRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -1178,8 +1178,8 @@ namespace KAOSTools.Parsing.Parsers
 				delegate (State s2, List<Result> r2) {return DoRepetition(s2, r2, 0, 1,
 					delegate (State s3, List<Result> r3) {return DoParse(s3, r3, "String");});},
 				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "\"");});},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Integer");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Float");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Integer");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Bool");});
 			
 			if (_state.Parsed)

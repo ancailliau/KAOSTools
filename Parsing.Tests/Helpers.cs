@@ -57,13 +57,9 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
 
 		public static T ShallEqual<T>(this T value, T item)
 		{
-            Assert.That(value.Equals(item));
+            Assert.AreEqual(item, value);
 			return value;
 		}
-
-
-
-
         public static bool OnlyContains<T>(this IEnumerable<T> collection, IEnumerable<T> collection2)
         {
             return !collection.Except(collection2).Any();

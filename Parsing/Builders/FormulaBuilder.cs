@@ -167,11 +167,16 @@ namespace KAOSTools.Parsing
             } else if (value.GetType () == typeof (ParsedAttributeReferenceExpression)) {
                 var pref = value as ParsedAttributeReferenceExpression;
                 if (declaredVariables.ContainsKey (pref.Variable)) {
+                    var boolType = GetOrCreateGivenType("boolean");
+                    
                     return new AttributeReference () {
                         Variable = pref.Variable,
                         Entity = declaredVariables [pref.Variable],
-                        Attribute = GetOrCreateAttribute (value as ParsedAttributeReferenceExpression, declaredVariables [pref.Variable])
+                        Attribute = GetOrCreateAttribute (value as ParsedAttributeReferenceExpression, 
+                                                          declaredVariables [pref.Variable],
+														  boolType)
                     };
+
                 } else {
 					throw new BuilderException(string.Format("Variable '{0}' is not declared", pref.Variable),
 													value.Filename, value.Line, value.Col);
@@ -282,7 +287,19 @@ namespace KAOSTools.Parsing
             throw new NotImplementedException ();
         }
 
-        #endregion
+		#endregion
+
+        GivenType GetOrCreateGivenType(string id)
+		{
+            var type = model.GivenType(t => t.Identifier == id);
+
+			if (type == null) {
+                type = new GivenType(model) { Identifier = id, Implicit = true };
+				model.Add(type);
+			}
+
+			return type;
+		}
 
         Entity GetOrCreateEntity (dynamic idOrName) {
             Entity type;
@@ -313,14 +330,15 @@ namespace KAOSTools.Parsing
         
         
         KAOSTools.Core.EntityAttribute GetOrCreateAttribute (ParsedAttributeReferenceExpression pref, 
-            KAOSTools.Core.Entity entity) {
-            Console.WriteLine (">> " + pref.AttributeSignature.Value + " <<");
+                                                             Entity entity,
+                                                             GivenType type) {
             if (entity != null) {
                 if (pref.AttributeSignature is NameExpression) {
                     var attribute = entity.Attributes().SingleOrDefault (x => x.Name == pref.AttributeSignature.Value);
                     if (attribute == null) {
                         attribute = new KAOSTools.Core.EntityAttribute (model) { 
                             Name = pref.AttributeSignature.Value, 
+                            TypeIdentifier = type?.Identifier,
                             Implicit = true
                         } ;
                         attribute.SetEntity (entity);
@@ -333,18 +351,16 @@ namespace KAOSTools.Parsing
                     return attribute;
 
                 } else if (pref.AttributeSignature is IdentifierExpression) {
-                    var attribute = entity.model.Attributes().SingleOrDefault (x => x.Identifier == entity.Identifier + "." +pref.AttributeSignature.Value);
+                    var attribute = entity.model.Attributes().SingleOrDefault(x => x.Identifier == pref.AttributeSignature.Value 
+                                                                              && x.EntityIdentifier == entity.Identifier);
                     if (attribute == null) {
-                        attribute = new KAOSTools.Core.EntityAttribute (model) { 
-                            Identifier = entity.Identifier + "." + pref.AttributeSignature.Value, 
+                        attribute = new KAOSTools.Core.EntityAttribute(model) {
+							Identifier = pref.AttributeSignature.Value,
+							TypeIdentifier = type?.Identifier,
                             Implicit = true
                         } ;
                         attribute.SetEntity (entity);
                         model.Add (attribute);
-
-
-                    } else {
-                        
                     }
                     return attribute;
                 } else 
