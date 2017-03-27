@@ -28,7 +28,7 @@ namespace KAOSTools.Parsing.Parsers.Declarations
 
         public override string GetIdentifier()
 		{
-			return "association";
+            return "(association|relation)";
 		}
 	}
 }
