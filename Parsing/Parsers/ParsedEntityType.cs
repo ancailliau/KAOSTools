@@ -260,8 +260,8 @@ namespace KAOSTools.Parsing.Parsers
     }
 
     public class ParsedAttributeAttribute : ParsedAttribute {
+        
         public string Identifier { get; set; }
-        public string Name { get; set; }
         public string Definition { get; set; }
         public dynamic Type { get; set; }
 
@@ -269,9 +269,9 @@ namespace KAOSTools.Parsing.Parsers
         {
         }
 
-        public ParsedAttributeAttribute (string name, dynamic type)
+        public ParsedAttributeAttribute (string identifier, dynamic type)
         {
-            Name = name; 
+            Identifier = identifier; 
             Type = type;
         }
     }
