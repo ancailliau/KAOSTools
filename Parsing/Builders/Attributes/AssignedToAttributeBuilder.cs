@@ -23,17 +23,13 @@ namespace KAOSTools.Parsing.Builders.Attributes
                     var identifier = ((IdentifierExpression)child).Value;
 
                     Agent agent;
-                    if ((agent = model.agentRepository.GetAgent(identifier)) != null)
+                    if ((agent = model.agentRepository.GetAgent(identifier)) == null)
                     {
-                        assignment.Add(agent);
+                        agent = new Agent(model, identifier) { Implicit = true };
+                        model.agentRepository.Add(agent);
                     }
-                    else
-                    {
-                        throw new BuilderException("Agent '" + identifier + "' is not defined", 
-                                                   attribute.Filename, 
-                                                   attribute.Line, 
-                                                   attribute.Col);
-                    }
+
+                    assignment.Add(agent);
                 }
                 else
                 {

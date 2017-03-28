@@ -112,6 +112,9 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                         assignedto agent
                     end
                     declare agent [ agent ] end")]
+		[TestCase(@"declare goal [ goal ]
+                        assignedto agent
+                    end")]
         public void TestAssignedTo (string input)
         {
             var model = parser.Parse (input);
