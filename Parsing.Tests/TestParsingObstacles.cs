@@ -83,6 +83,9 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                         refinedby child1, child2
                     end
                     declare obstacle [ child1 ] end declare obstacle [ child2 ] end")]
+		[TestCase(@"declare obstacle [ test ]
+                        refinedby child1, child2
+                    end")]
         public void TestRefinement (string input)
         {
             var model = parser.Parse (input);
@@ -191,6 +194,10 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                     .ShallOnlyContain (new string[] { "new_goal", "old_goal" });
         }
 
+        [TestCase(@"declare goal[ test ]
+                        obstructedby obstacle_1
+                        obstructedby obstacle_2
+                    end")]
         [TestCase(@"declare goal[ test ]
                         obstructedby obstacle_1
                         obstructedby obstacle_2

@@ -22,22 +22,16 @@ namespace KAOSTools.Parsing.Builders.Attributes
 				var id = ((IdentifierExpression)attribute.Value).Value;
 
 				Obstacle obstacle;
-				if ((obstacle = model.obstacleRepository.GetObstacle(id)) != null)
-				{
-					obstruction.SetObstacle(obstacle);
-				}
-				else
-				{
-					throw new BuilderException("Obstacle '" + id + "' is not defined", 
-                                               attribute.Filename, attribute.Line, attribute.Col);
-				}
-			}
+                if ((obstacle = model.obstacleRepository.GetObstacle(id)) == null) {
+                    obstacle = new Obstacle(model, id) { Implicit = true };
+                    model.obstacleRepository.Add(obstacle);
+                }
+
+                obstruction.SetObstacle(obstacle);
+            }
 			else
 			{
-				throw new NotImplementedException(string.Format("'{0}' is not supported in '{1}' on '{2}'", 
-                                                                attribute.Value.GetType().Name, 
-                                                                attribute.GetType().Name, 
-                                                                element.GetType().Name));
+                throw new UnsupportedValue(element, attribute, attribute.Value);
 			}
 
 			model.Add(obstruction);

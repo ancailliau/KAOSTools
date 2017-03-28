@@ -153,6 +153,9 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                     end
                     declare goal [ child1 ] end
                     declare goal [ child2 ] end")]
+		[TestCase(@"declare goal [ test ]
+                        refinedby child1, child2
+                    end")]
         public void TestRefinement (string input)
         {
             var model = parser.Parse (input);
@@ -173,6 +176,11 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                     declare goal [ child2 ] end
                     declare goal [ child3 ] end
                     declare goal [ child4 ] end")]
+		[TestCase(@"declare goal [ test ]
+                        refinedby child1, child2
+                    end
+                    declare goal [ child1 ] refinedby child3, child4 end
+                    declare goal [ child2 ] end")]
         public void TestRefinementRecursive (string input)
         {
             var model = parser.Parse (input);

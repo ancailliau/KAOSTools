@@ -40,10 +40,10 @@ namespace KAOSTools.Parsing.Builders.Attributes
                     {
                         refinement.Add(domhyp);
                     }
-                    else
-                    {
-                        throw new BuilderException("Obstacle, domain property or domain hypothesis '" + id + "' not defined",
-                                                   child.Filename, child.Line, child.Col);
+                    else {
+                        refinee = new Obstacle(model, id) { Implicit = true };
+                        model.obstacleRepository.Add(refinee);
+                        refinement.Add(refinee);
                     }
                 }
                 else

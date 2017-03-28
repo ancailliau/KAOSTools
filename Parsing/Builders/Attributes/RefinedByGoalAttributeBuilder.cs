@@ -40,18 +40,15 @@ namespace KAOSTools.Parsing.Builders.Attributes
                     {
                         refinement.Add(domhyp);
                     }
-                    else
-                    {
-                        throw new BuilderException("Goal, domain property or domain hypothesis '" + id + "' not defined",
-                                                   child.Filename, child.Line, child.Col);
+                    else {
+                        refinee = new Goal(model, id) { Implicit = true };
+                        model.goalRepository.Add(refinee);
+                        refinement.Add(refinee);
                     }
                 }
                 else
                 {
-                    throw new NotImplementedException(string.Format("'{0}' is not supported in '{1}' on '{2}'", 
-                                                                    child.GetType().Name, 
-                                                                    attribute.GetType().Name, 
-                                                                    element.GetType().Name));
+                    throw new UnsupportedValue(element, attribute, child);
                 }
 			}
 
