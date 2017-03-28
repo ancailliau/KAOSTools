@@ -33,7 +33,7 @@ namespace KAOSTools.Core
         public double CPS { get; set; }
 
 
-        public UncertaintyDistribution SatisfactionUncertainty { get; set; }
+        public UncertainSatisfactionRate SatisfactionUncertainty { get; set; }
 
         public Dictionary<Expert, QuantileList> ExpertEstimates { get; set; }
 

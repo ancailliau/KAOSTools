@@ -41,15 +41,15 @@
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="alglibnet2">
-      <HintPath>..\Libraries\alglibnet2.dll</HintPath>
-    </Reference>
     <Reference Include="System.Numerics" />
     <Reference Include="MathNet.Numerics">
       <HintPath>..\packages\MathNet.Numerics.3.17.0\lib\net40\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.4.4.4\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="alglibnet2">
+      <HintPath>..\packages\alglibnet2.0.0.0\lib\alglibnet2.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -59,7 +59,7 @@
     <Compile Include="Agents\Agent.cs" />
     <Compile Include="Agents\AgentType.cs" />
     <Compile Include="Objects\EntityAttribute.cs" />
-    <Compile Include="SatisfactionRates\BetaDistribution.cs" />
+    <Compile Include="SatisfactionRates\BetaSatisfactionRAte.cs" />
     <Compile Include="Domain\DomainHypothesis.cs" />
     <Compile Include="Domain\DomainProperty.cs" />
     <Compile Include="Objects\Entity.cs" />
@@ -73,7 +73,7 @@
     <Compile Include="Obstacles\Obstacle.cs" />
     <Compile Include="Obstacles\ObstacleAssumption.cs" />
     <Compile Include="Obstacles\ObstacleRefinement.cs" />
-    <Compile Include="SatisfactionRates\PERTDistribution.cs" />
+    <Compile Include="SatisfactionRates\PERTSatisfactionRate.cs" />
     <Compile Include="FormalSpecs\FormalSpec.cs" />
     <Compile Include="FormalSpecs\Predicate.cs" />
     <Compile Include="FormalSpecs\PredicateArgument.cs" />
@@ -85,9 +85,9 @@
     <Compile Include="Obstacles\Resolution.cs" />
     <Compile Include="Obstacles\ResolutionIntegrationHelper.cs" />
     <Compile Include="Obstacles\ResolutionPattern.cs" />
-    <Compile Include="SatisfactionRates\TriangularDistribution.cs" />
-    <Compile Include="SatisfactionRates\UncertaintyDistribution.cs" />
-    <Compile Include="SatisfactionRates\UniformDistribution.cs" />
+    <Compile Include="SatisfactionRates\TriangularSatisfactionRate.cs" />
+    <Compile Include="SatisfactionRates\UncertainSatisfactionRate.cs" />
+    <Compile Include="SatisfactionRates\UniformSatisfactionRate.cs" />
     <Compile Include="Goals\SoftGoal.cs" />
     <Compile Include="Model\Constraint.cs" />
     <Compile Include="Model\CostVariable.cs" />

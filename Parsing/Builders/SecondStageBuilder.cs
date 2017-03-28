@@ -44,6 +44,7 @@ namespace KAOSTools.Parsing
 			attributeBuilders.Add(new RSRAttributeBuilder());
 
             attributeBuilders.Add(new ESRAttributeBuilder());
+            attributeBuilders.Add(new ESRUncertainAttributeBuilder());
         }
     }
 }

@@ -15,10 +15,21 @@ namespace KAOSTools.Parsing.Builders.Attributes
 
 		public override void Handle(KAOSCoreElement element, ParsedProbabilityAttribute attribute, KAOSModel model)
 		{
+            var doubleSatisfactionRate = new DoubleSatisfactionRate(attribute.Value);
+
+            if (attribute.ExpertIdentifier != null) {
+                if (model.modelMetadataRepository.ExpertExists(attribute.ExpertIdentifier)) {
+                    doubleSatisfactionRate.ExpertIdentifier = attribute.ExpertIdentifier;
+
+                } else {
+                    throw new BuilderException("Expert '"+attribute.ExpertIdentifier+"' is not defined.", attribute);
+                }
+            }
+
             if (element is Obstacle) {
-                model.satisfactionRateRepository.AddObstacleSatisfactionRate(element.Identifier, new DoubleSatisfactionRate(attribute.Value));
+                model.satisfactionRateRepository.AddObstacleSatisfactionRate(element.Identifier, doubleSatisfactionRate);
             } else if (element is DomainProperty) {
-                model.satisfactionRateRepository.AddDomPropSatisfactionRate(element.Identifier, new DoubleSatisfactionRate(attribute.Value));
+                model.satisfactionRateRepository.AddDomPropSatisfactionRate(element.Identifier, doubleSatisfactionRate);
             }
         }
     }

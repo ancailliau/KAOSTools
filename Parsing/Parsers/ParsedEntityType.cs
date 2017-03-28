@@ -201,12 +201,6 @@ namespace KAOSTools.Parsing.Parsers
     }
 
 
-    public class ParsedExpertProbabilityAttribute : ParsedAttribute {
-        public dynamic IdOrNAme  { get; set; }
-        public dynamic Estimate { get; set; }
-    }
-
-    public class ParsedProbabilityAttribute  : ParsedAttributeWithValue<double> {}
     public class ParsedRDSAttribute          : ParsedAttributeWithValue<double> {}
 
     public class ParsedFormalSpecAttribute   : ParsedAttributeWithValue<ParsedElement> {}
@@ -520,29 +514,47 @@ namespace KAOSTools.Parsing.Parsers
         public ParsedTime Bound;
     }
 
-    public class ParsedUDistribution : ParsedElement {
+
+
+
+
+	public class ParsedExpertProbabilityAttribute : ParsedAttribute
+	{
+		public dynamic IdOrNAme { get; set; }
+		public dynamic Estimate { get; set; }
+	}
+
+	public class ParsedProbabilityAttribute : ParsedAttributeWithValue<double>
+	{
+		public string ExpertIdentifier { get; set; }
+
+	}
+
+	public class ParsedUDistribution : ParsedElement
+	{
+		public string ExpertIdentifier { get; set; }
     }
 
     public class ParsedUniformDistribution : ParsedUDistribution {
-        public float LowerBound;
-        public float UpperBound;
+        public double LowerBound;
+		public double UpperBound;
     }
 
     public class ParsedTriangularDistribution : ParsedUDistribution {
-        public float Min;
-        public float Max;
-        public float Mode;
+        public double Min;
+        public double Max;
+        public double Mode;
     }
 
     public class ParsedPertDistribution : ParsedUDistribution {
-        public float Min;
-        public float Max;
-        public float Mode;
+        public double Min;
+        public double Max;
+        public double Mode;
     }
 
     public class ParsedBetaDistribution : ParsedUDistribution {
-        public float Alpha;
-        public float Beta;
+        public double Alpha;
+        public double Beta;
     }
 
     public class ParsedQuantileList : ParsedElement {

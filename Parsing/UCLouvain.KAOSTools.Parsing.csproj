@@ -113,6 +113,7 @@
     <Compile Include="Builders\Attributes\RefinedByGoalAttributeBuilder.cs" />
     <Compile Include="Parsers\Attributes\ESRAttributeParser.cs" />
     <Compile Include="Builders\Attributes\ESRAttributeBuilder.cs" />
+    <Compile Include="Builders\Attributes\ESRUncertainAttributeBuilder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -29,7 +29,7 @@ namespace KAOSTools.Core
 
         public double EPS { get; set; }
 
-        public UncertaintyDistribution SatisfactionUncertainty { get; set; }
+        public UncertainSatisfactionRate SatisfactionUncertainty { get; set; }
 
         public DomainHypothesis (KAOSModel model) : base(model)
         {

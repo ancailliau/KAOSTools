@@ -34,7 +34,7 @@ namespace KAOSTools.Core
 
     #endregion
 
-    public class MixtureDistribution : UncertaintyDistribution
+    public class MixtureDistribution : UncertainSatisfactionRate
     {
         readonly double[] cummulativeWeight;
         readonly QuantileDistribution[] distributions;

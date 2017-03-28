@@ -34,7 +34,7 @@ namespace KAOSTools.Core
 
     #endregion
 
-    public class QuantileDistribution : UncertaintyDistribution
+    public class QuantileDistribution : UncertainSatisfactionRate
     {
         readonly double[] probabilities;
         readonly double[] quantiles;
