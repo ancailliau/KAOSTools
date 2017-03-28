@@ -101,15 +101,19 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                     declare object [ mytype ]
                         name ""MyType""
                     end")]
+		[TestCase(@"declare predicate [ test ]
+                        name ""Test""
+                        argument c: mytype
+                    end")]
         public void TestArgument (string input)
         {
             var model = parser.Parse (input);
             var predicate = model.Predicates().Single (x => x.Name == "Test");
 
             predicate.Arguments.Select (x => x.Name).ShallOnlyContain (new string[] { "c" });
-            predicate.Arguments.Select (x => x.Type).Select (x => x.Name).ShallOnlyContain (new string[] { "MyType" });
+			predicate.Arguments.Select(x => x.Type).Select(x => x.Identifier).ShallOnlyContain(new string[] { "mytype" });
 
-            model.Entities().Select (x => x.Name).ShallOnlyContain (new string[] { "MyType" });
+			model.Entities().Select(x => x.Identifier).ShallOnlyContain(new string[] { "mytype" });
         }
         
         [TestCase(@"declare predicate [ test ]

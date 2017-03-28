@@ -26,19 +26,18 @@ namespace KAOSTools.Parsing.Builders.Attributes
 				{
 					var id = ((IdentifierExpression)attribute.Type).Value;
 					arg_type = model.entityRepository.GetEntity(id);
+                    if (arg_type == null) {
+                        arg_type = new Entity(model, id) { Implicit = true };
+						model.entityRepository.Add(arg_type);
+                    }
 
-				}
-				else
-				{
-					throw new NotImplementedException(string.Format("'{0}' is not supported in '{1}' on '{2}'",
-																	  attribute.Type.GetType().Name,
-																	  attribute.GetType().Name,
-																	  element.GetType().Name));
-				}
-			}
+                } else {
+                    throw new UnsupportedValue(element, attribute, attribute.Type);
+                }
+            }
 
-			var currentPosition = 0;
-			if (!predicateArgumentCurrentPosition.ContainsKey(element))
+            var currentPosition = 0;
+            if (!predicateArgumentCurrentPosition.ContainsKey(element))
 			{
 				predicateArgumentCurrentPosition.Add(element, 0);
 			}
