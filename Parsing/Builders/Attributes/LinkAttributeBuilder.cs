@@ -18,23 +18,16 @@ namespace KAOSTools.Parsing.Builders.Attributes
 			if (attribute.Target is IdentifierExpression)
 			{
 				string id = ((IdentifierExpression)attribute.Target).Value;
-                if ((entity = model.entityRepository.GetEntity(id)) != null) {
-					element.Links.Add(new Link(model) { Target = entity, Multiplicity = attribute.Multiplicity });
-				}
-                else
-				{
-					throw new BuilderException("Entity '" + id + "' is not defined.",
-													   attribute.Filename,
-													   attribute.Line,
-													   attribute.Col);
-				}
-			}
+                if ((entity = model.entityRepository.GetEntity(id)) == null) {
+                    entity = new Entity(model, id) { Implicit = true };
+                    model.entityRepository.Add(entity);
+                }
+
+                element.Links.Add(new Link(model) { Target = entity, Multiplicity = attribute.Multiplicity });
+            }
 			else
 			{
-				throw new NotImplementedException(string.Format("'{0}' is not supported in '{1}' on '{2}'",
-																  attribute.Target.GetType().Name,
-																  attribute.GetType().Name,
-																  element.GetType().Name));
+                throw new UnsupportedValue(element, attribute, attribute.Target);
 			}
         }
     }

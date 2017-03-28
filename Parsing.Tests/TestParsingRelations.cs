@@ -135,6 +135,10 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
         [TestCase(@"declare relation[ test ]
                         link entity1
                         link entity2
+                    end")]
+        [TestCase(@"declare relation[ test ]
+                        link entity1
+                        link entity2
                     end
                     declare entity [ entity1 ] end
                     declare entity [ entity2 ] end")]
