@@ -125,6 +125,9 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                         isa test2
                     end
                     declare entity [ test2 ] end", false)]
+		[TestCase(@"declare entity [ test ]
+                        isa test2
+                    end", true)]
         public void TestIsA (string input, bool implicitParent)
         {
             var model = parser.Parse (input);

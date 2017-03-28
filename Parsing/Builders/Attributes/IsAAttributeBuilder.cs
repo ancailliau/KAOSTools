@@ -16,27 +16,19 @@ namespace KAOSTools.Parsing.Builders.Attributes
 		{
 			if (attribute.Value is IdentifierExpression)
 			{
-                string id = ((IdentifierExpression)attribute.Value).Value;
+                string identifier = ((IdentifierExpression)attribute.Value).Value;
 				
                 Entity entity;
-                if ((entity = model.entityRepository.GetEntity(id)) != null)
-                {
-                    element.AddParent(entity);
+                if ((entity = model.entityRepository.GetEntity(identifier)) == null) {
+                    entity = new Entity(model, identifier) { Implicit = true };
+                    model.entityRepository.Add(entity);
                 }
-                else
-				{
-					throw new BuilderException("Entity '" + id + "' is not defined.",
-													   attribute.Filename,
-													   attribute.Line,
-													   attribute.Col);
-                }
-			}
+
+                element.AddParent(entity);
+            }
 			else
 			{
-				throw new NotImplementedException(string.Format("'{0}' is not supported in '{1}' on '{2}'",
-																  attribute.Value.GetType().Name,
-																  attribute.GetType().Name,
-																  element.GetType().Name));
+                throw new UnsupportedValue(element, attribute, attribute.Value);
 			}
         }
     }
