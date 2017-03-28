@@ -24,10 +24,10 @@ namespace KAOSTools.Parsing.Parsers
 
     public class ParsedDeclare : ParsedElement {
         public bool Override { get; set; }
-        public string Identifier; // TODO readonly
+        public readonly string Identifier;
         public string DeclaredItem;
 
-		public List<dynamic> Attributes { get; set; }
+		public List<dynamic> Attributes { get; set; }   
 		
         public ParsedDeclare (string identifier)
         {
