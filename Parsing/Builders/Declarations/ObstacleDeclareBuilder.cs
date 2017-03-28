@@ -16,6 +16,8 @@ namespace KAOSTools.Parsing.Builders.Declarations
 			{
 				g = new Obstacle(model, parsedElement.Identifier);
 				model.obstacleRepository.Add(g);
+			} else if (!parsedElement.Override) {
+				throw new BuilderException("Cannot declare twice the same element. Use override instead.", parsedElement);
 			}
 		}
 

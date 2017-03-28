@@ -106,7 +106,7 @@ namespace KAOSTools.Parsing.Parsers {
 						attributes.Add(parser.ParsedAttribute(attributeValue.AttributeName, attributeValue.Parameters, attributeValue.AttributeValue));
 					}
 
-					return parser.ParsedDeclare(identifier, attributes);
+                    return parser.ParsedDeclare(identifier, attributes, results[0].Text == "override");
                 }
             }
 

@@ -11,7 +11,7 @@ namespace KAOSTools.Parsing.Parsers.Declarations
     {
         protected List<IParserAttribute> attributeParsers = new List<IParserAttribute>();
 
-		public abstract ParsedElement ParsedDeclare(string identifier, List<dynamic> attributes);
+		public abstract ParsedElement ParsedDeclare(string identifier, List<dynamic> attributes, bool @override);
 
 
         public ParsedElement ParsedAttribute(string identifier, NParsedAttributeValue parameters, NParsedAttributeValue value)

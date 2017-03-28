@@ -16,11 +16,12 @@ namespace KAOSTools.Parsing.Parsers.Declarations
 			Add(new CustomAttributeParser());
 		}
 
-		public override ParsedElement ParsedDeclare(string identifier, List<dynamic> attributes)
+		public override ParsedElement ParsedDeclare(string identifier, List<dynamic> attributes, bool @override)
 		{
             return new ParsedGivenType(identifier)
 			{
-				Attributes = attributes
+				Attributes = attributes,
+                Override = @override
 			};
 		}
 

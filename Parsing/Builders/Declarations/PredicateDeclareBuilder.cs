@@ -16,6 +16,8 @@ namespace KAOSTools.Parsing.Builders.Declarations
 			{
 				g = new Predicate(model, parsedElement.Identifier);
 				model.formalSpecRepository.Add(g);
+			} else if (!parsedElement.Override) {
+				throw new BuilderException("Cannot declare twice the same element. Use override instead.", parsedElement);
 			}
 		}
 

@@ -16,6 +16,8 @@ namespace KAOSTools.Parsing.Builders.Declarations
 			{
 				g = new SoftGoal(model, parsedElement.Identifier);
 				model.goalRepository.Add(g);
+			} else if (!parsedElement.Override) {
+				throw new BuilderException("Cannot declare twice the same element. Use override instead.", parsedElement);
 			}
 		}
 

@@ -14,11 +14,12 @@ namespace KAOSTools.Parsing.Builders.Declarations
         public override void BuildDeclare(ParsedDeclare parsedElement, KAOSModel model)
         {
 			Agent g = model.agentRepository.GetAgent(parsedElement.Identifier);
-			if (g == null)
-			{
-				g = new Agent(model, parsedElement.Identifier);
-				model.agentRepository.Add(g);
-			}
+            if (g == null) {
+                g = new Agent(model, parsedElement.Identifier);
+                model.agentRepository.Add(g);
+            } else if (!parsedElement.Override) {
+                throw new BuilderException("Cannot declare twice the same element. Use override instead.", parsedElement);
+            }
         }
 
         public override KAOSCoreElement GetBuiltElement(ParsedDeclare parsedElement, KAOSModel model)

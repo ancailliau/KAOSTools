@@ -16,6 +16,8 @@ namespace KAOSTools.Parsing.Builders.Declarations
 			{
 				g = new Expert(model, parsedElement.Identifier);
 				model.modelMetadataRepository.Add(g);
+			} else if (!parsedElement.Override) {
+				throw new BuilderException("Cannot declare twice the same element. Use override instead.", parsedElement);
 			}
 		}
 
