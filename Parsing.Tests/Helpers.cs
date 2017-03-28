@@ -33,7 +33,9 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
 
 		public static IEnumerable<T> ShallOnlyContain<T>(this IEnumerable<T> collection, IEnumerable<T> item)
 		{
-            Assert.That(collection.OnlyContains(item));
+            Assert.That(collection.OnlyContains(item), 
+                        "Collection shall only contains {"+string.Join (",", item.Select (x => x.ToString ()))+"}" 
+                        + " but contains {"+string.Join (",", collection.Select (x=> x.ToString ()))+"}");
 			return collection;
 		}
 

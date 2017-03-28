@@ -1,5 +1,6 @@
 using System;
 using KAOSTools.Parsing.Parsers;
+using KAOSTools.Core;
 
 namespace KAOSTools.Parsing
 {
@@ -20,6 +21,33 @@ namespace KAOSTools.Parsing
                                    line, 
                                    col), innerException)
         {}
+    }
+
+    public class EntityNotFound : BuilderException
+    {
+		public EntityNotFound(string identifier, ParsedElement element) 
+            : base ("Entity '" + identifier +"' is not defined", element)
+        {}
+	}
+	public class GivenTypeNotFound : BuilderException
+	{
+		public GivenTypeNotFound(string identifier, ParsedElement element)
+			: base("Given type '" + identifier + "' is not defined", element)
+		{ }
+	}
+
+    public class UnsupportedValue : BuilderException
+    {
+        public UnsupportedValue(KAOSCoreElement element, ParsedAttribute attribute, object value)
+		    : base(string.Format("'{0}' is not supported in '{1}' on '{2}'",
+																	  value?.GetType()?.Name,
+																	  attribute?.GetType()?.Name,
+							  element?.GetType()?.Name), attribute)
+        {
+
+        }
+
+
     }
 
     public class DuplicateDeclarationException : Exception
