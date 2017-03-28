@@ -218,6 +218,10 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                     end
                     declare goal [ goal_1 ] end
                     declare goal [ goal_2 ] end")]
+		[TestCase(@"declare obstacle[ test ]
+                        resolvedby goal_1
+                        resolvedby goal_2
+                    end")]
         public void TestResolution (string input)
         {
             var model = parser.Parse (input);

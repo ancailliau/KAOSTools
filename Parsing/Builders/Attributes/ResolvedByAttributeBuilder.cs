@@ -17,18 +17,15 @@ namespace KAOSTools.Parsing.Builders.Attributes
             Goal goal;
 			if (attribute.Value is IdentifierExpression)
 			{
-
 				var id = ((IdentifierExpression)attribute.Value).Value;
-
-				goal = model.goalRepository.GetGoal(id);
-
+                if ((goal = model.goalRepository.GetGoal(id)) == null) {
+                    goal = new Goal(model, id) { Implicit = true };
+                    model.goalRepository.Add(goal);
+                }
 			}
 			else
 			{
-				throw new NotImplementedException(string.Format("'{0}' is not supported in '{1}' on '{2}'",
-																  attribute.Value.GetType().Name,
-																  attribute.GetType().Name,
-																  element.GetType().Name));
+                throw new UnsupportedValue(element, attribute, attribute.Value);
 			}
 
 			var resolution = new Resolution(model);
@@ -64,7 +61,7 @@ namespace KAOSTools.Parsing.Builders.Attributes
 				else
 					throw new NotImplementedException();
 
-				// TODO WTF is that doing???
+				// TODO Fixes anchor goal. Not supported so far.
 				//foreach (var parameter in resolvedBy.Pattern.Parameters) {
 				//    DomainHypothesis hypothesis;
 				//    if (!Get (parameter, out hypothesis)) {

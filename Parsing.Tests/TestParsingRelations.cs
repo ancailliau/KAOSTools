@@ -121,10 +121,6 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                         attribute my_attribute2 : my_type
                     end
                     declare type [ my_type ] end", new string[] { "my_attribute1", "my_attribute2" })]
-		[TestCase(@"declare relation[ test ]
-                        attribute test
-                        attribute test
-                    end", new string[] { "test", "test" })]
         public void TestAttribute (string input, string[] attributes)
         {
             var model = parser.Parse (input);
