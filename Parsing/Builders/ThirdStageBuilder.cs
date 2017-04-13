@@ -23,7 +23,7 @@ namespace KAOSTools.Parsing
 			declareBuilders.Add(new EntityDeclareBuilder());
 			declareBuilders.Add(new ExpertDeclareBuilder());
 			declareBuilders.Add(new GoalDeclareBuilder());
-			declareBuilders.Add(new SoftGoalDeclareParser());
+			declareBuilders.Add(new SoftGoalDeclareBuilder());
 			declareBuilders.Add(new TypeDeclareBuilder());
 			declareBuilders.Add(new ObstacleDeclareBuilder());
             declareBuilders.Add(new PredicateDeclareBuilder());

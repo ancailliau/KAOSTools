@@ -79,7 +79,7 @@
     <Compile Include="Builders\Declarations\EntityDeclareBuilder.cs" />
     <Compile Include="Builders\Declarations\GoalDeclareBuilder.cs" />
     <Compile Include="Builders\Declarations\ObstacleDeclareBuilder.cs" />
-    <Compile Include="Builders\Declarations\SoftGoalDeclareParser.cs" />
+    <Compile Include="Builders\Declarations\SoftGoalDeclareBuilder.cs" />
     <Compile Include="Builders\Declarations\TypeDeclareBuilder.cs" />
     <Compile Include="Builders\Declarations\PredicateDeclareBuilder.cs" />
     <Compile Include="Builders\Attributes\AttributeBuilder.cs" />
