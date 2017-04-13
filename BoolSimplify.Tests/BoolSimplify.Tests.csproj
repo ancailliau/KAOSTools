@@ -33,14 +33,14 @@
     <Reference Include="nunit.framework" />
     <Reference Include="System.Core" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Test.cs" />
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\BoolSimplify\BoolSimplify.csproj">
       <Project>{134A7F58-A49C-42E1-8924-A58382A17D68}</Project>
       <Name>BoolSimplify</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Test.cs" />
   </ItemGroup>
 </Project>
