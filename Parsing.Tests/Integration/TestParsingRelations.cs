@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using NUnit.Framework;
 using KAOSTools.Core;
@@ -144,6 +144,18 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             var relation1 = model.Relations().Single (x => x.Identifier == "test");
 
             relation1.Links.Select (x => x.Target.Identifier).ShallOnlyContain (new string[] { "entity1", "entity2" });
+        }
+
+        [TestCase(@"declare relation [ test ] $my_attribute ""my_value"" end",
+                  "my_attribute", "my_value")]
+        public void TestCustomAttribute(string input, string key, string value)
+        {
+            var model = parser.Parse(input);
+            var v = model.Relations()
+                .Where(x => x.Identifier == "test")
+                .ShallBeSingle();
+            v.CustomData.Keys.ShallContain(key);
+            v.CustomData[key].ShallEqual(value);
         }
     }
 }
