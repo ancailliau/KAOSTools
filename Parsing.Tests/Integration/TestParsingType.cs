@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using NUnit.Framework;
 using KAOSTools.Core;
@@ -93,6 +93,18 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             Assert.Throws<ParserException> (() => {
                 parser.Parse (input);
             });
+        }
+
+        [TestCase(@"declare type [ test ] $my_attribute ""my_value"" end",
+                  "my_attribute", "my_value")]
+        public void TestCustomAttribute(string input, string key, string value)
+        {
+            var model = parser.Parse(input);
+            var v = model.GivenTypes()
+                .Where(x => x.Identifier == "test")
+                .ShallBeSingle();
+            v.CustomData.Keys.ShallContain(key);
+            v.CustomData[key].ShallEqual(value);
         }
     }
 }

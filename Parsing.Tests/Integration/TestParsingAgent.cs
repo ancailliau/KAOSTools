@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using KAOSTools.Core;
 using NUnit.Framework;
 using UCLouvain.KAOSTools.Core.Agents;
@@ -68,6 +68,18 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             model.Agents()
                 .Where (x => x.Name == expectedName)
                 .ShallBeSingle ();
+        }
+
+        [TestCase(@"declare agent [ test ] $my_attribute ""my_value"" end",
+                  "my_attribute", "my_value")]
+        public void TestCustomAttribute(string input, string key, string value)
+        {
+            var model = parser.Parse(input);
+            var v = model.Agents()
+                .Where(x => x.Identifier == "test")
+                .ShallBeSingle();
+            v.CustomData.Keys.ShallContain(key);
+            v.CustomData[key].ShallEqual(value);
         }
 
 		[TestCase(@"declare agent [ test ]

@@ -44,20 +44,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TestParsingExamples.cs" />
-    <Compile Include="TestParsingAgent.cs" />
-    <Compile Include="TestParsingDomainHypothesis.cs" />
-    <Compile Include="TestParsingPredicate.cs" />
-    <Compile Include="TestParsingGoal.cs" />
-    <Compile Include="TestParsingObstacles.cs" />
-    <Compile Include="TestParsingDomainProperty.cs" />
-    <Compile Include="TestParsingType.cs" />
-    <Compile Include="TestParsingEntity.cs" />
-    <Compile Include="TestParsingRelations.cs" />
-    <Compile Include="TestParsingFormalSpec.cs" />
     <Compile Include="Helpers.cs" />
-    <Compile Include="TestParsingSatisfactionRate.cs" />
-    <Compile Include="TestParsingMetaData.cs" />
+    <Compile Include="Integration\TestParsingAgent.cs" />
+    <Compile Include="Integration\TestParsingDomainHypothesis.cs" />
+    <Compile Include="Integration\TestParsingDomainProperty.cs" />
+    <Compile Include="Integration\TestParsingEntity.cs" />
+    <Compile Include="Integration\TestParsingExamples.cs" />
+    <Compile Include="Integration\TestParsingFormalSpec.cs" />
+    <Compile Include="Integration\TestParsingGoal.cs" />
+    <Compile Include="Integration\TestParsingMetaData.cs" />
+    <Compile Include="Integration\TestParsingObstacles.cs" />
+    <Compile Include="Integration\TestParsingPredicate.cs" />
+    <Compile Include="Integration\TestParsingRelations.cs" />
+    <Compile Include="Integration\TestParsingSatisfactionRate.cs" />
+    <Compile Include="Integration\TestParsingType.cs" />
+    <Compile Include="Unit\TestFirstStageBuilder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -88,5 +89,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Integration\" />
+    <Folder Include="Unit\" />
   </ItemGroup>
 </Project>

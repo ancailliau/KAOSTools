@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using NUnit.Framework;
 using KAOSTools.Core;
@@ -133,6 +133,18 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             ((AttributeReference) predicate.FormalSpec).Variable.ShallEqual ("c");
             ((AttributeReference) predicate.FormalSpec).Entity.ShallEqual (entity);
             ((AttributeReference) predicate.FormalSpec).Attribute.Identifier.ShallEqual (attribute.Identifier);
+        }
+
+        [TestCase(@"declare predicate [ test ] $my_attribute ""my_value"" end",
+                  "my_attribute", "my_value")]
+        public void TestCustomAttribute(string input, string key, string value)
+        {
+            var model = parser.Parse(input);
+            var v = model.Predicates()
+                .Where(x => x.Identifier == "test")
+                .ShallBeSingle();
+            v.CustomData.Keys.ShallContain(key);
+            v.CustomData[key].ShallEqual(value);
         }
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using NUnit.Framework;
 using KAOSTools.Parsing;
@@ -116,6 +116,18 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             var sr = model.satisfactionRateRepository.GetDomPropSatisfactionRate("test");
 			Assert.IsInstanceOf(typeof(DoubleSatisfactionRate), sr);
 			Assert.AreEqual(expected, ((DoubleSatisfactionRate)sr).SatisfactionRate);
+        }
+
+        [TestCase(@"declare domprop [ test ] $my_attribute ""my_value"" end",
+                  "my_attribute", "my_value")]
+        public void TestCustomAttribute(string input, string key, string value)
+        {
+            var model = parser.Parse(input);
+            var v = model.DomainProperties()
+                .Where(x => x.Identifier == "test")
+                .ShallBeSingle();
+            v.CustomData.Keys.ShallContain(key);
+            v.CustomData[key].ShallEqual(value);
         }
 
     }

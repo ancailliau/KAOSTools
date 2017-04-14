@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using NUnit.Framework;
 using KAOSTools.Parsing;
@@ -107,6 +107,18 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             var model = parser.Parse (input);
             var g = model.Goals().Single (x => x.Identifier == "g");
             g.Refinements().ShallBeSingle ().DomainHypothesisIdentifiers.ShallOnlyContain (new string[] { "test" });
+        }
+
+        [TestCase(@"declare domhyp [ test ] $my_attribute ""my_value"" end",
+                  "my_attribute", "my_value")]
+        public void TestCustomAttribute(string input, string key, string value)
+        {
+            var model = parser.Parse(input);
+            var v = model.DomainHypotheses()
+                .Where(x => x.Identifier == "test")
+                .ShallBeSingle();
+            v.CustomData.Keys.ShallContain(key);
+            v.CustomData[key].ShallEqual(value);
         }
 
     }

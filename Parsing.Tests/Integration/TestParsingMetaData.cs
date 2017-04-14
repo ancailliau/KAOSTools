@@ -42,8 +42,6 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
         [TestCase(@"@author """"")]
         [TestCase(@"@author """"""")]
         [TestCase(@"@author ancailliau")]
-        [TestCase(@"@author ""Antoine Cailliau""
-                    @author ""Antoine PasCailliau""")]
         public void TestAuthorFail(string input)
         {
             Assert.Catch(() => {
@@ -56,8 +54,6 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
         [TestCase(@"@title my_title")]
         [TestCase(@"@title ""My Model""
                     @title ""My Model""")]
-        [TestCase(@"@title ""My Model""
-                    @title ""Not My Model""")]
         public void TestTitleFail(string input)
         {
             Assert.Catch(() => {
@@ -68,13 +64,41 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
         [TestCase(@"@version """"")]
         [TestCase(@"@version """"""")]
         [TestCase(@"@version 0.1")]
-        [TestCase(@"@version ""0.2""
-                    @version ""0.3""")]
         public void TestVersionFail(string input)
         {
             Assert.Catch(() => {
                 parser.Parse(input);
             });
+        }
+
+        [TestCase(@"@my_attribute ""My value""", "my_attribute", "My value")]
+        [TestCase(@"@my.attribute ""My value""", "my.attribute", "My value")]
+        [TestCase(@"@my-attribute ""My value""", "my-attribute", "My value")]
+        [TestCase(@"@my\\attribute ""My value""", @"my\\attribute", "My value")]
+        public void TestModelAttribute(string input, string expectedKey, string expectedValue)
+        {
+            var model = parser.Parse(input);
+            model.Parameters[expectedKey].ShallEqual(expectedValue);
+        }
+
+        [TestCase(@"@ ""My value""")]
+        [TestCase(@"@$ ""My value""")]
+        public void TestFailModelAttribute(string input)
+        {
+            Assert.Catch(() => {
+                var model = parser.Parse(input);
+            });
+        }
+
+        [TestCase(@"@author ""Antoine Cailliau""
+                    @author ""Antoine PasCailliau""")]
+        public void TestDuplicateModelAttribute(string input)
+        {
+            var e = Assert.Catch(() => {
+                parser.Parse(input);
+            });
+
+            Assert.IsInstanceOf(typeof(BuilderException), e, "Exception is not BuilderException.");
         }
     }
 
