@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UCLouvain.KAOSTools.Core.Agents;
@@ -38,10 +38,31 @@ namespace KAOSTools.Core
 
         #endregion
 
+        #region Soft goals
+
+        public static IEnumerable<SoftGoal> SoftGoals(this KAOSModel model)
+        {
+            return model.goalRepository.GetSoftGoals();
+        }
+
+        public static IEnumerable<SoftGoal> SoftGoals(this KAOSModel model, Predicate<SoftGoal> pred)
+        {
+            return model.goalRepository.GetSoftGoals(pred);
+        }
+
+        public static SoftGoal SoftGoal(this KAOSModel model, Predicate<SoftGoal> pred)
+        {
+            return model.goalRepository.GetSoftGoal(pred);
+        }
+
+
+        #endregion
+
         #region Obtacles
 
-        public static IEnumerable<Obstacle> Obstacles (this KAOSModel model) {
-            return model.obstacleRepository.GetObstacles ();
+        public static IEnumerable<Obstacle> Obstacles(this KAOSModel model)
+        {
+            return model.obstacleRepository.GetObstacles();
         }
 
         public static IEnumerable<Obstacle> Obstacles (this KAOSModel model, Predicate<Obstacle> pred) {

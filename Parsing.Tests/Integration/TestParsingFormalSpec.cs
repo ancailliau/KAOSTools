@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using NUnit.Framework;
 using KAOSTools.Parsing;
@@ -499,6 +499,20 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
 			(expression.Right as PredicateReference).Predicate.Identifier.ShallEqual("predicate");
             (expression.Right as PredicateReference).ActualArguments.ShallOnlyContain (new string[] { "arg1" });
 
+        }
+
+        [TestCase(@"declare domhyp [ test ]
+                              formalspec  forall amb: Ambulance . Test(amb)
+                          end", new string[] { "amb" })]
+        [TestCase(@"declare domhyp [ test ]
+                              formalspec  forall amb1: Ambulance, amb2: Ambulance . Test(amb1, amb2)
+                          end", new string[] { "amb1", "amb2" })]
+        public void TestFormalSpecDomHyp(string input, string[] variables)
+        {
+            var model = parser.Parse(input);
+            var root = model.DomainHypotheses().Where(x => x.Identifier == "test").ShallBeSingle();
+            var expression = root.FormalSpec as Forall;
+            Assert.NotNull(expression);
         }
     }
 

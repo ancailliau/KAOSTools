@@ -63,7 +63,25 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                 parser.Parse (input);
             });
         }
-        
+
+        [TestCase(@"declare predicate [ test ]
+                        definition ""test""
+                    end", "test")]
+        [TestCase(@"declare predicate [ test ]
+                        definition """"
+                    end", "")]
+        [TestCase(@"declare predicate [ test ]
+                        definition ""on multiple
+                                     lines.""
+                    end", "on multiple lines.")]
+        [TestCase("declare predicate [ test ] definition \"with a \"\"quote\"\" !\" end", "with a \"quote\" !")]
+        public void TestDefinition (string input, string expectedDefinition)
+        {
+            var model = parser.Parse (input);
+            var g = model.Predicates().Single (x => x.Identifier == "test");
+            g.Definition.ShallEqual (expectedDefinition);
+        }
+
         [TestCase(@"declare predicate [ test ]
                         name ""old name""
                         definition ""old definition""
@@ -145,6 +163,17 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                 .ShallBeSingle();
             v.CustomData.Keys.ShallContain(key);
             v.CustomData[key].ShallEqual(value);
+        }
+
+        [TestCase(@"declare predicate [ test ] default true end", true)]
+        [TestCase(@"declare predicate [ test ] default false end", false)]
+        public void TestDefaultAttribute(string input, bool expected)
+        {
+            var model = parser.Parse(input);
+            var v = model.Predicates()
+                .Where(x => x.Identifier == "test")
+                .ShallBeSingle();
+            v.DefaultValue.ShallEqual(expected);
         }
     }
 }

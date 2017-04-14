@@ -60,6 +60,9 @@
     <Compile Include="Integration\TestParsingType.cs" />
     <Compile Include="Unit\TestFirstStageBuilder.cs" />
     <Compile Include="Integration\TestParsingCalibration.cs" />
+    <Compile Include="Unit\TestDeclareParser.cs" />
+    <Compile Include="Integration\TestParsingExpert.cs" />
+    <Compile Include="Integration\TestParsingSoftGoal.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

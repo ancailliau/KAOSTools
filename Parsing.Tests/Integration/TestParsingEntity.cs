@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using NUnit.Framework;
 using KAOSTools.Core;
@@ -149,6 +149,18 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             var model = parser.Parse (input);
             var entity = model.Entities().Single (x => x.Identifier == "test");
             entity.Type.ShallEqual (type);
+        }
+
+        [TestCase(@"declare entity [ test ] $my_attribute ""my_value"" end",
+                  "my_attribute", "my_value")]
+        public void TestCustomAttribute(string input, string key, string value)
+        {
+            var model = parser.Parse(input);
+            var v = model.Entities()
+                .Where(x => x.Identifier == "test")
+                .ShallBeSingle();
+            v.CustomData.Keys.ShallContain(key);
+            v.CustomData[key].ShallEqual(value);
         }
     }
 }
