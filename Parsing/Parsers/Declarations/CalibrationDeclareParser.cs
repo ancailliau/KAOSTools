@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -17,7 +17,7 @@ namespace KAOSTools.Parsing.Parsers.Declarations
 
 		public override ParsedElement ParsedDeclare(string identifier, List<dynamic> attributes, bool @override)
 		{
-            return new ParsedExpert(identifier)
+            return new ParsedCalibration(identifier)
 			{
 				Attributes = attributes,
                 Override = @override
