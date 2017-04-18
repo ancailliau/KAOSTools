@@ -48,7 +48,10 @@ namespace KAOSTools.Parsing.Parsers
 
 	public class NParsedAttributeAtomic : NParsedAttributeValue {
         public ParsedElement Value { get; set; }
-		public NParsedAttributeAtomic(ParsedElement value)
+        public NParsedAttributeAtomic ()
+        {
+        }
+        public NParsedAttributeAtomic(ParsedElement value)
         {
             Value = value;   
         }
@@ -58,7 +61,16 @@ namespace KAOSTools.Parsing.Parsers
 	{
         public ParsedElement Left { get; set; }
 		public ParsedElement Right { get; set; }
-	}
+        public NParsedAttributeColon ()
+        {
+            
+        }
+        public NParsedAttributeColon (ParsedElement left, ParsedElement right)
+        {
+            Left = left;
+            Right = right;
+        }
+    }
 
 	public class NParsedAttributeBracket : NParsedAttributeValue
 	{

@@ -66,6 +66,7 @@
     <Compile Include="Unit\Attributes\TestResolvedByAttributeParser.cs" />
     <Compile Include="Unit\Attributes\TestRSRAttributeParser.cs" />
     <Compile Include="Unit\Attributes\TestAgentTypeAttributeParser.cs" />
+    <Compile Include="Unit\Attributes\TestArgumentAttributeParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

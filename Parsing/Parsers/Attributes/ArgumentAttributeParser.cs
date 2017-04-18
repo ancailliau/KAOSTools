@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UCLouvain.KAOSTools.Parsing.Parsers.Exceptions;
 
 namespace KAOSTools.Parsing.Parsers.Attributes
 {
@@ -14,9 +15,9 @@ namespace KAOSTools.Parsing.Parsers.Attributes
 
         public ParsedElement ParsedAttribute(string identifier, NParsedAttributeValue parameters, NParsedAttributeValue value)
         {
-			if (parameters != null)
-				throw new NotImplementedException("Attribute '" + identifier + "' does not accept parameters.");
-
+            if (parameters != null)
+                throw new InvalidParameterAttributeException (identifier,
+                                                              InvalidParameterAttributeException.NO_PARAM);
 
 			if (value is NParsedAttributeColon)
             {
@@ -24,15 +25,17 @@ namespace KAOSTools.Parsing.Parsers.Attributes
 				var left = colonValue.Left;
 				var right = colonValue.Right;
 
-				if (!(left is IdentifierExpression) | !(right is IdentifierExpression))
-					throw new NotImplementedException("Attribute '" + identifier + "' only accept a single identifiers:identifier.");
+                if (!(left is IdentifierExpression) | !(right is IdentifierExpression))
+                    throw new InvalidAttributeValueException (identifier,
+                                                              InvalidAttributeValueException.IDENTIFIER);
 
 				var leftIdentifier = ((IdentifierExpression)left).Value;
 
 				return new ParsedPredicateArgumentAttribute(leftIdentifier, right);
             }
 
-			throw new NotImplementedException("Attribute '" + identifier + "' only accept a single identifiers:identifier.");
+            throw new InvalidAttributeValueException (identifier,
+                                                      InvalidAttributeValueException.COLON_ONLY);
         }
    }
     
