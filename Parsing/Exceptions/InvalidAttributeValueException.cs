@@ -7,8 +7,9 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers.Exceptions
         public const string BRACKET_ONLY = "Attribute '{0}' only accept value with parameters (between brackets).";
         public const string COLON_ONLY = "Attribute '{0}' only accept pair of value (separated with a ':').";
         public const string LIST_ONLY = "Attribute '{0}' only accept list of values.";
- 
+
         public const string ATOMIC_OR_LIST = "Attribute '{0}' only accept an atomic value or a list.";
+        public const string ATOMIC_OR_COLON = "Attribute '{0}' only accept an atomic value or a pair of values (separated by a ':').";
 
         public const string IDENTIFIER = "Attribute '{0}' only accept an identifier expression as a value.";
         public const string FLOAT_INTEGER_PERCENTAGE_ONLY = "Attribute '{0}' only accept a float, an integer, or a percentage as a value.";

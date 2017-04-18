@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UCLouvain.KAOSTools.Parsing.Parsers.Exceptions;
 
 namespace KAOSTools.Parsing.Parsers.Attributes
 {
@@ -14,37 +15,42 @@ namespace KAOSTools.Parsing.Parsers.Attributes
 
         public ParsedElement ParsedAttribute(string identifier, NParsedAttributeValue parameters, NParsedAttributeValue value)
         {
-			if (parameters != null)
-				throw new NotImplementedException("Attribute '" + identifier + "' does not accept parameters.");
+            if (parameters != null)
+                throw new InvalidParameterAttributeException (identifier,
+                                                              InvalidParameterAttributeException.NO_PARAM);
 
+            string leftIdentifier = null;
+            dynamic type = null;
 
             if (value is NParsedAttributeColon) {
                 var colonValue = ((NParsedAttributeColon)value);
                 var left = colonValue.Left;
                 var right = colonValue.Right;
 
-				if (!(left is IdentifierExpression) | !(right is IdentifierExpression))
-					throw new NotImplementedException(
-                        string.Format("Attribute '{0}' only accept a single identifier or a pair identifiers:identifier.", 
-                                      identifier));
+                if (!(left is IdentifierExpression) | !(right is IdentifierExpression))
+                    throw new InvalidAttributeValueException (identifier,
+                                                              InvalidAttributeValueException.IDENTIFIER);
 
-                var leftIdentifier = ((IdentifierExpression)left).Value;
+                leftIdentifier = ((IdentifierExpression)left).Value;
+                type = right;
 
-                return new ParsedAttributeAttribute(leftIdentifier, right);
             } else if (value is NParsedAttributeAtomic) {
-                var leftIdentifier = ((NParsedAttributeAtomic)value).Value;
-                if (leftIdentifier is IdentifierExpression) {
-                    return new ParsedAttributeAttribute(((IdentifierExpression)leftIdentifier).Value, null);
-				}
+                var atomicValue = ((NParsedAttributeAtomic)value).Value;
+                if (atomicValue is IdentifierExpression) {
+                    leftIdentifier = ((IdentifierExpression)atomicValue).Value;
 
-                    throw new NotImplementedException(
-                        string.Format("Attribute '{0}' only accept a single identifier or a pair identifiers:identifier.", 
-                                      identifier));
+                } else {
+                    throw new InvalidAttributeValueException (identifier,
+                                                              InvalidAttributeValueException.IDENTIFIER);
+                }
+
+            } else {
+                throw new InvalidAttributeValueException (identifier,
+                                                          InvalidAttributeValueException.ATOMIC_OR_COLON);
+                
             }
 
-			throw new NotImplementedException(
-				string.Format("Attribute '{0}' only accept a single identifier or a pair identifiers:identifier.",
-							  identifier));
+            return new ParsedAttributeAttribute (leftIdentifier, type);
         }
    }
     
