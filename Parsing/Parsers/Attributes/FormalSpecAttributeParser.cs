@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UCLouvain.KAOSTools.Parsing.Parsers.Exceptions;
 
 namespace KAOSTools.Parsing.Parsers.Attributes
 {
@@ -14,18 +15,14 @@ namespace KAOSTools.Parsing.Parsers.Attributes
 
         public ParsedElement ParsedAttribute(string identifier, NParsedAttributeValue parameters, NParsedAttributeValue value)
         {
-			if (parameters != null)
-				throw new NotImplementedException("Attribute '" + identifier + "' does not accept parameters.");
+            if (parameters != null)
+                throw new InvalidParameterAttributeException (identifier,
+                                                              InvalidParameterAttributeException.NO_PARAM);
 
-			if (!(value is NParsedAttributeAtomic))
-				throw new NotImplementedException("Attribute '" + identifier + "' only accept a single atomic value");
-
-			var v = ((NParsedAttributeAtomic)value).Value;
-
-            // TODO this shall be stronger
-			if (!(v is ParsedElement))
-				throw new NotImplementedException("Attribute '" + identifier + "' only accept formula values");
-
+            if (!(value is NParsedAttributeAtomic))
+                throw new InvalidAttributeValueException (identifier,
+                                                          InvalidAttributeValueException.ATOMIC_ONLY);
+            
             return new ParsedFormalSpecAttribute() { Value = ((NParsedAttributeAtomic)value).Value };
         }
 	}
