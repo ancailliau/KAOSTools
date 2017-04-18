@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -69,9 +69,9 @@ namespace KAOSTools.Parsing.Parsers
 	public class NParsedAttributeList : NParsedAttributeValue
 	{
         public List<ParsedElement> Values { get; set; }
-        public NParsedAttributeList(List<ParsedElement> values)
+        public NParsedAttributeList(IEnumerable<ParsedElement> values)
 		{
-			Values = values;
+            Values = new List<ParsedElement>(values);
 		}
     }
 
@@ -322,16 +322,37 @@ namespace KAOSTools.Parsing.Parsers
     public class ParsedFloat : ParsedElement
     {
         public double Value { get; set; }
+        public ParsedFloat ()
+        {
+        }
+        public ParsedFloat (double value)
+        {
+            Value = value;
+        }
 	}
 
 	public class ParsedInteger : ParsedElement
 	{
 		public int Value { get; set; }
+        public ParsedInteger ()
+        {
+        }
+        public ParsedInteger (int value)
+        {
+            Value = value;
+        }
 	}
 
 	public class ParsedPercentage : ParsedElement
 	{
 		public double Value { get; set; }
+        public ParsedPercentage ()
+        {
+        }
+        public ParsedPercentage (double value)
+        {
+            Value = value;
+        }
 	}
     
     public class ParsedString : ParsedElement

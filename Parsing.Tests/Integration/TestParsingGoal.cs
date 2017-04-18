@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using NUnit.Framework;
 using KAOSTools.Parsing;
@@ -279,7 +279,8 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
 		[TestCase(@"declare goal [ test ] rsr 0.95    end", 0.95)]
         [TestCase(@"declare goal [ test ] rsr 1    end", 1)]
         [TestCase(@"declare goal [ test ] rsr 0    end", 0)]
-        [TestCase(@"declare goal [ test ] rsr .01  end", .01)]
+        [TestCase (@"declare goal [ test ] rsr .01  end", .01)]
+        [TestCase (@"declare goal [ test ] rsr 99%  end", .99)]
         public void TestRequiredDegreeOfSatisfaction (string input, double expected)
         {
             var model = parser.Parse (input);

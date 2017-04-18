@@ -63,6 +63,8 @@
     <Compile Include="Unit\TestDeclareParser.cs" />
     <Compile Include="Integration\TestParsingExpert.cs" />
     <Compile Include="Integration\TestParsingSoftGoal.cs" />
+    <Compile Include="Unit\Attributes\TestResolvedByAttributeParser.cs" />
+    <Compile Include="Unit\Attributes\TestRSRAttributeParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -97,5 +99,6 @@
   <ItemGroup>
     <Folder Include="Integration\" />
     <Folder Include="Unit\" />
+    <Folder Include="Unit\Attributes\" />
   </ItemGroup>
 </Project>

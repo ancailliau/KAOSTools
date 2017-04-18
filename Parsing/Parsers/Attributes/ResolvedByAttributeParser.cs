@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UCLouvain.KAOSTools.Parsing.Parsers.Exceptions;
 
 namespace KAOSTools.Parsing.Parsers.Attributes
 {
@@ -21,21 +22,30 @@ namespace KAOSTools.Parsing.Parsers.Attributes
                     if (parameter is IdentifierExpression) {
                         var patternId = ((IdentifierExpression)parameter).Value;
                         pattern = new ParsedResolutionPattern(patternId);
+                    } else {
+                        throw new InvalidParameterAttributeException (identifier, 
+                                                                      InvalidParameterAttributeException.IDENTIFIER);
                     }
                 } else {
-                    throw new NotImplementedException("Attribute '" + identifier + "' only accept a single parameter.");
+                    throw new InvalidParameterAttributeException(identifier,
+                                                                 InvalidParameterAttributeException.ATOMIC_ONLY);
                 }
             }
 
-			if (!(value is NParsedAttributeAtomic))
-				throw new NotImplementedException("Attribute '" + identifier + "' only accept a single atomic value");
+            if (!(value is NParsedAttributeAtomic))
+                throw new InvalidAttributeValueException(identifier,
+                                                         InvalidAttributeValueException.ATOMIC_ONLY);
 
 			var v = ((NParsedAttributeAtomic)value).Value;
 
             if (!(v is IdentifierExpression))
-				throw new NotImplementedException("Attribute '" + identifier + "' only accept identifier value");
+                throw new InvalidAttributeValueException(identifier,
+                                                         InvalidAttributeValueException.IDENTIFIER);
 
-            return new ParsedResolvedByAttribute() { Value = ((NParsedAttributeAtomic)value).Value, Pattern = pattern };
+            return new ParsedResolvedByAttribute() { 
+                Value = ((NParsedAttributeAtomic)value).Value, 
+                Pattern = pattern
+            };
         }
 	}
     
