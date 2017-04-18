@@ -371,6 +371,14 @@ namespace KAOSTools.Parsing.Parsers
     {
         public bool Verbatim { get; set; }
         public string Value { get; set; }
+        public ParsedString ()
+        {
+
+        }
+        public ParsedString (string value)
+        {
+            Value = value;
+        }
 	}
 
 	public class ParsedBool : ParsedElement
