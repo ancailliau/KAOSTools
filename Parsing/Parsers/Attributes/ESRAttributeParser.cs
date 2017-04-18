@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UCLouvain.KAOSTools.Parsing.Parsers.Exceptions;
 
 namespace KAOSTools.Parsing.Parsers.Attributes
 {
@@ -22,37 +23,40 @@ namespace KAOSTools.Parsing.Parsers.Attributes
                         expert_id = ((IdentifierExpression)parameter).Value;
 
                     } else {
-                        throw new NotImplementedException("Attribute '" + identifier + "' only accept an indentifier parameter.");
+                        throw new InvalidParameterAttributeException (identifier,
+                                                                  InvalidParameterAttributeException.IDENTIFIER);
                     }
 
                 } else {
-                    throw new NotImplementedException("Attribute '" + identifier + "' only accept an atomic parameter.");
+                    throw new InvalidParameterAttributeException (identifier,
+                                                              InvalidParameterAttributeException.ATOMIC_ONLY);
                 }
             }
 
             if (value is NParsedAttributeAtomic) {
                 var v = ((NParsedAttributeAtomic)value).Value;
+                double esr = -1;
 
                 if (v is ParsedFloat) {
-                    double esr = ((ParsedFloat)v).Value;
-                    return new ParsedProbabilityAttribute() { Value = esr, ExpertIdentifier = expert_id };
+                    esr = ((ParsedFloat)v).Value;
 
+                } else if (v is ParsedInteger) {
+                    esr = ((ParsedInteger)v).Value;
+
+                } else if (v is ParsedPercentage) {
+                    esr = ((ParsedPercentage)v).Value / 100d;
+                } else {
+                    throw new InvalidAttributeValueException (identifier,
+                                                              InvalidAttributeValueException.FLOAT_INTEGER_PERCENTAGE_ONLY);
                 }
 
-                if (v is ParsedInteger) {
-                    double esr = ((ParsedInteger)v).Value * 1d;
-                    return new ParsedProbabilityAttribute() { Value = esr, ExpertIdentifier = expert_id };
-
-                }
-
-                if (v is ParsedPercentage) {
-                    double esr = ((ParsedPercentage)v).Value / 100d;
-                    return new ParsedProbabilityAttribute() { Value = esr, ExpertIdentifier = expert_id };
-                }
-
-            }
-
-            if (value is NParsedAttributeBracket) {
+	            if (esr < 0 | esr > 1) // ntm: ignore 00de (Or => Xor)
+	                throw new InvalidAttributeValueException (identifier,
+	                                                          InvalidAttributeValueException.PROBABILITY_EXPECTED);
+	                
+                return new ParsedProbabilityAttribute () { Value = esr, ExpertIdentifier = expert_id };
+            
+            } else if (value is NParsedAttributeBracket) {
                 var item = ((NParsedAttributeBracket)value).Item;
                 var param = ((NParsedAttributeBracket)value).Parameter;
 
@@ -60,73 +64,126 @@ namespace KAOSTools.Parsing.Parsers.Attributes
                 string distribution_name = null;
                 if (item is IdentifierExpression) {
                     distribution_name = ((IdentifierExpression)item).Value;
+                } else {
+                    throw new InvalidAttributeValueException (identifier,
+                                                              InvalidAttributeValueException.IDENTIFIER);
                 }
 
                 // Parse the parameters of the distribution
                 List<double> distribution_parameters = new List<double> ();
-				if (param is NParsedAttributeAtomic) {
-                    ParseDistributionParameter(distribution_parameters, ((NParsedAttributeAtomic)param).Value);
+                if (param is NParsedAttributeAtomic) {
+                    ParseDistributionParameter (identifier, distribution_parameters, ((NParsedAttributeAtomic)param).Value);
 
                 } else if (param is NParsedAttributeList) {
                     foreach (var p in ((NParsedAttributeList)param).Values) {
-                        ParseDistributionParameter(distribution_parameters, p);
+                        ParseDistributionParameter (identifier, distribution_parameters, p);
                     }
 
                 } else {
-					throw new NotImplementedException();
-				}
+                    throw new InvalidAttributeValueException (identifier,
+                                                              InvalidAttributeValueException.ATOMIC_OR_LIST);
+                }
 
                 // Build the parsed element
                 switch (distribution_name) {
-					case "beta":
-                        return new ParsedBetaDistribution() {
-                            Alpha = distribution_parameters[0],
-                            Beta = distribution_parameters[1]
-						};
+                case "beta":
+                    if (distribution_parameters.Count != 2)
+                        throw new InvalidAttributeValueException (identifier,
+                                                                  InvalidAttributeValueException.INVALID_VALUE);
+                    
+                    double alpha = distribution_parameters [0];
+                    double beta = distribution_parameters [1];
+                    if (alpha < 0 | beta < 0)
+                        throw new InvalidAttributeValueException (identifier,
+                                                                  InvalidAttributeValueException.INVALID_VALUE);
+                        
+                    return new ParsedBetaDistribution () {
+                        Alpha = alpha,
+                        Beta = beta
+                    };
 
-                    case "uniform":
-                        return new ParsedUniformDistribution() { 
-                            LowerBound = distribution_parameters[0], 
-                            UpperBound = distribution_parameters[1]
-                        };
+                case "uniform":
+                    if (distribution_parameters.Count != 2)
+                        throw new InvalidAttributeValueException (identifier,
+                                                                  InvalidAttributeValueException.INVALID_VALUE);
 
-                    case "triangular":
-						return new ParsedTriangularDistribution() { 
-                            Min = distribution_parameters[0], 
-                            Mode = distribution_parameters[1], 
-                            Max = distribution_parameters[2]
-                        };
+                    double lower = distribution_parameters [0];
+                    double upper = distribution_parameters [1];
+                    if (lower > upper | lower < 0 | upper > 1)
+                        throw new InvalidAttributeValueException (identifier,
+                                                                  InvalidAttributeValueException.INVALID_VALUE);
+                    return new ParsedUniformDistribution () {
+                        LowerBound = lower,
+                        UpperBound = upper
+                    };
 
-					case "pert":
-					case "PERT":
-                        return new ParsedPertDistribution() { 
-                            Min = distribution_parameters[0], 
-                            Mode = distribution_parameters[1], 
-                            Max = distribution_parameters[2]
-                        };
+                case "triangular":
+                    if (distribution_parameters.Count != 3)
+                        throw new InvalidAttributeValueException (identifier,
+                                                                  InvalidAttributeValueException.INVALID_VALUE);
 
-                    default:
-                        throw new NotImplementedException();
+                    double min = distribution_parameters [0];
+                    double mode = distribution_parameters [1];
+                    double max = distribution_parameters [2];
+                    if (min > mode | mode > max | min < 0 | max > 1)
+                        throw new InvalidAttributeValueException (identifier,
+                                                                  InvalidAttributeValueException.INVALID_VALUE);
+
+                    return new ParsedTriangularDistribution () {
+                        Min = min,
+                        Mode = mode,
+                        Max = max
+                    };
+
+                case "pert":
+                case "PERT":
+                    if (distribution_parameters.Count != 3)
+                        throw new InvalidAttributeValueException (identifier,
+                                                                  InvalidAttributeValueException.INVALID_VALUE);
+
+                    double minp = distribution_parameters [0];
+                    double modep = distribution_parameters [1];
+                    double maxp = distribution_parameters [2];
+                    if (minp > modep | modep > maxp | minp < 0 | maxp > 1)
+                        throw new InvalidAttributeValueException (identifier,
+                                                                  InvalidAttributeValueException.INVALID_VALUE);
+                    
+                    return new ParsedPertDistribution () {
+                        Min = minp,
+                        Mode = modep,
+                        Max = maxp
+                    };
+
+                default:
+                    throw new InvalidAttributeValueException (identifier,
+                                                              InvalidAttributeValueException.INVALID_VALUE);
                 }
+            } else {
+                throw new InvalidAttributeValueException (identifier,
+                                                          InvalidAttributeValueException.ATOMIC_OR_BRACKET);
             }
-
-            throw new NotImplementedException("Attribute '" + identifier + "' received an invalid value.");
         }
 
-        static void ParseDistributionParameter(List<double> distribution_parameters, ParsedElement p)
+        static void ParseDistributionParameter(string identifier, List<double> distribution_parameters, ParsedElement p)
         {
             if (p is NParsedAttributeAtomic) {
                 var pp = ((NParsedAttributeAtomic)p).Value;
+
                 if (pp is ParsedInteger) {
                     distribution_parameters.Add(((ParsedInteger)pp).Value);
                 } else if (pp is ParsedFloat) {
                     distribution_parameters.Add(((ParsedFloat)pp).Value);
                 } else if (pp is ParsedPercentage) {
                     distribution_parameters.Add(((ParsedPercentage)pp).Value / 100d);
+                } else {
+                    throw new InvalidAttributeValueException (identifier,
+                                                              InvalidAttributeValueException.INVALID_VALUE);
                 }
 
             } else {
-                throw new NotImplementedException();
+                throw new InvalidAttributeValueException (identifier,
+                                                          InvalidAttributeValueException.ATOMIC_ONLY);
+                
             }
         }
    }

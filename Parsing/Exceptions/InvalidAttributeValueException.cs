@@ -10,6 +10,7 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers.Exceptions
 
         public const string ATOMIC_OR_LIST = "Attribute '{0}' only accept an atomic value or a list.";
         public const string ATOMIC_OR_COLON = "Attribute '{0}' only accept an atomic value or a pair of values (separated by a ':').";
+        public const string ATOMIC_OR_BRACKET = "Attribute '{0}' only accept an atomic value or a value with its parameters (between brackets).";
 
         public const string IDENTIFIER = "Attribute '{0}' only accept an identifier expression as a value.";
         public const string STRING = "Attribute '{0}' only accept a string as a value.";

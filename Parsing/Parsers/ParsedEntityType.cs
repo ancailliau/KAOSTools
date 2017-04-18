@@ -76,7 +76,16 @@ namespace KAOSTools.Parsing.Parsers
 	{
 		public ParsedElement Item { get; set; }
 		public ParsedElement Parameter { get; set; }
-    }
+        public NParsedAttributeBracket ()
+        {
+            
+        }
+        public NParsedAttributeBracket (ParsedElement item, ParsedElement parameter)
+        {
+            Item = item;
+            Parameter = parameter;
+        }
+}
     
 	public class NParsedAttributeList : NParsedAttributeValue
 	{
