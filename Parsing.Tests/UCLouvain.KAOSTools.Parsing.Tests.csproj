@@ -71,6 +71,7 @@
     <Compile Include="Unit\Attributes\TestAttributeAttributeParser.cs" />
     <Compile Include="Unit\Attributes\TestCustomAttributeParser.cs" />
     <Compile Include="Unit\Attributes\TestDefaultValueAttributeParser.cs" />
+    <Compile Include="Unit\Attributes\TestDefinitionAttributeParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
