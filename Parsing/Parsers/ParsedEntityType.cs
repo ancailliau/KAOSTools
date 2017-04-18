@@ -384,9 +384,17 @@ namespace KAOSTools.Parsing.Parsers
 	public class ParsedBool : ParsedElement
 	{
 		public bool Value { get; set; }
-	}
+        public ParsedBool ()
+        {
 
-    
+        }
+        public ParsedBool (bool value)
+        {
+            Value = value;
+        }
+    }
+
+
     public class MultiplictyExpression : ParsedAttribute
     {
         public string Value { get; set; }

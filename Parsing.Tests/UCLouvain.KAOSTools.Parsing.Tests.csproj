@@ -70,6 +70,7 @@
     <Compile Include="Unit\Attributes\TestAssignedToAttributeParser.cs" />
     <Compile Include="Unit\Attributes\TestAttributeAttributeParser.cs" />
     <Compile Include="Unit\Attributes\TestCustomAttributeParser.cs" />
+    <Compile Include="Unit\Attributes\TestDefaultValueAttributeParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

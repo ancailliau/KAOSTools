@@ -13,6 +13,7 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers.Exceptions
 
         public const string IDENTIFIER = "Attribute '{0}' only accept an identifier expression as a value.";
         public const string STRING = "Attribute '{0}' only accept a string as a value.";
+        public const string BOOL = "Attribute '{0}' only accept a boolean as a value.";
         public const string FLOAT_INTEGER_PERCENTAGE_ONLY = "Attribute '{0}' only accept a float, an integer, or a percentage as a value.";
         public const string PROBABILITY_EXPECTED = "Attribute '{0}' only accept a value between 0 and 1.";
         public const string INVALID_VALUE = "Attribute '{0}' only accept a valid value. See online documentation for more details.";
