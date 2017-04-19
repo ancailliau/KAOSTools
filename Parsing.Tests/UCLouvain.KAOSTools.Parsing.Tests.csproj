@@ -75,6 +75,7 @@
     <Compile Include="Unit\Attributes\TestEntityTypeAttributeParser.cs" />
     <Compile Include="Unit\Attributes\TestESRAttributeParser.cs" />
     <Compile Include="Unit\Attributes\TestFormalSpecAttributeParser.cs" />
+    <Compile Include="Unit\Attributes\TestIsAAttributeParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
