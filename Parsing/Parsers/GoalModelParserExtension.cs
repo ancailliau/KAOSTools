@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
 using KAOSTools.Parsing;
@@ -209,6 +209,15 @@ namespace KAOSTools.Parsing.Parsers {
             return new IdentifierExpression (string.Join ("", results.Select (x => x.Text))) { 
                 Line = results[0].Line, 
                 Col = results[0].Col, 
+                Filename = m_file
+            };
+        }
+
+        ParsedElement BuildStar (List<Result> results)
+        {
+            return new StarExpression () {
+                Line = results [0].Line,
+                Col = results [0].Col,
                 Filename = m_file
             };
         }

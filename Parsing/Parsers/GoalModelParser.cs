@@ -60,6 +60,7 @@ namespace KAOSTools.Parsing.Parsers
 			m_nonterminals.Add("Integer", new ParseMethod[]{this.DoParseIntegerRule});
 			m_nonterminals.Add("Percentage", new ParseMethod[]{this.DoParsePercentageRule});
 			m_nonterminals.Add("Bool", new ParseMethod[]{this.DoParseBoolRule});
+			m_nonterminals.Add("Star", new ParseMethod[]{this.DoParseStarRule});
 			m_nonterminals.Add("ModelAttributeName", new ParseMethod[]{this.DoParseModelAttributeNameRule});
 			m_nonterminals.Add("S", new ParseMethod[]{this.DoParseSRule});
 			m_nonterminals.Add("Space", new ParseMethod[]{this.DoParseSpaceRule});
@@ -339,7 +340,7 @@ namespace KAOSTools.Parsing.Parsers
 			return _state;
 		}
 		
-		// AttributeAtomicValue := Formula / Bool / QuotedString / Percentage / Float / Integer / Identifier
+		// AttributeAtomicValue := Formula / Bool / QuotedString / Percentage / Float / Integer / Identifier / Star
 		private State DoParseAttributeAtomicValueRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -352,7 +353,8 @@ namespace KAOSTools.Parsing.Parsers
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Percentage");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Float");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Integer");},
-			delegate (State s, List<Result> r) {return DoParse(s, r, "Identifier");});
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Identifier");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "Star");});
 			
 			if (_state.Parsed)
 			{
@@ -501,7 +503,7 @@ namespace KAOSTools.Parsing.Parsers
 			return _state;
 		}
 		
-		// Float := ('.' [0-9]+) / ([0-9]+ ('.' [0-9]+)?)
+		// Float := ('.' [0-9]+) / ([0-9]+ ('.' [0-9]+))
 		private State DoParseFloatRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -515,11 +517,10 @@ namespace KAOSTools.Parsing.Parsers
 			delegate (State s, List<Result> r) {return DoSequence(s, r,
 				delegate (State s2, List<Result> r2) {return DoRepetition(s2, r2, 1, 2147483647,
 					delegate (State s3, List<Result> r3) {return DoParseRange(s3, r3, false, string.Empty, "09", null, "[0-9]");});},
-				delegate (State s2, List<Result> r2) {return DoRepetition(s2, r2, 0, 1,
-					delegate (State s3, List<Result> r3) {return DoSequence(s3, r3,
-						delegate (State s4, List<Result> r4) {return DoParseLiteral(s4, r4, ".");},
-						delegate (State s4, List<Result> r4) {return DoRepetition(s4, r4, 1, 2147483647,
-							delegate (State s5, List<Result> r5) {return DoParseRange(s5, r5, false, string.Empty, "09", null, "[0-9]");});});});});});
+				delegate (State s2, List<Result> r2) {return DoSequence(s2, r2,
+					delegate (State s3, List<Result> r3) {return DoParseLiteral(s3, r3, ".");},
+					delegate (State s3, List<Result> r3) {return DoRepetition(s3, r3, 1, 2147483647,
+						delegate (State s4, List<Result> r4) {return DoParseRange(s4, r4, false, string.Empty, "09", null, "[0-9]");});});});});
 			
 			if (_state.Parsed)
 			{
@@ -613,6 +614,31 @@ namespace KAOSTools.Parsing.Parsers
 			{
 				string expected = null;
 				expected = "Bool";
+				if (expected != null)
+					_state = new State(_start.Index, false, ErrorSet.Combine(_start.Errors, new ErrorSet(_state.Errors.Index, expected)));
+			}
+			
+			return _state;
+		}
+		
+		// Star := '*'
+		private State DoParseStarRule(State _state, List<Result> _outResults)
+		{
+			State _start = _state;
+			List<Result> results = new List<Result>();
+			
+			_state = DoParseLiteral(_state, results, "*");
+			
+			if (_state.Parsed)
+			{
+				KAOSTools.Parsing.Parsers.ParsedElement value = results.Count > 0 ? results[0].Value : default(KAOSTools.Parsing.Parsers.ParsedElement);
+				value = BuildStar(results);
+				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+			}
+			else
+			{
+				string expected = null;
+				expected = "*";
 				if (expected != null)
 					_state = new State(_start.Index, false, ErrorSet.Combine(_start.Errors, new ErrorSet(_state.Errors.Index, expected)));
 			}

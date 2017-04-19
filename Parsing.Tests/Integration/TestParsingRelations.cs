@@ -146,6 +146,33 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             relation1.Links.Select (x => x.Target.Identifier).ShallOnlyContain (new string[] { "entity1", "entity2" });
         }
 
+        [TestCase (@"declare relation[ test ]
+                        link[0,1] entity1
+                    end", "0..1")]
+        [TestCase (@"declare relation[ test ]
+                        link[M,N] entity1
+                    end", "M..N")]
+        [TestCase (@"declare relation[ test ]
+                        link[0] entity1
+                    end", "0")]
+        [TestCase (@"declare relation[ test ]
+                        link[1] entity1
+                    end", "1")]
+        [TestCase (@"declare relation[ test ]
+                        link[M] entity1
+                    end", "M")]
+        [TestCase (@"declare relation[ test ]
+                        link[0,*] entity1
+                    end", "0..*")]
+        public void TestLinkMultiplicity (string input, string expected)
+        {
+            var model = parser.Parse (input);
+            var relation1 = model.Relations ().Single (x => x.Identifier == "test");
+
+            var l = relation1.Links.ShallBeSingle ();
+            l.Multiplicity.ShallEqual (expected);
+        }
+
         [TestCase(@"declare relation [ test ] $my_attribute ""my_value"" end",
                   "my_attribute", "my_value")]
         public void TestCustomAttribute(string input, string key, string value)

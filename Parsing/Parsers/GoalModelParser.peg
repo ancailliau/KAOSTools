@@ -1,4 +1,4 @@
-start = Start
+﻿start = Start
 value = KAOSTools.Parsing.Parsers.ParsedElement
 namespace = KAOSTools.Parsing.Parsers
 visibility = public
@@ -45,7 +45,7 @@ AttributeDecoratedValue :=
     `value = BuildAttributeDecoratedValue(results);`
 
 AttributeAtomicValue := 
-    Formula / Bool / QuotedString / Percentage / Float / Integer / Identifier
+    Formula / Bool / QuotedString / Percentage / Float / Integer / Identifier / Star
     `value = results[0].Value;`
 
 # Expressions                                
@@ -69,7 +69,7 @@ String := ( ( '""' / [^"] )+ )
     `value = BuildString(results)`
     `expected = "String"`
     
-Float := ('.' [0-9]+) / ( [0-9]+ ('.' [0-9]+)? )
+Float := ('.' [0-9]+) / ( [0-9]+ ('.' [0-9]+) )
     `value = BuildFloat(results)` 
     `expected = "Float"`
 
@@ -84,6 +84,10 @@ Percentage := ( Integer / Float ) '%'
 Bool := 'true' / 'false'
     `value = BuildBool(results)`
     `expected = "Bool"`
+
+Star := '*'
+    `value = BuildStar(results);`
+    `expected = "*"`
 
 ModelAttributeName := [a-zA-Z0-9\\._-]+
     `value = null`

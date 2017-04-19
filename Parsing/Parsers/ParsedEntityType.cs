@@ -403,6 +403,13 @@ namespace KAOSTools.Parsing.Parsers
         }
     }
 
+    public class StarExpression : ParsedAttribute
+    {
+        public StarExpression ()
+        {
+        }
+    }
+
 
     public class MultiplictyExpression : ParsedAttribute
     {
