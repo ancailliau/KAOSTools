@@ -34,134 +34,179 @@ namespace KAOSTools.Parsing.Parsers.Attributes
             }
 
             if (value is NParsedAttributeAtomic) {
-                var v = ((NParsedAttributeAtomic)value).Value;
-                double esr = -1;
+                return ParseAtomic (identifier, value, expert_id);
 
-                if (v is ParsedFloat) {
-                    esr = ((ParsedFloat)v).Value;
-
-                } else if (v is ParsedInteger) {
-                    esr = ((ParsedInteger)v).Value;
-
-                } else if (v is ParsedPercentage) {
-                    esr = ((ParsedPercentage)v).Value / 100d;
-                } else {
-                    throw new InvalidAttributeValueException (identifier,
-                                                              InvalidAttributeValueException.FLOAT_INTEGER_PERCENTAGE_ONLY);
-                }
-
-	            if (esr < 0 | esr > 1) // ntm: ignore 00de (Or => Xor)
-	                throw new InvalidAttributeValueException (identifier,
-	                                                          InvalidAttributeValueException.PROBABILITY_EXPECTED);
-	                
-                return new ParsedProbabilityAttribute () { Value = esr, ExpertIdentifier = expert_id };
-            
             } else if (value is NParsedAttributeBracket) {
-                var item = ((NParsedAttributeBracket)value).Item;
-                var param = ((NParsedAttributeBracket)value).Parameter;
+                return ParseBracket (identifier, value);
 
-                // Parse the name of the distribution
-                string distribution_name = null;
-                if (item is IdentifierExpression) {
-                    distribution_name = ((IdentifierExpression)item).Value;
-                } else {
-                    throw new InvalidAttributeValueException (identifier,
-                                                              InvalidAttributeValueException.IDENTIFIER);
-                }
-
-                // Parse the parameters of the distribution
-                List<double> distribution_parameters = new List<double> ();
-                if (param is NParsedAttributeAtomic) {
-                    ParseDistributionParameter (identifier, distribution_parameters, ((NParsedAttributeAtomic)param).Value);
-
-                } else if (param is NParsedAttributeList) {
-                    foreach (var p in ((NParsedAttributeList)param).Values) {
-                        ParseDistributionParameter (identifier, distribution_parameters, p);
-                    }
-
-                } else {
-                    throw new InvalidAttributeValueException (identifier,
-                                                              InvalidAttributeValueException.ATOMIC_OR_LIST);
-                }
-
-                // Build the parsed element
-                switch (distribution_name) {
-                case "beta":
-                    if (distribution_parameters.Count != 2)
-                        throw new InvalidAttributeValueException (identifier,
-                                                                  InvalidAttributeValueException.INVALID_VALUE);
-                    
-                    double alpha = distribution_parameters [0];
-                    double beta = distribution_parameters [1];
-                    if (alpha < 0 | beta < 0)
-                        throw new InvalidAttributeValueException (identifier,
-                                                                  InvalidAttributeValueException.INVALID_VALUE);
-                        
-                    return new ParsedBetaDistribution () {
-                        Alpha = alpha,
-                        Beta = beta
-                    };
-
-                case "uniform":
-                    if (distribution_parameters.Count != 2)
-                        throw new InvalidAttributeValueException (identifier,
-                                                                  InvalidAttributeValueException.INVALID_VALUE);
-
-                    double lower = distribution_parameters [0];
-                    double upper = distribution_parameters [1];
-                    if (lower > upper | lower < 0 | upper > 1)
-                        throw new InvalidAttributeValueException (identifier,
-                                                                  InvalidAttributeValueException.INVALID_VALUE);
-                    return new ParsedUniformDistribution () {
-                        LowerBound = lower,
-                        UpperBound = upper
-                    };
-
-                case "triangular":
-                    if (distribution_parameters.Count != 3)
-                        throw new InvalidAttributeValueException (identifier,
-                                                                  InvalidAttributeValueException.INVALID_VALUE);
-
-                    double min = distribution_parameters [0];
-                    double mode = distribution_parameters [1];
-                    double max = distribution_parameters [2];
-                    if (min > mode | mode > max | min < 0 | max > 1)
-                        throw new InvalidAttributeValueException (identifier,
-                                                                  InvalidAttributeValueException.INVALID_VALUE);
-
-                    return new ParsedTriangularDistribution () {
-                        Min = min,
-                        Mode = mode,
-                        Max = max
-                    };
-
-                case "pert":
-                case "PERT":
-                    if (distribution_parameters.Count != 3)
-                        throw new InvalidAttributeValueException (identifier,
-                                                                  InvalidAttributeValueException.INVALID_VALUE);
-
-                    double minp = distribution_parameters [0];
-                    double modep = distribution_parameters [1];
-                    double maxp = distribution_parameters [2];
-                    if (minp > modep | modep > maxp | minp < 0 | maxp > 1)
-                        throw new InvalidAttributeValueException (identifier,
-                                                                  InvalidAttributeValueException.INVALID_VALUE);
-                    
-                    return new ParsedPertDistribution () {
-                        Min = minp,
-                        Mode = modep,
-                        Max = maxp
-                    };
-
-                default:
-                    throw new InvalidAttributeValueException (identifier,
-                                                              InvalidAttributeValueException.INVALID_VALUE);
-                }
             } else {
                 throw new InvalidAttributeValueException (identifier,
                                                           InvalidAttributeValueException.ATOMIC_OR_BRACKET);
             }
+        }
+
+        private static ParsedElement ParseAtomic (string identifier, NParsedAttributeValue value, string expert_id)
+        {
+            var v = ((NParsedAttributeAtomic)value).Value;
+            double esr = -1;
+
+            if (v is ParsedFloat) {
+                esr = ((ParsedFloat)v).Value;
+
+            } else if (v is ParsedInteger) {
+                esr = ((ParsedInteger)v).Value;
+
+            } else if (v is ParsedPercentage) {
+                esr = ((ParsedPercentage)v).Value / 100d;
+            } else {
+                throw new InvalidAttributeValueException (identifier,
+                                                          InvalidAttributeValueException.FLOAT_INTEGER_PERCENTAGE_ONLY);
+            }
+
+            if (esr < 0 | esr > 1) // ntm: ignore 00de (Or => Xor)
+                throw new InvalidAttributeValueException (identifier,
+                                                          InvalidAttributeValueException.PROBABILITY_EXPECTED);
+
+            return new ParsedProbabilityAttribute () { Value = esr, ExpertIdentifier = expert_id };
+        }
+
+        private static ParsedElement ParseBracket (string identifier, NParsedAttributeValue value)
+        {
+            var item = ((NParsedAttributeBracket)value).Item;
+            var param = ((NParsedAttributeBracket)value).Parameter;
+
+            // Parse the name of the distribution
+            string distribution_name = ParseDistributionName (identifier, item);
+
+            // Parse the parameters of the distribution
+            List<double> distribution_parameters = ParseDistributionParameter (identifier, param);
+
+            // Build the parsed element
+            switch (distribution_name) {
+            case "beta":
+                return ParseBeta (identifier, distribution_parameters);
+
+            case "uniform":
+                return ParseUniform (identifier, distribution_parameters);
+
+            case "triangular":
+                return ParseTriangular (identifier, distribution_parameters);
+
+            case "pert":
+            case "PERT":
+                return ParsePERT (identifier, distribution_parameters);
+
+            default:
+                throw new InvalidAttributeValueException (identifier,
+                                                          InvalidAttributeValueException.INVALID_VALUE);
+            }
+        }
+
+        private static string ParseDistributionName (string identifier, ParsedElement item)
+        {
+            string distribution_name = null;
+            if (item is IdentifierExpression) {
+                distribution_name = ((IdentifierExpression)item).Value;
+            } else {
+                throw new InvalidAttributeValueException (identifier,
+                                                          InvalidAttributeValueException.IDENTIFIER);
+            }
+
+            return distribution_name;
+        }
+
+        private static List<double> ParseDistributionParameter (string identifier, ParsedElement param)
+        {
+            List<double> distribution_parameters = new List<double> ();
+            if (param is NParsedAttributeAtomic) {
+                ParseDistributionParameter (identifier, distribution_parameters, ((NParsedAttributeAtomic)param).Value);
+
+            } else if (param is NParsedAttributeList) {
+                foreach (var p in ((NParsedAttributeList)param).Values) {
+                    ParseDistributionParameter (identifier, distribution_parameters, p);
+                }
+
+            } else {
+                throw new InvalidAttributeValueException (identifier,
+                                                          InvalidAttributeValueException.ATOMIC_OR_LIST);
+            }
+
+            return distribution_parameters;
+        }
+
+        private static ParsedElement ParseBeta (string identifier, List<double> distribution_parameters)
+        {
+            if (distribution_parameters.Count != 2)
+                throw new InvalidAttributeValueException (identifier,
+                                                          InvalidAttributeValueException.INVALID_VALUE);
+
+            double alpha = distribution_parameters [0];
+            double beta = distribution_parameters [1];
+            if (alpha < 0 | beta < 0)
+                throw new InvalidAttributeValueException (identifier,
+                                                          InvalidAttributeValueException.INVALID_VALUE);
+
+            return new ParsedBetaDistribution () {
+                Alpha = alpha,
+                Beta = beta
+            };
+        }
+
+        private static ParsedElement ParseUniform (string identifier, List<double> distribution_parameters)
+        {
+            if (distribution_parameters.Count != 2)
+                throw new InvalidAttributeValueException (identifier,
+                                                          InvalidAttributeValueException.INVALID_VALUE);
+
+            double lower = distribution_parameters [0];
+            double upper = distribution_parameters [1];
+            if (lower > upper | lower < 0 | upper > 1)
+                throw new InvalidAttributeValueException (identifier,
+                                                          InvalidAttributeValueException.INVALID_VALUE);
+            return new ParsedUniformDistribution () {
+                LowerBound = lower,
+                UpperBound = upper
+            };
+        }
+
+        private static ParsedElement ParseTriangular (string identifier, List<double> distribution_parameters)
+        {
+            if (distribution_parameters.Count != 3)
+                throw new InvalidAttributeValueException (identifier,
+                                                          InvalidAttributeValueException.INVALID_VALUE);
+
+            double min = distribution_parameters [0];
+            double mode = distribution_parameters [1];
+            double max = distribution_parameters [2];
+            if (min > mode | mode > max | min < 0 | max > 1)
+                throw new InvalidAttributeValueException (identifier,
+                                                          InvalidAttributeValueException.INVALID_VALUE);
+
+            return new ParsedTriangularDistribution () {
+                Min = min,
+                Mode = mode,
+                Max = max
+            };
+        }
+
+        private static ParsedElement ParsePERT (string identifier, List<double> distribution_parameters)
+        {
+            if (distribution_parameters.Count != 3)
+                throw new InvalidAttributeValueException (identifier,
+                                                          InvalidAttributeValueException.INVALID_VALUE);
+
+            double min = distribution_parameters [0];
+            double mode = distribution_parameters [1];
+            double max = distribution_parameters [2];
+            if (min > mode | mode > max | min < 0 | max > 1)
+                throw new InvalidAttributeValueException (identifier,
+                                                          InvalidAttributeValueException.INVALID_VALUE);
+
+            return new ParsedPertDistribution () {
+                Min = min,
+                Mode = mode,
+                Max = max
+            };
         }
 
         static void ParseDistributionParameter(string identifier, List<double> distribution_parameters, ParsedElement p)

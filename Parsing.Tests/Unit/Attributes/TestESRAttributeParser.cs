@@ -11,7 +11,89 @@ namespace UCLouvain.KAOSTools.Parsing.Tests.Unit.Attributes
     [TestFixture]
     public class TestESRAttributeParser
     {
-        
+        #region distribution
+
+        [TestCase ("")]
+        [TestCase ("bla")]
+        [TestCase ("UNIFORM")]
+        [TestCase ("   ")]
+        public void TestInvalidDistributionIdentifier (string name)
+        {
+            var ap = new ESRAttributeParser ();
+            const string attIdentifier = "esr";
+
+            var e = Assert.Catch (() => {
+                ap.ParsedAttribute (attIdentifier,
+                                            null,
+                                            new NParsedAttributeBracket (
+                                                new IdentifierExpression (name),
+                                                new NParsedAttributeList (Enumerable.Empty<ParsedElement> ())
+                                               ));
+            });
+
+            Assert.IsInstanceOf (typeof (InvalidAttributeValueException), e);
+            StringAssert.AreEqualIgnoringCase (
+                string.Format (InvalidAttributeValueException.INVALID_VALUE, attIdentifier),
+                e.Message
+            );
+        }
+
+        public void TestInvalidDistribution ()
+        {
+            var ap = new ESRAttributeParser ();
+            const string attIdentifier = "esr";
+
+            var e = Assert.Catch (() => {
+                ap.ParsedAttribute (attIdentifier,
+                                            null,
+                                            new NParsedAttributeBracket (
+                                                new ParsedFloat (0),
+                                                new NParsedAttributeList (Enumerable.Empty<ParsedElement> ())
+                                               ));
+            });
+
+            Assert.IsInstanceOf (typeof (InvalidAttributeValueException), e);
+            StringAssert.AreEqualIgnoringCase (
+                string.Format (InvalidAttributeValueException.IDENTIFIER, attIdentifier),
+                e.Message
+            );
+        }
+
+        [Test()]
+        public void TestInvalidDistributionParameterColon ()
+        {
+            TestInvalidDistributionParameter (new NParsedAttributeColon ());
+        }
+
+        [Test ()]
+        public void TestInvalidDistributionParameterBracket ()
+        {
+            TestInvalidDistributionParameter (new NParsedAttributeBracket ());
+        }
+
+        public void TestInvalidDistributionParameter (ParsedElement v)
+        {
+            var ap = new ESRAttributeParser ();
+            const string attIdentifier = "esr";
+
+            var e = Assert.Catch (() => {
+                ap.ParsedAttribute (attIdentifier,
+                                            null,
+                                            new NParsedAttributeBracket (
+                                                new IdentifierExpression ("beta"),
+                                                v
+                                               ));
+            });
+
+            Assert.IsInstanceOf (typeof (InvalidAttributeValueException), e);
+            StringAssert.AreEqualIgnoringCase (
+                string.Format (InvalidAttributeValueException.ATOMIC_OR_LIST, attIdentifier),
+                e.Message
+            );
+        }
+
+        #endregion
+
         #region Beta distribution
 
         [TestCase (0.1, 1)]
@@ -894,7 +976,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests.Unit.Attributes
                 ap.ParsedAttribute (attIdentifier,
                                             null,
                                             new NParsedAttributeBracket (
-                                                new IdentifierExpression ("triangular"),
+                                                new IdentifierExpression ("pert"),
                                                 new NParsedAttributeList (v)
                                                ));
             });
