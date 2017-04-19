@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UCLouvain.KAOSTools.Parsing.Parsers.Exceptions;
 
 namespace KAOSTools.Parsing.Parsers.Attributes
 {
@@ -14,16 +15,19 @@ namespace KAOSTools.Parsing.Parsers.Attributes
 
         public ParsedElement ParsedAttribute(string identifier, NParsedAttributeValue parameters, NParsedAttributeValue value)
         {
-			if (parameters != null)
-				throw new NotImplementedException("Attribute 'name' does not accept parameters.");
+            if (parameters != null)
+                throw new InvalidParameterAttributeException (identifier,
+                                                              InvalidParameterAttributeException.NO_PARAM);
 
-			if (!(value is NParsedAttributeAtomic))
-				throw new NotImplementedException("Attribute 'name' only accept a single atomic value");
+            if (!(value is NParsedAttributeAtomic))
+                throw new InvalidAttributeValueException (identifier,
+                                                          InvalidAttributeValueException.ATOMIC_ONLY);
 
 			var v = ((NParsedAttributeAtomic)value).Value;
 
-			if (!(v is ParsedString))
-				throw new NotImplementedException("Attribute 'name' only accept string value");
+            if (!(v is ParsedString))
+                throw new InvalidAttributeValueException (identifier,
+                                                          InvalidAttributeValueException.STRING);
 
 			return new ParsedNameAttribute() { Value = ((ParsedString)((NParsedAttributeAtomic)value).Value).Value };
         }

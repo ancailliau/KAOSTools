@@ -77,6 +77,8 @@
     <Compile Include="Unit\Attributes\TestFormalSpecAttributeParser.cs" />
     <Compile Include="Unit\Attributes\TestIsAAttributeParser.cs" />
     <Compile Include="Unit\Attributes\TestLinkAttributeParser.cs" />
+    <Compile Include="Unit\Attributes\TestNameAttributeParser.cs" />
+    <Compile Include="Unit\Attributes\TestObstructedByAttributeParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
