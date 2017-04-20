@@ -38,9 +38,6 @@
       <HintPath>..\Libraries\NDesk.Options.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cairo" />
-    <Reference Include="NLog">
-      <HintPath>..\..\..\Projects\MinePump\packages\NLog.4.3.5\lib\net45\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="UCLouvain.BDDSharp">
       <HintPath>..\packages\UCLouvain.BDDSharp.0.1.1\lib\net45\UCLouvain.BDDSharp.dll</HintPath>
     </Reference>
@@ -49,6 +46,9 @@
     </Reference>
     <Reference Include="UCLouvain.ExpertOpinionSharp">
       <HintPath>..\packages\UCLouvain.ExpertOpinionSharp.0.1.0\lib\net45\UCLouvain.ExpertOpinionSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.4.4.6\lib\net45\NLog.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
