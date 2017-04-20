@@ -1,9 +1,9 @@
 ﻿using System;
-using BDDSharp;
+using UCLouvain.BDDSharp;
 using System.Collections.Generic;
 using KAOSTools.Core;
 using System.Linq;
-using ExpertOpinionSharp.Frameworks;
+using UCLouvain.ExpertOpinionSharp.Frameworks;
 
 namespace UncertaintySimulation
 {
@@ -92,13 +92,13 @@ namespace UncertaintySimulation
                 try {
                     if (o.ExpertEstimates.Count > 0) {
                         var dm = ef.Fit (o.Identifier);
-                        if (dm is ExpertOpinionSharp.Distributions.QuantileDistribution) {
-                            var ddm = (ExpertOpinionSharp.Distributions.QuantileDistribution)dm;
+                        if (dm is UCLouvain.ExpertOpinionSharp.Distributions.QuantileDistribution) {
+                            var ddm = (UCLouvain.ExpertOpinionSharp.Distributions.QuantileDistribution)dm;
                             o.SatisfactionUncertainty = new QuantileDistribution (ddm.probabilities, ddm.quantiles);
                         }
                         else
-                            if (dm is ExpertOpinionSharp.Distributions.MixtureDistribution) {
-                                var ddm = (ExpertOpinionSharp.Distributions.MixtureDistribution)dm;
+                            if (dm is UCLouvain.ExpertOpinionSharp.Distributions.MixtureDistribution) {
+                                var ddm = (UCLouvain.ExpertOpinionSharp.Distributions.MixtureDistribution)dm;
                                 o.SatisfactionUncertainty = new MixtureDistribution (ddm.cummulativeWeight, ddm.distributions.Select (x => new QuantileDistribution (x.probabilities, x.quantiles)).ToArray ());
                             }
                     }

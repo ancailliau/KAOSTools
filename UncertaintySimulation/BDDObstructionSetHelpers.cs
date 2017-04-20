@@ -1,6 +1,6 @@
 ﻿using System;
 using KAOSTools.Core;
-using BDDSharp;
+using UCLouvain.BDDSharp;
 using System.Linq;
 using System.Collections.Generic;
 using NLog;

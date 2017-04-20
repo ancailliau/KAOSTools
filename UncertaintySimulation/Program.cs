@@ -1,11 +1,11 @@
 ﻿using System;
 using KAOSTools.Utils;
 using KAOSTools.Core;
-using BDDSharp;
+using UCLouvain.BDDSharp;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
-using ExpertOpinionSharp.Frameworks;
+using UCLouvain.ExpertOpinionSharp.Frameworks;
 using UncertaintySimulation.Outputs;
 
 namespace UncertaintySimulation

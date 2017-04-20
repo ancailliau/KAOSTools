@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BDDSharp;
+using UCLouvain.BDDSharp;
 using KAOSTools.Core;
 
 namespace UncertaintySimulation

@@ -14,7 +14,7 @@ namespace UncertaintySimulation.Outputs
                 if (string.IsNullOrEmpty (options.Filename)) {
                     throw new ArgumentException ("Filename shall be specified when exporting image");
                 }
-                return new SatisfactionUncertaintyPNG (options.RootGoal, options.Filename);
+                //return new SatisfactionUncertaintyPNG (options.RootGoal, options.Filename);
             }
 
             throw new NotImplementedException ();

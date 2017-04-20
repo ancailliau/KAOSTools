@@ -41,6 +41,15 @@
     <Reference Include="NLog">
       <HintPath>..\..\..\Projects\MinePump\packages\NLog.4.3.5\lib\net45\NLog.dll</HintPath>
     </Reference>
+    <Reference Include="UCLouvain.BDDSharp">
+      <HintPath>..\packages\UCLouvain.BDDSharp.0.1.1\lib\net45\UCLouvain.BDDSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>..\packages\MathNet.Numerics.3.18.0\lib\net40\MathNet.Numerics.dll</HintPath>
+    </Reference>
+    <Reference Include="UCLouvain.ExpertOpinionSharp">
+      <HintPath>..\packages\UCLouvain.ExpertOpinionSharp.0.1.0\lib\net45\UCLouvain.ExpertOpinionSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -52,7 +61,6 @@
     <Compile Include="Outputs\ShortTextReport.cs" />
     <Compile Include="Outputs\GeneratorFactory.cs" />
     <Compile Include="Outputs\GeneratorOptions.cs" />
-    <Compile Include="Outputs\SatisfactionUncertaintyPNG.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -63,22 +71,6 @@
     <ProjectReference Include="..\Parsing\Parsing.csproj">
       <Project>{52C948A2-30AD-40A7-89A3-9D66B2FCDD9F}</Project>
       <Name>UCLouvain.KAOSTools.Parsing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\BDDSharp\BDDSharp\BDDSharp.csproj">
-      <Project>{0F303658-80AD-4637-B587-BD076A80DCF5}</Project>
-      <Name>BDDSharp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ExpertOpinionSharp\ExpertOpinionSharp\ExpertOpinionSharp.csproj">
-      <Project>{17EE1289-7F54-404E-BD17-2FAB7D0C59C5}</Project>
-      <Name>ExpertOpinionSharp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\VizuSharp\VizuSharp.Cairo\VizuSharp.Cairo.csproj">
-      <Project>{40CA46CD-12FF-491F-A251-2D00928E643F}</Project>
-      <Name>VizuSharp.Cairo</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\VizuSharp\VizuSharp\VizuSharp.csproj">
-      <Project>{6FE1DC5A-E704-435B-A276-5DDAA0912EA9}</Project>
-      <Name>VizuSharp</Name>
     </ProjectReference>
     <ProjectReference Include="..\MetaModel\UCLouvain.KAOSTools.Core.csproj">
       <Project>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</Project>

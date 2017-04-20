@@ -30,6 +30,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="UCLouvain.BDDSharp">
+      <HintPath>..\packages\UCLouvain.BDDSharp.0.1.1\lib\net45\UCLouvain.BDDSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -52,6 +55,9 @@
       <Project>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</Project>
       <Name>UCLouvain.KAOSTools.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
