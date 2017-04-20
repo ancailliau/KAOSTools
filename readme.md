@@ -6,6 +6,8 @@ You can find more documentation here : https://github.com/ancailliau/KAOSFormalT
 
 If you have any question regarding this software, do not hesitate to contact the author.
 
+[![Build Status](https://travis-ci.org/ancailliau/KAOSTools.svg?branch=master)](https://travis-ci.org/ancailliau/KAOSTools)
+
 ## Requirements
 
 - Mono (> 2.10)
