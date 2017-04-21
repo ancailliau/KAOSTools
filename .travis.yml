@@ -7,3 +7,4 @@ install:
 script:
   - xbuild /p:Configuration=Debug KAOSTools.sln
   - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./bin/Parsing.Tests/Debug/KAOSTools.Parsing.Tests.dll
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./bin/Debug/UCLouvain.KAOSTools.Propagators.Tests.dll
