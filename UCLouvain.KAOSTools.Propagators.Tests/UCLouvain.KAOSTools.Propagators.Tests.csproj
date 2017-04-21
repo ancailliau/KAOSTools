@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0821CC06-6551-4B93-9379-6AF3DBD3F9F6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>UCLouvain.KAOSTools.Propagators.Tests</RootNamespace>
+    <AssemblyName>UCLouvain.KAOSTools.Propagators.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.3.6.1\lib\net45\nunit.framework.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="TestPatternBasedPropagator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\UCLouvain.KAOSTools.Propagators\UCLouvain.KAOSTools.Propagators.csproj">
+      <Project>{A8252078-D017-4CB4-92DE-3212F7C1FE77}</Project>
+      <Name>UCLouvain.KAOSTools.Propagators</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MetaModel\UCLouvain.KAOSTools.Core.csproj">
+      <Project>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</Project>
+      <Name>UCLouvain.KAOSTools.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Parsing\UCLouvain.KAOSTools.Parsing.csproj">
+      <Project>{52C948A2-30AD-40A7-89A3-9D66B2FCDD9F}</Project>
+      <Name>UCLouvain.KAOSTools.Parsing</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="Examples\MilestoneModel.kaos">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Examples\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

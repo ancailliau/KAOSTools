@@ -1,0 +1,9 @@
+﻿declare goal [ root ]
+    refinedby [ milestone ] m1, m2
+end
+
+declare goal [ m1 ] obstructedby o1 end
+declare goal [ m2 ] obstructedby o2 end
+
+declare obstacle [ o1 ] end
+declare obstacle [ o2 ] end

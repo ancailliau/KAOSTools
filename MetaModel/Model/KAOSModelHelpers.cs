@@ -17,6 +17,10 @@ namespace KAOSTools.Core
             return model.goalRepository.GetGoals (pred);
         }
 
+        public static Goal Goal (this KAOSModel model, string identifier) {
+            return model.goalRepository.GetGoal (identifier);
+        }
+
         public static Goal Goal (this KAOSModel model, Predicate<Goal> pred) {
             return model.goalRepository.GetGoal (pred);
         }
@@ -24,7 +28,12 @@ namespace KAOSTools.Core
         public static IEnumerable<GoalRefinement> GoalRefinements(this KAOSModel model)
 		{
 			return model.goalRepository.GetGoalRefinements();
-		}
+        }
+
+        public static IEnumerable<GoalRefinement> GoalRefinements (this KAOSModel model, Predicate<GoalRefinement> pred)
+        {
+            return model.goalRepository.GetGoalRefinements (pred);
+        }
 
 		public static IEnumerable<GoalException> Exceptions(this KAOSModel model)
 		{
@@ -71,17 +80,32 @@ namespace KAOSTools.Core
 
         public static Obstacle Obstacle (this KAOSModel model, Predicate<Obstacle> pred) {
             return model.obstacleRepository.GetObstacle(pred);
-		}
+        }
+
+        public static Obstacle Obstacle (this KAOSModel model, string identifier)
+        {
+            return model.obstacleRepository.GetObstacle (identifier);
+        }
 		
         public static IEnumerable<ObstacleRefinement> ObstacleRefinements(this KAOSModel model)
 		{
             return model.obstacleRepository.GetObstacleRefinements();
-		}
+        }
 
-		public static IEnumerable<Obstruction> Obstructions(this KAOSModel model)
+        public static IEnumerable<ObstacleRefinement> ObstacleRefinements (this KAOSModel model, Predicate<ObstacleRefinement> pred)
+        {
+            return model.obstacleRepository.GetObstacleRefinements (pred);
+        }
+
+        public static IEnumerable<Obstruction> Obstructions(this KAOSModel model)
 		{
 			return model.obstacleRepository.GetObstructions();
-		}
+        }
+
+        public static IEnumerable<Obstruction> Obstructions (this KAOSModel model, Predicate<Obstruction> pred)
+        {
+            return model.obstacleRepository.GetObstructions (pred);
+        }
 		
         public static IEnumerable<Resolution> Resolutions(this KAOSModel model)
 		{
