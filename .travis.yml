@@ -1,10 +1,13 @@
 language: csharp
+mono:
+    - weekly
 sudo: false
 solution: KAOSTools.sln
 install:
   - nuget restore KAOSTools.sln
   - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
+  - nuget install NUnit.Console -OutputDirectory testrunner
 script:
-  - xbuild /p:Configuration=Debug KAOSTools.sln
+  - msbuild /p:Configuration=Debug KAOSTools.sln
   - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./bin/Parsing.Tests/Debug/KAOSTools.Parsing.Tests.dll
-  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./bin/Debug/UCLouvain.KAOSTools.Propagators.Tests.dll
+  - mono testrunner/NUnit.ConsoleRunner.3.6.1/tools/nunit3-console.exe ./bin/Debug/UCLouvain.KAOSTools.Propagators.Tests.dll
