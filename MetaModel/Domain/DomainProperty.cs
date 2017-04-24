@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -27,7 +27,13 @@ namespace KAOSTools.Core
 
         public Formula FormalSpec { get; set; }
 
-        public double EPS { get; set; }
+        public double EPS { get {
+                throw new Exception ();
+            }
+            set {
+                throw new Exception (); 
+            } 
+        }
 
 		public DomainProperty(KAOSModel model) : base(model) { }
         public DomainProperty(KAOSModel model, string identifier) : base(model, identifier) { }

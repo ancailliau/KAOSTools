@@ -95,7 +95,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                     .ShallBeSingle ();
             
             obstacle.Refinements()
-                .ShallContain (x => x.SubobstacleIdentifiers
+                .ShallContain (x => x.SubobstacleIdentifiers.Select (y => y.Identifier)
                                .OnlyContains ( new string [] { "child1" , "child2" }));
         }
 
@@ -119,9 +119,9 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
 			}
 			Console.WriteLine("***");
 
-            obstacle.Refinements().ShallContain (x => x.SubobstacleIdentifiers
+            obstacle.Refinements().ShallContain (x => x.SubobstacleIdentifiers.Select (y => y.Identifier)
                                                               .OnlyContains ( new string [] { "child1" , "child2" }));
-            obstacle.Refinements().ShallContain (x => x.SubobstacleIdentifiers
+            obstacle.Refinements().ShallContain (x => x.SubobstacleIdentifiers.Select (y => y.Identifier)
                                                               .OnlyContains ( new string [] { "child3" , "child4" }));
         }
 
@@ -135,7 +135,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             var model = parser.Parse (input);
             
             var test = model.Obstacles().ShallContain (x => x.Identifier == "test").ShallBeSingle ();
-            test.Refinements().ShallBeSingle ().DomainPropertyIdentifiers.ShallOnlyContain (new string [] { "domprop" });
+            test.Refinements().ShallBeSingle ().DomainPropertyIdentifiers.Select (y => y.Identifier).ShallOnlyContain (new string [] { "domprop" });
         }
 
 		[TestCase(@"declare obstacle[ test ]
@@ -150,7 +150,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             var test = model.Obstacles().ShallContain (x => x.Identifier == "test").ShallBeSingle ();
             var refinement = test.Refinements().ShallBeSingle ();
 
-            refinement.DomainHypothesisIdentifiers.ShallOnlyContain (new string [] { "domhyp" });
+            refinement.DomainHypothesisIdentifiers.Select (y => y.Identifier).ShallOnlyContain (new string [] { "domhyp" });
         }
         
 
@@ -183,10 +183,10 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             obstacle.Name.ShallEqual ("new name");
             obstacle.Definition.ShallEqual ("new definition");
 
-            obstacle.Refinements().ShallContain (y => y.SubobstacleIdentifiers
+            obstacle.Refinements().ShallContain (x => x.SubobstacleIdentifiers.Select (y => y.Identifier)
                                            .OnlyContains (new string[] { "old_child1", "old_child2" }));
             
-            obstacle.Refinements().ShallContain (y => y.SubobstacleIdentifiers
+            obstacle.Refinements().ShallContain (x => x.SubobstacleIdentifiers.Select (y => y.Identifier)
                                            .OnlyContains (new string[] { "new_child1", "new_child2" }));
             
             obstacle.Resolutions()

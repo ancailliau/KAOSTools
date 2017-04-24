@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UCLouvain.KAOSTools.Core.SatisfactionRates;
 namespace UCLouvain.KAOSTools.Core.Repositories
@@ -11,6 +11,14 @@ namespace UCLouvain.KAOSTools.Core.Repositories
 
         void AddDomPropSatisfactionRate(string dompropId, ISatisfactionRate satRate);
 		ISatisfactionRate GetDomPropSatisfactionRate(string dompropId);
-		IEnumerable<ISatisfactionRate> GetDomPropSatisfactionRates(string dompropId);
+        IEnumerable<ISatisfactionRate> GetDomPropSatisfactionRates (string dompropId);
+
+        void AddDomHypothesisSatisfactionRate (string domHypId, ISatisfactionRate satRate);
+        ISatisfactionRate GetDomHypothesisSatisfactionRate (string domHypId);
+        IEnumerable<ISatisfactionRate> GetDomHypothesisSatisfactionRates (string domHypId);
+
+        void AddGoalSatisfactionRate (string dompropId, ISatisfactionRate satRate);
+        ISatisfactionRate GetGoalSatisfactionRate (string dompropId);
+        IEnumerable<ISatisfactionRate> GetGoalSatisfactionRates (string dompropId);
     }
 }

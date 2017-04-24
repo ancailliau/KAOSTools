@@ -17,40 +17,38 @@ namespace KAOSTools.Parsing.Builders.Attributes
             var refinement = new GoalRefinement(model);
             refinement.SetParentGoal(element);
 
-			// Parse the reference to children
-			foreach (var child in attribute.Values)
-			{
-                if (child is IdentifierExpression)
-                {
-                    var id = ((IdentifierExpression)child).Value;
+            // Parse the reference to children
+            foreach (var child in attribute.ParsedRefinees) {
+                var id = child.Identifier;
+                var param = child.Parameters;
+                IRefineeParameter refineeParameter = null;
 
-                    Goal refinee;
-                    DomainProperty domprop;
-                    DomainHypothesis domhyp;
+                if (param != null) {
+                    if (param is ParsedPrimitiveRefineeParameter<double>) {
+                        var cast = ((ParsedPrimitiveRefineeParameter<double>)param);
+                        refineeParameter = new PrimitiveRefineeParameter<double> (cast.Value);
 
-                    if ((refinee = model.goalRepository.GetGoal(id)) != null)
-                    {
-                        refinement.Add(refinee);
-                    }
-                    else if ((domprop = model.domainRepository.GetDomainProperty(id)) != null)
-                    {
-                        refinement.Add(domprop);
-                    }
-                    else if ((domhyp = model.domainRepository.GetDomainHypothesis(id)) != null)
-                    {
-                        refinement.Add(domhyp);
-                    }
-                    else {
-                        refinee = new Goal(model, id) { Implicit = true };
-                        model.goalRepository.Add(refinee);
-                        refinement.Add(refinee);
+                    } else {
+                        throw new NotImplementedException ();
                     }
                 }
-                else
-                {
-                    throw new UnsupportedValue(element, attribute, child);
+
+                Goal refinee;
+                DomainProperty domprop;
+                DomainHypothesis domhyp;
+
+                if ((refinee = model.goalRepository.GetGoal (id)) != null) {
+                    refinement.Add (refinee, refineeParameter);
+                } else if ((domprop = model.domainRepository.GetDomainProperty (id)) != null) {
+                    refinement.Add (domprop, refineeParameter);
+                } else if ((domhyp = model.domainRepository.GetDomainHypothesis (id)) != null) {
+                    refinement.Add (domhyp, refineeParameter);
+                } else {
+                    refinee = new Goal (model, id) { Implicit = true };
+                    model.goalRepository.Add (refinee);
+                    refinement.Add (refinee);
                 }
-			}
+            }
 
 			// Parse the refinement pattern provided
 			if (attribute.RefinementPattern != null)
@@ -63,11 +61,6 @@ namespace KAOSTools.Parsing.Builders.Attributes
 				else if (attribute.RefinementPattern.Name == ParsedRefinementPatternName.Case)
 				{
 					refinement.RefinementPattern = RefinementPattern.Case;
-					// TODO Refactor that allowing to specify how much the subgoal contribute (alone) to the parent goal.
-					foreach (var p in attribute.RefinementPattern.Parameters)
-					{
-						refinement.Parameters.Add((p as ParsedFloat).Value);
-					}
 				}
 
 				else if (attribute.RefinementPattern.Name == ParsedRefinementPatternName.IntroduceGuard)
@@ -94,11 +87,10 @@ namespace KAOSTools.Parsing.Builders.Attributes
 				{
 					refinement.RefinementPattern = RefinementPattern.Redundant;
 				}
-
-
+                
 				else
 				{
-					throw new NotImplementedException();
+                    throw new BuilderException ("Unsupported pattern " + refinement.RefinementPattern, attribute);
 				}
 			}
 

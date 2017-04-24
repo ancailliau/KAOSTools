@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UCLouvain.KAOSTools.Core.Agents;
+using UCLouvain.KAOSTools.Core.SatisfactionRates;
 
 namespace KAOSTools.Core
 {
@@ -35,7 +36,7 @@ namespace KAOSTools.Core
 
         public static IEnumerable<GoalRefinement> ParentRefinements (this Goal goal) {
             return from refinement in goal.model.GoalRefinements()
-                where refinement.SubGoalIdentifiers.Contains(goal.Identifier)
+                    where refinement.SubGoalIdentifiers.Any(x => x.Identifier == goal.Identifier)
                     select refinement;
         }
 
@@ -70,7 +71,7 @@ namespace KAOSTools.Core
         
         public static IEnumerable<ObstacleRefinement> ParentRefinements (this Obstacle obstacle) {
             return from refinement in obstacle.model.ObstacleRefinements()
-                where refinement.SubobstacleIdentifiers.Contains(obstacle.Identifier)
+                where refinement.SubobstacleIdentifiers.Any(x => x.Identifier == obstacle.Identifier)
                     select refinement;
         }
 
@@ -92,13 +93,13 @@ namespace KAOSTools.Core
 
         public static IEnumerable<ObstacleRefinement> ObstacleRefinements (this DomainProperty domProp) {
             return from refinement in domProp.model.ObstacleRefinements()
-                where refinement.DomainPropertyIdentifiers.Contains (domProp.Identifier)
+                where refinement.DomainPropertyIdentifiers.Any(x => x.Identifier == domProp.Identifier)
                     select refinement;
         }
 
         public static IEnumerable<GoalRefinement> GoalRefinements (this DomainProperty domProp) {
             return from refinement in domProp.model.GoalRefinements()
-                where refinement.DomainPropertyIdentifiers.Contains (domProp.Identifier)
+                where refinement.DomainPropertyIdentifiers.Any (x => x.Identifier == domProp.Identifier)
                     select refinement;
         }
 
@@ -108,13 +109,13 @@ namespace KAOSTools.Core
 
         public static IEnumerable<ObstacleRefinement> ObstacleRefinements (this DomainHypothesis domHyp) {
             return from refinement in domHyp.model.ObstacleRefinements()
-                where refinement.DomainHypothesisIdentifiers.Contains (domHyp.Identifier)
+                where refinement.DomainHypothesisIdentifiers.Any(x => x.Identifier == domHyp.Identifier)
                     select refinement;
         }
 
         public static IEnumerable<GoalRefinement> GoalRefinements (this DomainHypothesis domHyp) {
             return from refinement in domHyp.model.GoalRefinements()
-                where refinement.DomainHypothesisIdentifiers.Contains (domHyp.Identifier)
+                where refinement.DomainHypothesisIdentifiers.Any (x => x.Identifier == domHyp.Identifier)
                     select refinement;
         }
 
@@ -148,17 +149,17 @@ namespace KAOSTools.Core
 
         public static IEnumerable<Goal> SubGoals (this GoalRefinement refinement) {
             return refinement.SubGoalIdentifiers
-                .Select(x => refinement.model.Goals().SingleOrDefault(y => y.Identifier == x));
+                .Select(x => refinement.model.Goals().SingleOrDefault(y => y.Identifier == x.Identifier));
         }
         
         public static IEnumerable<DomainProperty> DomainProperties (this GoalRefinement refinement) {
             return refinement.DomainPropertyIdentifiers
-                .Select(x => refinement.model.DomainProperties().SingleOrDefault(y => y.Identifier == x));
+                .Select(x => refinement.model.DomainProperties().SingleOrDefault(y => y.Identifier == x.Identifier));
         }
 
         public static IEnumerable<DomainHypothesis> DomainHypotheses (this GoalRefinement refinement) {
             return refinement.DomainHypothesisIdentifiers
-                .Select(x => refinement.model.DomainHypotheses().SingleOrDefault(y => y.Identifier == x));
+                .Select(x => refinement.model.DomainHypotheses().SingleOrDefault(y => y.Identifier == x.Identifier));
         }
 
         public static Goal ParentGoal (this GoalRefinement refinement) {
@@ -173,17 +174,17 @@ namespace KAOSTools.Core
 
         public static IEnumerable<Obstacle> SubObstacles (this ObstacleRefinement refinement) {
             return refinement.SubobstacleIdentifiers
-                .Select(x => refinement.model.Obstacles().SingleOrDefault(y => y.Identifier == x));
+                .Select(x => refinement.model.Obstacles().SingleOrDefault(y => y.Identifier == x.Identifier));
         }
 
         public static IEnumerable<DomainProperty> DomainProperties (this ObstacleRefinement refinement) {
             return refinement.DomainPropertyIdentifiers
-                .Select(x => refinement.model.DomainProperties().SingleOrDefault(y => y.Identifier == x));
+                .Select(x => refinement.model.DomainProperties().SingleOrDefault(y => y.Identifier == x.Identifier));
         }
 
         public static IEnumerable<DomainHypothesis> DomainHypotheses (this ObstacleRefinement refinement) {
             return refinement.DomainHypothesisIdentifiers
-                .Select(x => refinement.model.DomainHypotheses().SingleOrDefault(y => y.Identifier == x));
+                .Select(x => refinement.model.DomainHypotheses().SingleOrDefault(y => y.Identifier == x.Identifier));
         }
 
         public static Obstacle ParentObstacle (this ObstacleRefinement refinement) {
@@ -279,6 +280,25 @@ namespace KAOSTools.Core
 
         public static GivenType Type (this EntityAttribute attribute) {
             return attribute.model.GivenTypes().SingleOrDefault(y => y.Identifier == attribute.TypeIdentifier);
+        }
+
+        #endregion
+
+        #region Satisfaction Rate
+
+        public static ISatisfactionRate LatestEPS (this Obstacle obstacle)
+        {
+            return obstacle.model.satisfactionRateRepository.GetObstacleSatisfactionRates (obstacle.Identifier).FirstOrDefault ();
+        }
+
+        public static ISatisfactionRate LatestEPS (this DomainProperty obstacle)
+        {
+            return obstacle.model.satisfactionRateRepository.GetDomPropSatisfactionRates (obstacle.Identifier).FirstOrDefault ();
+        }
+
+        public static ISatisfactionRate LatestEPS (this DomainHypothesis obstacle)
+        {
+            throw new NotImplementedException ();
         }
 
         #endregion

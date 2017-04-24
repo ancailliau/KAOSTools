@@ -1,30 +1,17 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
 
 namespace KAOSTools.Core
 {
-
-    #region Goal Model
-
-    #region Meta entities
-
-    #endregion
-
-    #region Assignements
-
-    #endregion
-
-    #region Refinements
-
     public class ObstacleRefinement : KAOSCoreElement
     {
         public string ParentObstacleIdentifier { get; set; }
 
-        public ISet<string> SubobstacleIdentifiers { get; set; }
-        public ISet<string> DomainPropertyIdentifiers { get; set; }
-        public ISet<string> DomainHypothesisIdentifiers { get; set; }
+        public ISet<ObstacleRefinee> SubobstacleIdentifiers { get; set; }
+        public ISet<ObstacleRefinee> DomainPropertyIdentifiers { get; set; }
+        public ISet<ObstacleRefinee> DomainHypothesisIdentifiers { get; set; }
 
         public bool IsEmpty {
             get {
@@ -33,20 +20,20 @@ namespace KAOSTools.Core
         }
         public ObstacleRefinement (KAOSModel model) : base (model)
         {
-            SubobstacleIdentifiers = new HashSet<string> ();
-            DomainPropertyIdentifiers = new HashSet<string> ();
-            DomainHypothesisIdentifiers = new HashSet<string> ();
+            SubobstacleIdentifiers = new HashSet<ObstacleRefinee> ();
+            DomainPropertyIdentifiers = new HashSet<ObstacleRefinee> ();
+            DomainHypothesisIdentifiers = new HashSet<ObstacleRefinee> ();
         }
 
         public ObstacleRefinement (KAOSModel model, Obstacle obstacle) : this (model)
         {
-            SubobstacleIdentifiers.Add (obstacle.Identifier);
+            SubobstacleIdentifiers.Add (new ObstacleRefinee (obstacle.Identifier));
         }
 
         public ObstacleRefinement (KAOSModel model, params Obstacle[] obstacles) : this (model)
         {
             foreach (var obstacle in obstacles)
-                SubobstacleIdentifiers.Add (obstacle.Identifier);
+                SubobstacleIdentifiers.Add (new ObstacleRefinee (obstacle.Identifier));
         }
 
         public void SetParentObstacle (Obstacle element)
@@ -56,17 +43,32 @@ namespace KAOSTools.Core
 
         public void Add (Obstacle obstacle)
         {
-            this.SubobstacleIdentifiers.Add (obstacle.Identifier);
+            this.SubobstacleIdentifiers.Add (new ObstacleRefinee (obstacle.Identifier));
+        }
+
+        public void Add (Obstacle obstacle, IRefineeParameter parameter)
+        {
+            this.SubobstacleIdentifiers.Add (new ObstacleRefinee (obstacle.Identifier, parameter));
         }
 
         public void Add (DomainProperty domProp)
         {
-            this.DomainPropertyIdentifiers.Add (domProp.Identifier);
+            this.DomainPropertyIdentifiers.Add (new ObstacleRefinee (domProp.Identifier));
+        }
+
+        public void Add (DomainProperty domProp, IRefineeParameter parameter)
+        {
+            this.DomainPropertyIdentifiers.Add (new ObstacleRefinee (domProp.Identifier, parameter));
         }
 
         public void Add (DomainHypothesis domHyp)
         {
-            this.DomainHypothesisIdentifiers.Add (domHyp.Identifier);
+            this.DomainHypothesisIdentifiers.Add (new ObstacleRefinee (domHyp.Identifier));
+        }
+
+        public void Add (DomainHypothesis domHyp, IRefineeParameter parameter)
+        {
+            this.DomainHypothesisIdentifiers.Add (new ObstacleRefinee (domHyp.Identifier, parameter));
         }
 
         public override KAOSCoreElement Copy ()
@@ -75,27 +77,47 @@ namespace KAOSTools.Core
                 Identifier = Identifier,
                 Implicit = Implicit,
                 ParentObstacleIdentifier = ParentObstacleIdentifier,
-                SubobstacleIdentifiers = new HashSet<string> (SubobstacleIdentifiers),
-                DomainPropertyIdentifiers = new HashSet<string> (DomainPropertyIdentifiers),
-                DomainHypothesisIdentifiers = new HashSet<string> (DomainHypothesisIdentifiers)
+                SubobstacleIdentifiers = new HashSet<ObstacleRefinee> (SubobstacleIdentifiers),
+                DomainPropertyIdentifiers = new HashSet<ObstacleRefinee> (DomainPropertyIdentifiers),
+                DomainHypothesisIdentifiers = new HashSet<ObstacleRefinee> (DomainHypothesisIdentifiers)
             };
         }
     }
 
-    #endregion
+    public class ObstacleRefinee {
+        public string Identifier {
+            get;
+            set;
+        }
 
-    #region Obstructions and resolutions
+        public IRefineeParameter Parameters
+        {
+            get;
+            set;
+        }
 
-    #endregion
+        public ObstacleRefinee (string identifier)
+        {
+            Identifier = identifier;
+        }
 
-    #region Exceptions and assumptions
+        public ObstacleRefinee (string identifier, IRefineeParameter parameters)
+        {
+            Identifier = identifier;
+            Parameters = parameters;
+        }
 
-    #endregion
+        public override bool Equals (object obj)
+        {
+            if (obj != null && obj is GoalRefinee)
+                return Identifier.Equals (((GoalRefinee)obj).Identifier);
+            else
+                return false;
+        }
 
-    #endregion
-
-    #region Object Model
-
-    #endregion
-    
+        public override int GetHashCode ()
+        {
+            return 17 + 23 * (Identifier.GetHashCode () + 23 * Parameters?.GetHashCode () ?? 0);
+        }
+    }
 }

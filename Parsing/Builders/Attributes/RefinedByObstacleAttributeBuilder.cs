@@ -18,40 +18,42 @@ namespace KAOSTools.Parsing.Builders.Attributes
             refinement.SetParentObstacle(element);
 
 			// Parse the reference to children
-			foreach (var child in attribute.Values)
+			foreach (var child in attribute.ParsedRefinees)
 			{
-                if (child is IdentifierExpression)
-                {
-                    var id = ((IdentifierExpression)child).Value;
+                var id = child.Identifier;
+                var param = child.Parameters;
+                IRefineeParameter refineeParameter = null;
 
-                    Obstacle refinee;
-                    DomainProperty domprop;
-                    DomainHypothesis domhyp;
+                if (param != null) {
+                    if (param is ParsedPrimitiveRefineeParameter<double>) {
+                        var cast = ((ParsedPrimitiveRefineeParameter<double>)param);
+                        refineeParameter = new PrimitiveRefineeParameter<double> (cast.Value);
 
-                    if ((refinee = model.obstacleRepository.GetObstacle(id)) != null)
-                    {
-                        refinement.Add(refinee);
-                    }
-                    else if ((domprop = model.domainRepository.GetDomainProperty(id)) != null)
-                    {
-                        refinement.Add(domprop);
-                    }
-                    else if ((domhyp = model.domainRepository.GetDomainHypothesis(id)) != null)
-                    {
-                        refinement.Add(domhyp);
-                    }
-                    else {
-                        refinee = new Obstacle(model, id) { Implicit = true };
-                        model.obstacleRepository.Add(refinee);
-                        refinement.Add(refinee);
+                    } else {
+                        throw new NotImplementedException ();
                     }
                 }
-                else
+                
+                Obstacle refinee;
+                DomainProperty domprop;
+                DomainHypothesis domhyp;
+
+                if ((refinee = model.obstacleRepository.GetObstacle(id)) != null)
                 {
-                    throw new NotImplementedException(string.Format("'{0}' is not supported in '{1}' on '{2}'", 
-                                                                    child.GetType().Name, 
-                                                                    attribute.GetType().Name, 
-                                                                    element.GetType().Name));
+                    refinement.Add(refinee, refineeParameter);
+                }
+                else if ((domprop = model.domainRepository.GetDomainProperty(id)) != null)
+                {
+                    refinement.Add(domprop, refineeParameter);
+                }
+                else if ((domhyp = model.domainRepository.GetDomainHypothesis(id)) != null)
+                {
+                    refinement.Add(domhyp, refineeParameter);
+                }
+                else {
+                    refinee = new Obstacle(model, id) { Implicit = true };
+                    model.obstacleRepository.Add(refinee);
+                    refinement.Add(refinee);
                 }
 			}
 

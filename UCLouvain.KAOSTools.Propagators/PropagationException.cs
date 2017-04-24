@@ -9,6 +9,9 @@ namespace UCLouvain.KAOSTools.Propagators
         public const string PATTERN_NOT_SUPPORTED
         = "The refinement pattern is not supported in propagation.";
 
+        public const string MISSING_PARAMETER
+        = "The by-case refinement pattern requiers parameters.";
+
         public PropagationException (string message) : base (message)
         {
         }

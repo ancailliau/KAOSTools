@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -28,9 +28,23 @@ namespace KAOSTools.Core
 
         public Formula FormalSpec { get; set; }
 
-        public double EPS { get; set; }
+        public double EPS {
+            get {
+                throw new Exception ();
+            }
+            set {
+                throw new Exception ();
+            }
+        }
 
-        public double CPS { get; set; }
+        public double CPS {
+            get {
+                throw new Exception ();
+            }
+            set {
+                throw new Exception ();
+            }
+        }
 
 
         public UncertainSatisfactionRate SatisfactionUncertainty { get; set; }

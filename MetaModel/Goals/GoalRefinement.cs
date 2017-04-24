@@ -1,27 +1,13 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
 
 namespace KAOSTools.Core
 {
-
-    #region Goal Model
-
-    #region Meta entities
-
-    #endregion
-
-    #region Assignements
-
-    #endregion
-
-    #region Refinements
-
     [DataContract]
     public class GoalRefinement : KAOSCoreElement
     {
-        
         [DataMember]
         public string ParentGoalIdentifier { get; set; }
 
@@ -36,13 +22,13 @@ namespace KAOSTools.Core
         public ISet<string> NegativeSoftGoalsIdentifiers { get; set; }
 
         [DataMember]
-        public IList<string> SubGoalIdentifiers { get; set; }
+        public ISet<GoalRefinee> SubGoalIdentifiers { get; set; }
         
         [DataMember]
-        public ISet<string> DomainPropertyIdentifiers { get; set; }
+        public ISet<GoalRefinee> DomainPropertyIdentifiers { get; set; }
         
         [DataMember]
-        public ISet<string> DomainHypothesisIdentifiers { get; set; }
+        public ISet<GoalRefinee> DomainHypothesisIdentifiers { get; set; }
 
         public bool IsEmpty {
             get {
@@ -53,31 +39,28 @@ namespace KAOSTools.Core
         }
 
         public RefinementPattern RefinementPattern { get; set; }
-        public List<dynamic> Parameters { get; set; }
 
         public GoalRefinement (KAOSModel model) : base (model)
         {
-            SubGoalIdentifiers = new List<string> ();
-            DomainPropertyIdentifiers = new HashSet<string> ();
-            DomainHypothesisIdentifiers = new HashSet<string> ();
+            SubGoalIdentifiers = new HashSet<GoalRefinee> ();
+            DomainPropertyIdentifiers = new HashSet<GoalRefinee> ();
+            DomainHypothesisIdentifiers = new HashSet<GoalRefinee> ();
 
             PositiveSoftGoalsIdentifiers = new HashSet<string> ();
             NegativeSoftGoalsIdentifiers = new HashSet<string> ();
 
             IsComplete = false;
-
-            Parameters = new List<dynamic> ();
         }
 
         public GoalRefinement (KAOSModel model, Goal goal) : this (model)
         {
-            SubGoalIdentifiers.Add (goal.Identifier);
+            SubGoalIdentifiers.Add (new GoalRefinee (goal.Identifier));
         }
 
         public GoalRefinement (KAOSModel model, params Goal[] goals) : this (model)
         {
             foreach (var goal in goals)
-                SubGoalIdentifiers.Add (goal.Identifier);
+                SubGoalIdentifiers.Add (new GoalRefinee (goal.Identifier));
         }
 
         public void SetParentGoal (Goal element)
@@ -87,33 +70,48 @@ namespace KAOSTools.Core
 
         public void Add (Goal goal)
         {
-            this.SubGoalIdentifiers.Add (goal.Identifier);
+            this.SubGoalIdentifiers.Add (new GoalRefinee (goal.Identifier));
+        }
+
+        public void Add (Goal goal, IRefineeParameter parameter)
+        {
+            this.SubGoalIdentifiers.Add (new GoalRefinee (goal.Identifier, parameter));
         }
         
         public void Add (DomainProperty domProp)
         {
-            this.DomainPropertyIdentifiers.Add (domProp.Identifier);
+            this.DomainPropertyIdentifiers.Add (new GoalRefinee (domProp.Identifier));
+        }
+        
+        public void Add (DomainProperty domProp, IRefineeParameter parameter)
+        {
+            this.DomainPropertyIdentifiers.Add (new GoalRefinee (domProp.Identifier, parameter));
         }
         
         public void Add (DomainHypothesis domHyp)
         {
-            this.DomainHypothesisIdentifiers.Add (domHyp.Identifier);
+            this.DomainHypothesisIdentifiers.Add (new GoalRefinee (domHyp.Identifier));
+        }
+        
+        public void Add (DomainHypothesis domHyp, IRefineeParameter parameter)
+        {
+            this.DomainHypothesisIdentifiers.Add (new GoalRefinee (domHyp.Identifier, parameter));
         }
 
-        public void Remove (Goal goal)
-        {
-            this.SubGoalIdentifiers.Remove (goal.Identifier);
-        }
+        //public void Remove (Goal goal)
+        //{
+        //    this.SubGoalIdentifiers.Remove (goal.Identifier);
+        //}
 
-        public void Remove (DomainProperty domProp)
-        {
-            this.DomainPropertyIdentifiers.Remove (domProp.Identifier);
-        }
+        //public void Remove (DomainProperty domProp)
+        //{
+        //    this.DomainPropertyIdentifiers.Remove (domProp.Identifier);
+        //}
 
-        public void Remove (DomainHypothesis domHyp)
-        {
-            this.DomainHypothesisIdentifiers.Remove (domHyp.Identifier);
-        }
+        //public void Remove (DomainHypothesis domHyp)
+        //{
+        //    this.DomainHypothesisIdentifiers.Remove (domHyp.Identifier);
+        //}
 
         public void AddNegativeSoftGoal (SoftGoal goal)
         {
@@ -132,29 +130,73 @@ namespace KAOSTools.Core
                 Implicit = Implicit,
                 ParentGoalIdentifier = ParentGoalIdentifier,
                 SystemReferenceIdentifier = SystemReferenceIdentifier,
-                SubGoalIdentifiers = new List<string> (SubGoalIdentifiers),
-                DomainPropertyIdentifiers = new HashSet<string> (DomainPropertyIdentifiers),
-                DomainHypothesisIdentifiers = new HashSet<string> (DomainHypothesisIdentifiers),
-                RefinementPattern = RefinementPattern,
-                Parameters = new List<dynamic> (Parameters)
+                SubGoalIdentifiers = new HashSet<GoalRefinee> (SubGoalIdentifiers),
+                DomainPropertyIdentifiers = new HashSet<GoalRefinee> (DomainPropertyIdentifiers),
+                DomainHypothesisIdentifiers = new HashSet<GoalRefinee> (DomainHypothesisIdentifiers),
+                RefinementPattern = RefinementPattern
             };
         }
     }
 
-    #endregion
+    public class GoalRefinee {
+        public string Identifier {
+            get;
+            set;
+        }
 
-    #region Obstructions and resolutions
+        public IRefineeParameter Parameters
+        {
+            get;
+            set;
+        }
 
-    #endregion
+        public GoalRefinee (string identifier)
+        {
+            Identifier = identifier;
+        }
 
-    #region Exceptions and assumptions
+        public GoalRefinee (string identifier, IRefineeParameter parameters)
+        {
+            Identifier = identifier;
+            Parameters = parameters;
+        }
 
-    #endregion
+        public override bool Equals (object obj)
+        {
+            if (obj != null && obj is GoalRefinee)
+                return Identifier.Equals (((GoalRefinee)obj).Identifier);
+            else
+                return false;
+        }
 
-    #endregion
+        public override int GetHashCode ()
+        {
+            return 17 + 23 * (Identifier.GetHashCode () + 23 * Parameters?.GetHashCode () ?? 0);
+        }
+    }
 
-    #region Object Model
+    public interface IRefineeParameter {}
 
-    #endregion
-    
+    public class PrimitiveRefineeParameter<T> : IRefineeParameter {
+        public T Value {
+            get;
+            set;
+        }
+        public PrimitiveRefineeParameter (T value)
+        {
+            Value = value;
+        }
+        public override bool Equals (object obj)
+        {
+            if (obj != null && obj is PrimitiveRefineeParameter<T>)
+                return Value.Equals (((PrimitiveRefineeParameter<T>)obj).Value);
+            else
+                return false;
+        }
+
+        public override int GetHashCode ()
+        {
+            return Value.GetHashCode ();
+        }
+    }
 }

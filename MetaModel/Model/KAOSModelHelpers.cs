@@ -134,6 +134,11 @@ namespace KAOSTools.Core
 		{
 			return model.domainRepository.GetDomainProperty(predicate);
 		}
+        
+        public static DomainProperty DomainProperty(this KAOSModel model, string identifier)
+        {
+            return model.domainRepository.GetDomainProperty(identifier);
+        }
 
 		#endregion
 
@@ -153,6 +158,11 @@ namespace KAOSTools.Core
 		{
 			return model.domainRepository.GetDomainHypothesis(predicate);
 		}
+
+        public static DomainHypothesis DomainHypothesis(this KAOSModel model, string identifier)
+        {
+            return model.domainRepository.GetDomainHypothesis(identifier);
+        }
 
 		#endregion
 

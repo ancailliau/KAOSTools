@@ -119,10 +119,10 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             goal.Name.ShallEqual ("new name");
             goal.Definition.ShallEqual ("new definition");
 
-            goal.Refinements().ShallContain (y => y.SubGoalIdentifiers
+            goal.Refinements().ShallContain (y => y.SubGoalIdentifiers.Select (x => x.Identifier)
                 .OnlyContains (new string[] { "old_child1", "old_child2" }));
 
-            goal.Refinements().ShallContain (y => y.SubGoalIdentifiers
+            goal.Refinements().ShallContain (y => y.SubGoalIdentifiers.Select (x => x.Identifier)
                 .OnlyContains (new string[] { "new_child1", "new_child2" }));
 
             goal.Obstructions()
@@ -165,7 +165,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                 .ShallBeSingle ();
 
             var refinement = goal.Refinements().Single ();
-            refinement.SubGoalIdentifiers.ShallOnlyContain ( new string [] { "child1" , "child2" });
+            refinement.SubGoalIdentifiers.Select (x => x.Identifier).ShallOnlyContain ( new string [] { "child1" , "child2" });
         }
 
 
@@ -190,7 +190,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                 .ShallBeSingle ();
             
             test.Refinements()
-                .ShallContain (x => x.SubGoalIdentifiers
+                .ShallContain (x => x.SubGoalIdentifiers.Select (y => y.Identifier)
                                               .OnlyContains ( new string [] { "child1" , "child2" }));
 
             var child1 = model.Goals()
@@ -198,7 +198,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                 .ShallBeSingle ();
             
             child1.Refinements()
-                .ShallContain (x => x.SubGoalIdentifiers
+                .ShallContain (x => x.SubGoalIdentifiers.Select (y => y.Identifier)
                                               .OnlyContains ( new string [] { "child3" , "child4" }));
         }
 
@@ -212,7 +212,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             var model = parser.Parse (input);
 
             var test = model.Goals().ShallContain (x => x.Identifier == "test").ShallBeSingle ();
-            test.Refinements().ShallBeSingle ().DomainPropertyIdentifiers.ShallOnlyContain (new string [] { "domprop" });
+            test.Refinements().ShallBeSingle ().DomainPropertyIdentifiers.Select (x => x.Identifier).ShallOnlyContain (new string [] { "domprop" });
         }
 
         
@@ -226,7 +226,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             var model = parser.Parse (input);
             
             var test = model.Goals().ShallContain (x => x.Identifier == "test").ShallBeSingle ();
-            test.Refinements().ShallBeSingle ().DomainHypothesisIdentifiers.ShallOnlyContain (new string [] { "domhyp" });
+            test.Refinements().ShallBeSingle ().DomainHypothesisIdentifiers.Select (x => x.Identifier).ShallOnlyContain (new string [] { "domhyp" });
         }
 
         [TestCase(@"declare goal [ test ]
@@ -234,11 +234,6 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                     end
                     declare goal [ goal1 ] end
                     declare goal [ goal2 ] end", RefinementPattern.Milestone)]
-        [TestCase(@"declare goal [ test ]
-                        refinedby [ case ] goal1 [.5], goal2 [.5]
-                    end
-                    declare goal [ goal1 ] end
-                    declare goal [ goal2 ] end", RefinementPattern.Case)]
         [TestCase(@"declare goal [ test ]
                         refinedby [ introduce_guard ] goal1, goal2
                     end
@@ -269,14 +264,52 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
 
             var refinement = goal.Refinements().Single ();
             refinement.RefinementPattern.ShallEqual (pattern);
+        }
+        
+        [TestCase(@"declare goal [ test ]
+                        refinedby [ case ] goal1 [.5], goal2 [.5]
+                    end
+                    declare goal [ goal1 ] end
+                    declare goal [ goal2 ] end", .5, .5)]
+        [TestCase(@"declare goal [ test ]
+                        refinedby [ case ] goal1 [.1], goal2 [.9]
+                    end
+                    declare goal [ goal1 ] end
+                    declare goal [ goal2 ] end", .1, .9)]
+        [TestCase(@"declare goal [ test ]
+                        refinedby [ case ] goal1 [0], goal2 [1]
+                    end
+                    declare goal [ goal1 ] end
+                    declare goal [ goal2 ] end", 0, 1)]
+        [TestCase(@"declare goal [ test ]
+                        refinedby [ case ] goal1 [1], goal2 [0]
+                    end
+                    declare goal [ goal1 ] end
+                    declare goal [ goal2 ] end", 1, 0)]
+        public void TestCaseRefinementPatterns (string input, double e1, double e2)
+        {
+            var model = parser.Parse (input);
 
-            if (pattern == RefinementPattern.Case) {
-				Assert.AreEqual(.5, refinement.Parameters[0]);
-				Assert.AreEqual(.5, refinement.Parameters[1]);
-            }
+            var goal = model.Goals()
+                .ShallContain (x => x.Identifier == "test")
+                    .ShallBeSingle ();
+
+            var refinement = goal.Refinements().Single ();
+            refinement.RefinementPattern.ShallEqual (RefinementPattern.Case);
+            
+            AssertParameter (refinement, "goal1", e1);
+            AssertParameter (refinement, "goal2", e2);
         }
 
-		[TestCase(@"declare goal [ test ] rsr 0.95    end", 0.95)]
+        private static void AssertParameter (GoalRefinement refinement, string goalId, double expected)
+        {
+            IRefineeParameter p1 = refinement.SubGoalIdentifiers.Single (x => x.Identifier == goalId).Parameters;
+            Assert.IsInstanceOf (typeof (PrimitiveRefineeParameter<double>), p1);
+            var cp1 = (PrimitiveRefineeParameter<double>)p1;
+            Assert.AreEqual (expected, cp1.Value);
+        }
+
+        [TestCase(@"declare goal [ test ] rsr 0.95    end", 0.95)]
         [TestCase(@"declare goal [ test ] rsr 1    end", 1)]
         [TestCase(@"declare goal [ test ] rsr 0    end", 0)]
         [TestCase (@"declare goal [ test ] rsr .01  end", .01)]

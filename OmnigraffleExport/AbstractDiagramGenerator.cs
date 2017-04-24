@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using KAOSTools.OmnigraffleExport.Omnigraffle;
 using KAOSTools.Core;
@@ -478,19 +478,19 @@ namespace KAOSTools.OmnigraffleExport
             }
 
             foreach (var child in refinement.SubGoalIdentifiers) {
-                if (!shapes.ContainsKey(child))
+                if (!shapes.ContainsKey(child.Identifier))
                     continue;
 
-                var childGraphic = shapes [child].First ();
+                var childGraphic = shapes [child.Identifier].First ();
                 var line = GetLine (childGraphic, circle);
                 sheet.GraphicsList.Add (line);
             }
             
             foreach (var child in refinement.DomainPropertyIdentifiers) {
-                if (!shapes.ContainsKey(child))
+                if (!shapes.ContainsKey(child.Identifier))
                     continue;
 
-                var childGraphic = shapes [child].First ();
+                var childGraphic = shapes [child.Identifier].First ();
                 var line = GetLine (childGraphic, circle);
                 sheet.GraphicsList.Add (line);
             }
@@ -528,19 +528,19 @@ namespace KAOSTools.OmnigraffleExport
             }
 
             foreach (var child in refinement.SubobstacleIdentifiers) {
-                if (!shapes.ContainsKey(child))
+                if (!shapes.ContainsKey(child.Identifier))
                     continue;
 
-                var childGraphic = shapes [child].First ();
+                var childGraphic = shapes [child.Identifier].First ();
                 var line = GetLine (childGraphic, circle);
                 sheet.GraphicsList.Add (line);
             }
 
             foreach (var child in refinement.DomainHypothesisIdentifiers) {
-                if (!shapes.ContainsKey(child))
+                if (!shapes.ContainsKey(child.Identifier))
                     continue;
 
-                var childGraphic = shapes [child].First ();
+                var childGraphic = shapes [child.Identifier].First ();
                 var line = GetLine (childGraphic, circle);
                 sheet.GraphicsList.Add (line);
             }

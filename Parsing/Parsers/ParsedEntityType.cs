@@ -173,12 +173,57 @@ namespace KAOSTools.Parsing.Parsers
         }
     }
 
-    public class ParsedRefinedByAttribute  : ParsedAttributeWithElementsAndSystemIdentifier {
+    public class ParsedRefinedByAttribute  : ParsedElement {
+        public List<ParsedRefinee> ParsedRefinees {
+            get;
+            set;
+        }
         public ParsedRefinementPattern RefinementPattern { get; set; }
     }
     
-    public class ParsedRefinedByAntiGoalAttribute  : ParsedAttributeWithElementsAndSystemIdentifier {
+    public class ParsedRefinedByAntiGoalAttribute : ParsedElement {
+        public List<ParsedRefinee> ParsedRefinee {
+            get;
+            set;
+        }
         public ParsedRefinementPattern RefinementPattern { get; set; }
+    }
+
+    public class ParsedRefinee : ParsedElement
+    {
+        public string Identifier {
+            get;
+            set;
+        }
+        public IParsedRefineeParameter Parameters {
+            get;
+            set;
+        }
+        public ParsedRefinee ()
+        {
+        }
+        public ParsedRefinee (string identifier)
+        {
+            Identifier = identifier;
+        }
+        public ParsedRefinee (string identifier, IParsedRefineeParameter parameters)
+        {
+            Identifier = identifier;
+            Parameters = parameters;
+        }
+    }
+
+    public interface IParsedRefineeParameter {}
+    public class ParsedPrimitiveRefineeParameter<T> : IParsedRefineeParameter
+    {
+        public T Value {
+            get;
+            set;
+        }
+        public ParsedPrimitiveRefineeParameter (T value)
+        {
+            Value = value;
+        }
     }
 
     public class ParsedSoftGoalContributionAttribute  : ParsedAttributeWithElements {}
