@@ -4,6 +4,8 @@ bin/
 obj/
 test-results/
 TestResult.html
+TestResult.xml
+testrunner/
 .DS_Store
 packages/
 *.csproj.user
