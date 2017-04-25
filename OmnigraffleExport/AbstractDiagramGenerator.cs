@@ -674,17 +674,10 @@ namespace KAOSTools.OmnigraffleExport
                 text += GetRtfUnicodeEscapedString((attribute.Derived ? "/ " : "- "));
                 text += GetRtfUnicodeEscapedString(attribute.FriendlyName);
 
-                Console.WriteLine ("***" + string.IsNullOrEmpty(attribute.TypeIdentifier) + "***");
-
                 if (!string.IsNullOrEmpty(attribute.TypeIdentifier))
                     text += " : " + attribute.Type().FriendlyName;
 
-                Console.WriteLine ("*" + entity.Graphics[1].GetType() + "*");
-
-
                 (entity.Graphics[1] as ShapedGraphic).Text.Text += text;
-
-                Console.WriteLine (text + "**");
             }
         }
 

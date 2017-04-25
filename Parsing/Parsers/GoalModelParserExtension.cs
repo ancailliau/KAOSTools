@@ -89,8 +89,6 @@ namespace KAOSTools.Parsing.Parsers {
         ParsedElement BuildDeclareItem (List<Result> results)
 		{
             var declaredItem = results[1].Text;
-            Console.WriteLine("BuildDeclareItem [ "  + declaredItem + " ]");
-
             foreach (var parser in level0Parser)
             {
                 var regex = new Regex(@"^"+parser.GetIdentifier()+"$");
@@ -144,11 +142,6 @@ namespace KAOSTools.Parsing.Parsers {
 
 		ParsedElement BuildAttributeValue(List<Result> results)
 		{
-            Console.WriteLine(results.Count);
-            Console.WriteLine("--");
-            Console.WriteLine(string.Join("\n", results.Select(x => x.Text.ToString() + "("+x.Value?.GetType()+")")));
-            Console.WriteLine("--");
-
             if (results.Count == 1)
             {
 				return results[0].Value;

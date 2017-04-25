@@ -72,7 +72,6 @@ namespace KAOSTools.Parsing
 					{
 						throw new Exception("Cannot find method Handle with generic parameters.");
 					}
-					Console.WriteLine("Calling " + builder.GetType() + "." + method.ToString());
 					try
 					{
 						method.Invoke(builder, new object[] { element, attribute, model });

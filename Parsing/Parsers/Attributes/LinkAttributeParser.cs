@@ -88,8 +88,6 @@ namespace KAOSTools.Parsing.Parsers.Attributes
                 return value.ToString ();
             }
 
-            Console.WriteLine (parameter.GetType ());
-
             throw new InvalidParameterAttributeException (identifier,
                                         InvalidParameterAttributeException.INVALID_VALUE);
         }

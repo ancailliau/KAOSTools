@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using NLog;
 
@@ -173,11 +173,11 @@ namespace KAOSTools.Core
 
             foreach (var children in goal.Refinements().SelectMany (x => x.SubGoals()).ToArray()) {
 
-                Console.WriteLine ("<pre> -- " + children.FriendlyName + " -- " + assumption.Obstacle().FriendlyName);
+                //Console.WriteLine ("<pre> -- " + children.FriendlyName + " -- " + assumption.Obstacle().FriendlyName);
 
-                Console.WriteLine (string.Join ("\n", children.Obstacles ().Select (x => x.Identifier)));
+                //Console.WriteLine (string.Join ("\n", children.Obstacles ().Select (x => x.Identifier)));
 
-                Console.WriteLine ("</pre><hr />");
+                //Console.WriteLine ("</pre><hr />");
 
                 if (children.Obstacles ().Select (x => x.Identifier).Contains (assumption.ResolvedObstacleIdentifier)) {
 

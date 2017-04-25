@@ -113,12 +113,6 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
                 .ShallContain (x => x.Identifier == "test")
                     .ShallBeSingle ();
 
-            Console.WriteLine("***");
-            foreach (var re in obstacle.Refinements()) {
-                Console.WriteLine(string.Join(",", re.SubobstacleIdentifiers));
-			}
-			Console.WriteLine("***");
-
             obstacle.Refinements().ShallContain (x => x.SubobstacleIdentifiers.Select (y => y.Identifier)
                                                               .OnlyContains ( new string [] { "child1" , "child2" }));
             obstacle.Refinements().ShallContain (x => x.SubobstacleIdentifiers.Select (y => y.Identifier)

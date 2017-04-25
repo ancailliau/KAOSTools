@@ -69,8 +69,6 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 				throw new ArgumentException(string.Format("Goal identifier already exist: {0}", goal.Identifier));
 			}
 
-            Console.WriteLine("Adding goal " + goal.Identifier );
-
 			Goals.Add(goal.Identifier, goal);
         }
 
