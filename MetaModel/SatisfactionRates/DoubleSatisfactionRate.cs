@@ -53,5 +53,10 @@ namespace UCLouvain.KAOSTools.Core.SatisfactionRates
         {
             return string.Format ("[DoubleSatisfactionRate: Value={0}]", SatisfactionRate);
         }
+
+        public double Sample ()
+        {
+            return SatisfactionRate;
+        }
     }
 }

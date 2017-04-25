@@ -32,6 +32,11 @@ namespace KAOSTools.Core
         {
             throw new NotImplementedException ();
         }
+
+        public double Sample ()
+        {
+            throw new NotImplementedException ();
+        }
     }
     
 }

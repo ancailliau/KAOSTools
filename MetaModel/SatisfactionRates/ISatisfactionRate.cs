@@ -8,7 +8,8 @@ namespace UCLouvain.KAOSTools.Core.SatisfactionRates
         ISatisfactionRate OneMinus ();
         ISatisfactionRate Product (ISatisfactionRate x);
         ISatisfactionRate Product (double x);
-
         ISatisfactionRate Sum (ISatisfactionRate x);
+        
+        double Sample ();
     }
 }

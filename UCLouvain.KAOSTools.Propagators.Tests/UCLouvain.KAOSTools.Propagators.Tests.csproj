@@ -19,7 +19,6 @@
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AssemblyName></AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
@@ -35,6 +34,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TestPatternBasedPropagator.cs" />
+    <Compile Include="TestPropagator.cs" />
+    <Compile Include="TestBDDBasedPropagator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UCLouvain.KAOSTools.Propagators\UCLouvain.KAOSTools.Propagators.csproj">
