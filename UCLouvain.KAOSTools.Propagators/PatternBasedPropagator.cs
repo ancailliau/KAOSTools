@@ -5,7 +5,7 @@ using KAOSTools.Core;
 using UCLouvain.KAOSTools.Core.SatisfactionRates;
 namespace UCLouvain.KAOSTools.Propagators
 {
-    public class PatternBasedPropagator
+    public class PatternBasedPropagator : IPropagator
     {
         KAOSModel _model;
 
@@ -38,7 +38,7 @@ namespace UCLouvain.KAOSTools.Propagators
             return cps;
         }
 
-        public ISatisfactionRate GetESR (GoalRefinement goalRefinement)
+        ISatisfactionRate GetESR (GoalRefinement goalRefinement)
         {
             if (goalRefinement.RefinementPattern == RefinementPattern.Milestone
 	            | goalRefinement.RefinementPattern == RefinementPattern.IntroduceGuard
@@ -68,12 +68,12 @@ namespace UCLouvain.KAOSTools.Propagators
 
         }
 
-        private DoubleSatisfactionRate ComputeProductRefineeSatisfactionRate (IEnumerable<GoalRefinee> refinees, Func<string, ISatisfactionRate> get)
+        DoubleSatisfactionRate ComputeProductRefineeSatisfactionRate (IEnumerable<GoalRefinee> refinees, Func<string, ISatisfactionRate> get)
         {
             return refinees.Aggregate (DoubleSatisfactionRate.ONE, (x, y) => (DoubleSatisfactionRate)x.Product (get (y.Identifier)));
         }
 
-        private DoubleSatisfactionRate ComputeRefineeSatisfactionRate (IEnumerable<GoalRefinee> refinees, Func<string, ISatisfactionRate> get)
+        DoubleSatisfactionRate ComputeRefineeSatisfactionRate (IEnumerable<GoalRefinee> refinees, Func<string, ISatisfactionRate> get)
         {
             return refinees.Aggregate (
                                 DoubleSatisfactionRate.ZERO,
@@ -88,7 +88,7 @@ namespace UCLouvain.KAOSTools.Propagators
                             );
         }
 
-        public ISatisfactionRate GetESR (Obstruction o)
+        ISatisfactionRate GetESR (Obstruction o)
         {
             return GetESR(o.Obstacle ());
         }
@@ -107,19 +107,19 @@ namespace UCLouvain.KAOSTools.Propagators
             return esr;
         }
 
-        public ISatisfactionRate GetESR (ObstacleRefinement o)
+        ISatisfactionRate GetESR (ObstacleRefinement o)
         {
             return o.SubObstacles ().Aggregate (DoubleSatisfactionRate.ONE, (x, y) => (DoubleSatisfactionRate) x.Product (GetESR (y)))
                     .Product (o.DomainProperties ().Aggregate (DoubleSatisfactionRate.ONE, (x, y) => (DoubleSatisfactionRate) x.Product(GetESR (y))))
                     .Product (o.DomainHypotheses ().Aggregate (DoubleSatisfactionRate.ONE, (x, y) => (DoubleSatisfactionRate) x.Product(GetESR (y))));
         }
 
-        public ISatisfactionRate GetESR (DomainProperty o)
+        ISatisfactionRate GetESR (DomainProperty o)
         {
             return o.LatestEPS ();
         }
 
-        public ISatisfactionRate GetESR (DomainHypothesis o)
+        ISatisfactionRate GetESR (DomainHypothesis o)
         {
             return o.LatestEPS ();
         }
