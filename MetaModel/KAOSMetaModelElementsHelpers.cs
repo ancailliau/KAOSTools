@@ -149,7 +149,7 @@ namespace KAOSTools.Core
 
         public static IEnumerable<Goal> SubGoals (this GoalRefinement refinement) {
             return refinement.SubGoalIdentifiers
-                .Select(x => refinement.model.Goals().SingleOrDefault(y => y.Identifier == x.Identifier));
+                .Select(x => refinement.model.Goal(x.Identifier));
         }
         
         public static IEnumerable<DomainProperty> DomainProperties (this GoalRefinement refinement) {

@@ -30,11 +30,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="UCLouvain.BDDSharp">
-      <HintPath>..\packages\UCLouvain.BDDSharp.0.1.1\lib\net45\UCLouvain.BDDSharp.dll</HintPath>
-    </Reference>
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.4.4.6\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="UCLouvain.BDDSharp">
+      <HintPath>..\packages\UCLouvain.BDDSharp.0.1.2\lib\net45\UCLouvain.BDDSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

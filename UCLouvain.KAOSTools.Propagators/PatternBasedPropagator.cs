@@ -63,7 +63,7 @@ namespace UCLouvain.KAOSTools.Propagators
                 return (DoubleSatisfactionRate)subGoalSR.Sum (domPropSR).Sum (domHypSR);
 
             } else {
-                throw new PropagationException (PropagationException.PATTERN_NOT_SUPPORTED);
+                throw new PropagationException (PropagationException.PATTERN_NOT_SUPPORTED + $" ({goalRefinement.RefinementPattern})");
             }
 
         }

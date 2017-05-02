@@ -7,6 +7,8 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
     public class BDDBasedPropagator : IPropagator
     {
         KAOSModel _model;
+        ObstructionSuperset obstructionSuperset;
+        Goal prebuilt_goal;
 
         public BDDBasedPropagator (KAOSModel model)
         {
@@ -17,10 +19,17 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
         {
             throw new NotImplementedException ();
         }
+        
+        public void PreBuildObstructionSet (Goal goal)
+        {
+            prebuilt_goal = goal;
+            obstructionSuperset = new ObstructionSuperset (goal);
+        } 
 
         public ISatisfactionRate GetESR (Goal goal)
         {
-            var obstructionSuperset = new ObstructionSuperset (goal);
+            if (obstructionSuperset == null || prebuilt_goal != goal)
+                obstructionSuperset = new ObstructionSuperset (goal);
             var vector = new SamplingVector (_model);
             return new DoubleSatisfactionRate (1.0 - obstructionSuperset.GetProbability (vector));
         }

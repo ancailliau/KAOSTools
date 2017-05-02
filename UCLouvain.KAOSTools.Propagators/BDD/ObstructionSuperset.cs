@@ -17,6 +17,11 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
         
         BDDNode _root;
 
+        public int NodesNumber { get {
+                return _manager.nextId;
+            }
+        }
+
         #region Constructors
 
         ObstructionSuperset ()
@@ -29,13 +34,13 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
         public ObstructionSuperset (Goal goal) : this ()
         {
             _root = GetObstructionSet (goal);
-            _root = _manager.Sifting (_root);
+            //_root = _manager.Sifting (_root);
         }
 
         public ObstructionSuperset (Obstacle obstacle) : this ()
         {
             _root = GetObstructionSet (obstacle);
-            _root = _manager.Sifting (_root);
+            //_root = _manager.Sifting (_root);
         }
 
         #endregion
@@ -47,18 +52,25 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
             return GetProbability (_root, samplingVector);
         }
 
-        double GetProbability (BDDNode node, SamplingVector samplingVector)
+        double GetProbability (BDDNode node, SamplingVector samplingVector, Dictionary<BDDNode, double> cache = null)
         {
             if (node.IsOne) return 1.0;
             if (node.IsZero) return 0.0;
+
+            if (cache == null)
+                cache = new Dictionary<BDDNode, double> ();
+            else if (cache.TryGetValue (node, out double cached))
+                return cached;
 
             Obstacle obstacle = (Obstacle)_rmapping [node.Index];
 
             var v = samplingVector.ContainsKey (obstacle.Identifier) ?
                         samplingVector.Sample (obstacle) : 0;
 
-            return GetProbability (node.Low, samplingVector) * (1 - v)
-                   + GetProbability (node.High, samplingVector) * v;
+            double value = GetProbability (node.Low, samplingVector, cache) * (1 - v)
+                   + GetProbability (node.High, samplingVector, cache) * v;
+            cache [node] = value;
+            return value;
         }
 
         #endregion

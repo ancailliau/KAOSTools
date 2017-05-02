@@ -116,6 +116,7 @@
     <Compile Include="Builders\Attributes\ESRUncertainAttributeBuilder.cs" />
     <Compile Include="Exceptions\InvalidAttributeValueException.cs" />
     <Compile Include="Exceptions\InvalidParameterAttributeException.cs" />
+    <Compile Include="GoalModelExport.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

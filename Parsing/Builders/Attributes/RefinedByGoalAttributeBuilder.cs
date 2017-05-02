@@ -82,11 +82,6 @@ namespace KAOSTools.Parsing.Builders.Attributes
 				{
 					refinement.RefinementPattern = RefinementPattern.Unmonitorability;
 				}
-
-				else if (attribute.RefinementPattern.Name == ParsedRefinementPatternName.Redundant)
-				{
-					refinement.RefinementPattern = RefinementPattern.Redundant;
-				}
                 
 				else
 				{
