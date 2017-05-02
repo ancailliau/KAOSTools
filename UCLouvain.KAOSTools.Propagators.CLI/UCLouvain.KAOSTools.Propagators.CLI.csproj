@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3CA45126-BE8D-46C4-8400-A97B03C62733}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>UCLouvain.KAOSTools.Propagators.CLI</RootNamespace>
+    <AssemblyName>UCLouvain.KAOSTools.Propagators.CLI</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ExternalConsole>true</ExternalConsole>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ExternalConsole>true</ExternalConsole>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MetaModel\UCLouvain.KAOSTools.Core.csproj">
+      <Project>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</Project>
+      <Name>UCLouvain.KAOSTools.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UCLouvain.KAOSTools.Propagators.Tests\UCLouvain.KAOSTools.Propagators.Tests.csproj">
+      <Project>{0821CC06-6551-4B93-9379-6AF3DBD3F9F6}</Project>
+      <Name>UCLouvain.KAOSTools.Propagators.Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UCLouvain.KAOSTools.Propagators.Benchmark\UCLouvain.KAOSTools.Propagators.Benchmark.csproj">
+      <Project>{6A75FAA2-6FF8-4068-9F7B-F363EA5610E3}</Project>
+      <Name>UCLouvain.KAOSTools.Propagators.Benchmark</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UCLouvain.KAOSTools.Propagators\UCLouvain.KAOSTools.Propagators.csproj">
+      <Project>{A8252078-D017-4CB4-92DE-3212F7C1FE77}</Project>
+      <Name>UCLouvain.KAOSTools.Propagators</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

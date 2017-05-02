@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Propaga
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Propagators.Benchmark", "UCLouvain.KAOSTools.Propagators.Benchmark\UCLouvain.KAOSTools.Propagators.Benchmark.csproj", "{6A75FAA2-6FF8-4068-9F7B-F363EA5610E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Propagators.CLI", "UCLouvain.KAOSTools.Propagators.CLI\UCLouvain.KAOSTools.Propagators.CLI.csproj", "{3CA45126-BE8D-46C4-8400-A97B03C62733}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -225,6 +227,20 @@ Global
 		{6A75FAA2-6FF8-4068-9F7B-F363EA5610E3}.CLI|Any CPU.Build.0 = Debug|Any CPU
 		{6A75FAA2-6FF8-4068-9F7B-F363EA5610E3}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
 		{6A75FAA2-6FF8-4068-9F7B-F363EA5610E3}.AppStore|Any CPU.Build.0 = Debug|Any CPU
+		{3CA45126-BE8D-46C4-8400-A97B03C62733}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CA45126-BE8D-46C4-8400-A97B03C62733}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CA45126-BE8D-46C4-8400-A97B03C62733}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CA45126-BE8D-46C4-8400-A97B03C62733}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CA45126-BE8D-46C4-8400-A97B03C62733}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3CA45126-BE8D-46C4-8400-A97B03C62733}.Debug|x86.Build.0 = Debug|Any CPU
+		{3CA45126-BE8D-46C4-8400-A97B03C62733}.Release|x86.ActiveCfg = Release|Any CPU
+		{3CA45126-BE8D-46C4-8400-A97B03C62733}.Release|x86.Build.0 = Release|Any CPU
+		{3CA45126-BE8D-46C4-8400-A97B03C62733}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CA45126-BE8D-46C4-8400-A97B03C62733}.Default|Any CPU.Build.0 = Debug|Any CPU
+		{3CA45126-BE8D-46C4-8400-A97B03C62733}.CLI|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CA45126-BE8D-46C4-8400-A97B03C62733}.CLI|Any CPU.Build.0 = Debug|Any CPU
+		{3CA45126-BE8D-46C4-8400-A97B03C62733}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CA45126-BE8D-46C4-8400-A97B03C62733}.AppStore|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
