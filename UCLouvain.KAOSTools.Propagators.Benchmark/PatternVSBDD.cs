@@ -14,18 +14,25 @@ namespace UCLouvain.KAOSTools.Propagators.Benchmark
         Goal root;
         BDDBasedPropagator p3;
         
-        [Params(1,2,3,4)]
-        public int GoalMaxHeight { get; set; }
-    
+        [Params(10,100,1000,10000)]
+        public int NbGoals { get; set; }
+        
+        [Params(10,100,1000)]
+        public int NbObstructions { get; set; }
+        
+        [Params(10,100,1000,10000)]
+        public int NbObstacles { get; set; }
+
         public PatternVSBDD ()
         {
+        }
+        
+        [Setup]
+        public void Setup () {
             var options = new RandomModelOptions {
-                MinGoalBranchingFactor = 2,
-                MaxGoalBranchingFactor = 4,
-                GoalMaxHeight = GoalMaxHeight,
-                
-                MinObstacleANDBranchingFactor = 2,
-                MaxObstacleANDBranchingFactor = 4,
+                NbGoals = NbGoals,
+                NbObstructions = NbObstructions,
+                NbObstacles = NbObstacles
             };
         
             var generator = new RandomModelGenerator (options);   

@@ -30,44 +30,56 @@ namespace UCLouvain.KAOSTools.Propagators.Tests
 
         public KAOSModel Generate ()
         {
+            if (_options.NbObstacles < _options.NbObstructions)
+                throw new ArgumentException ("Cannot generate a model with more obstructions than obstacles.");
+
+
             root = GenerateGoal (); 
             
             var goalToRefine = new Stack<Tuple<Goal,int>> (new [] { new Tuple<Goal,int> (root, 0) });
             var obstacleToRefine = new Stack<Tuple<Obstacle,int>> ();
-            var goalToObstruct = new Stack<Goal> ();
+            var leafGoal = new HashSet<string> ();
+            var leafObstacles = new HashSet<string> ();
             
-            while (goalToRefine.Count > 0) {
+            while (_model.Goals ().Count () < _options.NbGoals) {
                 var current = goalToRefine.Pop ();
+                leafGoal.Remove (current.Item1.Identifier);
                 var r = GenerateGoalRefinement (current.Item1);
-                if (current.Item2 < _options.GoalMaxHeight) {
-                    foreach (var sg in r.SubGoals ())
-                        goalToRefine.Push (new Tuple<Goal,int> (sg, current.Item2 + 1));
-                } else {
-                    foreach (var sg in r.SubGoals ()) {
-                        if (_random.NextDouble () < _options.ObstructionThreshold) {
-                            goalToObstruct.Push (sg);
-                        }
+                foreach (var sg in r.SubGoals ()) {
+                    goalToRefine.Push (new Tuple<Goal, int> (sg, current.Item2 + 1));
+                    leafGoal.Add (sg.Identifier);
+                }
+            }
+
+            var nbleafGoals = _model.LeafGoals ().Count ();
+            var maxObstruction = Math.Min (nbleafGoals, _options.NbObstructions);
+            while (_model.ObstructedGoals ().Count () < maxObstruction) {
+                int randomIndex = _random.Next (0, nbleafGoals);
+                var current = _model.Goal (leafGoal.ElementAt (randomIndex));
+                leafGoal.Remove (current.Identifier);
+                nbleafGoals--;
+                var r = GenerateObstruction (current);
+                obstacleToRefine.Push (new Tuple<Obstacle, int> (r.Obstacle (), 0));
+                leafObstacles.Add (r.ObstacleIdentifier);
+            }
+
+            while (_model.Obstacles ().Count () < _options.NbObstacles) {
+                var current = obstacleToRefine.Pop ();
+                leafObstacles.Remove (current.Item1.Identifier);
+                var nbRefinement = _random.Next (_options.MinObstacleORBranchingFactor,
+                                                 _options.MaxObstacleORBranchingFactor);
+                for (int i = 0; i < nbRefinement; i++) {
+                    var r = GenerateObstacleRefinement (current.Item1);
+                    foreach (var sg in r.SubObstacles ()) {
+                        obstacleToRefine.Push (new Tuple<Obstacle, int> (sg, current.Item2 + 1));
+                        leafObstacles.Add (sg.Identifier);
                     }
                 }
             }
-            
-            while (goalToObstruct.Count > 0) {
-                var current = goalToObstruct.Pop ();
-                var r = GenerateObstruction (current);
-                obstacleToRefine.Push (new Tuple<Obstacle, int> (r.Obstacle (), 0));
-            }
-            
-            while (obstacleToRefine.Count > 0) {
-                var current = obstacleToRefine.Pop ();
-                var r = GenerateObstacleRefinement (current.Item1);
-                if (current.Item2 < _options.ObstacleMaxHeight) {
-                    foreach (var sg in r.SubObstacles ())
-                        obstacleToRefine.Push (new Tuple<Obstacle,int> (sg, current.Item2 + 1));
-                } else {
-                    foreach (var sg in r.SubObstacles ())
-                        _model.satisfactionRateRepository.AddObstacleSatisfactionRate (sg.Identifier,
-                            new DoubleSatisfactionRate (_random.NextDouble ()));
-                }
+
+            foreach (var current in leafObstacles) {
+                _model.satisfactionRateRepository.AddObstacleSatisfactionRate (current,
+                                new DoubleSatisfactionRate (_random.NextDouble ()));
             }
 
             return _model;
@@ -156,13 +168,13 @@ namespace UCLouvain.KAOSTools.Propagators.Tests
     
     public class RandomModelOptions
     {
-        public int GoalMaxHeight = 2;
+        public int NbGoals = 20;
+        public int NbObstructions = 2;
+        public int NbObstacles = 10;
+        
         public int MinGoalBranchingFactor = 1;
         public int MaxGoalBranchingFactor = 2;
-
-        public double ObstructionThreshold = .3;
         
-        public int ObstacleMaxHeight = 2;
         public int MinObstacleANDBranchingFactor = 1;
         public int MaxObstacleANDBranchingFactor = 2;
         

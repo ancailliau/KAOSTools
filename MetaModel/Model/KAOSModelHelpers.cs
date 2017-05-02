@@ -258,6 +258,15 @@ namespace KAOSTools.Core
                         goals.Remove (resolution.ResolvingGoal());
                 return goals;
         }
+        
+        public static ISet<Goal> LeafGoals (this KAOSModel model) {
+            var goals = new HashSet<Goal> (model.Goals());
+
+            foreach (var refinement in model.GoalRefinements ())
+                goals.Remove (refinement.ParentGoal ());
+
+            return goals;
+        }
 
         public static IEnumerable<Obstacle> RootObstacles (this KAOSModel model) {
             return model.Obstructions ().Select ( x => x.Obstacle() );

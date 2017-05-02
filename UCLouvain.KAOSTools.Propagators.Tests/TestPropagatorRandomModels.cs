@@ -20,7 +20,7 @@ namespace UCLouvain.KAOSTools.Propagators.Tests
             var options = new RandomModelOptions {
                 MinGoalBranchingFactor = 2,
                 MaxGoalBranchingFactor = 4,
-                GoalMaxHeight = 2,
+                NbGoals = 2,
                 
                 MinObstacleANDBranchingFactor = 2,
                 MaxObstacleANDBranchingFactor = 4,
