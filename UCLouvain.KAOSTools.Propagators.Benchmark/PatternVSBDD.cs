@@ -13,13 +13,16 @@ namespace UCLouvain.KAOSTools.Propagators.Benchmark
         KAOSModel model;
         Goal root;
         BDDBasedPropagator p3;
+        
+        [Params(1,2,3,4)]
+        public int GoalMaxHeight { get; set; }
     
         public PatternVSBDD ()
         {
             var options = new RandomModelOptions {
                 MinGoalBranchingFactor = 2,
                 MaxGoalBranchingFactor = 4,
-                GoalMaxHeight = 3,
+                GoalMaxHeight = GoalMaxHeight,
                 
                 MinObstacleANDBranchingFactor = 2,
                 MaxObstacleANDBranchingFactor = 4,
@@ -29,15 +32,8 @@ namespace UCLouvain.KAOSTools.Propagators.Benchmark
             model = generator.Generate ();
             root = model.RootGoals ().Single ();
             
-            
             p3 = new BDDBasedPropagator (model);
             p3.PreBuildObstructionSet (root);
-            
-            //Console.WriteLine ("Generated goals: " + model.Goals ().Count ());
-            //Console.WriteLine ("Generated obstacles: " + model.Obstacles ().Count ());
-            
-            
-            //Assert.AreEqual (sr1.SatisfactionRate, sr2.SatisfactionRate, 0.0001);
         }
         
         [Benchmark]
