@@ -18,7 +18,7 @@ namespace UCLouvain.KAOSTools.Propagators
 
         internal bool ContainsKey (string identifier)
         {
-            return _model.obstacleRepository.ObstacleExists (identifier);
+            return _model.satisfactionRateRepository.ObstacleSatisfactionRateExists (identifier);
         }
     }
 }

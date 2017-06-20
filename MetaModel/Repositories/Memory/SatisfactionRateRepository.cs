@@ -46,6 +46,14 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
             return null;
         }
 
+        public bool ObstacleSatisfactionRateExists (string obstacleId)
+        {
+            if (ObstacleSatisfactionRates.ContainsKey (obstacleId)) {
+                return true;
+            }
+            return false;
+        }
+
         #endregion
 
         #region Domain Property
@@ -74,60 +82,84 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
             return null;
         }
 
+        public bool DomPropSatisfactionRateExists (string dompropId)
+        {
+            if (DomainPropertySatisfactionRates.ContainsKey (dompropId)) {
+                return true;
+            }
+            return false;
+        }
+
         #endregion
 
         #region Domain Hypothesis
 
-        public void AddDomHypothesisSatisfactionRate (string dompropId, ISatisfactionRate satRate)
+        public void AddDomHypothesisSatisfactionRate (string domhypId, ISatisfactionRate satRate)
         {
-            if (!DomainHypothesisSatisfactionRates.ContainsKey (dompropId)) {
-                DomainHypothesisSatisfactionRates.Add (dompropId, new List<ISatisfactionRate> ());
+            if (!DomainHypothesisSatisfactionRates.ContainsKey (domhypId)) {
+                DomainHypothesisSatisfactionRates.Add (domhypId, new List<ISatisfactionRate> ());
             }
-            DomainHypothesisSatisfactionRates [dompropId].Add (satRate);
+            DomainHypothesisSatisfactionRates [domhypId].Add (satRate);
         }
 
-        public ISatisfactionRate GetDomHypothesisSatisfactionRate (string dompropId)
+        public ISatisfactionRate GetDomHypothesisSatisfactionRate (string domhypId)
         {
-            if (DomainHypothesisSatisfactionRates.ContainsKey (dompropId)) {
-                return DomainHypothesisSatisfactionRates [dompropId].Single ();
+            if (DomainHypothesisSatisfactionRates.ContainsKey (domhypId)) {
+                return DomainHypothesisSatisfactionRates [domhypId].Single ();
             }
             return null;
         }
 
-        public IEnumerable<ISatisfactionRate> GetDomHypothesisSatisfactionRates (string dompropId)
+        public IEnumerable<ISatisfactionRate> GetDomHypothesisSatisfactionRates (string domhypId)
         {
-            if (DomainHypothesisSatisfactionRates.ContainsKey (dompropId)) {
-                return DomainHypothesisSatisfactionRates [dompropId];
+            if (DomainHypothesisSatisfactionRates.ContainsKey (domhypId)) {
+                return DomainHypothesisSatisfactionRates [domhypId];
             }
             return null;
+        }
+
+        public bool DomHypothesisSatisfactionRateExists (string domhypId)
+        {
+            if (DomainHypothesisSatisfactionRates.ContainsKey (domhypId)) {
+                return true;
+            }
+            return false;
         }
 
         #endregion
 
         #region Goals
 
-        public void AddGoalSatisfactionRate (string dompropId, ISatisfactionRate satRate)
+        public void AddGoalSatisfactionRate (string goalId, ISatisfactionRate satRate)
         {
-            if (!GoalSatisfactionRates.ContainsKey (dompropId)) {
-                GoalSatisfactionRates.Add (dompropId, new List<ISatisfactionRate> ());
+            if (!GoalSatisfactionRates.ContainsKey (goalId)) {
+                GoalSatisfactionRates.Add (goalId, new List<ISatisfactionRate> ());
             }
-            GoalSatisfactionRates [dompropId].Add (satRate);
+            GoalSatisfactionRates [goalId].Add (satRate);
         }
 
-        public ISatisfactionRate GetGoalSatisfactionRate (string dompropId)
+        public ISatisfactionRate GetGoalSatisfactionRate (string goalId)
         {
-            if (GoalSatisfactionRates.ContainsKey (dompropId)) {
-                return GoalSatisfactionRates [dompropId].Single ();
+            if (GoalSatisfactionRates.ContainsKey (goalId)) {
+                return GoalSatisfactionRates [goalId].Single ();
             }
             return null;
         }
 
-        public IEnumerable<ISatisfactionRate> GetGoalSatisfactionRates (string dompropId)
+        public IEnumerable<ISatisfactionRate> GetGoalSatisfactionRates (string goalId)
         {
-            if (GoalSatisfactionRates.ContainsKey (dompropId)) {
-                return GoalSatisfactionRates [dompropId];
+            if (GoalSatisfactionRates.ContainsKey (goalId)) {
+                return GoalSatisfactionRates [goalId];
             }
             return null;
+        }
+
+        public bool GoalSatisfactionRateExists (string goalId)
+        {
+            if (GoalSatisfactionRates.ContainsKey (goalId)) {
+                return true;
+            }
+            return false;
         }
 
         #endregion
