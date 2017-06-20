@@ -72,7 +72,7 @@ namespace KAOSTools.Utils
         
         protected static void ShowHelp (OptionSet p)
         {
-            Console.WriteLine ("Usage: KAOSTools.OmnigraffleExport model");
+            Console.WriteLine ("Usage: " + AppDomain.CurrentDomain.FriendlyName + " model");
             Console.WriteLine ();
             Console.WriteLine ("Options:");
             p.WriteOptionDescriptions (Console.Out);
@@ -81,9 +81,9 @@ namespace KAOSTools.Utils
         protected static void PrintError (string error)
         {  
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.Error.Write ("KAOSTools.OmnigraffleExport: ");
+            Console.Error.Write (AppDomain.CurrentDomain.FriendlyName + ": ");
             Console.Error.WriteLine (error);
-            Console.Error.WriteLine ("Try `KAOSTools.OmnigraffleExport --help' for more information.");
+            Console.Error.WriteLine ("Try `" + AppDomain.CurrentDomain.FriendlyName + " --help' for more information.");
             Console.ResetColor ();
         }
     }
