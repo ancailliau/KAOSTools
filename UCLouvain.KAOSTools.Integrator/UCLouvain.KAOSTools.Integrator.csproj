@@ -34,6 +34,7 @@
   <ItemGroup>
     <Compile Include="ResolutionIntegrator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="IntegrationException.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MetaModel\UCLouvain.KAOSTools.Core.csproj">

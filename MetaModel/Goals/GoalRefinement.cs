@@ -68,6 +68,11 @@ namespace KAOSTools.Core
             this.ParentGoalIdentifier = element.Identifier;
         }
 
+        public void Add (string identifier)
+        {
+            this.SubGoalIdentifiers.Add (new GoalRefinee (identifier));
+        }
+
         public void Add (Goal goal)
         {
             this.SubGoalIdentifiers.Add (new GoalRefinee (goal.Identifier));
