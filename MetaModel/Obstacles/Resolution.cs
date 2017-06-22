@@ -18,6 +18,8 @@ namespace KAOSTools.Core
         [DataMember]
         public ResolutionPattern ResolutionPattern { get; set; }
         
+        public string AnchorIdentifier { get; set; }
+        
         public List<dynamic> Parameters { get; set; }
 
         public Resolution (KAOSModel model) : base (model)

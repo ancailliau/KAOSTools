@@ -225,7 +225,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
 
         [TestCase(@"declare goal [ obstructedgoal ] obstructedby test end
                     declare obstacle[ test ]
-                        resolvedby [prevention] goal
+                        resolvedby [prevention : obstructedgoal] goal
                     end
                     declare goal [ goal ] end")]
         public void TestResolutionPattern (string input)
@@ -237,6 +237,8 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             var resolution = test.Resolutions().Single ();
             resolution.ResolvingGoalIdentifier.ShallEqual ("goal");
             resolution.ResolutionPattern.ShallEqual (ResolutionPattern.ObstaclePrevention);
+
+            resolution.AnchorIdentifier.ShallEqual ("obstructedgoal");
 
             //var obstructedGoal = model.Goals().Single (x => x.Identifier == "obstructedgoal");
             //var e = obstructedGoal.Assumptions.Single ();

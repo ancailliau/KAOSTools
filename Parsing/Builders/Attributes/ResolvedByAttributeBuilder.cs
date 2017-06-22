@@ -60,21 +60,16 @@ namespace KAOSTools.Parsing.Builders.Attributes
 
 				else
 					throw new NotImplementedException();
-
-				// TODO Fixes anchor goal. Not supported so far.
-				//foreach (var parameter in resolvedBy.Pattern.Parameters) {
-				//    DomainHypothesis hypothesis;
-				//    if (!Get (parameter, out hypothesis)) {
-				//        Goal goalAsParameter;
-				//        if (!Get (parameter, out goalAsParameter)) {
-				//            goalAsParameter = Create<Goal> (parameter);
-				//        }
-				//        resolution.Parameters.Add (goalAsParameter);
-				//    } else {
-				//        resolution.Parameters.Add (hypothesis);
-				//    }
-				//}
 			}
+
+            if (attribute.AnchorId != null) {
+                Goal anchor;
+                if ((anchor = model.goalRepository.GetGoal(attribute.AnchorId)) == null) {
+                    anchor = new Goal(model, attribute.AnchorId) { Implicit = true };
+                    model.goalRepository.Add(anchor);
+                }
+                resolution.AnchorIdentifier = attribute.AnchorId;
+            }
 
 			model.Add(resolution);
         }

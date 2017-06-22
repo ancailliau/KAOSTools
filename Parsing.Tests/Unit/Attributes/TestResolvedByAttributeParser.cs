@@ -11,21 +11,21 @@ namespace UCLouvain.KAOSTools.Parsing.Tests.Unit.Attributes
     public class TestResolvedByAttributeParser
     {
         [Test()]
-        public void TestColonParameter()
+        public void TestAtomicParameter()
         {
-            TestNotAtomicParameter(new NParsedAttributeColon());
+            TestNotColonParameter(new NParsedAttributeAtomic());
         }
 
         [Test()]
         public void TestListParameter()
         {
-            TestNotAtomicParameter(new NParsedAttributeList(Enumerable.Empty<ParsedElement>()));
+            TestNotColonParameter(new NParsedAttributeList(Enumerable.Empty<ParsedElement>()));
         }
 
         [Test()]
         public void TestBracketParameter()
         {
-            TestNotAtomicParameter(new NParsedAttributeBracket());
+            TestNotColonParameter(new NParsedAttributeBracket());
         }
 
         [Test()]
@@ -49,7 +49,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests.Unit.Attributes
             TestNotAtomicValue(v);
         }
 
-        [Test()]
+        [Test ()]
         public void TestNotIdentifierParameter()
         {
             var ap = new ResolvedByAttributeParser();
@@ -57,7 +57,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests.Unit.Attributes
 
             var e = Assert.Catch(() => {
                 ap.ParsedAttribute(attIdentifier,
-                                   new NParsedAttributeAtomic(new ParsedFloat()), 
+                                   new NParsedAttributeColon(new ParsedFloat(),new IdentifierExpression("anchor")), 
                                    new NParsedAttributeAtomic(new IdentifierExpression(attIdentifier)));
             });
 
@@ -104,7 +104,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests.Unit.Attributes
             );
         }
 
-        public void TestNotAtomicParameter(NParsedAttributeValue v)
+        public void TestNotColonParameter(NParsedAttributeValue v)
         {
             var ap = new ResolvedByAttributeParser();
             const string attIdentifier = "resolvedBy";
@@ -117,7 +117,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests.Unit.Attributes
 
             Assert.IsInstanceOf(typeof(InvalidParameterAttributeException), e);
             StringAssert.AreEqualIgnoringCase(
-                string.Format(InvalidParameterAttributeException.ATOMIC_ONLY, attIdentifier),
+                string.Format(InvalidParameterAttributeException.COLON_ONLY, attIdentifier),
                 e.Message
             );
         }

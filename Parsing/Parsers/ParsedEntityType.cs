@@ -273,6 +273,7 @@ namespace KAOSTools.Parsing.Parsers
 
     public class ParsedResolvedByAttribute   : ParsedAttributeWithValue<dynamic> {
         public ParsedResolutionPattern Pattern { get; set; }
+        public string AnchorId { get; set; }
     }
 
     public class ParsedLinkAttribute : ParsedAttribute

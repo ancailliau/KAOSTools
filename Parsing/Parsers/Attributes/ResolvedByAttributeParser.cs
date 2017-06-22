@@ -16,19 +16,32 @@ namespace KAOSTools.Parsing.Parsers.Attributes
         public ParsedElement ParsedAttribute(string identifier, NParsedAttributeValue parameters, NParsedAttributeValue value)
         {
             ParsedResolutionPattern pattern = null;
+            string anchorId = null;
+            
             if (parameters != null) {
-                if (parameters is NParsedAttributeAtomic) {
-                    var parameter = ((NParsedAttributeAtomic)parameters).Value;
-                    if (parameter is IdentifierExpression) {
-                        var patternId = ((IdentifierExpression)parameter).Value;
+                if (parameters is NParsedAttributeColon) {
+                    var p = (NParsedAttributeColon)parameters;
+                
+                    var left = p.Left;
+                    if (left is IdentifierExpression) {
+                        var patternId = ((IdentifierExpression)left).Value;
                         pattern = new ParsedResolutionPattern(patternId);
                     } else {
                         throw new InvalidParameterAttributeException (identifier, 
                                                                       InvalidParameterAttributeException.IDENTIFIER);
                     }
+                    
+                    var right = p.Right;
+                    if (right is IdentifierExpression) {
+                        anchorId = ((IdentifierExpression)right).Value;
+                    } else {
+                        throw new InvalidParameterAttributeException (identifier, 
+                                                                      InvalidParameterAttributeException.IDENTIFIER);
+                    }
+                    
                 } else {
                     throw new InvalidParameterAttributeException(identifier,
-                                                                 InvalidParameterAttributeException.ATOMIC_ONLY);
+                                                                 InvalidParameterAttributeException.COLON_ONLY);
                 }
             }
 
@@ -44,7 +57,8 @@ namespace KAOSTools.Parsing.Parsers.Attributes
 
             return new ParsedResolvedByAttribute() { 
                 Value = ((NParsedAttributeAtomic)value).Value, 
-                Pattern = pattern
+                Pattern = pattern,
+                AnchorId = anchorId
             };
         }
 	}
