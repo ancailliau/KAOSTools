@@ -19,13 +19,10 @@ namespace KAOSTools.Core
         public ResolutionPattern ResolutionPattern { get; set; }
         
         public string AnchorIdentifier { get; set; }
-        
-        public List<dynamic> Parameters { get; set; }
 
         public Resolution (KAOSModel model) : base (model)
         {
             ResolutionPattern = ResolutionPattern.None;
-            Parameters = new List<dynamic> ();
         }
 
         public void SetResolvingGoal (Goal goal)
@@ -45,8 +42,7 @@ namespace KAOSTools.Core
                 Implicit = Implicit,
                 ResolvingGoalIdentifier = ResolvingGoalIdentifier,
                 ObstacleIdentifier = ObstacleIdentifier,
-                ResolutionPattern = ResolutionPattern,
-                Parameters = new List<dynamic> (Parameters)
+                ResolutionPattern = ResolutionPattern
             };
         }
     }

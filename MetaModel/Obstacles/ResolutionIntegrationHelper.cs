@@ -34,125 +34,125 @@ namespace KAOSTools.Core
         }
 
         public static void Integrate (Resolution resolution) {
-            if (resolution.Parameters.Count == 0) {
-				logger.Info("Wants to integrate " + resolution.ResolvingGoal().FriendlyName);
-				logger.Info(resolution.Obstacle().FriendlyName);
-				throw new NotImplementedException("No parameters to resolvedby");
-            }
-			var anchor = resolution.Parameters[0];
-            // anchor = FinalAnchor (anchor);
+   //         if (resolution.Parameters.Count == 0) {
+			//	logger.Info("Wants to integrate " + resolution.ResolvingGoal().FriendlyName);
+			//	logger.Info(resolution.Obstacle().FriendlyName);
+			//	throw new NotImplementedException("No parameters to resolvedby");
+   //         }
+			//var anchor = resolution.Parameters[0];
+    //        // anchor = FinalAnchor (anchor);
 
-            if (resolution.ResolutionPattern == ResolutionPattern.GoalSubstitution
-                | resolution.ResolutionPattern == ResolutionPattern.GoalWeakening) {
+    //        if (resolution.ResolutionPattern == ResolutionPattern.GoalSubstitution
+    //            | resolution.ResolutionPattern == ResolutionPattern.GoalWeakening) {
 
-                var replacement = resolution.model.Replacements()
-											.Where(x => x.ResolvedObstacleIdentifier == resolution.ObstacleIdentifier
-												   & x.ResolvingGoalIdentifier == resolution.ResolvingGoalIdentifier
-												   & x.AnchorGoalIdentifier == anchor.Identifier).ToList();
+    //            var replacement = resolution.model.Replacements()
+				//							.Where(x => x.ResolvedObstacleIdentifier == resolution.ObstacleIdentifier
+				//								   & x.ResolvingGoalIdentifier == resolution.ResolvingGoalIdentifier
+				//								   & x.AnchorGoalIdentifier == anchor.Identifier).ToList();
 
-				var goalReplacement = new GoalReplacement (resolution.model) {
-                    Implicit = true
-                };
-				goalReplacement.SetObstacle (resolution.Obstacle ());
-                goalReplacement.SetResolvingGoal (resolution.ResolvingGoal ());
-                goalReplacement.SetAnchorGoal (anchor);
+				//var goalReplacement = new GoalReplacement (resolution.model) {
+    //                Implicit = true
+    //            };
+				//goalReplacement.SetObstacle (resolution.Obstacle ());
+    //            goalReplacement.SetResolvingGoal (resolution.ResolvingGoal ());
+    //            goalReplacement.SetAnchorGoal (anchor);
 
-				resolution.model.Add (goalReplacement);
-				//logger.Info("Add replacement " + resolution.ResolvingGoal().FriendlyName + " to " + anchor.FriendlyName);
+				//resolution.model.Add (goalReplacement);
+				////logger.Info("Add replacement " + resolution.ResolvingGoal().FriendlyName + " to " + anchor.FriendlyName);
 
-                // Replace in refinements
-                //var resolving_goal = resolution.ResolvingGoal ();
-                //foreach (var r in anchor.ParentRefinements ().ToArray ()) {
-                //    r.Remove (anchor);
-                //    r.Add (resolving_goal);
-                //}
+    //            // Replace in refinements
+    //            //var resolving_goal = resolution.ResolvingGoal ();
+    //            //foreach (var r in anchor.ParentRefinements ().ToArray ()) {
+    //            //    r.Remove (anchor);
+    //            //    r.Add (resolving_goal);
+    //            //}
 
-                // Replace children refinements
-                //foreach (var r in anchor.Refinements ().ToArray ()) {
-                //    anchor.model.Remove (r);
-                //    var r2 = (GoalRefinement) r.Copy ();
-                //    r2.Identifier = Guid.NewGuid ().ToString ();
-                //    r2.SetParentGoal (resolving_goal);
-                //    resolution.model.Add (r2);
-                //}
+    //            // Replace children refinements
+    //            //foreach (var r in anchor.Refinements ().ToArray ()) {
+    //            //    anchor.model.Remove (r);
+    //            //    var r2 = (GoalRefinement) r.Copy ();
+    //            //    r2.Identifier = Guid.NewGuid ().ToString ();
+    //            //    r2.SetParentGoal (resolving_goal);
+    //            //    resolution.model.Add (r2);
+    //            //}
 
-                //// Replace in exceptions
-                //foreach (var r in anchor.Exceptions ().ToArray ()) {
-                //    r.SetAnchorGoal (resolving_goal);
-                //}
+    //            //// Replace in exceptions
+    //            //foreach (var r in anchor.Exceptions ().ToArray ()) {
+    //            //    r.SetAnchorGoal (resolving_goal);
+    //            //}
 
-                //// Replace in provided
-                //foreach (var r in anchor.Provided ().ToArray ()) {
-                //    r.SetAnchorGoal (resolving_goal);
-                //}
+    //            //// Replace in provided
+    //            //foreach (var r in anchor.Provided ().ToArray ()) {
+    //            //    r.SetAnchorGoal (resolving_goal);
+    //            //}
 
-                // Replace in agent assignements
-                //foreach (var r in anchor.AgentAssignments ().ToArray ()) {
-                //    r.GoalIdentifier = resolving_goal.Identifier;
-                //}
+    //            // Replace in agent assignements
+    //            //foreach (var r in anchor.AgentAssignments ().ToArray ()) {
+    //            //    r.GoalIdentifier = resolving_goal.Identifier;
+    //            //}
 
-            } else {
+    //        } else {
 
-				var goalException = new GoalException (resolution.model) {
-                    Implicit = true
-                };
-				goalException.SetObstacle (resolution.Obstacle ());
-                goalException.SetResolvingGoal (resolution.ResolvingGoal ());
-                goalException.SetAnchorGoal (anchor);
+				//var goalException = new GoalException (resolution.model) {
+    //                Implicit = true
+    //            };
+				//goalException.SetObstacle (resolution.Obstacle ());
+    //            goalException.SetResolvingGoal (resolution.ResolvingGoal ());
+    //            goalException.SetAnchorGoal (anchor);
 
-				resolution.model.Add (goalException);
+				//resolution.model.Add (goalException);
 
-                /*
-                var obstacleAssumption = new ObstacleAssumption (resolution.model);
-                obstacleAssumption.SetAnchorGoal (anchor);
-                obstacleAssumption.SetObstacle (obstacle);
+            //    /*
+            //    var obstacleAssumption = new ObstacleAssumption (resolution.model);
+            //    obstacleAssumption.SetAnchorGoal (anchor);
+            //    obstacleAssumption.SetObstacle (obstacle);
 
-                if (anchor.Identifier != obstructedGoal.Identifier) {
-                Console.WriteLine ("DownPropagate " + obstacle.FriendlyName + " ("+obstructedGoal.FriendlyName +") on " + anchor.FriendlyName );
-                }
-                */
+            //    if (anchor.Identifier != obstructedGoal.Identifier) {
+            //    Console.WriteLine ("DownPropagate " + obstacle.FriendlyName + " ("+obstructedGoal.FriendlyName +") on " + anchor.FriendlyName );
+            //    }
+            //    */
 
-                // DownPropagate (obstacleAssumption, anchor);
-            }
+            //    // DownPropagate (obstacleAssumption, anchor);
+            //}
         }
 
 		public static void Desintegrate(Resolution resolution)
 		{
-			if (resolution.Parameters.Count == 0) {
-				throw new NotImplementedException();
-			}
-			var anchor = (Goal) resolution.Parameters[0];
-			// anchor = FinalAnchor (anchor);
+			//if (resolution.Parameters.Count == 0) {
+			//	throw new NotImplementedException();
+			//}
+			//var anchor = (Goal) resolution.Parameters[0];
+			//// anchor = FinalAnchor (anchor);
 
-			if (resolution.ResolutionPattern == ResolutionPattern.GoalSubstitution
-				| resolution.ResolutionPattern == ResolutionPattern.GoalWeakening) {
+			//if (resolution.ResolutionPattern == ResolutionPattern.GoalSubstitution
+			//	| resolution.ResolutionPattern == ResolutionPattern.GoalWeakening) {
 				
-                var replacement = resolution.model.Replacements()
-				                            .Where(x => x.ResolvedObstacleIdentifier == resolution.ObstacleIdentifier
-				                                   & x.ResolvingGoalIdentifier == resolution.ResolvingGoalIdentifier
-				                                   & x.AnchorGoalIdentifier == anchor.Identifier).ToList ();
+   //             var replacement = resolution.model.Replacements()
+			//	                            .Where(x => x.ResolvedObstacleIdentifier == resolution.ObstacleIdentifier
+			//	                                   & x.ResolvingGoalIdentifier == resolution.ResolvingGoalIdentifier
+			//	                                   & x.AnchorGoalIdentifier == anchor.Identifier).ToList ();
 
-				foreach (var r in replacement) {
-                    throw new NotImplementedException();
-					// resolution.model.Remove(r);
-				}
-				//logger.Info("Remove replacement " + resolution.ResolvingGoal().FriendlyName);
+			//	foreach (var r in replacement) {
+   //                 throw new NotImplementedException();
+			//		// resolution.model.Remove(r);
+			//	}
+			//	//logger.Info("Remove replacement " + resolution.ResolvingGoal().FriendlyName);
 
-			} else {
+			//} else {
 
-                var exception = resolution.model.Exceptions()
-											.Where(x => x.ResolvedObstacleIdentifier == resolution.ObstacleIdentifier
-												   & x.ResolvingGoalIdentifier == resolution.ResolvingGoalIdentifier
-												   & x.AnchorGoalIdentifier == anchor.Identifier).ToList();
+   //             var exception = resolution.model.Exceptions()
+			//								.Where(x => x.ResolvedObstacleIdentifier == resolution.ObstacleIdentifier
+			//									   & x.ResolvingGoalIdentifier == resolution.ResolvingGoalIdentifier
+			//									   & x.AnchorGoalIdentifier == anchor.Identifier).ToList();
 
-				foreach (var r in exception)
-				{
-					throw new NotImplementedException();
-					// resolution.model.Remove(r);
-				}
+			//	foreach (var r in exception)
+			//	{
+			//		throw new NotImplementedException();
+			//		// resolution.model.Remove(r);
+			//	}
 
 
-			}
+			//}
 		}
 
 
