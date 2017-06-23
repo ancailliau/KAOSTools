@@ -29,7 +29,7 @@ namespace KAOSTools.Core
 
         public KAOSCoreElement (KAOSModel model)
         {
-            this.Identifier = Guid.NewGuid ().ToString ();
+            this.Identifier = "id_" + Guid.NewGuid ().ToString ();
             this.model = model;
             this.CustomData = new Dictionary<string,string> ();
 		}
