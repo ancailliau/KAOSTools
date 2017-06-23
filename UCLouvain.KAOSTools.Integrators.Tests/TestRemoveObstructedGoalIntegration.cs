@@ -1,9 +1,9 @@
 ﻿using NUnit.Framework;
 using System;
 using KAOSTools.Parsing;
-using UCLouvain.KAOSTools.Integrator;
 using KAOSTools.Core;
 using System.Linq;
+using UCLouvain.KAOSTools.Utils.FileExporter;
 
 namespace UCLouvain.KAOSTools.Integrators.Tests
 {
@@ -49,6 +49,9 @@ namespace UCLouvain.KAOSTools.Integrators.Tests
 
             var r = model.Resolutions ().Single ();
             integrator.Integrate (r);
+
+            var e = new KAOSFileExporter (model);
+            Console.WriteLine (e.Export ());
 
             var refinement = model.GoalRefinements (x => x.ParentGoalIdentifier == "anchor").Single ();
             Assert.That (refinement.SubGoalIdentifiers.Any (x => x.Identifier == "child2"));

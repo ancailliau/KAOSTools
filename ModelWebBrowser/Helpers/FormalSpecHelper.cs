@@ -120,12 +120,12 @@ namespace ModelWebBrowser.Helpers
         {
             if (link)
             return MvcHtmlString.Create (string.Format("&forall; {0} &middot; {1}", 
-                                                       string.Join(", ", expression.Declarations.Select (variable => string.Format ("{0}:<a href=#object-{2}>{1}</a>", variable.Name, variable.Type.Identifier, variable.Type.Identifier))),
+                                                       string.Join(", ", expression.Declarations.Select (variable => string.Format ("{0}:<a href=#object-{2}>{1}</a>", variable.Name, variable.Type, variable.Type))),
                                                            Embed(expression, expression.Enclosed, expression.Enclosed.ToHtmlString(link))
                                                        ));
 
             return MvcHtmlString.Create (string.Format("&forall; {0} &middot; {1}", 
-                                                       string.Join(", ", expression.Declarations.Select (variable => string.Format ("{0}:{1}", variable.Name, variable.Type.Identifier))),
+                                                       string.Join(", ", expression.Declarations.Select (variable => string.Format ("{0}:{1}", variable.Name, variable.Type))),
                                                        Embed(expression, expression.Enclosed, expression.Enclosed.ToHtmlString(link))
                                                        ));
         }
@@ -134,12 +134,12 @@ namespace ModelWebBrowser.Helpers
         {
             if (link)
             return MvcHtmlString.Create (string.Format("&exist; {0} &middot; {1}", 
-                                                           string.Join(", ", expression.Declarations.Select (variable => string.Format ("{0}:<a href=#object-{2}>{1}</a>", variable.Name, variable.Type.Identifier, variable.Type.Identifier))),
+                                                           string.Join(", ", expression.Declarations.Select (variable => string.Format ("{0}:<a href=#object-{2}>{1}</a>", variable.Name, variable.Type, variable.Type))),
                                                            Embed(expression, expression.Enclosed, expression.Enclosed.ToHtmlString(link))
                                                            ));
 
             return MvcHtmlString.Create (string.Format("&exist; {0} &middot; {1}", 
-                                                       string.Join(", ", expression.Declarations.Select (variable => string.Format ("{0}:{1}", variable.Name, variable.Type.Identifier))),
+                                                       string.Join(", ", expression.Declarations.Select (variable => string.Format ("{0}:{1}", variable.Name, variable.Type))),
                                                        Embed(expression, expression.Enclosed, expression.Enclosed.ToHtmlString(link))
                                                        ));
         }
@@ -156,13 +156,13 @@ namespace ModelWebBrowser.Helpers
         {
             if (link)
                 return MvcHtmlString.Create (string.Format("<a href=#predicate-{2}>{0}</a>({1})", 
-                                                       expression.Predicate.Identifier,
+                                                       expression.Predicate,
                                                        string.Join(", ", expression.ActualArguments),
-                                                       expression.Predicate.Identifier
+                                                       expression.Predicate
                                                        ));
 
             return MvcHtmlString.Create (string.Format("{0}({1})", 
-                                                           expression.Predicate.Identifier,
+                                                           expression.Predicate,
                                                            string.Join(", ", expression.ActualArguments)));
         }
 
@@ -176,13 +176,13 @@ namespace ModelWebBrowser.Helpers
         {
             if (link)
             return MvcHtmlString.Create (string.Format("{1}.<a href=#attribute-{2}>{0}</a>", 
-                                                       expression.Attribute.FriendlyName,
+                                                       expression.Attribute,
                                                        expression.Variable,
-                                                       expression.Attribute.Identifier
+                                                       expression.Attribute
                                                        ));
 
             return MvcHtmlString.Create (string.Format("{1}.{0}", 
-                                                       expression.Attribute.FriendlyName,
+                                                       expression.Attribute,
                                                        expression.Variable
                                                        ));
         }
@@ -191,24 +191,14 @@ namespace ModelWebBrowser.Helpers
         {
             if (link)
                 return MvcHtmlString.Create (string.Format("({1}) &isin; <a href=#association-{2}>{0}</a>", 
-                                                       expression.Relation.Identifier,
+                                                       expression.Relation,
                                                        string.Join(", ", expression.ActualArguments),
-                                                       expression.Relation.Identifier
+                                                       expression.Relation
                                                        ));
 
             return MvcHtmlString.Create (string.Format("({1}) &isin; {0}", 
-                                                       expression.Relation.Identifier,
+                                                       expression.Relation,
                                                        string.Join(", ", expression.ActualArguments)
-                                                       ));
-        }
-
-        public static MvcHtmlString ToHtmlString ( EventuallyBefore expression, bool link = true)
-        {
-            var bound = GetTimeBound (expression.TimeBound);
-            return MvcHtmlString.Create (string.Format("&not; {1} W{2} ({0} &and; &not; {1})", 
-                                                       Embed(expression, expression.Left, expression.Left.ToHtmlString(link)),
-                                                       Embed(expression, expression.Right, expression.Right.ToHtmlString(link)),
-                                                       bound
                                                        ));
         }
 
@@ -334,8 +324,7 @@ namespace ModelWebBrowser.Helpers
                 return MvcHtmlString.Create ("(" + str + ")");
             }
 
-            if ((fout is EventuallyBefore 
-                 | fout is And 
+            if ((fout is And 
                  | fout is Or 
                  | fout is Unless
                  | fout is Release
@@ -358,8 +347,7 @@ namespace ModelWebBrowser.Helpers
             if ((fout is Equivalence 
                  | fout is Imply 
                  | fout is StrongImply
-                 && !(enclosed is EventuallyBefore 
-                 | enclosed is And 
+                 && !(enclosed is And 
                  | enclosed is Or 
                  | enclosed is Unless
                  | enclosed is Release
@@ -384,7 +372,6 @@ namespace ModelWebBrowser.Helpers
                  && !(enclosed is Equivalence 
                  | enclosed is Imply 
                  | enclosed is StrongImply
-                 | enclosed is EventuallyBefore 
                  | enclosed is And 
                  | enclosed is Or 
                  | enclosed is Unless

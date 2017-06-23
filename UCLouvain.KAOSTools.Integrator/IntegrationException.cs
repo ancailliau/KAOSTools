@@ -1,5 +1,5 @@
 ﻿using System;
-namespace UCLouvain.KAOSTools.Integrator
+namespace UCLouvain.KAOSTools.Integrators
 {
     public class IntegrationException : Exception
     {

@@ -123,13 +123,6 @@ namespace KAOSTools.Parsing
                     TimeBound = BuildTimeBound ((value as ParsedEventuallyExpression).TimeBound)
                 };
 
-            } else if (value.GetType () == typeof (ParsedEventuallyBeforeExpression)) {
-                return new EventuallyBefore () {
-					Left = BuildFormula ((value as ParsedEventuallyBeforeExpression).Left, declaredVariables),
-					Right = BuildFormula((value as ParsedEventuallyBeforeExpression).Right, declaredVariables),
-                    TimeBound = BuildTimeBound ((value as ParsedEventuallyBeforeExpression).TimeBound)
-                };
-
             } else if (value.GetType () == typeof (ParsedGloballyExpression)) {
                 return new Globally () {
                     Enclosed = BuildFormula ((value as ParsedGloballyExpression).Enclosed, declaredVariables),
@@ -148,7 +141,7 @@ namespace KAOSTools.Parsing
                 }
 
                 return new PredicateReference () {
-                    Predicate = GetOrCreatePredicate (prel, declaredVariables),
+                    Predicate = GetOrCreatePredicate (prel, declaredVariables).Identifier,
                     ActualArguments = prel.ActualArguments
                 };
             } else if (value.GetType () == typeof (ParsedInRelationExpression)) {
@@ -161,7 +154,7 @@ namespace KAOSTools.Parsing
                 }
 
                 return new RelationReference () {
-                    Relation = GetOrCreateRelation (value as ParsedInRelationExpression, declaredVariables),
+                    Relation = GetOrCreateRelation (value as ParsedInRelationExpression, declaredVariables).Identifier,
                     ActualArguments = prel.Variables
                 };
             } else if (value.GetType () == typeof (ParsedAttributeReferenceExpression)) {
@@ -172,10 +165,10 @@ namespace KAOSTools.Parsing
                     
                     return new AttributeReference () {
                         Variable = pref.Variable,
-                        Entity = declaredVariables [pref.Variable],
+                        Entity = declaredVariables [pref.Variable].Identifier,
                         Attribute = GetOrCreateAttribute (value as ParsedAttributeReferenceExpression, 
                                                           declaredVariables [pref.Variable],
-														  boolType)
+														  boolType).Identifier
                     };
 
                 } else {

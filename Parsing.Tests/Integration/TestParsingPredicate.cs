@@ -149,8 +149,8 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             var attribute = entity.Attributes().Single(x => x.Identifier == "my_attribute");
 
             ((AttributeReference) predicate.FormalSpec).Variable.ShallEqual ("c");
-            ((AttributeReference) predicate.FormalSpec).Entity.ShallEqual (entity);
-            ((AttributeReference) predicate.FormalSpec).Attribute.Identifier.ShallEqual (attribute.Identifier);
+            ((AttributeReference) predicate.FormalSpec).Entity.ShallEqual (entity.Identifier);
+            ((AttributeReference) predicate.FormalSpec).Attribute.ShallEqual (attribute.Identifier);
         }
 
         [TestCase(@"declare predicate [ test ] $my_attribute ""my_value"" end",

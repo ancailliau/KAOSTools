@@ -507,12 +507,6 @@ namespace KAOSTools.Parsing.Parsers
     public class ParsedAndExpression : ParsedBinaryExpression {}
     public class ParsedOrExpression : ParsedBinaryExpression {}
    
-
-    public class ParsedEventuallyBeforeExpression : ParsedBinaryExpression {
-        public ParsedTimeBound TimeBound;
-    }
-
-
     public class ParsedUnaryExpression : ParsedElement {
         public ParsedElement Enclosed;
     }

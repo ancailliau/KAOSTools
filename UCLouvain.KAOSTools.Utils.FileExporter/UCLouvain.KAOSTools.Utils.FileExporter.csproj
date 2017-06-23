@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{C96898DC-9CC6-490D-B39F-B773D49A2954}</ProjectGuid>
+    <ProjectGuid>{CB10E490-9539-441A-AE82-D6372C43725B}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>UCLouvain.KAOSTools.Integrators.Tests</RootNamespace>
-    <AssemblyName>UCLouvain.KAOSTools.Integrators.Tests</AssemblyName>
+    <RootNamespace>UCLouvain.KAOSTools.Utils.FileExporter</RootNamespace>
+    <AssemblyName>UCLouvain.KAOSTools.Utils.FileExporter</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -19,42 +19,26 @@
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
     <OutputPath>..\bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="nunit.framework">
-      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TestRemoveObstructedGoalIntegration.cs" />
-    <Compile Include="TestKeepObstructedGoalIntegration.cs" />
+    <Compile Include="KAOSFileExporter.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\UCLouvain.KAOSTools.Integrator\UCLouvain.KAOSTools.Integrators.csproj">
-      <Project>{33A33908-CA6B-4869-A016-8D9274C65229}</Project>
-      <Name>UCLouvain.KAOSTools.Integrators</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MetaModel\UCLouvain.KAOSTools.Core.csproj">
       <Project>{BCF014E2-1425-4F2D-BDB1-693A1F6FABE2}</Project>
       <Name>UCLouvain.KAOSTools.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Parsing\UCLouvain.KAOSTools.Parsing.csproj">
-      <Project>{52C948A2-30AD-40A7-89A3-9D66B2FCDD9F}</Project>
-      <Name>UCLouvain.KAOSTools.Parsing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UCLouvain.KAOSTools.Utils.FileExporter\UCLouvain.KAOSTools.Utils.FileExporter.csproj">
-      <Project>{CB10E490-9539-441A-AE82-D6372C43725B}</Project>
-      <Name>UCLouvain.KAOSTools.Utils.FileExporter</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

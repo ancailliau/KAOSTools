@@ -294,11 +294,8 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             var predicateReference = root.FormalSpec as PredicateReference;
 
             if (id != null)
-                Assert.AreEqual (id, predicateReference.Predicate.Identifier);
+                Assert.AreEqual (id, predicateReference.Predicate);
 
-            if (name != null)
-                Assert.AreEqual (name, predicateReference.Predicate.Name);
-            
             model.Predicates().Count().ShallEqual(1);
         }
 
@@ -310,10 +307,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             var predicateReference = (root.FormalSpec as Exists).Enclosed as PredicateReference;
 
             if (id != null)
-                Assert.AreEqual (id, predicateReference.Predicate.Identifier);
-
-            if (name != null)
-                Assert.AreEqual (name, predicateReference.Predicate.Name);
+                Assert.AreEqual (id, predicateReference.Predicate);
 
             predicateReference.ActualArguments.ShallOnlyContain (new string[] {"arg1"});
             
@@ -328,10 +322,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             var expression = (root.FormalSpec as Exists).Enclosed as RelationReference;
 
             if (id != null)
-                Assert.AreEqual (id, expression.Relation.Identifier);
-
-            if (name != null)
-                Assert.AreEqual (name, expression.Relation.Name);
+                Assert.AreEqual (id, expression.Relation);
 
             expression.ActualArguments.ShallOnlyContain (new string[] {"arg1"});
 
@@ -349,10 +340,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
 			Assert.NotNull(expression.Attribute);
 
             if (id != null)
-                Assert.AreEqual(id, expression.Attribute.Identifier);
-
-            if (name != null)
-                Assert.AreEqual (name, expression.Attribute.Name);
+                Assert.AreEqual(id, expression.Attribute);
 
 			var entity = model.Entities().Single(x => x.Identifier == "my_type");
             model.Attributes().Where (x => x.EntityIdentifier == entity.Identifier).Count().ShallEqual(1);
@@ -481,7 +469,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
 
             expression.Criteria.ShallEqual (criteria);
             (expression.Right as AttributeReference).Variable.ShallEqual ("arg1");
-            (expression.Right as AttributeReference).Attribute.Identifier.ShallEqual ("test");
+            (expression.Right as AttributeReference).Attribute.ShallEqual ("test");
 
         }
 
@@ -496,7 +484,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             Assert.NotNull (expression);
 
             expression.Criteria.ShallEqual (criteria);
-			(expression.Right as PredicateReference).Predicate.Identifier.ShallEqual("predicate");
+			(expression.Right as PredicateReference).Predicate.ShallEqual("predicate");
             (expression.Right as PredicateReference).ActualArguments.ShallOnlyContain (new string[] { "arg1" });
 
         }
