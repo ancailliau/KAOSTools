@@ -27,9 +27,16 @@ namespace UCLouvain.KAOSTools.Integrators
             || resolution.ResolutionPattern == ResolutionPattern.ObstacleMitigation
             || resolution.ResolutionPattern == ResolutionPattern.ObstacleWeakMitigation
             || resolution.ResolutionPattern == ResolutionPattern.ObstacleStrongMitigation
-            || resolution.ResolutionPattern == ResolutionPattern.ObstacleReduction)
+            || resolution.ResolutionPattern == ResolutionPattern.ObstacleReduction
+            || resolution.ResolutionPattern == ResolutionPattern.GoalRestoration)
             {
                 KeepObstructedGoal (resolution);
+                
+            } else if (resolution.ResolutionPattern == ResolutionPattern.None) {
+                throw new IntegrationException (IntegrationException.NO_PATTERN);
+                
+            } else {
+                throw new IntegrationException (string.Format (IntegrationException.PATTERN_NOT_KNOWN, resolution.ResolutionPattern));
             }
         }
 
@@ -60,10 +67,12 @@ namespace UCLouvain.KAOSTools.Integrators
             new_refinement.Add (anchor);
             new_refinement.Add (resolution.ResolvingGoalIdentifier);
             _model.Add (new_refinement);
-
-            // Propagate conditions
-            if (resolution.Obstacle ().FormalSpec != null)
-                propagator.DownPropagateAddConjunct (anchor_goal, new Not (resolution.Obstacle ().FormalSpec));
+            
+            Obstacle obstacle = resolution.Obstacle ();
+            propagator.DownPropagateAddConjunct 
+                (resolution, 
+                 new Not (obstacle.FormalSpec), 
+                 obstacle.Name != null ? "Not " + obstacle.Name : null);
         }
 
         void RemoveObstructedGoal (Resolution resolution)

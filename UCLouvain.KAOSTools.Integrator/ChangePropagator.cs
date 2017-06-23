@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using KAOSTools.Core;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace UCLouvain.KAOSTools.Integrators
 {
     public class ChangePropagator
@@ -10,30 +14,37 @@ namespace UCLouvain.KAOSTools.Integrators
         {
             this._model = model;
         }
-        
-        public void DownPropagateAddConjunct (Goal goal, Formula formula)
-        {
-            if (goal.FormalSpec == null)
-                return;
-                
-            var antecedant = GetAntecedant (goal.FormalSpec);
-            var replacement = new And (antecedant, formula);
 
-            DownPropagateReplacement (goal, antecedant, replacement);
+        HashSet<string> visited;
+        
+        public void DownPropagateAddConjunct (Resolution resolution, Formula formula, string name)
+        {
+            var goal = _model.Goal (resolution.AnchorIdentifier);
+            var obstacle = resolution.Obstacle ();
+            
+            if (goal.FormalSpec != null) {
+                visited = new HashSet<string> (new [] { resolution.ResolvingGoalIdentifier });
+            
+                var antecedant = GetAntecedant (goal.FormalSpec);
+                var replacement = new And (antecedant, formula);
+
+                DownPropagateReplacement (goal, antecedant, replacement);
+                UpPropagateReplacement (obstacle, antecedant, replacement);
+            }
+
+
+            visited = new HashSet<string> (new [] { resolution.ResolvingGoalIdentifier });
+            DownPropagateNameConjunct (goal, name);
+            UpPropagateNameConjunct (obstacle, name);
         }
         
-        public void DownPropagateAddDisjunct (Goal goal, Formula formula)
-        {
-            if (goal.FormalSpec == null)
-                return;
-                
-            var consequent = GetConsequent (goal.FormalSpec);
-            var replacement = new Or (consequent, formula);
-            DownPropagateReplacement (goal, consequent, replacement);
-        }
-
         void DownPropagateReplacement (Goal goal, Formula f1, Formula f2)
         {
+            if (visited.Contains (goal.Identifier))
+                return;
+            
+            visited.Add (goal.Identifier);
+            
             if (goal.FormalSpec != null)
                 Replace (goal, f1, f2);
                 
@@ -45,24 +56,79 @@ namespace UCLouvain.KAOSTools.Integrators
             
             foreach (var r in goal.Obstructions ()) {
                 var sg = r.Obstacle ();
-                DownPropagateReplacement (sg, f1, f2);
+                UpPropagateReplacement (sg, f1, f2);
             }
         }
 
-        void DownPropagateReplacement (Obstacle obstacle, Formula f1, Formula f2)
+        void DownPropagateNameConjunct (Goal goal, string name)
         {
+            if (visited.Contains (goal.Identifier))
+                return;
+            
+            visited.Add (goal.Identifier);
+            
+            var regex = new Regex (@"Achieve([ ]*)\[(.+)When(.+)\]");
+            var match = regex.Match (goal.Name);
+            if (match.Success) {
+                goal.Name = $"Achieve{match.Groups[1]}[{match.Groups [2]}When{match.Groups [3]} And {name}]";
+            } else {
+                regex = new Regex (@"Achieve([ ]*)\[(.+)\]");
+                match = regex.Match (goal.Name);
+                if (match.Success) {
+                    goal.Name = $"Achieve{match.Groups[1]}[{match.Groups [2]}When{name}]";
+                } else {
+                    Console.WriteLine (":(");
+                }
+            }
+                
+            foreach (var r in goal.Refinements ()) {
+                foreach (var sg in r.SubGoals ()) {
+                    DownPropagateNameConjunct (sg, name);
+                }
+            }
+            
+            foreach (var r in goal.Obstructions ()) {
+                var sg = r.Obstacle ();
+                UpPropagateNameConjunct (sg, name);
+            }
+        }
+
+        void UpPropagateReplacement (Obstacle obstacle, Formula f1, Formula f2)
+        {
+            if (visited.Contains (obstacle.Identifier))
+                return;
+            
+            visited.Add (obstacle.Identifier);
+            
             if (obstacle.FormalSpec != null)
                 Replace (obstacle, f1, f2);
-                
-            foreach (var r in obstacle.Refinements ()) {
-                foreach (var sg in r.SubObstacles ()) {
-                    DownPropagateReplacement (sg, f1, f2);
-                }
+
+            foreach (var r in _model.ObstacleRefinements (x => x.SubobstacleIdentifiers.Any(y => y.Identifier == obstacle.Identifier))) {
+                UpPropagateReplacement (r.ParentObstacle (), f1, f2);
             }
             
             foreach (var r in obstacle.Resolutions ()) {
                 var sg = r.ResolvingGoal ();
                 DownPropagateReplacement (sg, f1, f2);
+            }
+        }
+
+        void UpPropagateNameConjunct (Obstacle obstacle, string name)
+        {
+            if (visited.Contains (obstacle.Identifier))
+                return;
+            
+            visited.Add (obstacle.Identifier);
+            
+            obstacle.Name += " And " + name;
+                
+            foreach (var r in _model.ObstacleRefinements (x => x.SubobstacleIdentifiers.Any(y => y.Identifier == obstacle.Identifier))) {
+                UpPropagateNameConjunct (r.ParentObstacle (), name);
+            }
+            
+            foreach (var r in obstacle.Resolutions ()) {
+                var sg = r.ResolvingGoal ();
+                DownPropagateNameConjunct (sg, name);
             }
         }
         

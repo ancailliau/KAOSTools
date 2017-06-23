@@ -196,5 +196,10 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 		{
             return Resolutions.Values.Where(x => predicate(x));
         }
+
+        public void Remove (Resolution resolution)
+        {
+            Resolutions.Remove (resolution.Identifier);
+        }
     }
 }

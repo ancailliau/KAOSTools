@@ -80,7 +80,7 @@ namespace UCLouvain.KAOSTools.Utils.FileExporter
 
         string ToString (ResolutionPattern resolutionPattern, string anchorIdentifier)
         {
-            if (resolutionPattern != null) {
+            if (resolutionPattern != ResolutionPattern.None) {
                 string pattern = "";
                 switch (resolutionPattern) {
                 case ResolutionPattern.GoalRestoration: pattern = "restoration"; break;
