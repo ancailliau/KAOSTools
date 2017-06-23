@@ -33,7 +33,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Utils.P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Utils.CMSelector", "UCLouvain.KAOSTools.Utils.CMSelector\UCLouvain.KAOSTools.Utils.CMSelector.csproj", "{7CE1797D-E862-40CC-9480-5CD864904797}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Integrator", "UCLouvain.KAOSTools.Integrator\UCLouvain.KAOSTools.Integrator.csproj", "{33A33908-CA6B-4869-A016-8D9274C65229}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Integrators", "UCLouvain.KAOSTools.Integrator\UCLouvain.KAOSTools.Integrators.csproj", "{33A33908-CA6B-4869-A016-8D9274C65229}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Integrators.Tests", "UCLouvain.KAOSTools.Integrators.Tests\UCLouvain.KAOSTools.Integrators.Tests.csproj", "{C96898DC-9CC6-490D-B39F-B773D49A2954}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -289,6 +291,20 @@ Global
 		{33A33908-CA6B-4869-A016-8D9274C65229}.CLI|Any CPU.Build.0 = Debug|Any CPU
 		{33A33908-CA6B-4869-A016-8D9274C65229}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
 		{33A33908-CA6B-4869-A016-8D9274C65229}.AppStore|Any CPU.Build.0 = Debug|Any CPU
+		{C96898DC-9CC6-490D-B39F-B773D49A2954}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C96898DC-9CC6-490D-B39F-B773D49A2954}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C96898DC-9CC6-490D-B39F-B773D49A2954}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C96898DC-9CC6-490D-B39F-B773D49A2954}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C96898DC-9CC6-490D-B39F-B773D49A2954}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C96898DC-9CC6-490D-B39F-B773D49A2954}.Debug|x86.Build.0 = Debug|Any CPU
+		{C96898DC-9CC6-490D-B39F-B773D49A2954}.Release|x86.ActiveCfg = Release|Any CPU
+		{C96898DC-9CC6-490D-B39F-B773D49A2954}.Release|x86.Build.0 = Release|Any CPU
+		{C96898DC-9CC6-490D-B39F-B773D49A2954}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{C96898DC-9CC6-490D-B39F-B773D49A2954}.Default|Any CPU.Build.0 = Debug|Any CPU
+		{C96898DC-9CC6-490D-B39F-B773D49A2954}.CLI|Any CPU.ActiveCfg = Debug|Any CPU
+		{C96898DC-9CC6-490D-B39F-B773D49A2954}.CLI|Any CPU.Build.0 = Debug|Any CPU
+		{C96898DC-9CC6-490D-B39F-B773D49A2954}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
+		{C96898DC-9CC6-490D-B39F-B773D49A2954}.AppStore|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
