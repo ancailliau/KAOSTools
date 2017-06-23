@@ -17,11 +17,11 @@ namespace KAOSTools.OmnigraffleExport
 
         public void Render (KAOSModel model) 
         {
-            var goalsInRefinements = model.GoalRefinements ().SelectMany (x => x.SubGoals ().Union (new[] {
-                x.ParentGoal ()
-            })).Distinct ();
+            //var goalsInRefinements = model.GoalRefinements ().SelectMany (x => x.SubGoals ().Union (new[] {
+            //    x.ParentGoal ()
+            //})).Distinct ();
 
-            foreach (var g in goalsInRefinements) {
+            foreach (var g in model.Goals ()) {
                Render (g);
             }
 
@@ -32,49 +32,25 @@ namespace KAOSTools.OmnigraffleExport
             foreach (var r in model.GoalRefinements ()) {
                 Render (r);
             }
+            
+            foreach (var o in model.Obstacles ()) {
+                Render (o);
+            }
+            
+            foreach (var o in model.ObstacleRefinements ()) {
+                Render (o);
+            }
 
-            var obstacles = model.Obstructions ().Select (x => x.Obstacle ());
-            foreach (var o in obstacles) {
-                Render (o, model);
+            foreach (var o in model.Obstructions ()) {
+                Render (o);
+            }
+            
+            foreach (var o in model.Resolutions ()) {
+                Render (o);
             }
 
             foreach (var r in model.GoalAgentAssignments ()) {
                 Render (r, true);
-            }
-        }
-
-        public void Render (Obstacle o, KAOSModel model) 
-        {
-            Render (o);
-            foreach (var obstruction in o.model.Obstructions ().Where (x => x.ObstacleIdentifier == o.Identifier)) {
-                // Render (obstruction.ObstructedGoal ());
-                Render (obstruction);
-            }
-
-            RenderRefinement (o);
-        }
-
-        void RenderRefinement (Obstacle o) {
-            foreach (var refinement in o.Refinements()) {
-                foreach (var child in refinement.SubObstacles ()) {
-                    if (!shapes.ContainsKey (child.Identifier)) {
-                        Render (child);
-                    }
-                    RenderRefinement (child);
-
-                    foreach (var resolution in child.Resolutions ()) {
-                        if (!shapes.ContainsKey (resolution.ResolvingGoalIdentifier)) {
-                            Render (resolution.ResolvingGoal ());
-                        }
-                        if (!shapes.ContainsKey (resolution.Identifier)) {
-                            Render (resolution);
-                        }
-                    }
-                }
-                foreach (var child in refinement.DomainHypotheses ()) {
-                    Render (child);
-                }
-                Render (refinement);
             }
         }
     }
