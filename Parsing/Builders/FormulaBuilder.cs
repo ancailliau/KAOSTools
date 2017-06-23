@@ -43,7 +43,7 @@ namespace KAOSTools.Parsing
 
                     a.Declarations.Add (new KAOSTools.Core.ArgumentDeclaration () {
                         Name = name,
-                        Type = type
+                        Type = type.Identifier
                     });
                     d2.Add (name, type);
                 }
@@ -63,7 +63,7 @@ namespace KAOSTools.Parsing
 
                     a.Declarations.Add (new KAOSTools.Core.ArgumentDeclaration () {
                         Name = name,
-                        Type = type
+                        Type = type.Identifier
                     });
                     d2.Add (name, type);
                 }
