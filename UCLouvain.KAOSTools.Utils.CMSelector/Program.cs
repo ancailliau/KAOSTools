@@ -11,6 +11,7 @@ using System.IO;
 using UCLouvain.KAOSTools.Utils.FileExporter;
 using UCLouvain.KAOSTools.Optimizer;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace UCLouvain.KAOSTools.Utils.CMSelector
 {
@@ -40,6 +41,7 @@ namespace UCLouvain.KAOSTools.Utils.CMSelector
             try {
                 var optimizer = new NaiveCountermeasureSelectionOptimizer (model);
                 var propagator = new BDDBasedResolutionPropagator (model);
+                propagator.PreBuildObstructionSet (root);
                 
                 var sr = (DoubleSatisfactionRate) propagator.GetESR (root);
                 Console.WriteLine ("Satisfaction Rate without countermeasures: " + sr.SatisfactionRate);
@@ -55,8 +57,8 @@ namespace UCLouvain.KAOSTools.Utils.CMSelector
                         Console.WriteLine ("Optimal selections: No countermeasure to select.");
                         Console.WriteLine ();
                     } else {
-                        Console.WriteLine ("Optimal selections:");
-                        foreach (var o in optimalSelections) {
+                        Console.WriteLine ($"Optimal selections ({optimalSelections.Count ()}):");
+                        foreach (var o in optimalSelections.Distinct ()) {
                             Console.WriteLine ("* " + o);
                         }
                     }

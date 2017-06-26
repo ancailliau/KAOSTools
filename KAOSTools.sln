@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Optimiz
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Utils.CMIntegrator", "UCLouvain.KAOSTools.Utils.CMIntegrator\UCLouvain.KAOSTools.Utils.CMIntegrator.csproj", "{D1E4DBCA-A0D8-480B-8A54-3D24A67E20F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSTools.UCLouvain.Thesis.Tests", "KAOSTools.UCLouvain.Thesis.Tests\KAOSTools.UCLouvain.Thesis.Tests.csproj", "{14FA735E-788D-40EB-ADEB-EE4BC601D287}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -369,6 +371,20 @@ Global
 		{D1E4DBCA-A0D8-480B-8A54-3D24A67E20F7}.CLI|Any CPU.Build.0 = Debug|Any CPU
 		{D1E4DBCA-A0D8-480B-8A54-3D24A67E20F7}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
 		{D1E4DBCA-A0D8-480B-8A54-3D24A67E20F7}.AppStore|Any CPU.Build.0 = Debug|Any CPU
+		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.Debug|x86.Build.0 = Debug|Any CPU
+		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.Release|x86.ActiveCfg = Release|Any CPU
+		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.Release|x86.Build.0 = Release|Any CPU
+		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.Default|Any CPU.Build.0 = Debug|Any CPU
+		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.CLI|Any CPU.ActiveCfg = Debug|Any CPU
+		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.CLI|Any CPU.Build.0 = Debug|Any CPU
+		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
+		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.AppStore|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0

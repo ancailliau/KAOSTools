@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using KAOSTools.Core;
+using UCLouvain.KAOSTools.Core.SatisfactionRates;
 
 namespace UCLouvain.KAOSTools.Integrators
 {
@@ -41,7 +42,7 @@ namespace UCLouvain.KAOSTools.Integrators
         }
 
         void KeepObstructedGoal (Resolution resolution)
-        {   
+        {
             // Get the anchor goal
             var anchor = resolution.AnchorIdentifier;
             var anchor_goal = _model.Goal (anchor);
@@ -67,12 +68,38 @@ namespace UCLouvain.KAOSTools.Integrators
             new_refinement.Add (anchor);
             new_refinement.Add (resolution.ResolvingGoalIdentifier);
             _model.Add (new_refinement);
-            
+
             Obstacle obstacle = resolution.Obstacle ();
-            propagator.DownPropagateAddConjunct 
-                (resolution, 
-                 new Not (obstacle.FormalSpec), 
+            propagator.DownPropagateAddConjunct
+                (resolution,
+                 new Not (obstacle.FormalSpec),
                  obstacle.Name != null ? "Not " + obstacle.Name : null);
+
+            // Set the probability of the resolved obstacle to 0
+            // TODO Use a flag "resolved"
+            _model.satisfactionRateRepository.AddObstacleSatisfactionRate (obstacle.Identifier, new DoubleSatisfactionRate (0));
+
+            // Remove the resolution, its appearans in refinements and obstructions
+            Delete (resolution);
+        }
+
+        private void Delete (Resolution resolution, bool others = true)
+        {
+            Obstacle obstacle = _model.Obstacle (resolution.ObstacleIdentifier);
+            _model.obstacleRepository.Remove (resolution);
+
+            if (!others)
+                return;
+
+            foreach (var obstruction in obstacle.Obstructions ().ToList ()) {
+                _model.obstacleRepository.Remove (obstruction);
+            }
+
+            foreach (var refinement in _model.ObstacleRefinements (x => x.SubobstacleIdentifiers.Any (y => y.Identifier == obstacle.Identifier))) {
+                foreach (var refinee in refinement.SubobstacleIdentifiers.Where (x => x.Identifier == obstacle.Identifier).ToList ()) {
+                    refinement.SubobstacleIdentifiers.Remove (refinee);
+                }
+            }
         }
 
         void RemoveObstructedGoal (Resolution resolution)
@@ -100,6 +127,8 @@ namespace UCLouvain.KAOSTools.Integrators
 
             // Adds the countermeasure goal to the refinement
             anchorRefinement.Add (resolution.ResolvingGoalIdentifier);
+            
+            Delete (resolution, false);
         }
     }
 }

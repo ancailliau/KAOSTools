@@ -33,7 +33,7 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
         public ISatisfactionRate GetObstacleSatisfactionRate (string obstacleId)
         {
             if (ObstacleSatisfactionRates.ContainsKey (obstacleId)) {
-                return ObstacleSatisfactionRates [obstacleId].Single ();
+                return ObstacleSatisfactionRates [obstacleId].Last ();
             }
             return null;
         }

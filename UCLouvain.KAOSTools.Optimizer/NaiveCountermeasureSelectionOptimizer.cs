@@ -42,17 +42,20 @@ namespace UCLouvain.KAOSTools.Optimizer
             foreach (var r in GetAllCombinations (_model.Resolutions ().ToList ())) {
                 count++;
                 var cost = r.Count ();
-                if (minCost >= 0 && cost > minCost) continue;
+                //if (minCost >= 0 && cost > minCost) continue;
                 tested_count++;
                 
                 sr = (DoubleSatisfactionRate) propagator.GetESR (goal, r);
+                
+                 Console.WriteLine (new OptimalSelection (r, cost, sr.SatisfactionRate));
 
                 if (sr.SatisfactionRate > goal.RDS) {
                     safe_count++;
+                    stats.MaxSafeCost = Math.Max (stats.MaxSafeCost, cost);
+                    
                     if (minCost == -1 || cost < minCost) {
                         minCost = cost;
                     }
-                    stats.MaxSafeCost = Math.Max (stats.MaxSafeCost, cost);
                 }
             }
             timer.Stop ();
@@ -72,18 +75,19 @@ namespace UCLouvain.KAOSTools.Optimizer
             double bestSR = 0;
             int tested_count = 0;
 
-            foreach (var r in GetAllCombinations (_model.Resolutions ().ToList ())) {
-                var cost = r.Count ();
+            foreach (var activeResolutions in GetAllCombinations (_model.Resolutions ().ToList ())) {
+                var cost = activeResolutions.Count ();
                 if (cost > minCost) continue;
                 tested_count++;
 
-                var sr = (DoubleSatisfactionRate)propagator.GetESR (goal, r);
+                var sr = (DoubleSatisfactionRate)propagator.GetESR (goal, activeResolutions);
+                
                 if (sr.SatisfactionRate > bestSR + EPSILON) {
                     bestSR = sr.SatisfactionRate;
                     optimalSelections = new List<OptimalSelection> ();
-                    optimalSelections.Add (new OptimalSelection (r, cost, sr.SatisfactionRate));
+                    optimalSelections.Add (new OptimalSelection (activeResolutions, cost, sr.SatisfactionRate));
                 } else if (Math.Abs (sr.SatisfactionRate - bestSR) < EPSILON) {
-                    optimalSelections.Add (new OptimalSelection (r, cost, sr.SatisfactionRate));
+                    optimalSelections.Add (new OptimalSelection (activeResolutions, cost, sr.SatisfactionRate));
                 }
             }
             timer.Stop ();

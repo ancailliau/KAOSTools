@@ -2,6 +2,7 @@
 using KAOSTools.Core;
 using System.Text;
 using System.Linq;
+using UCLouvain.KAOSTools.Core.SatisfactionRates;
 
 namespace UCLouvain.KAOSTools.Utils.FileExporter
 {
@@ -75,7 +76,20 @@ namespace UCLouvain.KAOSTools.Utils.FileExporter
             foreach (var r in g.Resolutions ()) {
                 builder.AppendLine (string.Format ("\tresolvedby{0} {1}", ToString (r.ResolutionPattern, r.AnchorIdentifier), string.Join (",", r.ResolvingGoalIdentifier)));
             }
+            if (_model.satisfactionRateRepository.ObstacleSatisfactionRateExists (g.Identifier)) {
+                Core.SatisfactionRates.ISatisfactionRate satisfactionRate = _model.satisfactionRateRepository.GetObstacleSatisfactionRate (g.Identifier);
+                builder.AppendLine (string.Format ("\tprobability {0}", ToString(satisfactionRate)));
+            }
             builder.AppendLine ("end");
+        }
+        
+        string ToString (ISatisfactionRate satRate)
+        {
+            if (satRate is DoubleSatisfactionRate d) {
+                return d.SatisfactionRate.ToString ();
+            } else {
+                throw new NotImplementedException ();
+            }
         }
 
         string ToString (ResolutionPattern resolutionPattern, string anchorIdentifier)

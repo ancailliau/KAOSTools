@@ -15,6 +15,10 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
         {
             prebuilt_goal = goal;
             orSuperset = new ObstructionResolutionSuperset (goal);
+            foreach (var r in _model.Resolutions ()) {
+                r.Name = "Res_" + r.ResolvingGoalIdentifier;
+            }
+            Console.WriteLine (orSuperset.ToDot ());
         } 
 
         public override ISatisfactionRate GetESR (Goal goal)
