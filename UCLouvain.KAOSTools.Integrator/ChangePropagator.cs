@@ -66,18 +66,18 @@ namespace UCLouvain.KAOSTools.Integrators
                 return;
             
             visited.Add (goal.Identifier);
-            
-            var regex = new Regex (@"Achieve([ ]*)\[(.+)When(.+)\]");
-            var match = regex.Match (goal.Name);
-            if (match.Success) {
-                goal.Name = $"Achieve{match.Groups[1]}[{match.Groups [2]}When{match.Groups [3]} And {name}]";
-            } else {
-                regex = new Regex (@"Achieve([ ]*)\[(.+)\]");
-                match = regex.Match (goal.Name);
+
+            if (goal.Name != null) {
+                var regex = new Regex (@"Achieve([ ]*)\[(.+)When(.+)\]");
+                var match = regex.Match (goal.Name);
                 if (match.Success) {
-                    goal.Name = $"Achieve{match.Groups[1]}[{match.Groups [2]}When{name}]";
+                    goal.Name = $"Achieve{match.Groups [1]}[{match.Groups [2]}When{match.Groups [3]} And {name}]";
                 } else {
-                    Console.WriteLine (":(");
+                    regex = new Regex (@"Achieve([ ]*)\[(.+)\]");
+                    match = regex.Match (goal.Name);
+                    if (match.Success) {
+                        goal.Name = $"Achieve{match.Groups [1]}[{match.Groups [2]}When{name}]";
+                    }
                 }
             }
                 

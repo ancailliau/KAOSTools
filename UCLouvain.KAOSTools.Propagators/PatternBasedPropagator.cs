@@ -123,5 +123,15 @@ namespace UCLouvain.KAOSTools.Propagators
         {
             return o.LatestEPS ();
         }
+
+        public ISatisfactionRate GetESR (Obstacle obstacle, IEnumerable<Resolution> activeResolutions)
+        {
+            throw new NotImplementedException ();
+        }
+
+        public ISatisfactionRate GetESR (Goal goal, IEnumerable<Resolution> activeResolutions)
+        {
+            throw new NotImplementedException ();
+        }
     }
 }

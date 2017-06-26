@@ -56,6 +56,10 @@
       <Project>{CB10E490-9539-441A-AE82-D6372C43725B}</Project>
       <Name>UCLouvain.KAOSTools.Utils.FileExporter</Name>
     </ProjectReference>
+    <ProjectReference Include="..\UCLouvain.KAOSTools.Propagators\UCLouvain.KAOSTools.Propagators.csproj">
+      <Project>{A8252078-D017-4CB4-92DE-3212F7C1FE77}</Project>
+      <Name>UCLouvain.KAOSTools.Propagators</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

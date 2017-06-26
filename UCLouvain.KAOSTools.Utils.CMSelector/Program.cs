@@ -9,6 +9,8 @@ using UCLouvain.KAOSTools.Propagators;
 using UCLouvain.KAOSTools.Propagators.BDD;
 using System.IO;
 using UCLouvain.KAOSTools.Utils.FileExporter;
+using UCLouvain.KAOSTools.Optimizer;
+using System.Diagnostics;
 
 namespace UCLouvain.KAOSTools.Utils.CMSelector
 {
@@ -26,10 +28,6 @@ namespace UCLouvain.KAOSTools.Utils.CMSelector
             string rootname = "root";
             options.Add ("root=", "Specify the root goal for which the selection shall be optimized. (Default: root)", v => rootname = v);
 
-            bool bdd = true;
-            options.Add ("bdd", "Uses the BDD-Based propagation (Default)", v => bdd = true);
-            options.Add ("pattern", "Uses the Pattern-Based propagation", v => bdd = false);
-            
             Init (args);
             
             var root = model.Goal (rootname);
@@ -37,86 +35,51 @@ namespace UCLouvain.KAOSTools.Utils.CMSelector
                 PrintError ("The goal '"+rootname+"' was not found");
             }
 
-                bool stop = false;
-                while (!stop) {
-                try {
+            try {
+                var optimizer = new NaiveCountermeasureSelectionOptimizer (model);
+                var propagator = new BDDBasedResolutionPropagator (model);
                 
-                    Console.Write ("> ");
-                    var input = Console.ReadLine ().Trim ();
-                    if (input.Equals ("quit")) {
-                        stop = true;
-                        continue;
-                    }
+                var sr = (DoubleSatisfactionRate) propagator.GetESR (root);
+                Console.WriteLine ("Satisfaction Rate without countermeasures: " + sr.SatisfactionRate);
+                Console.WriteLine ("Required Satisfaction Rate: " + root.RDS);
+            
+                var timer_minimal_cost = Stopwatch.StartNew ();
+                var minimalCost = optimizer.GetMinimalCost (root, propagator);
+                timer_minimal_cost.Stop ();
+                Console.WriteLine ("Minimal cost to guarantee RSR: " + minimalCost);
 
-                    bool success = false;
-                    Regex regex = new Regex (@"resolve ([a-zA-Z][a-zA-Z0-9_-]*)");
-                    Match match = regex.Match (input);
-                    if (match.Success) {
-                        success = true;
-                        var o_identifier = match.Groups [1].Value;
-                        Obstacle o;
-                        if ((o = model.Obstacle (o_identifier)) != null) {
-                            var resolutions = o.Resolutions ().ToArray ();
-                            for (int i = 0; i < resolutions.Length; i++) {
-                                Console.WriteLine ($"[{i}] " + resolutions[i].ResolvingGoal ().FriendlyName);
-                            }
-                            Console.Write ("Select the countermeasure goal to integrate: ");
-                            int index = -1;
-                            do {
-                                var input_index = Console.ReadLine ();
-                                if (int.TryParse (input_index, out index)) {
-                                    if (index < resolutions.Length) {
-                                        var integrator = new ResolutionIntegrator (model);
-                                        integrator.Integrate (resolutions [index]);
-                                    } else {
-                                        index = -1;
-                                    }
-                                }
-                            } while (index < 0);
-                            continue;
-
-                        } else {
-                            Console.WriteLine ($"Obstacle '{o_identifier}' not found");
+                Stopwatch timer_optimization = null;
+                if (minimalCost >= 0) {
+                    timer_optimization = Stopwatch.StartNew ();
+                    var optimalSelections = optimizer.GetOptimalSelections (minimalCost, root, propagator);
+                    timer_optimization.Stop ();
+                    
+                    if (optimalSelections.Count () == 0) {
+                        Console.WriteLine ("Optimal selections: No countermeasure to select.");
+                        Console.WriteLine ();
+                    } else {
+                        Console.WriteLine ("Optimal selections:");
+                        foreach (var o in optimalSelections) {
+                            Console.WriteLine ("* " + o);
                         }
                     }
-                    
-                    regex = new Regex (@"export ([a-zA-Z0-9_\.-]+)");
-                    match = regex.Match (input);
-                    if (match.Success) {
-                        success = true;
-                        if (File.Exists (match.Groups[1].Value)) {
-                            Console.Write ($"Do you want to overwrite '{match.Groups[1].Value}' (yes/no)? ");
-                            var input_resp = Console.ReadLine ().Trim ();
-                            if (input_resp.Equals ("yes")) {
-                                File.Delete (match.Groups [1].Value);
-                            } else {
-                                continue;
-                            }
-                        }
-                        
-                        var e = new KAOSFileExporter (model);
-                        File.WriteAllText (match.Groups[1].Value, e.Export ());
-                        Console.WriteLine ("Model exported to " + match.Groups[1].Value);
-                        continue;
-                    }
-                    
-                    if (!success) {
-                        Console.WriteLine ("Command not recognized.");
-                    }
-                } catch (Exception e) {
-                    PrintError (e.Message);
-                    Console.Write ("Print more? (yes/no)");
-                    var input_resp = Console.ReadLine ().Trim ();
-                    if (!input.Equals ("yes"))
-                        continue;
-                    else 
-	                    PrintError ("An error occured during the computation. ("+e.Message+").\n"
-	                                +"Please report this error to <https://github.com/ancailliau/KAOSTools/issues>.\n"
-	                                +"----------------------------\n"
-	                                +e.StackTrace
-	                                +"\n----------------------------\n");
-                    
                 }
+                
+                Console.WriteLine ();
+                Console.WriteLine ("--- Statistics ---");
+                Console.WriteLine ("Number of resolutions: " + model.Resolutions ().Count ());
+                Console.WriteLine ("Number of resolution combination: " + Math.Pow (2, model.Resolutions ().Count ()));
+                Console.WriteLine ("Time to compute minimal cost: " + timer_minimal_cost.Elapsed);
+                if (timer_optimization != null)
+                    Console.WriteLine ("Time to compute optimal selections: " + timer_optimization.Elapsed);
+              
+            } catch (Exception e) {
+                PrintError ("An error occured during the computation. ("+e.Message+").\n"
+                            +"Please report this error to <https://github.com/ancailliau/KAOSTools/issues>.\n"
+                            +"----------------------------\n"
+                            +e.StackTrace
+                            +"\n----------------------------\n");
+                
             }
             
         }

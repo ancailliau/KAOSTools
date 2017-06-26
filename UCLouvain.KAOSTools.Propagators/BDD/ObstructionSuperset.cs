@@ -11,9 +11,9 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
     {
         static readonly Logger logger = LogManager.GetCurrentClassLogger();
         
-        readonly BDDManager _manager;
-        readonly Dictionary<KAOSCoreElement, int> _mapping;
-        readonly Dictionary<int, KAOSCoreElement> _rmapping;
+        protected readonly BDDManager _manager;
+        protected readonly Dictionary<KAOSCoreElement, int> _mapping;
+        protected readonly Dictionary<int, KAOSCoreElement> _rmapping;
         
         BDDNode _root;
 
@@ -47,12 +47,12 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
 
         #region GetProbability
 
-        public double GetProbability (SamplingVector samplingVector)
+        public virtual double GetProbability (SamplingVector samplingVector)
         {
             return GetProbability (_root, samplingVector);
         }
 
-        double GetProbability (BDDNode node, SamplingVector samplingVector, Dictionary<BDDNode, double> cache = null)
+        protected virtual double GetProbability (BDDNode node, SamplingVector samplingVector, Dictionary<BDDNode, double> cache = null)
         {
             if (node.IsOne) return 1.0;
             if (node.IsZero) return 0.0;
@@ -77,7 +77,7 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
 
         #region GetObstructionSet
 
-        public BDDNode GetObstructionSet (Goal goal)
+        public virtual BDDNode GetObstructionSet (Goal goal)
         {
             IEnumerable<GoalRefinement> refinements = goal.Refinements ();
             IEnumerable<Obstruction> obstructions = goal.Obstructions ();
@@ -227,5 +227,15 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
         }
 
         #endregion
+        
+        public string ToDot (BDDNode node)
+        {
+            return _manager.ToDot (node, (x) => _rmapping [x.Index].FriendlyName, false);
+        }
+        
+        public string ToDot ()
+        {
+            return ToDot (_root);
+        }
     }
 }

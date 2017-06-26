@@ -201,5 +201,10 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
         {
             Resolutions.Remove (resolution.Identifier);
         }
+
+        public void Remove (Obstruction obstruction)
+        {
+            Obstructions.Remove (obstruction.Identifier);
+        }
     }
 }

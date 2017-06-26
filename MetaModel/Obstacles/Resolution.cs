@@ -18,6 +18,17 @@ namespace KAOSTools.Core
         [DataMember]
         public ResolutionPattern ResolutionPattern { get; set; }
         
+        public string Name {
+            get;
+            set;
+        }
+   
+        public override string FriendlyName {
+            get {
+                return Name ?? Identifier;
+            }
+        }
+     
         public string AnchorIdentifier { get; set; }
 
         public Resolution (KAOSModel model) : base (model)

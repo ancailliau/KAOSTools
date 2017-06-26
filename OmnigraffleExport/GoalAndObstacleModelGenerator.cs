@@ -52,6 +52,10 @@ namespace KAOSTools.OmnigraffleExport
             foreach (var r in model.GoalAgentAssignments ()) {
                 Render (r, true);
             }
+            
+            foreach (var o in model.Resolutions ()) {
+                RenderAnchorArrow (o);
+            }
         }
     }
 }

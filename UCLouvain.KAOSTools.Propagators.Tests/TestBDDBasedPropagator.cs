@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using KAOSTools.Core;
 using KAOSTools.Parsing;
@@ -89,6 +90,74 @@ namespace UCLouvain.KAOSTools.Propagators.Tests
         public void TestUncontrollabilityGoalRefinement (double o1_esr, double o2_esr, double expected_root_esr)
         {
             TestUncontrollability (o1_esr, o2_esr, expected_root_esr);
+        }
+        
+        [Test()]
+        public void TestRemoveObstructedGoal ()
+        {
+            var input = 
+                @"declare goal [ anchor ] refinedby child1, child2 end
+                  declare goal [ child1 ] obstructedby o1 end
+                  declare goal [ child2 ] obstructedby o2 end
+                  declare obstacle [ o1 ] probability .1 resolvedby [substitution:anchor] cm1 end
+                  declare obstacle [ o2 ] refinedby so1 refinedby so2 end
+                  declare obstacle [ so1 ] probability .2 resolvedby [substitution:anchor] cm2 end
+                  declare obstacle [ so2 ] probability .3 end
+                  declare goal [ cm1 ] end
+                  declare goal [ cm2 ] obstructedby o_cm end
+                  declare obstacle [ o_cm ] probability .4 end";
+            
+            var parser = new ModelBuilder ();
+            var model = parser.Parse (input);
+
+            var resolutions = model.Resolutions ();
+            foreach (var r in resolutions) {
+                r.Name = "R_" + r.ResolvingGoalIdentifier;
+            }
+            var anchor = model.Goal ("anchor");
+            
+            var p1 = new BDDBasedPropagator (model);
+            System.Console.WriteLine (p1.GetESR (anchor));
+            
+            var p2 = new BDDBasedResolutionPropagator (model);
+            System.Console.WriteLine (p2.GetESR (anchor));
+
+            HashSet<Resolution> hashSet = new HashSet<Resolution> (model.Resolutions ());
+            System.Console.WriteLine (p2.GetESR (anchor, hashSet));
+        }
+        
+        [Test()]
+        public void TestKeepObstructedGoal ()
+        {
+            var input = 
+                @"declare goal [ anchor ] refinedby child1, child2 end
+                  declare goal [ child1 ] obstructedby o1 end
+                  declare goal [ child2 ] obstructedby o2 end
+                  declare obstacle [ o1 ] probability .1 resolvedby [restoration:anchor] cm1 end
+                  declare obstacle [ o2 ] refinedby so1 refinedby so2 end
+                  declare obstacle [ so1 ] probability .2 resolvedby [restoration:anchor] cm2 end
+                  declare obstacle [ so2 ] probability .3 end
+                  declare goal [ cm1 ] end
+                  declare goal [ cm2 ] obstructedby o_cm end
+                  declare obstacle [ o_cm ] probability .4 end";
+            
+            var parser = new ModelBuilder ();
+            var model = parser.Parse (input);
+
+            var resolutions = model.Resolutions ();
+            foreach (var r in resolutions) {
+                r.Name = "R_" + r.ResolvingGoalIdentifier;
+            }
+            var anchor = model.Goal ("anchor");
+            
+            var p1 = new BDDBasedPropagator (model);
+            System.Console.WriteLine (p1.GetESR (anchor));
+            
+            var p2 = new BDDBasedResolutionPropagator (model);
+            System.Console.WriteLine (p2.GetESR (anchor));
+
+            HashSet<Resolution> hashSet = new HashSet<Resolution> (model.Resolutions ());
+            System.Console.WriteLine (p2.GetESR (anchor, hashSet));
         }
         
     }

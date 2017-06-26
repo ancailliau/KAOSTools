@@ -78,7 +78,7 @@ namespace UCLouvain.KAOSTools.Integrators
         void RemoveObstructedGoal (Resolution resolution)
         {
             // Get the obstructed goals
-            var obstructed = GetObstructedGoals (resolution.ObstacleIdentifier);
+            var obstructed = resolution.GetObstructedGoalIdentifiers ();
 
             // Get the obstructed goals in the refinment of the anchor goal
             var anchorRefinements = _model.GoalRefinements (x => x.ParentGoalIdentifier == resolution.AnchorIdentifier);
@@ -100,36 +100,6 @@ namespace UCLouvain.KAOSTools.Integrators
 
             // Adds the countermeasure goal to the refinement
             anchorRefinement.Add (resolution.ResolvingGoalIdentifier);
-        }
-        
-        IEnumerable<string> GetObstructedGoals (string obstacleIdentifier)
-        {
-            var obstructedGoals = _model.Obstructions (
-                (obj) => obj.ObstacleIdentifier == obstacleIdentifier)
-                .Select (x => x.ObstructedGoalIdentifier);
-            return GetAncestors (obstructedGoals);
-        }
-        
-        IEnumerable<string> GetAncestors (IEnumerable<string> goals) 
-        {
-            var fixpoint = new HashSet<string> (goals);
-            var goalsToProcessSet = new HashSet<string> (goals);
-            var goalsToProcess = new Queue<string>(goals);
-            while (goalsToProcess.Count > 0)
-            {
-                var current = goalsToProcess.Dequeue ();
-                goalsToProcessSet.Remove (current);
-                var refinements = _model.GoalRefinements (x => x.SubGoalIdentifiers.Any (y => y.Identifier == current));
-                foreach (var r in refinements) {
-                    fixpoint.Add (r.ParentGoalIdentifier);
-                    if (!goalsToProcessSet.Contains (r.ParentGoalIdentifier)) {
-                        goalsToProcessSet.Add (r.ParentGoalIdentifier);
-                        goalsToProcess.Enqueue (r.ParentGoalIdentifier);
-                    }
-                }
-            }
-
-            return fixpoint;
         }
     }
 }

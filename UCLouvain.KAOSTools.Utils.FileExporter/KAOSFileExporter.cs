@@ -73,7 +73,7 @@ namespace UCLouvain.KAOSTools.Utils.FileExporter
                 builder.AppendLine (string.Format ("\trefinedby {0}", string.Join (",", r.SubobstacleIdentifiers.Select (x => x.Identifier + ToString (x.Parameters)))));
             }
             foreach (var r in g.Resolutions ()) {
-                builder.AppendLine (string.Format ("\tresolvedby {0}{1}", ToString (r.ResolutionPattern, r.AnchorIdentifier), string.Join (",", r.ResolvingGoalIdentifier)));
+                builder.AppendLine (string.Format ("\tresolvedby{0} {1}", ToString (r.ResolutionPattern, r.AnchorIdentifier), string.Join (",", r.ResolvingGoalIdentifier)));
             }
             builder.AppendLine ("end");
         }
@@ -94,7 +94,7 @@ namespace UCLouvain.KAOSTools.Utils.FileExporter
                 default:
                     break;
                 }
-                return string.Format ("[{0}:{1}]", pattern, anchorIdentifier);
+                return string.Format (" [{0}:{1}]", pattern, anchorIdentifier);
             }
             return "";
         }

@@ -635,7 +635,7 @@ namespace KAOSTools.OmnigraffleExport
             if (!shapes.ContainsKey (resolution.ObstacleIdentifier))
                 return;
 
-            if (!shapes.ContainsKey (resolution.ResolvingGoalIdentifier)) 
+            if (!shapes.ContainsKey (resolution.ResolvingGoalIdentifier))
                 return;
 
             var obstacleGraphic = shapes [resolution.ObstacleIdentifier].First ();
@@ -643,6 +643,22 @@ namespace KAOSTools.OmnigraffleExport
 
             var topArrow = GetSharpBackCrossArrow (goalGraphic, obstacleGraphic);
             Add (resolution.Identifier, topArrow);
+
+        }
+        
+        protected void RenderAnchorArrow (Resolution resolution)
+        {
+            if (!shapes.ContainsKey (resolution.ResolvingGoalIdentifier))
+                return;
+
+            if (!shapes.ContainsKey (resolution.AnchorIdentifier))
+                return;
+
+            var cmGraphic = shapes [resolution.ResolvingGoalIdentifier].First ();
+            var goalGraphic = shapes [resolution.AnchorIdentifier].First ();
+
+            var anchorArrow = GetArrow (cmGraphic, goalGraphic, true);
+            Add (resolution.Identifier, anchorArrow); 
         }
 
         protected void Render (Obstruction obstruction)

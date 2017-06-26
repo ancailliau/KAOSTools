@@ -111,6 +111,11 @@ namespace KAOSTools.Core
 		{
             return model.obstacleRepository.GetResolutions();
 		}
+        
+        public static IEnumerable<Resolution> AnchoredResolutions(this Goal goal)
+        {
+            return Resolutions (goal.model).Where (x => x.AnchorIdentifier == goal.Identifier);
+        }
 
 		public static IEnumerable<ObstacleAssumption> ObstacleAssumptions(this KAOSModel model)
 		{
@@ -309,6 +314,47 @@ namespace KAOSTools.Core
             //    obstacles.Remove (obstruction.Obstacle ());
 
             return obstacles;
+        }
+
+        public static IEnumerable<string> GetObstructedGoalIdentifiers (this Resolution r)
+        {
+            var rootObstacle = RootObstacleIdentifiers(r.model, r.ObstacleIdentifier);
+        
+            var obstructedGoals = r.model.Obstructions (
+                    (obj) => rootObstacle.Contains (obj.ObstacleIdentifier))
+                    .Select (x => x.ObstructedGoalIdentifier);
+            return GetAncestors (r.model, obstructedGoals);
+        }
+
+        static IEnumerable<string> RootObstacleIdentifiers (KAOSModel model, string o)
+        {
+            var oRefinement = model.ObstacleRefinements (x => x.SubobstacleIdentifiers.Any (y => y.Identifier == o));
+            if (oRefinement.Count () == 0)
+                return new [] { o };
+            else
+                return oRefinement.SelectMany (x => RootObstacleIdentifiers (model, x.ParentObstacleIdentifier));
+        }
+        
+        static IEnumerable<string> GetAncestors (KAOSModel _model, IEnumerable<string> goals) 
+        {
+            var fixpoint = new HashSet<string> (goals);
+            var goalsToProcessSet = new HashSet<string> (goals);
+            var goalsToProcess = new Queue<string>(goals);
+            while (goalsToProcess.Count > 0)
+            {
+                var current = goalsToProcess.Dequeue ();
+                goalsToProcessSet.Remove (current);
+                var refinements = _model.GoalRefinements (x => x.SubGoalIdentifiers.Any (y => y.Identifier == current));
+                foreach (var r in refinements) {
+                    fixpoint.Add (r.ParentGoalIdentifier);
+                    if (!goalsToProcessSet.Contains (r.ParentGoalIdentifier)) {
+                        goalsToProcessSet.Add (r.ParentGoalIdentifier);
+                        goalsToProcess.Enqueue (r.ParentGoalIdentifier);
+                    }
+                }
+            }
+
+            return fixpoint;
         }
     }
 }
