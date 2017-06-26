@@ -14,6 +14,8 @@ using System.Diagnostics;
 
 namespace UCLouvain.KAOSTools.Utils.CMSelector
 {
+    
+
     class MainClass : KAOSToolCLI
     {
         public static void Main (string [] args)
@@ -43,16 +45,11 @@ namespace UCLouvain.KAOSTools.Utils.CMSelector
                 Console.WriteLine ("Satisfaction Rate without countermeasures: " + sr.SatisfactionRate);
                 Console.WriteLine ("Required Satisfaction Rate: " + root.RDS);
             
-                var timer_minimal_cost = Stopwatch.StartNew ();
                 var minimalCost = optimizer.GetMinimalCost (root, propagator);
-                timer_minimal_cost.Stop ();
                 Console.WriteLine ("Minimal cost to guarantee RSR: " + minimalCost);
 
-                Stopwatch timer_optimization = null;
                 if (minimalCost >= 0) {
-                    timer_optimization = Stopwatch.StartNew ();
                     var optimalSelections = optimizer.GetOptimalSelections (minimalCost, root, propagator);
-                    timer_optimization.Stop ();
                     
                     if (optimalSelections.Count () == 0) {
                         Console.WriteLine ("Optimal selections: No countermeasure to select.");
@@ -64,14 +61,18 @@ namespace UCLouvain.KAOSTools.Utils.CMSelector
                         }
                     }
                 }
-                
+
+                var stat = optimizer.GetStatistics ();
                 Console.WriteLine ();
                 Console.WriteLine ("--- Statistics ---");
-                Console.WriteLine ("Number of resolutions: " + model.Resolutions ().Count ());
-                Console.WriteLine ("Number of resolution combination: " + Math.Pow (2, model.Resolutions ().Count ()));
-                Console.WriteLine ("Time to compute minimal cost: " + timer_minimal_cost.Elapsed);
-                if (timer_optimization != null)
-                    Console.WriteLine ("Time to compute optimal selections: " + timer_optimization.Elapsed);
+                Console.WriteLine ("Number of resolutions: " + stat.NbResolution);
+                Console.WriteLine ("Number of possible selections: " + stat.NbSelections);
+                Console.WriteLine ("Number of safe selections: " + stat.NbSafeSelections);
+                Console.WriteLine ("Number of tested selections (for minimal cost): " + stat.NbTestedSelections);
+                Console.WriteLine ("Number of tested selections (for optimal selection): " + stat.NbTestedSelectionsForOptimality);
+                Console.WriteLine ("Maximal safe cost: " + stat.MaxSafeCost);
+                Console.WriteLine ("Time to compute minimal cost: " + stat.TimeToComputeMinimalCost);
+                Console.WriteLine ("Time to compute optimal selections: " + stat.TimeToComputeMinimalCost);
               
             } catch (Exception e) {
                 PrintError ("An error occured during the computation. ("+e.Message+").\n"

@@ -138,90 +138,6 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
             return resolution_bdd;
         }
 
-        //BDDNode GetObstructionSet(KAOSModel model, string anchorId, IEnumerable<Resolution> resolution, BDDNode ideal)
-        //{
-            //if (resolution.ResolutionPattern == ResolutionPattern.GoalSubstitution
-            //|| resolution.ResolutionPattern == ResolutionPattern.GoalWeakening)
-            //{
-            //    Console.WriteLine ("Remove obstructed goal");
-            //    return GetObstructionSetRemoveObstructedGoal (model, anchorId, resolution);
-                
-            //} else if (resolution.ResolutionPattern == ResolutionPattern.ObstaclePrevention
-            //|| resolution.ResolutionPattern == ResolutionPattern.ObstacleMitigation
-            //|| resolution.ResolutionPattern == ResolutionPattern.ObstacleWeakMitigation
-            //|| resolution.ResolutionPattern == ResolutionPattern.ObstacleStrongMitigation
-            //|| resolution.ResolutionPattern == ResolutionPattern.ObstacleReduction
-            //|| resolution.ResolutionPattern == ResolutionPattern.GoalRestoration)
-            //{
-            //    Console.WriteLine ("Keep obstructed goal");
-                //throw new NotImplementedException ();
-            //    // return GetObstructionSetKeepObstructedGoal (resolution, ideal);
-                
-            //} else if (resolution.ResolutionPattern == ResolutionPattern.None) {
-            //    throw new PropagationException (PropagationException.INVALID_MODEL);
-                
-            //} else {
-            //    throw new PropagationException (PropagationException.INVALID_MODEL);
-            //}
-        //}
-
-        //BDDNode GetObstructionSetKeepObstructedGoal(Resolution r, BDDNode ideal)
-        //{
-        //    // Get obstructed goal variable
-        //    int idx;
-        //    var obstacle = r.Obstacle ();
-        //    if (_mapping.ContainsKey (obstacle)) {
-        //        idx = _mapping[obstacle];
-        //    } else {
-        //        idx = _manager.CreateVariable ();
-        //        _mapping.Add (obstacle, idx);
-        //        _rmapping.Add (idx, obstacle);
-        //    }
-        //    var not_leaf_obstacle = _manager.Create(idx, _manager.Zero, _manager.One);
-            
-        //    // Get the os for the "ideal" goal
-        //    var os_ideal = _manager.And (ideal, not_leaf_obstacle);
-            
-        //    // Get the os for countermeasuer goal
-        //    var os_countermeasure = GetObstructionSet (r.ResolvingGoal ());
-
-        //    // Combine and return
-        //    return _manager.Or (os_countermeasure, os_ideal);
-        //}
-
-        //BDDNode GetObstructionSetRemoveObstructedGoal(Resolution r)
-        //{
-        //    // Get the os for the countermeasure goal
-        //    var os_countermeasure = GetObstructionSet (r.ResolvingGoal ());
-        //    Console.WriteLine ("*** Obstruction set for the countermeasure");
-        //        Console.WriteLine (ToDot (os_countermeasure));
-        //    Console.WriteLine ("***");
-            
-        //    // Get the obstructed goals
-        //    var obstructed_goals = r.GetObstructedGoalIdentifiers ();
-        //    Console.WriteLine ("Obstructed goals are: " + string.Join (",", obstructed_goals));
-
-        //    // Get the non-obstructed children
-        //    var anchorRefinements = r.model.GoalRefinements (x => x.ParentGoalIdentifier == r.AnchorIdentifier);
-        //    if (anchorRefinements.Count () > 1 | anchorRefinements.Count () == 0) 
-        //        throw new PropagationException (PropagationException.INVALID_MODEL);
-        //    var anchorRefinement = anchorRefinements.Single ();
-        //    var nonObstructedChildren = anchorRefinement.SubGoalIdentifiers.Select (x => x.Identifier).Except (obstructed_goals);
-        //    Console.WriteLine ("Non obstructed children are: " + string.Join (",", nonObstructedChildren));
-
-        //    // Build the new refinement
-        //    foreach (var nO in nonObstructedChildren) {
-        //        BDDNode bDDNode = GetObstructionSet (r.model.Goal (nO));
-        //        os_countermeasure = _manager.Or (os_countermeasure, bDDNode);
-        //    }
-            
-        //    Console.WriteLine ("**** Obstruction set for the new refinement : ");
-        //    Console.WriteLine (ToDot (os_countermeasure));
-        //    Console.WriteLine ("****");
-            
-        //    return os_countermeasure;
-        //}
-
         BDDNode GetObstructionSet(KAOSModel model, string anchor_id, IEnumerable<Resolution> r, BDDNode ideal)
         {
             IEnumerable<Resolution> keepObstructedGoalResolutions
@@ -287,44 +203,6 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
             
             return _manager.Or (ko, _manager.And (os_countermeasure, kog_condition));
         }
-
-        //// Returns the os given that the specified resolutions are active
-        //BDDNode GetObstructionSetRemoveObstructedGoal(KAOSModel model, string anchorId, IEnumerable<Resolution> r)
-        //{
-        //    // Get the os for the countermeasure goal
-        //    var os_countermeasure = _manager.Zero;
-        //    foreach (var resolution in r) {
-        //        var os = GetObstructionSet (resolution.ResolvingGoal ());
-        //        Console.WriteLine ("*** Obstruction set for the countermeasure");
-        //        Console.WriteLine (ToDot (os_countermeasure));
-        //        Console.WriteLine ("***");
-        //        os_countermeasure = _manager.Or (os_countermeasure, os);
-        //    }
-            
-        //    // Get the obstructed goals
-        //    var obstructed_goals = r.SelectMany (x => x.GetObstructedGoalIdentifiers ());
-        //    Console.WriteLine ("Obstructed goals are: " + string.Join (",", obstructed_goals));
-
-        //    // Get the non-obstructed children
-        //    var anchorRefinements = model.GoalRefinements (x => x.ParentGoalIdentifier == anchorId);
-        //    if (anchorRefinements.Count () > 1 | anchorRefinements.Count () == 0) 
-        //        throw new PropagationException (PropagationException.INVALID_MODEL);
-        //    var anchorRefinement = anchorRefinements.Single ();
-        //    var nonObstructedChildren = anchorRefinement.SubGoalIdentifiers.Select (x => x.Identifier).Except (obstructed_goals);
-        //    Console.WriteLine ("Non obstructed children are: " + string.Join (",", nonObstructedChildren));
-
-        //    // Build the new refinement
-        //    foreach (var nO in nonObstructedChildren) {
-        //        BDDNode bDDNode = GetObstructionSet (model.Goal (nO));
-        //        os_countermeasure = _manager.Or (os_countermeasure, bDDNode);
-        //    }
-            
-        //    Console.WriteLine ("**** Obstruction set for the new refinement : ");
-        //    Console.WriteLine (ToDot (os_countermeasure));
-        //    Console.WriteLine ("****");
-            
-        //    return os_countermeasure;
-        //}
         
         #endregion
     }

@@ -11,12 +11,14 @@ namespace UCLouvain.KAOSTools.Optimizer
     public class NaiveCountermeasureSelectionOptimizer
     {
         KAOSModel _model;
+        OptimizationStatistics stats;
 
         const double EPSILON = 1E-15;
 
         public NaiveCountermeasureSelectionOptimizer (KAOSModel model)
         {
             _model = model;
+            stats = new OptimizationStatistics ();
         }
 
         /// <summary>
@@ -27,6 +29,7 @@ namespace UCLouvain.KAOSTools.Optimizer
         /// <returns>The minimal cost.</returns>
         public double GetMinimalCost (Goal goal, IPropagator propagator)
         {
+            var timer = Stopwatch.StartNew ();
             int minCost = -1;
 
             var sr = (DoubleSatisfactionRate) propagator.GetESR (goal);
@@ -34,29 +37,45 @@ namespace UCLouvain.KAOSTools.Optimizer
                 return 0;
 
             int count = 0;
+            int tested_count = 0;
+            int safe_count = 0;
             foreach (var r in GetAllCombinations (_model.Resolutions ().ToList ())) {
                 count++;
                 var cost = r.Count ();
                 if (minCost >= 0 && cost > minCost) continue;
+                tested_count++;
                 
                 sr = (DoubleSatisfactionRate) propagator.GetESR (goal, r);
 
-                if (sr.SatisfactionRate > goal.RDS && (minCost == -1 || cost < minCost)) {
-                    minCost = cost;
+                if (sr.SatisfactionRate > goal.RDS) {
+                    safe_count++;
+                    if (minCost == -1 || cost < minCost) {
+                        minCost = cost;
+                    }
+                    stats.MaxSafeCost = Math.Max (stats.MaxSafeCost, cost);
                 }
             }
+            timer.Stop ();
+            stats.TimeToComputeMinimalCost = timer.Elapsed;
+            stats.NbResolution = _model.Resolutions ().Count ();
+            stats.NbSelections = count;
+            stats.NbTestedSelections = tested_count;
+            stats.NbSafeSelections = safe_count;
             
             return minCost;
         }
 
         public IEnumerable<OptimalSelection> GetOptimalSelections (double minCost, Goal goal, IPropagator propagator)
         {
+            var timer = Stopwatch.StartNew ();
             var optimalSelections = new List<OptimalSelection> ();
             double bestSR = 0;
+            int tested_count = 0;
 
             foreach (var r in GetAllCombinations (_model.Resolutions ().ToList ())) {
                 var cost = r.Count ();
                 if (cost > minCost) continue;
+                tested_count++;
 
                 var sr = (DoubleSatisfactionRate)propagator.GetESR (goal, r);
                 if (sr.SatisfactionRate > bestSR + EPSILON) {
@@ -67,6 +86,9 @@ namespace UCLouvain.KAOSTools.Optimizer
                     optimalSelections.Add (new OptimalSelection (r, cost, sr.SatisfactionRate));
                 }
             }
+            timer.Stop ();
+            stats.TimeToComputeSelection = timer.Elapsed;
+            stats.NbTestedSelectionsForOptimality = tested_count;
 
             return optimalSelections;
         }
@@ -87,6 +109,11 @@ namespace UCLouvain.KAOSTools.Optimizer
                 result.Add (new List<T> (combo));
             });
             return result;
+        }
+
+        public OptimizationStatistics GetStatistics ()
+        {
+            return stats;
         }
     }
 }
