@@ -152,30 +152,6 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
              = r.Where (x => x.ResolutionPattern == ResolutionPattern.GoalSubstitution
              || x.ResolutionPattern == ResolutionPattern.GoalWeakening);
 
-            // The condition to propagate on the ideal goal
-            BDDNode kog_condition = _manager.One;
-            
-            // The "partial" refinement with the cm goals
-            BDDNode ko = _manager.Zero;
-
-            // Adds all countermeasure required by "keep obstructed goal" cm
-            
-            foreach (var kogr in keepObstructedGoalResolutions) {
-                // Get obstructed goal variable
-                int idx;
-                var obstacle = kogr.Obstacle ();
-                if (_mapping.ContainsKey (obstacle)) {
-                    idx = _mapping [obstacle];
-                } else {
-                    idx = _manager.CreateVariable ();
-                    _mapping.Add (obstacle, idx);
-                    _rmapping.Add (idx, obstacle);
-                }
-                kog_condition = _manager.And (kog_condition, _manager.Create (idx, _manager.Zero, _manager.One));
-
-                // Get and combine the os for countermeasure goal
-                ko =  _manager.Or (ko, GetObstructionSet (kogr.ResolvingGoal ()));
-            }
 
             // Removes all children obstructed by "remove obstructed goal" cm
             
@@ -200,8 +176,43 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
                 BDDNode bDDNode = GetObstructionSet (model.Goal (nO));
                 os_countermeasure = _manager.Or (os_countermeasure, bDDNode);
             }
+
+
+            // The condition to propagate on the ideal goal
+            BDDNode kog_condition = _manager.One;
             
-            return _manager.Or (ko, _manager.And (os_countermeasure, kog_condition));
+            // The "partial" refinement with the cm goals
+            BDDNode ko = _manager.Zero;
+
+            // Adds all countermeasure required by "keep obstructed goal" cm  
+            foreach (var kogr in keepObstructedGoalResolutions) {
+                // Get obstructed goal variable
+                int idx;
+                var obstacle = kogr.Obstacle ();
+                if (_mapping.ContainsKey (obstacle)) {
+                    idx = _mapping [obstacle];
+                } else {
+                    idx = _manager.CreateVariable ();
+                    _mapping.Add (obstacle, idx);
+                    _rmapping.Add (idx, obstacle);
+                }
+                kog_condition = _manager.And (kog_condition, _manager.Create (idx, _manager.Zero, _manager.One));
+
+                // Get and combine the os for countermeasure goal
+                //ko =  _manager.Or (ko, GetObstructionSet (kogr.ResolvingGoal ()));
+                os_countermeasure = _manager.Restrict (os_countermeasure, -1, idx);
+                ko = _manager.Or (ko, GetObstructionSet (kogr.ResolvingGoal ()));
+            }
+
+            // return _manager.Or (ko, _manager.And (os_countermeasure, kog_condition));
+            
+            //Console.WriteLine ("----");
+            //Console.WriteLine (ToDot (ko));
+            //Console.WriteLine (ToDot (os_countermeasure));
+            //Console.WriteLine (ToDot (_manager.Or (ko, os_countermeasure)));
+            //Console.WriteLine ("----");
+            
+            return _manager.Or (ko, os_countermeasure);
         }
         
         #endregion
