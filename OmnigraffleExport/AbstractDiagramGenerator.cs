@@ -651,7 +651,7 @@ namespace KAOSTools.OmnigraffleExport
             if (!shapes.ContainsKey (resolution.ResolvingGoalIdentifier))
                 return;
 
-            if (!shapes.ContainsKey (resolution.AnchorIdentifier))
+            if (resolution.AnchorIdentifier == null || !shapes.ContainsKey (resolution.AnchorIdentifier))
                 return;
 
             var cmGraphic = shapes [resolution.ResolvingGoalIdentifier].First ();

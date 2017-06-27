@@ -34,7 +34,7 @@
       <HintPath>..\packages\NLog.4.4.6\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="UCLouvain.BDDSharp">
-      <HintPath>..\..\..\Projects\BDDSharp\bin\Debug\UCLouvain.BDDSharp.dll</HintPath>
+      <HintPath>..\packages\UCLouvain.BDDSharp.0.1.3\lib\net45\UCLouvain.BDDSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -50,6 +50,7 @@ namespace KAOSTools.Core
         public UncertainSatisfactionRate SatisfactionUncertainty { get; set; }
 
         public Dictionary<Expert, QuantileList> ExpertEstimates { get; set; }
+        public bool Resolved { get; set; }
 
         public Obstacle (KAOSModel model) : base(model)
         {

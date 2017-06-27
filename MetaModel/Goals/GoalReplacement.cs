@@ -34,6 +34,8 @@ namespace KAOSTools.Core
         public string ResolvedObstacleIdentifier { get; set; }
         public string ResolvingGoalIdentifier { get; set; }
 
+        public IEnumerable<string> ReplacedGoals;
+
         public void SetAnchorGoal (Goal goal)
         {
             AnchorGoalIdentifier = goal.Identifier;

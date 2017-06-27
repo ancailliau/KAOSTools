@@ -37,6 +37,7 @@
     <Compile Include="IntegrationException.cs" />
     <Compile Include="ChangePropagator.cs" />
     <Compile Include="PropagationException.cs" />
+    <Compile Include="SoftResolutionIntegrator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MetaModel\UCLouvain.KAOSTools.Core.csproj">

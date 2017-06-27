@@ -5,6 +5,7 @@ using System.Linq;
 using UCLouvain.KAOSTools.Core.SatisfactionRates;
 using UCLouvain.KAOSTools.Propagators;
 using System.Diagnostics;
+using UCLouvain.KAOSTools.Integrators;
 
 namespace UCLouvain.KAOSTools.Optimizer
 {
@@ -13,12 +14,15 @@ namespace UCLouvain.KAOSTools.Optimizer
         KAOSModel _model;
         OptimizationStatistics stats;
 
+        SoftResolutionIntegrator integrator;
+
         const double EPSILON = 1E-15;
 
         public NaiveCountermeasureSelectionOptimizer (KAOSModel model)
         {
             _model = model;
             stats = new OptimizationStatistics ();
+            integrator = new SoftResolutionIntegrator (model);
         }
 
         /// <summary>
@@ -39,15 +43,28 @@ namespace UCLouvain.KAOSTools.Optimizer
             int count = 0;
             int tested_count = 0;
             int safe_count = 0;
-            foreach (var r in GetAllCombinations (_model.Resolutions ().ToList ())) {
+
+            var countermeasure_goals = _model.Resolutions ().Select (x => x.ResolvingGoalIdentifier).Distinct ();
+            
+            foreach (var cg in GetAllCombinations (countermeasure_goals.ToList ())) {
                 count++;
-                var cost = r.Count ();
+                var cost = cg.Count ();
                 //if (minCost >= 0 && cost > minCost) continue;
                 tested_count++;
+
+                var r = _model.Resolutions ().Where (x => cg.Contains (x.ResolvingGoalIdentifier));
+
+                foreach (var resolution in r) {
+                    integrator.Integrate (resolution);
+                }
                 
-                sr = (DoubleSatisfactionRate) propagator.GetESR (goal, r);
+                sr = (DoubleSatisfactionRate) propagator.GetESR (goal);
                 
-                 Console.WriteLine (new OptimalSelection (r, cost, sr.SatisfactionRate));
+                // Console.WriteLine ( new OptimalSelection (r, cost, sr.SatisfactionRate) );
+
+                foreach (var resolution in r) {
+                    integrator.Remove (resolution);
+                }
 
                 if (sr.SatisfactionRate > goal.RDS) {
                     safe_count++;
@@ -60,7 +77,7 @@ namespace UCLouvain.KAOSTools.Optimizer
             }
             timer.Stop ();
             stats.TimeToComputeMinimalCost = timer.Elapsed;
-            stats.NbResolution = _model.Resolutions ().Count ();
+            stats.NbResolvingGoals = countermeasure_goals.Count ();
             stats.NbSelections = count;
             stats.NbTestedSelections = tested_count;
             stats.NbSafeSelections = safe_count;
@@ -75,12 +92,25 @@ namespace UCLouvain.KAOSTools.Optimizer
             double bestSR = 0;
             int tested_count = 0;
 
-            foreach (var activeResolutions in GetAllCombinations (_model.Resolutions ().ToList ())) {
-                var cost = activeResolutions.Count ();
-                if (cost > minCost) continue;
+            var countermeasure_goals = _model.Resolutions ().Select (x => x.ResolvingGoalIdentifier).Distinct ();
+            
+            foreach (var cg in GetAllCombinations (countermeasure_goals.ToList ())) {
+            
+                var cost = cg.Count ();
+                if (minCost > 0 && cost > minCost) continue;
                 tested_count++;
+                
+                var activeResolutions = _model.Resolutions ().Where (x => cg.Contains (x.ResolvingGoalIdentifier));
+                
+                foreach (var resolution in activeResolutions) {
+                    integrator.Integrate (resolution);
+                }
+                
+                var sr = (DoubleSatisfactionRate) propagator.GetESR (goal);
 
-                var sr = (DoubleSatisfactionRate)propagator.GetESR (goal, activeResolutions);
+                foreach (var resolution in activeResolutions) {
+                    integrator.Remove (resolution);
+                }
                 
                 if (sr.SatisfactionRate > bestSR + EPSILON) {
                     bestSR = sr.SatisfactionRate;

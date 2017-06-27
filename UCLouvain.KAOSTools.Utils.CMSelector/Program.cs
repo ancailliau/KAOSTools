@@ -40,8 +40,7 @@ namespace UCLouvain.KAOSTools.Utils.CMSelector
 
             try {
                 var optimizer = new NaiveCountermeasureSelectionOptimizer (model);
-                var propagator = new BDDBasedResolutionPropagator (model);
-                propagator.PreBuildObstructionSet (root);
+                var propagator = new BDDBasedPropagator (model);
                 
                 var sr = (DoubleSatisfactionRate) propagator.GetESR (root);
                 Console.WriteLine ("Satisfaction Rate without countermeasures: " + sr.SatisfactionRate);
@@ -62,12 +61,18 @@ namespace UCLouvain.KAOSTools.Utils.CMSelector
                             Console.WriteLine ("* " + o);
                         }
                     }
+                } else {
+                    var optimalSelections = optimizer.GetOptimalSelections (minimalCost, root, propagator);
+                        Console.WriteLine ($"The best that can be achived ({optimalSelections.Count ()}):");
+                        foreach (var o in optimalSelections.Distinct ()) {
+                            Console.WriteLine ("* " + o);
+                        }
                 }
 
                 var stat = optimizer.GetStatistics ();
                 Console.WriteLine ();
                 Console.WriteLine ("--- Statistics ---");
-                Console.WriteLine ("Number of resolutions: " + stat.NbResolution);
+                Console.WriteLine ("Number of countermeasure goals: " + stat.NbResolvingGoals);
                 Console.WriteLine ("Number of possible selections: " + stat.NbSelections);
                 Console.WriteLine ("Number of safe selections: " + stat.NbSafeSelections);
                 Console.WriteLine ("Number of tested selections (for minimal cost): " + stat.NbTestedSelections);

@@ -33,7 +33,7 @@ namespace UCLouvain.KAOSTools.Optimizer
         public override string ToString ()
         {
             return string.Format ("[OptimalSelection: Resolutions={{{0}}}, Cost={1}, SatisfactionRate={2}]", 
-                string.Join (",", Resolutions.Select(x => x.ResolvingGoalIdentifier)), 
+                string.Join (",", Resolutions.Select(x => x.ResolvingGoalIdentifier).Distinct ()), 
                 Cost, 
                 SatisfactionRate);
         }

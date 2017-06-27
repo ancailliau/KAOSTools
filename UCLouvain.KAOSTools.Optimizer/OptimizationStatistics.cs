@@ -3,7 +3,7 @@ namespace UCLouvain.KAOSTools.Optimizer
 {
     public class OptimizationStatistics
     {
-        public int NbResolution {
+        public int NbResolvingGoals {
             get;
             set;
         }

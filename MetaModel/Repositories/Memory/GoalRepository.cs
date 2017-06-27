@@ -196,5 +196,17 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 		{
             return GoalReplacements.Values.SingleOrDefault(x => predicate(x));
         }
+
+        public void Remove (IEnumerable<GoalException> exceptions)
+        {
+            foreach (var e in exceptions.ToArray ())
+                GoalExceptions.Remove (e.Identifier);
+        }
+
+        public void Remove (IEnumerable<GoalReplacement> replacement)
+        {
+            foreach (var e in replacement.ToArray ())
+                GoalExceptions.Remove (e.Identifier);
+        }
     }
 }

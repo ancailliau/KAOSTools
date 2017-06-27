@@ -42,5 +42,8 @@ namespace UCLouvain.KAOSTools.Core.Repositories
 		IEnumerable<GoalException> GetGoalExceptions(Predicate<GoalException> predicate);
 		IEnumerable<GoalReplacement> GetGoalReplacements(Predicate<GoalReplacement> predicate);
 		IEnumerable<SoftGoal> GetSoftGoals(Predicate<SoftGoal> predicate);
-   }
+        
+        void Remove (IEnumerable<GoalException> e);
+        void Remove (IEnumerable<GoalReplacement> e);
+    }
 }

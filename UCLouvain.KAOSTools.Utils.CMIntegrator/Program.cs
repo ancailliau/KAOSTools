@@ -54,7 +54,7 @@ namespace UCLouvain.KAOSTools.Utils.CMSelector
                                 var input_index = Console.ReadLine ();
                                 if (int.TryParse (input_index, out index)) {
                                     if (index < resolutions.Length) {
-                                        var integrator = new ResolutionIntegrator (model);
+                                        var integrator = new SoftResolutionIntegrator (model);
                                         integrator.Integrate (resolutions [index]);
                                     } else {
                                         index = -1;

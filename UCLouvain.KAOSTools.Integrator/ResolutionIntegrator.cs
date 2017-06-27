@@ -77,10 +77,11 @@ namespace UCLouvain.KAOSTools.Integrators
 
             // Set the probability of the resolved obstacle to 0
             // TODO Use a flag "resolved"
-            _model.satisfactionRateRepository.AddObstacleSatisfactionRate (obstacle.Identifier, new DoubleSatisfactionRate (0));
+            obstacle.Resolved = true;
+            //_model.satisfactionRateRepository.AddObstacleSatisfactionRate (obstacle.Identifier, new DoubleSatisfactionRate (0));
 
             // Remove the resolution, its appearans in refinements and obstructions
-            Delete (resolution);
+            //Delete (resolution);
         }
 
         private void Delete (Resolution resolution, bool others = true)
@@ -128,7 +129,7 @@ namespace UCLouvain.KAOSTools.Integrators
             // Adds the countermeasure goal to the refinement
             anchorRefinement.Add (resolution.ResolvingGoalIdentifier);
             
-            Delete (resolution, false);
+            //Delete (resolution, false);
         }
     }
 }
