@@ -47,6 +47,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Utils.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSTools.UCLouvain.Thesis.Tests", "KAOSTools.UCLouvain.Thesis.Tests\KAOSTools.UCLouvain.Thesis.Tests.csproj", "{14FA735E-788D-40EB-ADEB-EE4BC601D287}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Monitoring", "UCLouvain.KAOSTools.Monitoring\UCLouvain.KAOSTools.Monitoring.csproj", "{4FC279D9-094A-4318-8002-3AF267840495}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Utils.Monitor", "UCLouvain.KAOSTools.Utils.Monitor\UCLouvain.KAOSTools.Utils.Monitor.csproj", "{5721B983-766F-4691-B26E-9248A8F99944}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -385,6 +389,34 @@ Global
 		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.CLI|Any CPU.Build.0 = Debug|Any CPU
 		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
 		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.AppStore|Any CPU.Build.0 = Debug|Any CPU
+		{4FC279D9-094A-4318-8002-3AF267840495}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FC279D9-094A-4318-8002-3AF267840495}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FC279D9-094A-4318-8002-3AF267840495}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FC279D9-094A-4318-8002-3AF267840495}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FC279D9-094A-4318-8002-3AF267840495}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4FC279D9-094A-4318-8002-3AF267840495}.Debug|x86.Build.0 = Debug|Any CPU
+		{4FC279D9-094A-4318-8002-3AF267840495}.Release|x86.ActiveCfg = Release|Any CPU
+		{4FC279D9-094A-4318-8002-3AF267840495}.Release|x86.Build.0 = Release|Any CPU
+		{4FC279D9-094A-4318-8002-3AF267840495}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FC279D9-094A-4318-8002-3AF267840495}.Default|Any CPU.Build.0 = Debug|Any CPU
+		{4FC279D9-094A-4318-8002-3AF267840495}.CLI|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FC279D9-094A-4318-8002-3AF267840495}.CLI|Any CPU.Build.0 = Debug|Any CPU
+		{4FC279D9-094A-4318-8002-3AF267840495}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FC279D9-094A-4318-8002-3AF267840495}.AppStore|Any CPU.Build.0 = Debug|Any CPU
+		{5721B983-766F-4691-B26E-9248A8F99944}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5721B983-766F-4691-B26E-9248A8F99944}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5721B983-766F-4691-B26E-9248A8F99944}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5721B983-766F-4691-B26E-9248A8F99944}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5721B983-766F-4691-B26E-9248A8F99944}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5721B983-766F-4691-B26E-9248A8F99944}.Debug|x86.Build.0 = Debug|Any CPU
+		{5721B983-766F-4691-B26E-9248A8F99944}.Release|x86.ActiveCfg = Release|Any CPU
+		{5721B983-766F-4691-B26E-9248A8F99944}.Release|x86.Build.0 = Release|Any CPU
+		{5721B983-766F-4691-B26E-9248A8F99944}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{5721B983-766F-4691-B26E-9248A8F99944}.Default|Any CPU.Build.0 = Debug|Any CPU
+		{5721B983-766F-4691-B26E-9248A8F99944}.CLI|Any CPU.ActiveCfg = Debug|Any CPU
+		{5721B983-766F-4691-B26E-9248A8F99944}.CLI|Any CPU.Build.0 = Debug|Any CPU
+		{5721B983-766F-4691-B26E-9248A8F99944}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
+		{5721B983-766F-4691-B26E-9248A8F99944}.AppStore|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
@@ -395,11 +427,8 @@ Global
 		$0.DotNetNamingPolicy = $2
 		$2.DirectoryNamespaceAssociation = PrefixedHierarchical
 		$0.TextStylePolicy = $3
-		$3.NoTabsAfterNonTabs = True
 		$3.EolMarker = Unix
 		$3.scope = text/x-csharp
-		$3.TabsToSpaces = True
-		$3.FileWidth = 80
 		$0.CSharpFormattingPolicy = $4
 		$4.scope = text/x-csharp
 	EndGlobalSection

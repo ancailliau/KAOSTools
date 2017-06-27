@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Core;
 using System.Collections.Generic;
 using System.Linq;
 

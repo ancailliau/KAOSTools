@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Core;
 using UCLouvain.KAOSTools.Core.SatisfactionRates;
 
 namespace UCLouvain.KAOSTools.Propagators.BDD

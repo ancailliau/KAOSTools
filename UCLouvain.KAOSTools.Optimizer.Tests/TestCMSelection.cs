@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
-using KAOSTools.Parsing;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Parsing;
+using UCLouvain.KAOSTools.Core;
 using UCLouvain.KAOSTools.Propagators.BDD;
 using System.Linq;
 

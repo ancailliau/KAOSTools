@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Core;
 using UCLouvain.KAOSTools.Core.Agents;
-using KAOSTools.Parsing.Parsers;
+using UCLouvain.KAOSTools.Parsing.Parsers;
 
-namespace KAOSTools.Parsing.Builders.Attributes
+namespace UCLouvain.KAOSTools.Parsing.Builders.Attributes
 {
 	public class ResolvedByAttributeBuilder : AttributeBuilder<Obstacle, ParsedResolvedByAttribute>
     {

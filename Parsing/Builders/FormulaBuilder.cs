@@ -1,11 +1,11 @@
-using System;
-using KAOSTools.Core;
+﻿using System;
+using UCLouvain.KAOSTools.Core;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using KAOSTools.Parsing.Parsers;
+using UCLouvain.KAOSTools.Parsing.Parsers;
 
-namespace KAOSTools.Parsing
+namespace UCLouvain.KAOSTools.Parsing
 {
     public class FormulaBuilder
     {

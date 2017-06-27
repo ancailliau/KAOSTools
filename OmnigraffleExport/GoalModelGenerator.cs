@@ -1,11 +1,11 @@
-using System;
-using KAOSTools.Core;
-using KAOSTools.OmnigraffleExport.Omnigraffle;
+﻿using System;
+using UCLouvain.KAOSTools.Core;
+using UCLouvain.KAOSTools.OmnigraffleExport.Omnigraffle;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 
-namespace KAOSTools.OmnigraffleExport
+namespace UCLouvain.KAOSTools.OmnigraffleExport
 {
     public class GoalModelGenerator : AbstractDiagramGenerator
     {

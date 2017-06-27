@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UCLouvain.KAOSTools.Core.Agents;
 
-namespace KAOSTools.Core
+namespace UCLouvain.KAOSTools.Core
 {
     public static class KAOSModelHelpers
     {

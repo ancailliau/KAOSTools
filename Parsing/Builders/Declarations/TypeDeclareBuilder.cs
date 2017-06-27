@@ -1,7 +1,7 @@
 ﻿using System;
-using KAOSTools.Core;
-using KAOSTools.Parsing.Parsers;
-namespace KAOSTools.Parsing.Builders.Declarations
+using UCLouvain.KAOSTools.Core;
+using UCLouvain.KAOSTools.Parsing.Parsers;
+namespace UCLouvain.KAOSTools.Parsing.Builders.Declarations
 {
 	public class TypeDeclareBuilder : DeclareBuilder
     {

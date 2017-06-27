@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
 using System;
 using System.IO;
-using KAOSTools.Parsing;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Parsing;
+using UCLouvain.KAOSTools.Core;
 using UCLouvain.KAOSTools.Core.SatisfactionRates;
 using System.Linq;
 

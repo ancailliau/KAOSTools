@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace KAOSTools.OmnigraffleExport.Omnigraffle
+namespace UCLouvain.KAOSTools.OmnigraffleExport.Omnigraffle
 {
     public class ApplicationVersion 
     {

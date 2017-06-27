@@ -1,15 +1,15 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using NDesk.Options;
-using KAOSTools.Core;
-using KAOSTools.Utils;
-using KAOSTools.OmnigraffleExport.Omnigraffle;
+using UCLouvain.KAOSTools.Core;
+using UCLouvain.KAOSTools.Utils;
+using UCLouvain.KAOSTools.OmnigraffleExport.Omnigraffle;
 using System.Text;
 
-namespace KAOSTools.OmnigraffleExport
+namespace UCLouvain.KAOSTools.OmnigraffleExport
 {
     public class ExceptionDiagramGenerator : AbstractDiagramGenerator
 	{

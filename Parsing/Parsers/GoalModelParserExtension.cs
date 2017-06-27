@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using KAOSTools.Parsing;
+using UCLouvain.KAOSTools.Parsing;
 using System.IO;
-using KAOSTools.Parsing.Parsers.Declarations;
+using UCLouvain.KAOSTools.Parsing.Parsers.Declarations;
 using System.Text.RegularExpressions;
-using KAOSTools.Parsing.Parsers;
+using UCLouvain.KAOSTools.Parsing.Parsers;
 
-namespace KAOSTools.Parsing.Parsers {
+namespace UCLouvain.KAOSTools.Parsing.Parsers {
     sealed partial class GoalModelParser
     {   
         List<string> files_imported = new List<string> ();

@@ -1,5 +1,5 @@
 ﻿using System;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Core;
 using MathNet.Numerics.Distributions;
 using System.Collections.Generic;
 using System.Linq;

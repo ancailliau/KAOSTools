@@ -1,13 +1,13 @@
-using KAOSTools.Core;
+﻿using UCLouvain.KAOSTools.Core;
 using System.Collections.Generic;
 using System;
 using System.Linq;
 using UCLouvain.KAOSTools.Core.Agents;
-using KAOSTools.Parsing.Builders.Declarations;
-using KAOSTools.Parsing.Builders.Attributes;
+using UCLouvain.KAOSTools.Parsing.Builders.Declarations;
+using UCLouvain.KAOSTools.Parsing.Builders.Attributes;
 using System.Reflection;
 
-namespace KAOSTools.Parsing
+namespace UCLouvain.KAOSTools.Parsing
 {
     public class SecondStageBuilder : AttributeStageBuilder
 	{

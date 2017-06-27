@@ -1,12 +1,12 @@
 ﻿using System;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Core;
 using System.Collections.Generic;
 using System.Linq;
 using UCLouvain.KAOSTools.Core.Agents;
-using KAOSTools.Parsing.Builders.Declarations;
-using KAOSTools.Parsing.Parsers;
+using UCLouvain.KAOSTools.Parsing.Builders.Declarations;
+using UCLouvain.KAOSTools.Parsing.Parsers;
 
-namespace KAOSTools.Parsing
+namespace UCLouvain.KAOSTools.Parsing
 {
     /// <summary>
     /// First stage builder.

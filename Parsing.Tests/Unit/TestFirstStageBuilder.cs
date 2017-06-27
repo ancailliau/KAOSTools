@@ -1,8 +1,8 @@
 ﻿using System;
 using NUnit.Framework;
-using KAOSTools.Core;
-using KAOSTools.Parsing;
-using KAOSTools.Parsing.Parsers;
+using UCLouvain.KAOSTools.Core;
+using UCLouvain.KAOSTools.Parsing;
+using UCLouvain.KAOSTools.Parsing.Parsers;
 
 namespace UCLouvain.KAOSTools.Parsing.Tests.Unit
 {

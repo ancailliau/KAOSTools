@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace KAOSTools.Parsing.Parsers.Attributes
+namespace UCLouvain.KAOSTools.Parsing.Parsers.Attributes
 {
 
     public class RefinedByAttributeParser : IParserAttribute

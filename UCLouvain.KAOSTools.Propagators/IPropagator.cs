@@ -1,5 +1,5 @@
 ﻿using System;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Core;
 using UCLouvain.KAOSTools.Core.SatisfactionRates;
 using System.Collections.Generic;
 

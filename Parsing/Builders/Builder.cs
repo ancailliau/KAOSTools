@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using System.Linq;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Core;
 using System.Collections.Generic;
 
-namespace KAOSTools.Parsing
+namespace UCLouvain.KAOSTools.Parsing
 {
     public class Builder
     {

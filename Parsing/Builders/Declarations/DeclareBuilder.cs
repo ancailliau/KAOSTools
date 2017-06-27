@@ -1,8 +1,8 @@
 ﻿using System;
-using KAOSTools.Core;
-using KAOSTools.Parsing.Parsers;
+using UCLouvain.KAOSTools.Core;
+using UCLouvain.KAOSTools.Parsing.Parsers;
 
-namespace KAOSTools.Parsing.Builders.Declarations
+namespace UCLouvain.KAOSTools.Parsing.Builders.Declarations
 {
     public abstract class DeclareBuilder
     {

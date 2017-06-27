@@ -1,6 +1,6 @@
 ﻿using System;
-using KAOSTools.Core;
-using KAOSTools.Utils;
+using UCLouvain.KAOSTools.Core;
+using UCLouvain.KAOSTools.Utils;
 using UCLouvain.KAOSTools.Core.SatisfactionRates;
 using UCLouvain.KAOSTools.Propagators;
 using UCLouvain.KAOSTools.Propagators.BDD;

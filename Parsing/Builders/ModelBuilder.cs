@@ -1,13 +1,13 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using KAOSTools.Parsing;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Parsing;
+using UCLouvain.KAOSTools.Core;
 using System.Text.RegularExpressions;
 using System.IO;
-using KAOSTools.Parsing.Parsers;
+using UCLouvain.KAOSTools.Parsing.Parsers;
 
-namespace KAOSTools.Parsing
+namespace UCLouvain.KAOSTools.Parsing
 {
     /// <summary>
     /// This is more a compiler than a parser. This class will parse and compile (in two-phases) a text-based 

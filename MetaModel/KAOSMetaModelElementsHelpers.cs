@@ -4,7 +4,7 @@ using System.Linq;
 using UCLouvain.KAOSTools.Core.Agents;
 using UCLouvain.KAOSTools.Core.SatisfactionRates;
 
-namespace KAOSTools.Core
+namespace UCLouvain.KAOSTools.Core
 {
     public static class KAOSCoreElementsHelpers
     {

@@ -1,14 +1,14 @@
 ﻿using NUnit.Framework;
 using System;
-using KAOSTools.Parsing;
+using UCLouvain.KAOSTools.Parsing;
 using System.IO;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Core;
 using UCLouvain.KAOSTools.Propagators.BDD;
 using UCLouvain.KAOSTools.Integrators;
 using System.Linq;
 using UCLouvain.KAOSTools.Utils.FileExporter;
 
-namespace KAOSTools.UCLouvain.Thesis.Tests
+namespace UCLouvain.KAOSTools.UCLouvain.Thesis.Tests
 {
     [TestFixture ()]
     public class Test

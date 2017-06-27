@@ -1,7 +1,7 @@
 ﻿using System;
 using UCLouvain.BDDSharp;
 using System.Collections.Generic;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Core;
 using System.Linq;
 using UCLouvain.ExpertOpinionSharp.Frameworks;
 

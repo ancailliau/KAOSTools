@@ -1,5 +1,5 @@
 ﻿using System;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Core;
 namespace UCLouvain.KAOSTools.Propagators
 {
     public class SamplingVector

@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
-using KAOSTools.Parsing;
+using UCLouvain.KAOSTools.Parsing;
 using System.Net;
 using System.IO;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Core;
 
 namespace UCLouvain.KAOSTools.Parsing.Tests
 {

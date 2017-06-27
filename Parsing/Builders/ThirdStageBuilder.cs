@@ -1,12 +1,12 @@
-using KAOSTools.Core;
+﻿using UCLouvain.KAOSTools.Core;
 using System.Collections.Generic;
 using System;
 using System.Linq;
-using KAOSTools.Parsing.Builders.Attributes;
-using KAOSTools.Parsing.Builders.Declarations;
+using UCLouvain.KAOSTools.Parsing.Builders.Attributes;
+using UCLouvain.KAOSTools.Parsing.Builders.Declarations;
 using System.Reflection;
 
-namespace KAOSTools.Parsing
+namespace UCLouvain.KAOSTools.Parsing
 {
     public class ThirdStageBuilder : AttributeStageBuilder
     {

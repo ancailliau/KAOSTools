@@ -1,6 +1,6 @@
 ﻿using System;
-using KAOSTools.Parsing.Parsers;
-using KAOSTools.Parsing.Parsers.Attributes;
+using UCLouvain.KAOSTools.Parsing.Parsers;
+using UCLouvain.KAOSTools.Parsing.Parsers.Attributes;
 using NUnit.Framework;
 using UCLouvain.KAOSTools.Parsing.Parsers.Exceptions;
 using System.Linq;

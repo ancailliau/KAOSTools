@@ -1,9 +1,9 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
 
-namespace KAOSTools.Core
+namespace UCLouvain.KAOSTools.Core
 {
 
     [DataContract]

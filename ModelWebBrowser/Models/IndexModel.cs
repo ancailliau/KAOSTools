@@ -1,7 +1,7 @@
-using System;
-using KAOSTools.Core;
+﻿using System;
+using UCLouvain.KAOSTools.Core;
 using System.Collections.Generic;
-using KAOSTools.Parsing;
+using UCLouvain.KAOSTools.Parsing;
 
 namespace ModelWebBrowser.Models
 {

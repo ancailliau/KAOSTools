@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using NDesk.Options;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Core;
 using System.Collections.Generic;
 using System.IO;
-using KAOSTools.Parsing;
+using UCLouvain.KAOSTools.Parsing;
 
-namespace KAOSTools.Utils
+namespace UCLouvain.KAOSTools.Utils
 {
     public abstract class KAOSToolCLI
     {

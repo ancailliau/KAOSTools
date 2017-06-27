@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UCLouvain.KAOSTools.Parsing.Parsers.Exceptions;
 
-namespace KAOSTools.Parsing.Parsers.Attributes
+namespace UCLouvain.KAOSTools.Parsing.Parsers.Attributes
 {
 
     public class LinkAttributeParser : IParserAttribute

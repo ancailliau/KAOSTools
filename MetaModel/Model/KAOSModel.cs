@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UCLouvain.KAOSTools.Core.Agents;
 using UCLouvain.KAOSTools.Core.Repositories;
 using UCLouvain.KAOSTools.Core.Repositories.Memory;
 
-namespace KAOSTools.Core
+namespace UCLouvain.KAOSTools.Core
 {
     public class KAOSModel
     {

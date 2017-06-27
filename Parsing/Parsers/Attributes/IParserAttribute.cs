@@ -1,5 +1,5 @@
 ﻿using System;
-namespace KAOSTools.Parsing.Parsers.Attributes
+namespace UCLouvain.KAOSTools.Parsing.Parsers.Attributes
 {
 	public interface IParserAttribute
 	{

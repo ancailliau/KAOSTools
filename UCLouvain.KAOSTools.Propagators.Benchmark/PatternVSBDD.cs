@@ -1,7 +1,7 @@
 ﻿using System;
 using UCLouvain.KAOSTools.Propagators.BDD;
 using UCLouvain.KAOSTools.Propagators.Tests;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Core;
 using System.Linq;
 using UCLouvain.KAOSTools.Core.SatisfactionRates;
 using BenchmarkDotNet.Attributes;

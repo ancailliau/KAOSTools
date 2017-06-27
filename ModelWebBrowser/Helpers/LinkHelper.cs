@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 using System.Web.Mvc;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Core;
 using System.Web.Mvc.Html;
 using UCLouvain.KAOSTools.Core.Agents;
 

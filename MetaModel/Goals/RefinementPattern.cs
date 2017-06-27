@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Runtime.Serialization;
 
-namespace KAOSTools.Core
+namespace UCLouvain.KAOSTools.Core
 {
 
     #region Goal Model

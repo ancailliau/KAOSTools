@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Core;
 
 namespace UCLouvain.KAOSTools.Core.Agents
 {

@@ -1,6 +1,6 @@
 ﻿using System;
-using KAOSTools.Utils;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Utils;
+using UCLouvain.KAOSTools.Core;
 using UncertaintySimulation;
 using System.Collections.Generic;
 using System.Linq;

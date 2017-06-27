@@ -1,8 +1,8 @@
-using System;
-using KAOSTools.Parsing.Parsers;
-using KAOSTools.Core;
+﻿using System;
+using UCLouvain.KAOSTools.Parsing.Parsers;
+using UCLouvain.KAOSTools.Core;
 
-namespace KAOSTools.Parsing
+namespace UCLouvain.KAOSTools.Parsing
 {
     public class BuilderException : Exception
 	{

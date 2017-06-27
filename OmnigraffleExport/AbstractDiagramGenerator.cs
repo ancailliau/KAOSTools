@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using KAOSTools.OmnigraffleExport.Omnigraffle;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.OmnigraffleExport.Omnigraffle;
+using UCLouvain.KAOSTools.Core;
 using System.Text;
 using System.Linq;
 using UCLouvain.KAOSTools.Core.Agents;
 
-namespace KAOSTools.OmnigraffleExport
+namespace UCLouvain.KAOSTools.OmnigraffleExport
 {
     public abstract class AbstractDiagramGenerator
     {

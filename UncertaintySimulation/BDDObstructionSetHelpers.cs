@@ -1,5 +1,5 @@
 ﻿using System;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Core;
 using UCLouvain.BDDSharp;
 using System.Linq;
 using System.Collections.Generic;

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Core;
 using System.Linq;
 using UCLouvain.KAOSTools.Core.Agents;
-using KAOSTools.Parsing.Parsers;
+using UCLouvain.KAOSTools.Parsing.Parsers;
 
-namespace KAOSTools.Parsing.Builders.Attributes
+namespace UCLouvain.KAOSTools.Parsing.Builders.Attributes
 {
     public class ArgumentAttributeBuilder : AttributeBuilder<Predicate, ParsedPredicateArgumentAttribute>
 	{

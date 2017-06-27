@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Core;
 
 namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 {

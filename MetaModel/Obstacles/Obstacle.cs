@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using UCLouvain.KAOSTools.Core.SatisfactionRates;
 
-namespace KAOSTools.Core
+namespace UCLouvain.KAOSTools.Core
 {
 
     #region Goal Model

@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 
-namespace KAOSTools.OmnigraffleExport
+namespace UCLouvain.KAOSTools.OmnigraffleExport
 {
     public class ExportOptions
     {

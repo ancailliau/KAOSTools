@@ -1,10 +1,10 @@
-using System;
+﻿using System;
 using System.Linq;
 using NUnit.Framework;
-using KAOSTools.Parsing;
+using UCLouvain.KAOSTools.Parsing;
 using System.Collections.Generic;
-using KAOSTools.Core;
-using KAOSTools.Parsing.Parsers;
+using UCLouvain.KAOSTools.Core;
+using UCLouvain.KAOSTools.Parsing.Parsers;
 using UCLouvain.KAOSTools.Core.SatisfactionRates;
 
 namespace UCLouvain.KAOSTools.Parsing.Tests

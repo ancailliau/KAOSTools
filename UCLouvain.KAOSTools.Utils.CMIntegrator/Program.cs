@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-using KAOSTools.Core;
-using KAOSTools.Utils;
+using UCLouvain.KAOSTools.Core;
+using UCLouvain.KAOSTools.Utils;
 using UCLouvain.KAOSTools.Core.SatisfactionRates;
 using UCLouvain.KAOSTools.Integrators;
 using UCLouvain.KAOSTools.Propagators;

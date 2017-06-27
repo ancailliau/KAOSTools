@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using KAOSTools.Core;
-using KAOSTools.Utils;
+using UCLouvain.KAOSTools.Core;
+using UCLouvain.KAOSTools.Utils;
 using UncertaintySimulation;
 
 namespace LuaCodeGenerator

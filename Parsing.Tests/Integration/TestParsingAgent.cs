@@ -1,9 +1,9 @@
 ﻿using System.Linq;
-using KAOSTools.Core;
+using UCLouvain.KAOSTools.Core;
 using NUnit.Framework;
 using UCLouvain.KAOSTools.Core.Agents;
-using KAOSTools.Parsing;
-using KAOSTools.Parsing.Parsers;
+using UCLouvain.KAOSTools.Parsing;
+using UCLouvain.KAOSTools.Parsing.Parsers;
 
 namespace UCLouvain.KAOSTools.Parsing.Tests
 {

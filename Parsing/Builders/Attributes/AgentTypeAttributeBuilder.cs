@@ -1,9 +1,9 @@
 ﻿using System;
-using KAOSTools.Core;
-using KAOSTools.Parsing.Parsers;
+using UCLouvain.KAOSTools.Core;
+using UCLouvain.KAOSTools.Parsing.Parsers;
 using UCLouvain.KAOSTools.Core.Agents;
 
-namespace KAOSTools.Parsing.Builders.Attributes
+namespace UCLouvain.KAOSTools.Parsing.Builders.Attributes
 {
     public class AgentTypeAttributeBuilder : AttributeBuilder<Agent, ParsedAgentTypeAttribute>
     {

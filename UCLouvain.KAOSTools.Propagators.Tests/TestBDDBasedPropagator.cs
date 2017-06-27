@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using KAOSTools.Core;
-using KAOSTools.Parsing;
+using UCLouvain.KAOSTools.Core;
+using UCLouvain.KAOSTools.Parsing;
 using NUnit.Framework;
 using UCLouvain.KAOSTools.Core.SatisfactionRates;
 using UCLouvain.KAOSTools.Propagators.BDD;

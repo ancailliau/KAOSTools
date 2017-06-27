@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using KAOSTools.Core;
-using KAOSTools.Parsing.Builders.Attributes;
-using KAOSTools.Parsing.Builders.Declarations;
-using KAOSTools.Parsing.Parsers;
+using UCLouvain.KAOSTools.Core;
+using UCLouvain.KAOSTools.Parsing.Builders.Attributes;
+using UCLouvain.KAOSTools.Parsing.Builders.Declarations;
+using UCLouvain.KAOSTools.Parsing.Parsers;
 
-namespace KAOSTools.Parsing
+namespace UCLouvain.KAOSTools.Parsing
 {
     public abstract class AttributeStageBuilder : Builder
 	{
