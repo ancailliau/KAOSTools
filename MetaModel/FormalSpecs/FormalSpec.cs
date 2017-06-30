@@ -639,8 +639,20 @@ namespace UCLouvain.KAOSTools.Core
         {
             if (TimeBound == null)
                 return default(string);
-            
-            string bound = TimeBound.Bound.ToString (@"%d'd%m'm%s's%FFFFFF'ms");
+
+			string bound = "";
+			if (TimeBound.Bound.Days > 0) {
+				bound += TimeBound.Bound.Days + "d ";
+			}			
+			if (TimeBound.Bound.Minutes > 0) {
+				bound += TimeBound.Bound.Minutes + "m ";
+			}
+			if (TimeBound.Bound.Seconds > 0) {
+				bound += TimeBound.Bound.Seconds + "s ";
+			}
+			if (TimeBound.Bound.Milliseconds > 0) {
+				bound += TimeBound.Bound.Milliseconds + "ms ";
+			}
             
             switch (TimeBound.Comparator) {
             case TimeComparator.less: return ", before " + bound + ",";
@@ -710,7 +722,20 @@ namespace UCLouvain.KAOSTools.Core
             if (TimeBound == null)
                 return default(string);
             
-            string bound = TimeBound.Bound.ToString (@"%d'd%m'm%s's%FFFFFF'ms");
+			string bound = "";
+			if (TimeBound.Bound.Days > 0) {
+				bound += TimeBound.Bound.Days + "d ";
+			}			
+			if (TimeBound.Bound.Minutes > 0) {
+				bound += TimeBound.Bound.Minutes + "m ";
+			}
+			if (TimeBound.Bound.Seconds > 0) {
+				bound += TimeBound.Bound.Seconds + "s ";
+			}
+			if (TimeBound.Bound.Milliseconds > 0) {
+				bound += TimeBound.Bound.Milliseconds + "ms ";
+			}
+			
             switch (TimeBound.Comparator) {
             case TimeComparator.less: return ", for less than " + bound + ",";
             case TimeComparator.equal: return ", for " + bound + ",";
@@ -749,7 +774,7 @@ namespace UCLouvain.KAOSTools.Core
     }
 
     public class PredicateReference : Formula {
-        public string Predicate;
+        public string PredicateIdentifier;
         public IList<string> ActualArguments;
 
 		public PredicateReference()
@@ -759,7 +784,7 @@ namespace UCLouvain.KAOSTools.Core
 
 		public PredicateReference(string predicate)
 		{
-			this.Predicate = predicate;
+			this.PredicateIdentifier = predicate;
 		}
 
 		public override IEnumerable<PredicateReference> PredicateReferences {
@@ -771,20 +796,20 @@ namespace UCLouvain.KAOSTools.Core
         public override bool Equals (object obj)
         {
             if (obj is PredicateReference f) {
-                return f.Predicate.Equals (Predicate) & Enumerable.SequenceEqual (f.ActualArguments, ActualArguments);
+                return f.PredicateIdentifier.Equals (PredicateIdentifier) & Enumerable.SequenceEqual (f.ActualArguments, ActualArguments);
             }
             return false;
         }
 
         public override string ToString ()
         {
-            return string.Format ("{0}({1})", Predicate, string.Join (",", ActualArguments));
+            return string.Format ("{0}({1})", PredicateIdentifier, string.Join (",", ActualArguments));
         }
         
         public override Formula Copy ()
         {
             return new PredicateReference () {
-                Predicate = Predicate,
+                PredicateIdentifier = PredicateIdentifier,
                 ActualArguments = new List<string>(ActualArguments)
             };
         }

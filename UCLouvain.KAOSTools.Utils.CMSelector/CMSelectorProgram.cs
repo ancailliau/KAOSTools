@@ -17,7 +17,7 @@ namespace UCLouvain.KAOSTools.Utils.CMSelector
 {
     
 
-    class MainClass : KAOSToolCLI
+    class CMSelectorProgram : KAOSToolCLI
     {
         public static void Main (string [] args)
         {

@@ -20,7 +20,7 @@ namespace UCLouvain.KAOSTools.Monitoring
 						   KAOSModel model,
 						   HashSet<string> projection,
 						   IStateInformationStorage storage,
-						   TimeSpan monitoringDelay) : base(model, goal, projection, monitoringDelay)
+						   TimeSpan monitoringDelay) : base(model, goal, monitoringDelay)
 		{
 			this.goal = goal;
 			this.storage = storage;

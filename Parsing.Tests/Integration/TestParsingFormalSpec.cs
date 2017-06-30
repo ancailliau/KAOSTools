@@ -294,7 +294,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             var predicateReference = root.FormalSpec as PredicateReference;
 
             if (id != null)
-                Assert.AreEqual (id, predicateReference.Predicate);
+                Assert.AreEqual (id, predicateReference.PredicateIdentifier);
 
             model.Predicates().Count().ShallEqual(1);
         }
@@ -307,7 +307,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             var predicateReference = (root.FormalSpec as Exists).Enclosed as PredicateReference;
 
             if (id != null)
-                Assert.AreEqual (id, predicateReference.Predicate);
+                Assert.AreEqual (id, predicateReference.PredicateIdentifier);
 
             predicateReference.ActualArguments.ShallOnlyContain (new string[] {"arg1"});
             
@@ -484,7 +484,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             Assert.NotNull (expression);
 
             expression.Criteria.ShallEqual (criteria);
-			(expression.Right as PredicateReference).Predicate.ShallEqual("predicate");
+			(expression.Right as PredicateReference).PredicateIdentifier.ShallEqual("predicate");
             (expression.Right as PredicateReference).ActualArguments.ShallOnlyContain (new string[] { "arg1" });
 
         }

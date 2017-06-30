@@ -33,10 +33,29 @@
     <Reference Include="NDesk.Options">
       <HintPath>..\packages\NDesk.Options.0.2.1\lib\NDesk.Options.dll</HintPath>
     </Reference>
+    <Reference Include="LtlSharp">
+      <HintPath>..\..\LtlSharp\LtlSharp\bin\Debug\LtlSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="RabbitMQ.Client">
+      <HintPath>..\packages\RabbitMQ.Client.4.1.3\lib\net451\RabbitMQ.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.4.4.11\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple">
+      <HintPath>..\packages\System.ValueTuple.4.3.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="MoreLinq">
+      <HintPath>..\packages\morelinq.2.5.0\lib\net40\MoreLinq.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="MonitorProgram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="GetSatisfactionRateCommand.cs" />
+    <Compile Include="ICommand.cs" />
+    <Compile Include="ExportModelCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MetaModel\UCLouvain.KAOSTools.Core.csproj">
@@ -55,9 +74,28 @@
       <Project>{C96BDFB0-950D-4DF0-9BFB-27EA7C8CABD3}</Project>
       <Name>Utils</Name>
     </ProjectReference>
+    <ProjectReference Include="..\UCLouvain.KAOSTools.Optimizer\UCLouvain.KAOSTools.Optimizer.csproj">
+      <Project>{DC8A0FE4-11CC-4B71-8F70-D9073F036A2E}</Project>
+      <Name>UCLouvain.KAOSTools.Optimizer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UCLouvain.KAOSTools.Propagators\UCLouvain.KAOSTools.Propagators.csproj">
+      <Project>{A8252078-D017-4CB4-92DE-3212F7C1FE77}</Project>
+      <Name>UCLouvain.KAOSTools.Propagators</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UCLouvain.KAOSTools.Integrator\UCLouvain.KAOSTools.Integrators.csproj">
+      <Project>{33A33908-CA6B-4869-A016-8D9274C65229}</Project>
+      <Name>UCLouvain.KAOSTools.Integrators</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UCLouvain.KAOSTools.Utils.FileExporter\UCLouvain.KAOSTools.Utils.FileExporter.csproj">
+      <Project>{CB10E490-9539-441A-AE82-D6372C43725B}</Project>
+      <Name>UCLouvain.KAOSTools.Utils.FileExporter</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

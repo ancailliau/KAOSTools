@@ -44,11 +44,6 @@ namespace UCLouvain.KAOSTools.Monitoring
         protected TransformBlock<CachedHashMonitoredState, CachedHashMonitoredState> updateMonitors;
 
         /// <summary>
-        /// The block processing the observed state to update the transition relation, if monitored.
-        /// </summary>
-        protected ActionBlock<CachedHashMonitoredState> updateTransitionRelation;
-
-        /// <summary>
         /// The block ending the dataflow TPL pipeline. Required for completion of the transform blocks.
         /// </summary>
         protected ActionBlock<CachedHashMonitoredState> dummyEnd;
@@ -57,11 +52,6 @@ namespace UCLouvain.KAOSTools.Monitoring
         /// The current state, only used when saving the transition relation.
         /// </summary>
         int currentState = -1;
-
-        /// <summary>
-        /// The monitored transitions. Key is the source, value is (target, count).
-        /// </summary>
-        public Dictionary<int, Dictionary<int, int>> monitoredTransitions;
 
         /// <summary>
         /// The monitored states. Key is the hash, value is the first monitored state observed with that specific hash.
@@ -125,21 +115,13 @@ namespace UCLouvain.KAOSTools.Monitoring
         /// <param name="storage">The storage.</param>
         /// <param name="defaultProjection">Projection.</param>
         public KAOSCoreElementMonitor (KAOSModel model,
-                            KAOSCoreElement elements,
-                            HashSet<string> defaultProjection,
-                            TimeSpan monitoringDelay)
+                            		   KAOSCoreElement elements,
+                            		   TimeSpan monitoringDelay)
         {
             Ready = false;
             
             this.model = model;
             this.MonitoringDelay = monitoringDelay;
-
-            this.projection = defaultProjection;
-			if (elements.CustomData.ContainsKey("hashProjection")) {
-				defaultProjection = elements.CustomData["hashProjection"].Split(',').ToHashSet();
-			} else {
-				this.projection = defaultProjection;
-			}
         }
 
         #endregion
@@ -221,7 +203,7 @@ namespace UCLouvain.KAOSTools.Monitoring
 
             } else if (formalSpec is PredicateReference) {
                 var casted = ((KAOSTools.Core.PredicateReference)formalSpec);
-                return new LtlSharp.Proposition(casted.Predicate);
+                return new LtlSharp.Proposition(casted.PredicateIdentifier);
             }
 
             throw new NotImplementedException(string.Format ("Operator {0} is not translatable to LTLSharp framework.",
@@ -232,7 +214,7 @@ namespace UCLouvain.KAOSTools.Monitoring
         {
             // todo not the safest...
             // todo issue warning if division is not an integer
-            var value = (int)Math.Ceiling(span.Bound.TotalMilliseconds / MonitoringDelay.TotalMilliseconds);
+            var value = (int) Math.Ceiling(span.Bound.TotalMilliseconds / MonitoringDelay.TotalMilliseconds);
             logger.Trace("Convertion of {0} to {1}", span.Bound.ToString(), value);
             logger.Trace("Monitoring Delay : {0}", MonitoringDelay);
             return value;
@@ -244,11 +226,8 @@ namespace UCLouvain.KAOSTools.Monitoring
         /// Run the monitors and save a summary every second in summaryFilename.
         /// </summary>
         /// <param name="saveTransitionRelation">Whether the transition relation shall be kept.</param>
-        public void Run (bool saveTransitionRelation = false)
+        public void Run ()
         {
-            monitoredTransitions = new Dictionary<int, Dictionary<int, int>> ();
-            monitoredStates = new Dictionary<int, CachedHashMonitoredState> ();
-
             buffer = new BufferBlock<CachedHashMonitoredState> ();
             createMonitors = new TransformBlock<CachedHashMonitoredState, CachedHashMonitoredState> ((ms) => CreateNewMonitors(ms));
             updateMonitors = new TransformBlock<CachedHashMonitoredState, CachedHashMonitoredState> ((ms) => UpdateMonitors (ms));
@@ -288,12 +267,11 @@ namespace UCLouvain.KAOSTools.Monitoring
         /// <param name="ms">The monitored state.</param>
         CachedHashMonitoredState CreateNewMonitors (CachedHashMonitoredState ms)
         {
-            try {
-            	monitor.StartNew(ms.StateHash, ms);
-
-            } catch (Exception e) {
-                Console.WriteLine (e);
-            }
+        	try {
+        		monitor.StartNew(ms.StateHash, ms);
+			} catch (Exception e) {
+				logger.Error($"Fail to update monitor ({e.Message})");
+			}
             return ms;
         }
 
@@ -304,12 +282,11 @@ namespace UCLouvain.KAOSTools.Monitoring
         /// <param name="ms">The monitored state.</param>
         CachedHashMonitoredState UpdateMonitors (CachedHashMonitoredState ms)
         {
-            try {
-                monitor.Step(ms);
-
-            } catch (Exception e) {
-                Console.WriteLine (e);
-            }
+			try {
+				monitor.Step(ms);
+			} catch (Exception e) {
+				logger.Error($"Fail to update monitor ({e.Message})");
+			}
             return ms;
         }
     }

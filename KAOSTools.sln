@@ -431,5 +431,18 @@ Global
 		$3.scope = text/x-csharp
 		$0.CSharpFormattingPolicy = $4
 		$4.scope = text/x-csharp
+		$4.NewLinesForBracesInProperties = False
+		$4.NewLinesForBracesInAccessors = False
+		$4.NewLinesForBracesInAnonymousMethods = False
+		$4.NewLinesForBracesInControlBlocks = False
+		$4.NewLinesForBracesInAnonymousTypes = False
+		$4.NewLinesForBracesInObjectCollectionArrayInitializers = False
+		$4.NewLinesForBracesInLambdaExpressionBody = False
+		$4.NewLineForElse = False
+		$4.NewLineForCatch = False
+		$4.NewLineForFinally = False
+		$4.NewLineForMembersInObjectInit = False
+		$4.NewLineForMembersInAnonymousTypes = False
+		$4.NewLineForClausesInQuery = False
 	EndGlobalSection
 EndGlobal

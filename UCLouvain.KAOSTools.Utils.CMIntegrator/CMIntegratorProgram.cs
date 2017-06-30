@@ -12,7 +12,7 @@ using UCLouvain.KAOSTools.Utils.FileExporter;
 
 namespace UCLouvain.KAOSTools.Utils.CMSelector
 {
-    class MainClass : KAOSToolCLI
+    class CMIntegratorProgram : KAOSToolCLI
     {
         public static void Main (string [] args)
         {
@@ -95,7 +95,7 @@ namespace UCLouvain.KAOSTools.Utils.CMSelector
                     PrintError (e.Message);
                     Console.Write ("Print more? (yes/no)");
                     var input_resp = Console.ReadLine ().Trim ();
-                    if (!input.Equals ("yes"))
+                    if (!input_resp.Equals ("yes"))
                         continue;
                     else
                         PrintError ("An error occured during the computation. (" + e.Message + ").\n"

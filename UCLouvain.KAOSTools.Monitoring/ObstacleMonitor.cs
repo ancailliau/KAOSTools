@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using LtlSharp;
 using LtlSharp.Monitoring;
+using MoreLinq;
 using NLog;
 using UCLouvain.KAOSTools.Core;
 namespace UCLouvain.KAOSTools.Monitoring
@@ -10,6 +12,10 @@ namespace UCLouvain.KAOSTools.Monitoring
 	public class ObstacleMonitor : KAOSCoreElementMonitor
 	{
 		protected Obstacle obstacle;
+		
+		public Obstacle Obstacle {
+			get { return obstacle;  }
+		}
 
 		protected IStateInformationStorage storage;
 
@@ -17,14 +23,23 @@ namespace UCLouvain.KAOSTools.Monitoring
 
 		public ObstacleMonitor(Obstacle obstacle,
 						   KAOSModel model,
-						   HashSet<string> projection,
 						   IStateInformationStorage storage,
-						   TimeSpan monitoringDelay) : base(model, obstacle, projection, monitoringDelay)
+						   TimeSpan monitoringDelay) : base(model, obstacle, monitoringDelay)
 		{
 			this.storage = storage;
 			this.obstacle = obstacle;
 
+			SetProjection();
 			Initialize();
+		}
+		
+		void SetProjection ()
+		{	
+			if (obstacle.CustomData.ContainsKey("hashProjection")) {
+				projection = obstacle.CustomData["hashProjection"].Split(',').ToHashSet();
+			} else {
+				projection = obstacle.FormalSpec.PredicateReferences.Select(x => x.PredicateIdentifier).ToHashSet();
+			}
 		}
 
 		void Initialize()
@@ -48,6 +63,10 @@ namespace UCLouvain.KAOSTools.Monitoring
 
 			w.Stop();
 			logger.Info("Time to build monitor: {0}ms", w.ElapsedMilliseconds);
+			
+			Run();
 		}
+
+		public IStateInformation MonitoredSatisfactionRate => monitor.Max;
 	}
 }

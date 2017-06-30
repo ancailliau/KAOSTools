@@ -7,7 +7,7 @@ using UCLouvain.KAOSTools.Propagators.BDD;
 
 namespace UCLouvain.KAOSTools.Utils.Propagator
 {
-    class MainClass : KAOSToolCLI
+    class MonitorProgram : KAOSToolCLI
     {
         public static void Main (string [] args)
         {

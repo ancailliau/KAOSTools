@@ -141,7 +141,7 @@ namespace UCLouvain.KAOSTools.Parsing
                 }
 
                 return new PredicateReference () {
-                    Predicate = GetOrCreatePredicate (prel, declaredVariables).Identifier,
+                    PredicateIdentifier = GetOrCreatePredicate (prel, declaredVariables).Identifier,
                     ActualArguments = prel.ActualArguments
                 };
             } else if (value.GetType () == typeof (ParsedInRelationExpression)) {
