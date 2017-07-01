@@ -96,6 +96,9 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers.Attributes
             case "PERT":
                 return ParsePERT (identifier, distribution_parameters);
 
+            case "quantile":
+                return ParseQuantile (identifier, distribution_parameters);
+
             default:
                 throw new InvalidAttributeValueException (identifier,
                                                           InvalidAttributeValueException.INVALID_VALUE);
@@ -187,6 +190,11 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers.Attributes
                 Mode = mode,
                 Max = max
             };
+        }
+        
+        private static ParsedElement ParseQuantile (string identifier, List<double> distribution_parameters)
+        {
+			return new ParsedQuantileDistribution(distribution_parameters);
         }
 
         private static ParsedElement ParsePERT (string identifier, List<double> distribution_parameters)

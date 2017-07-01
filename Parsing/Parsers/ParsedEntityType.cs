@@ -662,12 +662,16 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers
         public double Beta;
     }
 
-    public class ParsedQuantileList : ParsedElement {
+    public class ParsedQuantileDistribution : ParsedUDistribution {
         public List<double> Quantiles;
-        public ParsedQuantileList ()
+        public ParsedQuantileDistribution ()
         {
             Quantiles = new List<double> ();
         }
+        public ParsedQuantileDistribution(List<double> quantiles)
+		{
+			Quantiles = quantiles;
+		}
     }
 
 }

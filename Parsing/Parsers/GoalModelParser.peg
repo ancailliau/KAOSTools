@@ -1,6 +1,6 @@
 ﻿start = Start
-value = KAOSTools.Parsing.Parsers.ParsedElement
-namespace = KAOSTools.Parsing.Parsers
+value = UCLouvain.KAOSTools.Parsing.Parsers.ParsedElement
+namespace = UCLouvain.KAOSTools.Parsing.Parsers
 visibility = public
 debug = 
 
@@ -77,7 +77,7 @@ Integer := [0-9]+
     `value = BuildInteger(results)` 
     `expected = "Integer"`
 
-Percentage := ( Integer / Float ) '%'
+Percentage := ( Float / Integer ) '%'
     `value = BuildPercentage(results)` 
     `expected = "Percentage"`
 
