@@ -116,6 +116,7 @@
     <Compile Include="SatisfactionRates\DoubleSatisfactionRate.cs" />
     <Compile Include="Repositories\ISatisfactionRateRepository.cs" />
     <Compile Include="Repositories\Memory\SatisfactionRateRepository.cs" />
+    <Compile Include="SatisfactionRates\SimulatedSatisfactionRate.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

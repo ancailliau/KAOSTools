@@ -11,5 +11,6 @@ namespace UCLouvain.KAOSTools.Core.SatisfactionRates
         ISatisfactionRate Sum (ISatisfactionRate x);
         
         double Sample ();
+        double Sample (Random r);
     }
 }

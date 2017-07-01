@@ -29,7 +29,7 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
             return new DoubleSatisfactionRate (1.0 - orSuperset.GetProbability (vector));
         }
         
-        public override ISatisfactionRate GetESR (Goal goal, IEnumerable<Resolution> activeResolutions)
+        public ISatisfactionRate GetESR (Goal goal, IEnumerable<Resolution> activeResolutions)
         {
             if (orSuperset == null || prebuilt_goal != goal)
                 orSuperset = new ObstructionResolutionSuperset (goal);

@@ -9,8 +9,5 @@ namespace UCLouvain.KAOSTools.Propagators
     {
         ISatisfactionRate GetESR (Obstacle obstacle);
         ISatisfactionRate GetESR (Goal goal);
-        
-        ISatisfactionRate GetESR (Obstacle obstacle, IEnumerable<Resolution> activeResolutions);
-        ISatisfactionRate GetESR (Goal goal, IEnumerable<Resolution> activeResolutions);
     }
 }

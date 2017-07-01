@@ -58,5 +58,10 @@ namespace UCLouvain.KAOSTools.Core.SatisfactionRates
         {
             return SatisfactionRate;
         }
+
+        public double Sample (Random r)
+        {
+            return SatisfactionRate;
+        }
     }
 }

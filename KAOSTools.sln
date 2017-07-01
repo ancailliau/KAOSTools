@@ -51,6 +51,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Monitor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Utils.Monitor", "UCLouvain.KAOSTools.Utils.Monitor\UCLouvain.KAOSTools.Utils.Monitor.csproj", "{5721B983-766F-4691-B26E-9248A8F99944}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Utils.UncertaintyPropagator", "UCLouvain.KAOSTools.Utils.UncertaintyPropagator\UCLouvain.KAOSTools.Utils.UncertaintyPropagator.csproj", "{791AC7D6-0455-487B-B414-9D2E6898C013}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -417,6 +419,20 @@ Global
 		{5721B983-766F-4691-B26E-9248A8F99944}.CLI|Any CPU.Build.0 = Debug|Any CPU
 		{5721B983-766F-4691-B26E-9248A8F99944}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
 		{5721B983-766F-4691-B26E-9248A8F99944}.AppStore|Any CPU.Build.0 = Debug|Any CPU
+		{791AC7D6-0455-487B-B414-9D2E6898C013}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{791AC7D6-0455-487B-B414-9D2E6898C013}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{791AC7D6-0455-487B-B414-9D2E6898C013}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{791AC7D6-0455-487B-B414-9D2E6898C013}.Release|Any CPU.Build.0 = Release|Any CPU
+		{791AC7D6-0455-487B-B414-9D2E6898C013}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{791AC7D6-0455-487B-B414-9D2E6898C013}.Debug|x86.Build.0 = Debug|Any CPU
+		{791AC7D6-0455-487B-B414-9D2E6898C013}.Release|x86.ActiveCfg = Release|Any CPU
+		{791AC7D6-0455-487B-B414-9D2E6898C013}.Release|x86.Build.0 = Release|Any CPU
+		{791AC7D6-0455-487B-B414-9D2E6898C013}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{791AC7D6-0455-487B-B414-9D2E6898C013}.Default|Any CPU.Build.0 = Debug|Any CPU
+		{791AC7D6-0455-487B-B414-9D2E6898C013}.CLI|Any CPU.ActiveCfg = Debug|Any CPU
+		{791AC7D6-0455-487B-B414-9D2E6898C013}.CLI|Any CPU.Build.0 = Debug|Any CPU
+		{791AC7D6-0455-487B-B414-9D2E6898C013}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
+		{791AC7D6-0455-487B-B414-9D2E6898C013}.AppStore|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
@@ -431,18 +447,5 @@ Global
 		$3.scope = text/x-csharp
 		$0.CSharpFormattingPolicy = $4
 		$4.scope = text/x-csharp
-		$4.NewLinesForBracesInProperties = False
-		$4.NewLinesForBracesInAccessors = False
-		$4.NewLinesForBracesInAnonymousMethods = False
-		$4.NewLinesForBracesInControlBlocks = False
-		$4.NewLinesForBracesInAnonymousTypes = False
-		$4.NewLinesForBracesInObjectCollectionArrayInitializers = False
-		$4.NewLinesForBracesInLambdaExpressionBody = False
-		$4.NewLineForElse = False
-		$4.NewLineForCatch = False
-		$4.NewLineForFinally = False
-		$4.NewLineForMembersInObjectInit = False
-		$4.NewLineForMembersInAnonymousTypes = False
-		$4.NewLineForClausesInQuery = False
 	EndGlobalSection
 EndGlobal
