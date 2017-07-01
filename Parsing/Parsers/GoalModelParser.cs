@@ -594,15 +594,18 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers
 			return _state;
 		}
 		
-		// Bool := 'true' / 'false'
+		// Bool := ('true' / 'false') ![_\\.-a-zA-Z0-9]
 		private State DoParseBoolRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
 			List<Result> results = new List<Result>();
 			
-			_state = DoChoice(_state, results,
-			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "true");},
-			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "false");});
+			_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoChoice(s, r,
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "true");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "false");});},
+			delegate (State s, List<Result> r) {return DoNAssert(s, r,
+				delegate (State s2, List<Result> r2) {return DoParseRange(s2, r2, false, "_\\.-", "azAZ09", null, "[_\\.-a-zA-Z0-9]");});});
 			
 			if (_state.Parsed)
 			{

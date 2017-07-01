@@ -81,7 +81,7 @@ Percentage := ( Float / Integer ) '%'
     `value = BuildPercentage(results)` 
     `expected = "Percentage"`
 
-Bool := 'true' / 'false'
+Bool := ('true' / 'false') ![_a-zA-Z0-9\\.-]
     `value = BuildBool(results)`
     `expected = "Bool"`
 
