@@ -4,11 +4,15 @@ using UCLouvain.KAOSTools.Core.SatisfactionRates;
 using UCLouvain.KAOSTools.Propagators;
 using UCLouvain.KAOSTools.Propagators.BDD;
 using System.IO;
+using UCLouvain.KAOSTools.ExpertCombination;
+using UCLouvain.ExpertOpinionSharp.Statistics;
 
 namespace UCLouvain.KAOSTools.Utils.UncertaintyPropagator
 {
 	class UncertaintyPropagatorProgram : KAOSToolCLI
 	{
+		private static ExpertCombinator expert_combination;
+
 		public static void Main(string[] args)
 		{
 			Console.WriteLine ("*** This is UncertaintyPropagator from KAOSTools. ***");
@@ -29,6 +33,20 @@ namespace UCLouvain.KAOSTools.Utils.UncertaintyPropagator
 			string outfile = null;
 			options.Add("outfile=", "Specify the file to export the raw values, in csv.", v => outfile = v);
 
+			bool doCombine = false;
+			var combine = ExpertCombinationMethod.MendelSheridan;
+			options.Add("combine=", "Combine the estimates from the experts using the specified method.", v => {
+				doCombine = true;
+				if (v.Equals("cook"))
+					combine = ExpertCombinationMethod.Cook;
+				else if (v.Equals("mendel-sheridan") | v.Equals("mendelsheridan") | v.Equals("ms"))
+					combine = ExpertCombinationMethod.MendelSheridan;
+				else {
+					PrintError($"Combination method '{v}' is not known");
+					Environment.Exit(1);
+				}
+			});
+			
             Init (args);
             
             KAOSCoreElement root = model.Goal (rootname);
@@ -40,6 +58,11 @@ namespace UCLouvain.KAOSTools.Utils.UncertaintyPropagator
             }
 
             try {
+				if (doCombine) {
+					expert_combination = new ExpertCombinator (model, combine);
+					expert_combination.Combine();
+				}
+            
                 IPropagator _propagator;
 				_propagator = new BDDBasedUncertaintyPropagator(model, n_samples);
 
@@ -58,8 +81,26 @@ namespace UCLouvain.KAOSTools.Utils.UncertaintyPropagator
 					Console.WriteLine("  Uncertainty Spread: {0}", esr.UncertaintySpread(g2.RDS));
 				}
 
+				if (doCombine && combine == ExpertCombinationMethod.Cook) {
+					var stats = (CookFrameworkStatistics) expert_combination.GetStatistics ();
+					Console.WriteLine();
+					Console.WriteLine("-- Information score (Cook):");
+					foreach (var item in stats.InformationScores) {
+						Console.WriteLine($"  {item.Key} : {item.Value}");
+					}
+					Console.WriteLine("-- Calibration score (Cook):");
+					foreach (var item in stats.CalibrationScores) {
+						Console.WriteLine($"  {item.Key} : {item.Value}");
+					}
+					Console.WriteLine("-- Combination weights (Cook):");
+					foreach (var item in stats.Weights) {
+						Console.WriteLine($"  {item.Key.Name} : {item.Value}");
+					}
+				}
+
 				if (!string.IsNullOrEmpty(outfile)) {
-					using (var f = File.CreateText(outfile)) {
+					var filename = Environment.ExpandEnvironmentVariables(outfile);
+					using (var f = File.CreateText(filename)) {
 						f.WriteLine(root.Identifier);
 						f.Write(string.Join("\n", esr.Values));
 					}

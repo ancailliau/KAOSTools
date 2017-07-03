@@ -37,7 +37,7 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers.Attributes
                 return ParseAtomic (identifier, value, expert_id);
 
             } else if (value is NParsedAttributeBracket) {
-                return ParseBracket (identifier, value);
+                return ParseBracket (identifier, value, expert_id);
 
             } else {
                 throw new InvalidAttributeValueException (identifier,
@@ -70,7 +70,7 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers.Attributes
             return new ParsedProbabilityAttribute () { Value = esr, ExpertIdentifier = expert_id };
         }
 
-        private static ParsedElement ParseBracket (string identifier, NParsedAttributeValue value)
+        private static ParsedElement ParseBracket (string identifier, NParsedAttributeValue value, string expert_id)
         {
             var item = ((NParsedAttributeBracket)value).Item;
             var param = ((NParsedAttributeBracket)value).Parameter;
@@ -84,20 +84,20 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers.Attributes
             // Build the parsed element
             switch (distribution_name) {
             case "beta":
-                return ParseBeta (identifier, distribution_parameters);
+                return ParseBeta (identifier, distribution_parameters, expert_id);
 
             case "uniform":
-                return ParseUniform (identifier, distribution_parameters);
+                return ParseUniform (identifier, distribution_parameters, expert_id);
 
             case "triangular":
-                return ParseTriangular (identifier, distribution_parameters);
+                return ParseTriangular (identifier, distribution_parameters, expert_id);
 
             case "pert":
             case "PERT":
-                return ParsePERT (identifier, distribution_parameters);
+                return ParsePERT (identifier, distribution_parameters, expert_id);
 
             case "quantile":
-                return ParseQuantile (identifier, distribution_parameters);
+                return ParseQuantile (identifier, distribution_parameters, expert_id);
 
             default:
                 throw new InvalidAttributeValueException (identifier,
@@ -137,7 +137,7 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers.Attributes
             return distribution_parameters;
         }
 
-        private static ParsedElement ParseBeta (string identifier, List<double> distribution_parameters)
+        private static ParsedElement ParseBeta (string identifier, List<double> distribution_parameters, string expert_id)
         {
             if (distribution_parameters.Count != 2)
                 throw new InvalidAttributeValueException (identifier,
@@ -151,11 +151,12 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers.Attributes
 
             return new ParsedBetaDistribution () {
                 Alpha = alpha,
-                Beta = beta
+                Beta = beta,
+                ExpertIdentifier = expert_id
             };
         }
 
-        private static ParsedElement ParseUniform (string identifier, List<double> distribution_parameters)
+        private static ParsedElement ParseUniform (string identifier, List<double> distribution_parameters, string expert_id)
         {
             if (distribution_parameters.Count != 2)
                 throw new InvalidAttributeValueException (identifier,
@@ -168,11 +169,12 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers.Attributes
                                                           InvalidAttributeValueException.INVALID_VALUE);
             return new ParsedUniformDistribution () {
                 LowerBound = lower,
-                UpperBound = upper
+                UpperBound = upper,
+                ExpertIdentifier = expert_id
             };
         }
 
-        private static ParsedElement ParseTriangular (string identifier, List<double> distribution_parameters)
+        private static ParsedElement ParseTriangular (string identifier, List<double> distribution_parameters, string expert_id)
         {
             if (distribution_parameters.Count != 3)
                 throw new InvalidAttributeValueException (identifier,
@@ -188,16 +190,17 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers.Attributes
             return new ParsedTriangularDistribution () {
                 Min = min,
                 Mode = mode,
-                Max = max
+                Max = max,
+                ExpertIdentifier = expert_id
             };
         }
         
-        private static ParsedElement ParseQuantile (string identifier, List<double> distribution_parameters)
+        private static ParsedElement ParseQuantile (string identifier, List<double> distribution_parameters, string expert_id)
         {
-			return new ParsedQuantileDistribution(distribution_parameters);
+			return new ParsedQuantileDistribution(distribution_parameters) { ExpertIdentifier = expert_id };
         }
 
-        private static ParsedElement ParsePERT (string identifier, List<double> distribution_parameters)
+        private static ParsedElement ParsePERT (string identifier, List<double> distribution_parameters, string expert_id)
         {
             if (distribution_parameters.Count != 3)
                 throw new InvalidAttributeValueException (identifier,
@@ -213,7 +216,8 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers.Attributes
             return new ParsedPertDistribution () {
                 Min = min,
                 Mode = mode,
-                Max = max
+                Max = max,
+                ExpertIdentifier = expert_id
             };
         }
 

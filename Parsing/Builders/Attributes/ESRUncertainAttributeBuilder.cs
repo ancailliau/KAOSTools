@@ -52,7 +52,7 @@ namespace UCLouvain.KAOSTools.Parsing.Builders.Attributes
 					}
 				}).ToArray();
 
-                satRate = new QuantileDistribution(pqd.Quantiles.ToArray(), quantiles);
+                satRate = new QuantileList(pqd.Quantiles);
 
             } else
                 throw new NotImplementedException();
@@ -73,6 +73,12 @@ namespace UCLouvain.KAOSTools.Parsing.Builders.Attributes
 
             } else if (element is DomainProperty) {
 				model.satisfactionRateRepository.AddDomPropSatisfactionRate(element.Identifier, satRate);
+				
+            } else if (element is Calibration) {
+				model.satisfactionRateRepository.AddCalibrationSatisfactionRate(element.Identifier, satRate);
+				
+            } else {
+				throw new NotImplementedException();
             }
         }
     }

@@ -24,5 +24,10 @@ namespace UCLouvain.KAOSTools.Core.Repositories
         ISatisfactionRate GetGoalSatisfactionRate (string dompropId);
         IEnumerable<ISatisfactionRate> GetGoalSatisfactionRates (string dompropId);
         bool GoalSatisfactionRateExists (string dompropId);
+
+        void AddCalibrationSatisfactionRate (string calibrationId, ISatisfactionRate satRate);
+        ISatisfactionRate GetCalibrationSatisfactionRate (string calibrationId);
+        IEnumerable<ISatisfactionRate> GetCalibrationSatisfactionRates (string calibrationId);
+        bool CalibrationSatisfactionRateExists (string calibrationId);
     }
 }

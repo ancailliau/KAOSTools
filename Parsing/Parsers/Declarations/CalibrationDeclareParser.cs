@@ -12,6 +12,7 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers.Declarations
 		public CalibrationDeclareParser()
 		{
 			Add(new NameAttributeParser());
+			Add(new ESRAttributeParser());
 			Add(new CustomAttributeParser());
 		}
 

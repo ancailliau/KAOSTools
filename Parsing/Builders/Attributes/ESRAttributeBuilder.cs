@@ -30,6 +30,11 @@ namespace UCLouvain.KAOSTools.Parsing.Builders.Attributes
                 model.satisfactionRateRepository.AddObstacleSatisfactionRate(element.Identifier, doubleSatisfactionRate);
             } else if (element is DomainProperty) {
                 model.satisfactionRateRepository.AddDomPropSatisfactionRate(element.Identifier, doubleSatisfactionRate);
+            } else if (element is Calibration) {
+				model.satisfactionRateRepository.AddCalibrationSatisfactionRate(element.Identifier, doubleSatisfactionRate);
+				
+            } else {
+				throw new NotImplementedException();
             }
         }
     }

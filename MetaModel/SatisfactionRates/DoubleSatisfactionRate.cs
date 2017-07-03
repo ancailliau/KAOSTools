@@ -16,11 +16,10 @@ namespace UCLouvain.KAOSTools.Core.SatisfactionRates
             set;
         }
 
-        string ISatisfactionRate.ExpertIdentifier { get => throw new NotImplementedException (); set => throw new NotImplementedException (); }
-
         public DoubleSatisfactionRate(double sr)
         {
             SatisfactionRate = sr;
+			ExpertIdentifier = null;
         }
 
         public ISatisfactionRate OneMinus ()

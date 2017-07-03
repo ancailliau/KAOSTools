@@ -9,9 +9,13 @@ namespace UCLouvain.KAOSTools.Core
     public abstract class UncertainSatisfactionRate : ISatisfactionRate {
         
         public string ExpertIdentifier { get; set; }
-        string ISatisfactionRate.ExpertIdentifier { get => throw new NotImplementedException (); set => throw new NotImplementedException (); }
+        
+        public UncertainSatisfactionRate()
+		{
+			ExpertIdentifier = null;
+		}
 
-        public ISatisfactionRate Product (double x)
+		public ISatisfactionRate Product (double x)
         {
             throw new NotImplementedException ();
         }

@@ -11,6 +11,7 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
         Dictionary<string, List<ISatisfactionRate>> DomainPropertySatisfactionRates;
         Dictionary<string, List<ISatisfactionRate>> DomainHypothesisSatisfactionRates;
         Dictionary<string, List<ISatisfactionRate>> GoalSatisfactionRates;
+        Dictionary<string, List<ISatisfactionRate>> CalibrationSatisfactionRates;
 
         public SatisfactionRateRepository()
         {
@@ -18,6 +19,7 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
             DomainPropertySatisfactionRates = new Dictionary<string, List<ISatisfactionRate>> ();
             DomainHypothesisSatisfactionRates = new Dictionary<string, List<ISatisfactionRate>> ();
             GoalSatisfactionRates = new Dictionary<string, List<ISatisfactionRate>> ();
+			CalibrationSatisfactionRates = new Dictionary<string, List<ISatisfactionRate>> ();
         }
 
         #region Obstacle
@@ -157,6 +159,42 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
         public bool GoalSatisfactionRateExists (string goalId)
         {
             if (GoalSatisfactionRates.ContainsKey (goalId)) {
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
+
+        #region Calibration
+
+        public void AddCalibrationSatisfactionRate (string calibrationId, ISatisfactionRate satRate)
+        {
+            if (!CalibrationSatisfactionRates.ContainsKey (calibrationId)) {
+                CalibrationSatisfactionRates.Add (calibrationId, new List<ISatisfactionRate> ());
+            }
+            CalibrationSatisfactionRates [calibrationId].Add (satRate);
+        }
+
+        public ISatisfactionRate GetCalibrationSatisfactionRate (string calibrationId)
+        {
+            if (CalibrationSatisfactionRates.ContainsKey (calibrationId)) {
+                return CalibrationSatisfactionRates [calibrationId].Last ();
+            }
+            return null;
+        }
+
+        public IEnumerable<ISatisfactionRate> GetCalibrationSatisfactionRates (string calibrationId)
+        {
+            if (CalibrationSatisfactionRates.ContainsKey (calibrationId)) {
+                return CalibrationSatisfactionRates [calibrationId];
+            }
+            return null;
+        }
+
+        public bool CalibrationSatisfactionRateExists (string calibrationId)
+        {
+            if (CalibrationSatisfactionRates.ContainsKey (calibrationId)) {
                 return true;
             }
             return false;

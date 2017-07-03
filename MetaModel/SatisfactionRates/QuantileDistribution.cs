@@ -36,47 +36,53 @@ namespace UCLouvain.KAOSTools.Core
 
     public class QuantileDistribution : UncertainSatisfactionRate
     {
-        readonly double[] probabilities;
-        readonly double[] quantiles;
+        readonly double[] _probabilities;
+        public readonly double[] _quantiles;
 
         public QuantileDistribution (double[] probabilities, double[] quantiles)
         {
-            this.probabilities = probabilities;
-            this.quantiles = quantiles;
-        }
+            this._probabilities = probabilities;
+			this._quantiles = quantiles;
+		}
 
         public override double Sample (Random _random)
         {
             double s = _random.NextDouble ();
 
             int i;
-            for (i = 1; i < probabilities.Length - 1; i++) {
-                if (s < probabilities [i]) {
+            for (i = 1; i < _probabilities.Length - 1; i++) {
+                if (s < _probabilities [i]) {
                     break;
                 }
             }
 
-            var ss = (s - probabilities [i-1]) / (probabilities [i] - probabilities [i - 1]);
-            var ss2 = ss * (quantiles [i] - quantiles [i - 1]) + quantiles[i - 1];
+			double p0 = _probabilities[i - 1];
+			double p1 = _probabilities[i];
+			
+			double q0 = _quantiles[i - 1];
+			double q1 = _quantiles[i];
+			
+			var ss = (s - p0) / (p1 - p0);
+			var ss2 = ss * (q1 - q0) + q0;
             return ss2;
         }
 
         public double LowerBound {
             get {
-                return quantiles.Min ();
+                return _quantiles.Min ();
             }
         }
 
         public double UpperBound {
             get {
-                return quantiles.Max ();
+                return _quantiles.Max ();
             }
         }
 
         public override string ToString ()
         {
             return string.Format ("[QuantileDistribution: {0}]", 
-                string.Join (" ", Enumerable.Range (0, quantiles.Length).Select (i => quantiles[i] + ":" + probabilities[i]))
+                string.Join (" ", Enumerable.Range (0, _quantiles.Length).Select (i => _quantiles[i] + ":" + _probabilities[i]))
             );
         }
 
