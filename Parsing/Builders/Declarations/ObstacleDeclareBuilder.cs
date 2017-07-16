@@ -17,7 +17,7 @@ namespace UCLouvain.KAOSTools.Parsing.Builders.Declarations
 				g = new Obstacle(model, parsedElement.Identifier);
 				model.obstacleRepository.Add(g);
 			} else if (!parsedElement.Override) {
-				throw new BuilderException("Cannot declare twice the same element. Use override instead.", parsedElement);
+				throw new BuilderException("Cannot declare twice the same element '"+parsedElement.Identifier+"'. Use override instead.", parsedElement);
 			}
 		}
 

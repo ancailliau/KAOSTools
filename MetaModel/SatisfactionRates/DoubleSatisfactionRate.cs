@@ -62,5 +62,10 @@ namespace UCLouvain.KAOSTools.Core.SatisfactionRates
         {
             return SatisfactionRate;
         }
+        
+        public double ViolationSeverity (double rsr)
+        {
+			return rsr - SatisfactionRate;
+        }
     }
 }

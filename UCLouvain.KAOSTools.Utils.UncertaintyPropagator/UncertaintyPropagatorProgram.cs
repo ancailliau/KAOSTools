@@ -99,8 +99,8 @@ namespace UCLouvain.KAOSTools.Utils.UncertaintyPropagator
 				}
 
 				if (!string.IsNullOrEmpty(outfile)) {
-					var filename = Environment.ExpandEnvironmentVariables(outfile);
-					using (var f = File.CreateText(filename)) {
+					var out_filename = Environment.ExpandEnvironmentVariables(outfile);
+					using (var f = File.CreateText(out_filename)) {
 						f.WriteLine(root.Identifier);
 						f.Write(string.Join("\n", esr.Values));
 					}

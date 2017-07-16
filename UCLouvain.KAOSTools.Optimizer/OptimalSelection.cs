@@ -38,4 +38,45 @@ namespace UCLouvain.KAOSTools.Optimizer
                 SatisfactionRate);
         }
     }
+    
+    public class OptimalSelectionWithUncertainty
+    {
+        public IEnumerable<Resolution> Resolutions {
+            get;
+            set;
+        }
+        
+        public int Cost {
+            get;
+            set;
+
+        }
+        
+        public double ViolationUncertainty {
+            get;
+            set;
+        }
+        
+        public double UncertaintySpread {
+			get;
+			set;
+		}
+
+		public OptimalSelectionWithUncertainty (IEnumerable<Resolution> resolutions, int cost, double violation_uncertainty, double uncertainty_spread)
+        {
+            Resolutions = resolutions;
+            Cost = cost;
+            ViolationUncertainty = violation_uncertainty;
+            UncertaintySpread = uncertainty_spread;
+        }
+        
+        public override string ToString ()
+        {
+            return string.Format ("[OptimalSelection: Resolutions={{{0}}}, Cost={1}, ViolationUncertainty={2}, UncertaintySpread={3}]", 
+                string.Join (",", Resolutions.Select(x => x.ResolvingGoalIdentifier).Distinct ()), 
+                Cost, 
+                ViolationUncertainty,
+                UncertaintySpread);
+        }
+    }
 }

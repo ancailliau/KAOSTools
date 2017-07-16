@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using MoreLinq;
 using UCLouvain.KAOSTools.Core;
 using UCLouvain.KAOSTools.Core.SatisfactionRates;
 
@@ -43,6 +45,17 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
         public virtual ISatisfactionRate GetESR (Goal goal, IEnumerable<Resolution> activeResolutions)
         {
             throw new NotImplementedException ();
+        }
+
+        public ISatisfactionRate GetESR (Goal goal, IEnumerable<Obstacle> onlyObstacles)
+        {
+            if (obstructionSuperset == null || prebuilt_goal != goal)
+                obstructionSuperset = new ObstructionSuperset (goal);
+
+			var vector = new SamplingVector (_model, onlyObstacles?.Select(x => x.Identifier)?.ToHashSet());
+			var value = 1.0 - obstructionSuperset.GetProbability(vector);
+			
+			return new DoubleSatisfactionRate(value);
         }
     }
 }

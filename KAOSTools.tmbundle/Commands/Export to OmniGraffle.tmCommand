@@ -17,7 +17,7 @@ open "/tmp/output.graffle"
 	<key>keyEquivalent</key>
 	<string>@G</string>
 	<key>name</key>
-	<string>Export to OmniGraffle</string>
+	<string>Export to Omnigraffle</string>
 	<key>output</key>
 	<string>showAsHTML</string>
 	<key>uuid</key>

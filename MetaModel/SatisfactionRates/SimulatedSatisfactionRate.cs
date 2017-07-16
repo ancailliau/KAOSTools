@@ -31,14 +31,13 @@ namespace UCLouvain.KAOSTools.Core.SatisfactionRates
 		
 		public double ViolationUncertainty (double RSR) {
 			int v = _values.Count(x => x < RSR);
-			Console.WriteLine(v);
-			return ((double)v) / _values.Count();
+			return v > 0 ? ((double)v) / _values.Count() : 0;
 		}
 		
 		public double UncertaintySpread (double RSR) {
 			int k = _values.Count(x => x < RSR);
 			double s = _values.Where(x => x < RSR).Sum(x => (x - RSR) * (x - RSR));
-			return Math.Sqrt(s / k);
+			return k > 0 ? Math.Sqrt(s / k) : 0;
 		}
 	}
 }
