@@ -35,8 +35,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Optimiz
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Utils.CMIntegrator", "UCLouvain.KAOSTools.Utils.CMIntegrator\UCLouvain.KAOSTools.Utils.CMIntegrator.csproj", "{D1E4DBCA-A0D8-480B-8A54-3D24A67E20F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KAOSTools.UCLouvain.Thesis.Tests", "KAOSTools.UCLouvain.Thesis.Tests\KAOSTools.UCLouvain.Thesis.Tests.csproj", "{14FA735E-788D-40EB-ADEB-EE4BC601D287}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Monitoring", "UCLouvain.KAOSTools.Monitoring\UCLouvain.KAOSTools.Monitoring.csproj", "{4FC279D9-094A-4318-8002-3AF267840495}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Utils.Monitor", "UCLouvain.KAOSTools.Utils.Monitor\UCLouvain.KAOSTools.Utils.Monitor.csproj", "{5721B983-766F-4691-B26E-9248A8F99944}"
@@ -56,6 +54,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Utils.ModelChecker", "UCLouvain.KAOSTools.Utils.ModelChecker\UCLouvain.KAOSTools.Utils.ModelChecker.csproj", "{93238510-9153-4D2A-9BF1-C3642938BC2A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Utils.ReportGenerator", "UCLouvain.KAOSTools.Utils.ReportGenerator\UCLouvain.KAOSTools.Utils.ReportGenerator.csproj", "{9FA20E0B-AD2C-446F-86D1-756891C53A95}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCLouvain.KAOSTools.Monitoring.RabbitMQClient", "UCLouvain.KAOSTools.Monitoring.RabbitMQClient\UCLouvain.KAOSTools.Monitoring.RabbitMQClient.csproj", "{5F378C59-8FAE-4FB1-A41A-A29BB2E5EF39}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -312,20 +312,6 @@ Global
 		{D1E4DBCA-A0D8-480B-8A54-3D24A67E20F7}.CLI|Any CPU.Build.0 = Debug|Any CPU
 		{D1E4DBCA-A0D8-480B-8A54-3D24A67E20F7}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
 		{D1E4DBCA-A0D8-480B-8A54-3D24A67E20F7}.AppStore|Any CPU.Build.0 = Debug|Any CPU
-		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.Release|Any CPU.Build.0 = Release|Any CPU
-		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.Debug|x86.Build.0 = Debug|Any CPU
-		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.Release|x86.ActiveCfg = Release|Any CPU
-		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.Release|x86.Build.0 = Release|Any CPU
-		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.Default|Any CPU.ActiveCfg = Debug|Any CPU
-		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.Default|Any CPU.Build.0 = Debug|Any CPU
-		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.CLI|Any CPU.ActiveCfg = Debug|Any CPU
-		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.CLI|Any CPU.Build.0 = Debug|Any CPU
-		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
-		{14FA735E-788D-40EB-ADEB-EE4BC601D287}.AppStore|Any CPU.Build.0 = Debug|Any CPU
 		{4FC279D9-094A-4318-8002-3AF267840495}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4FC279D9-094A-4318-8002-3AF267840495}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FC279D9-094A-4318-8002-3AF267840495}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -466,6 +452,20 @@ Global
 		{9FA20E0B-AD2C-446F-86D1-756891C53A95}.CLI|Any CPU.Build.0 = Debug|Any CPU
 		{9FA20E0B-AD2C-446F-86D1-756891C53A95}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
 		{9FA20E0B-AD2C-446F-86D1-756891C53A95}.AppStore|Any CPU.Build.0 = Debug|Any CPU
+		{5F378C59-8FAE-4FB1-A41A-A29BB2E5EF39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F378C59-8FAE-4FB1-A41A-A29BB2E5EF39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F378C59-8FAE-4FB1-A41A-A29BB2E5EF39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F378C59-8FAE-4FB1-A41A-A29BB2E5EF39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F378C59-8FAE-4FB1-A41A-A29BB2E5EF39}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5F378C59-8FAE-4FB1-A41A-A29BB2E5EF39}.Debug|x86.Build.0 = Debug|Any CPU
+		{5F378C59-8FAE-4FB1-A41A-A29BB2E5EF39}.Release|x86.ActiveCfg = Release|Any CPU
+		{5F378C59-8FAE-4FB1-A41A-A29BB2E5EF39}.Release|x86.Build.0 = Release|Any CPU
+		{5F378C59-8FAE-4FB1-A41A-A29BB2E5EF39}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F378C59-8FAE-4FB1-A41A-A29BB2E5EF39}.Default|Any CPU.Build.0 = Debug|Any CPU
+		{5F378C59-8FAE-4FB1-A41A-A29BB2E5EF39}.CLI|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F378C59-8FAE-4FB1-A41A-A29BB2E5EF39}.CLI|Any CPU.Build.0 = Debug|Any CPU
+		{5F378C59-8FAE-4FB1-A41A-A29BB2E5EF39}.AppStore|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F378C59-8FAE-4FB1-A41A-A29BB2E5EF39}.AppStore|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0

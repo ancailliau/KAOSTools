@@ -2,6 +2,9 @@
 using System.Text.RegularExpressions;
 using UCLouvain.KAOSTools.Monitoring;
 using UCLouvain.KAOSTools.Core;
+using System.Collections.Generic;
+using System.Linq;
+using MoreLinq;
 
 namespace UCLouvain.KAOSTools.Utils.Monitor
 {
@@ -9,13 +12,13 @@ namespace UCLouvain.KAOSTools.Utils.Monitor
 	{
 		ModelMonitor _modelMonitor;
 		KAOSModel _model;
-		Goal _root;
+		HashSet<string> _root;
 
-		public GetSatisfactionRateCommand(KAOSModel model, Goal root, ModelMonitor modelMonitor)
+		public GetSatisfactionRateCommand(KAOSModel model, HashSet<Goal> root, ModelMonitor modelMonitor)
 		{
 			_modelMonitor = modelMonitor;
 			_model = model;
-			_root = root;
+			_root = root.Select(x => x.Identifier).ToHashSet();
 		}
 
 		public void Execute(string command)
@@ -25,8 +28,8 @@ namespace UCLouvain.KAOSTools.Utils.Monitor
 			if (match.Success) {
 				var o_identifier = match.Groups[1].Value;
 
-				if (o_identifier.Equals(_root.Identifier))
-					Console.WriteLine($"{_modelMonitor.RootSatisfactionRate}");
+				if (_root.Contains(o_identifier))
+					Console.WriteLine($"{_modelMonitor.RootSatisfactionRates[o_identifier]}");
 
 				if (_model.Obstacle(o_identifier) != null) {
 					var monitor = _modelMonitor.GetMonitor(o_identifier);

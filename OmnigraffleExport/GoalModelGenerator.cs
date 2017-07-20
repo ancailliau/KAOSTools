@@ -28,6 +28,10 @@ namespace UCLouvain.KAOSTools.OmnigraffleExport
             foreach (var d in model.GoalRefinements ().SelectMany (x => x.DomainProperties()).Distinct ()) {
                 Render (d);
             }
+
+            foreach (var d in model.GoalRefinements ().SelectMany (x => x.DomainHypotheses()).Distinct ()) {
+                Render (d);
+            }
             
             foreach (var r in model.GoalRefinements ()) {
                 Render (r);

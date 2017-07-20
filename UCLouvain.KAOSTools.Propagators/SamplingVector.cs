@@ -26,6 +26,16 @@ namespace UCLouvain.KAOSTools.Propagators
 				return 0;
 			}
         }
+        
+        public virtual double Sample (DomainProperty domprop) 
+        {
+			return _model.satisfactionRateRepository.GetDomPropSatisfactionRate(domprop.Identifier).Sample();
+        }
+        
+        public virtual double Sample (DomainHypothesis domprop) 
+        {
+			return _model.satisfactionRateRepository.GetDomHypothesisSatisfactionRate(domprop.Identifier).Sample();
+        }
 
         internal bool ContainsKey (string identifier)
         {

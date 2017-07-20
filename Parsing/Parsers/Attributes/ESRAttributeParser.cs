@@ -97,11 +97,12 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers.Attributes
                 return ParsePERT (identifier, distribution_parameters, expert_id);
 
             case "quantile":
+            case "quantiles":
                 return ParseQuantile (identifier, distribution_parameters, expert_id);
 
             default:
                 throw new InvalidAttributeValueException (identifier,
-                                                          InvalidAttributeValueException.INVALID_VALUE);
+                                                          InvalidAttributeValueException.INVALID_VALUE + " Received: " + distribution_name+" as a distribution name.");
             }
         }
 

@@ -24,18 +24,6 @@ namespace UCLouvain.KAOSTools.Optimizer.Tests
             ModelBuilder parser = new ModelBuilder ();
             var model = parser.Parse (input);
 
-            var propagator = new BDDBasedResolutionPropagator (model);
-            
-            var optimizer = new NaiveCountermeasureSelectionOptimizer (model);
-            var anchor = model.Goal ("anchor");
-            
-            var minimalCost = optimizer.GetMinimalCost (anchor, propagator);
-            Assert.AreEqual (1, minimalCost);
-
-            var optimalSelections = optimizer.GetOptimalSelections (minimalCost, anchor, propagator);
-            Assert.AreEqual (2, optimalSelections.Count());
-            Assert.That (optimalSelections.Any(x => x.Resolutions.All (y => y.ResolvingGoalIdentifier == "cm2")));
-            Assert.That (optimalSelections.Any(x => x.Resolutions.All (y => y.ResolvingGoalIdentifier == "cm3")));
         }
     }
 }

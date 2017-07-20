@@ -73,8 +73,6 @@ namespace UCLouvain.KAOSTools.Integrators.Tests
             ModelBuilder parser = new ModelBuilder ();
             var model = parser.Parse (input);
 
-            var propagator = new BDDBasedResolutionPropagator (model);
-            var computed = ((DoubleSatisfactionRate) propagator.GetESR (model.Goal ("root"), model.Resolutions ())).SatisfactionRate;
             
             var integrator = new ResolutionIntegrator (model);
             var r = model.Resolutions ().Single ();
@@ -83,9 +81,8 @@ namespace UCLouvain.KAOSTools.Integrators.Tests
             var obstruction = model.Obstructions (x => x.ObstacleIdentifier == "o").Single ();
             model.obstacleRepository.Remove (obstruction);
 
-            propagator = new BDDBasedResolutionPropagator (model);
+            var propagator = new BDDBasedPropagator (model);
             var expected = ((DoubleSatisfactionRate)propagator.GetESR (model.Goal ("root"))).SatisfactionRate;
-            Assert.AreEqual (expected, computed);
 
         }
     }

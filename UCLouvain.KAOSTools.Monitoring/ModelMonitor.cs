@@ -18,7 +18,7 @@ namespace UCLouvain.KAOSTools.Monitoring
 
 		KAOSModel _model_running;
 
-		Goal _root;
+		HashSet<Goal> _roots;
 
 		BDDBasedPropagator _propagator;
 		
@@ -30,13 +30,18 @@ namespace UCLouvain.KAOSTools.Monitoring
 			}
 		}
 
-		public DoubleSatisfactionRate RootSatisfactionRate { get; protected set; }
+		public Dictionary<string,DoubleSatisfactionRate> RootSatisfactionRates { get; protected set; }
 
 		public ModelMonitor(KAOSModel model, Goal root)
+			: this (model, new[]{root})
+		{
+		}
+
+		public ModelMonitor(KAOSModel model, IEnumerable<Goal> roots)
 		{
 			obstacleMonitors = new Dictionary<string, ObstacleMonitor>();
 			_model_running = model;
-			_root = root;
+			_roots = new HashSet<Goal>(roots);
 			Initialize();
 		}
 		
@@ -46,6 +51,7 @@ namespace UCLouvain.KAOSTools.Monitoring
 		
 		void Initialize ()
 		{
+			RootSatisfactionRates = new Dictionary<string, DoubleSatisfactionRate>();
 			TimeSpan monitoringDelay = TimeSpan.FromSeconds(1);
 		
 			// Create the new obstacle monitors
@@ -60,7 +66,11 @@ namespace UCLouvain.KAOSTools.Monitoring
 
 			// Initialize the propagator
 			_propagator = new BDDBasedPropagator(_model_running);
-			_propagator.PreBuildObstructionSet(_root);
+			foreach (var root in _roots)
+			{
+				_propagator.PreBuildObstructionSet(root);
+				RootSatisfactionRates.Add(root.Identifier, null);
+			}
 		}
 		
 		public void Update (MonitoredState ms, DateTime datetime)
@@ -83,13 +93,16 @@ namespace UCLouvain.KAOSTools.Monitoring
 			}
 
 			// Compute the satisfaction rate for the root goal
-			RootSatisfactionRate = (DoubleSatisfactionRate) _propagator.GetESR(_root);
+			foreach (var root in _roots)
+			{
+				RootSatisfactionRates[root.Identifier] = (DoubleSatisfactionRate)_propagator.GetESR(root);
+			}
 
 			if (!string.IsNullOrEmpty(outputFilename)) {
 				var now = DateTime.Now;
 				string str = string.Format("{0:yyyy-MM-dd HH:mm:ss.fffffff},{1},{2}", 
 					now, 
-					RootSatisfactionRate.SatisfactionRate, 
+					string.Join(",", RootSatisfactionRates.OrderBy(x => x.Key).Select(x => x.Value.SatisfactionRate)), 
 					string.Join(",", obstacleMonitors.Select(x => (x.Value.MonitoredSatisfactionRate?.Mean ?? 0) + "," + (x.Value.MonitoredSatisfactionRate?.StdDev ?? 0)))
 				);
 				using (StreamWriter sw = File.AppendText(outputFilename))
@@ -115,7 +128,9 @@ namespace UCLouvain.KAOSTools.Monitoring
 			outputFilename = filename;
 			
 			if (!File.Exists(filename)) {
-				string headers = $"date,{_root.Identifier},{string.Join(",", obstacleMonitors.Select(x => x.Key + ",sd_" + x.Key))}";
+				string root_names = string.Join(",", RootSatisfactionRates.OrderBy(x => x.Key).Select(x => x.Key));
+				string obstacle_names = string.Join(",", obstacleMonitors.Select(x => x.Key + ",sd_" + x.Key));
+				string headers = $"date,{root_names},{obstacle_names}";
 				using (StreamWriter sw = File.CreateText(filename))
 		        {
 		            sw.WriteLine(headers);
@@ -125,7 +140,10 @@ namespace UCLouvain.KAOSTools.Monitoring
 
 		public void ModelChanged()
 		{
-			_propagator.PreBuildObstructionSet(_root);
+			foreach (var root in _roots)
+			{
+				_propagator.PreBuildObstructionSet(root);
+			}
 		}
 	}
 }

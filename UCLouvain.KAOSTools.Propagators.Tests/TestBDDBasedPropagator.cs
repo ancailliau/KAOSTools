@@ -119,11 +119,7 @@ namespace UCLouvain.KAOSTools.Propagators.Tests
             var p1 = new BDDBasedPropagator (model);
             System.Console.WriteLine (p1.GetESR (anchor));
             
-            var p2 = new BDDBasedResolutionPropagator (model);
-            System.Console.WriteLine (p2.GetESR (anchor));
-
             HashSet<Resolution> hashSet = new HashSet<Resolution> (model.Resolutions ());
-            System.Console.WriteLine (p2.GetESR (anchor, hashSet));
         }
         
         [Test()]
@@ -153,11 +149,8 @@ namespace UCLouvain.KAOSTools.Propagators.Tests
             var p1 = new BDDBasedPropagator (model);
             System.Console.WriteLine (p1.GetESR (anchor));
             
-            var p2 = new BDDBasedResolutionPropagator (model);
-            System.Console.WriteLine (p2.GetESR (anchor));
-
+            
             HashSet<Resolution> hashSet = new HashSet<Resolution> (model.Resolutions ());
-            System.Console.WriteLine (p2.GetESR (anchor, hashSet));
         }
         
     }

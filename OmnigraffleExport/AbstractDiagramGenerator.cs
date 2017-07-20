@@ -494,6 +494,15 @@ namespace UCLouvain.KAOSTools.OmnigraffleExport
                 var line = GetLine (childGraphic, circle);
                 sheet.GraphicsList.Add (line);
             }
+            
+            foreach (var child in refinement.DomainHypothesisIdentifiers) {
+                if (!shapes.ContainsKey(child.Identifier))
+                    continue;
+
+                var childGraphic = shapes [child.Identifier].First ();
+                var line = GetLine (childGraphic, circle);
+                sheet.GraphicsList.Add (line);
+            }
 
             foreach (var child in refinement.PositiveSoftGoalsIdentifiers) {
                 if (!shapes.ContainsKey(child))

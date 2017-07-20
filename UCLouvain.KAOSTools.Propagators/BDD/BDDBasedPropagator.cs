@@ -10,12 +10,16 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
     public class BDDBasedPropagator : IPropagator
     {
         protected KAOSModel _model;
-        protected ObstructionSuperset obstructionSuperset;
-        protected Goal prebuilt_goal;
+        
+        protected Dictionary<string, ObstructionSuperset> obstructionSupersets;
+        
+        protected HashSet<Goal> prebuilt_goal;
 
         public BDDBasedPropagator (KAOSModel model)
         {
             _model = model;
+			prebuilt_goal = new HashSet<Goal>();
+			obstructionSupersets = new Dictionary<string, ObstructionSuperset>();
         }
 
         public virtual ISatisfactionRate GetESR (Obstacle obstacle)
@@ -25,16 +29,24 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
         
         public virtual void PreBuildObstructionSet (Goal goal)
         {
-            prebuilt_goal = goal;
-            obstructionSuperset = new ObstructionSuperset (goal);
+			if (prebuilt_goal.Contains(goal))
+			{
+				obstructionSupersets[goal.Identifier] = new ObstructionSuperset(goal);
+			} else {
+				obstructionSupersets.Add(goal.Identifier, new ObstructionSuperset(goal));
+				prebuilt_goal.Add(goal);
+			}
         } 
 
         public virtual ISatisfactionRate GetESR (Goal goal)
         {
-            if (obstructionSuperset == null || prebuilt_goal != goal)
-                obstructionSuperset = new ObstructionSuperset (goal);
+			ObstructionSuperset os;
+			if (!obstructionSupersets.ContainsKey(goal.Identifier))
+				os = new ObstructionSuperset(goal);
+			else
+				os = obstructionSupersets[goal.Identifier];
             var vector = new SamplingVector (_model);
-            return new DoubleSatisfactionRate (1.0 - obstructionSuperset.GetProbability (vector));
+            return new DoubleSatisfactionRate (1.0 - os.GetProbability (vector));
         }
 
         public virtual ISatisfactionRate GetESR (Obstacle obstacle, IEnumerable<Resolution> activeResolutions)
@@ -49,11 +61,14 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
 
         public ISatisfactionRate GetESR (Goal goal, IEnumerable<Obstacle> onlyObstacles)
         {
-            if (obstructionSuperset == null || prebuilt_goal != goal)
-                obstructionSuperset = new ObstructionSuperset (goal);
+			ObstructionSuperset os;
+			if (!obstructionSupersets.ContainsKey(goal.Identifier))
+				os = new ObstructionSuperset(goal);
+			else
+				os = obstructionSupersets[goal.Identifier];
 
 			var vector = new SamplingVector (_model, onlyObstacles?.Select(x => x.Identifier)?.ToHashSet());
-			var value = 1.0 - obstructionSuperset.GetProbability(vector);
+			var value = 1.0 - os.GetProbability(vector);
 			
 			return new DoubleSatisfactionRate(value);
         }

@@ -33,12 +33,31 @@ namespace UCLouvain.KAOSTools.Optimizer
         /// <returns>The minimal cost.</returns>
         public double GetMinimalCost (Goal goal, IPropagator propagator)
         {
+			return GetMinimalCost(new HashSet<Goal>(new[] { goal }), propagator);
+        }
+        
+        /// <summary>
+        /// Returns the minimal cost ensuring the goals respective RDSs. Returns -1 if no
+        /// selection satisfy the RDS.
+        /// </summary>
+        /// <param name="goals">The goals</param>
+        /// <returns>The minimal cost.</returns>
+        public double GetMinimalCost (HashSet<Goal> goals, IPropagator propagator)
+        {
             var timer = Stopwatch.StartNew ();
             int minCost = -1;
 
-            var sr = (DoubleSatisfactionRate) propagator.GetESR (goal);
-            if (sr.SatisfactionRate > goal.RDS)
-                return 0;
+			var sr = new Dictionary<string, DoubleSatisfactionRate>();
+
+			bool all_goals_satisfied = true;
+			foreach (var goal in goals)
+			{
+				sr.Add(goal.Identifier, (DoubleSatisfactionRate)propagator.GetESR(goal));
+				all_goals_satisfied &= (sr[goal.Identifier].SatisfactionRate > goal.RDS);
+			}
+
+			if (all_goals_satisfied)
+				return 0;
 
             int count = 0;
             int tested_count = 0;
@@ -57,22 +76,25 @@ namespace UCLouvain.KAOSTools.Optimizer
                 foreach (var resolution in r) {
                     integrator.Integrate (resolution);
                 }
-                
-                sr = (DoubleSatisfactionRate) propagator.GetESR (goal);
-                
-                // Console.WriteLine ( new OptimalSelection (r, cost, sr.SatisfactionRate) );
 
-                foreach (var resolution in r) {
-                    integrator.Remove (resolution);
-                }
+				all_goals_satisfied = true;
+				foreach (var goal in goals)
+				{
+					sr.Add(goal.Identifier, (DoubleSatisfactionRate)propagator.GetESR(goal));
+					all_goals_satisfied &= (sr[goal.Identifier].SatisfactionRate > goal.RDS);
+				}
 
-                if (sr.SatisfactionRate > goal.RDS) {
+                if (all_goals_satisfied) {
                     safe_count++;
                     stats.MaxSafeCost = Math.Max (stats.MaxSafeCost, cost);
                     
                     if (minCost == -1 || cost < minCost) {
                         minCost = cost;
                     }
+                }
+                
+                foreach (var resolution in r) {
+                    integrator.Remove (resolution);
                 }
             }
             timer.Stop ();
@@ -85,12 +107,24 @@ namespace UCLouvain.KAOSTools.Optimizer
             return minCost;
         }
 
-        public IEnumerable<OptimalSelection> GetOptimalSelections (double minCost, Goal goal, IPropagator propagator)
+		public IEnumerable<OptimalSelection> GetOptimalSelections(double minCost, Goal goal, IPropagator propagator)
+		{
+			return GetOptimalSelections(minCost, new HashSet<Goal>(new[] { goal }), propagator);
+		}
+
+        public IEnumerable<OptimalSelection> GetOptimalSelections (double minCost, HashSet<Goal> goals, IPropagator propagator)
         {
             var timer = Stopwatch.StartNew ();
             var optimalSelections = new List<OptimalSelection> ();
-            double bestSR = 0;
             int tested_count = 0;
+
+			var bestSR = new Dictionary<string, double>();
+			var sr = new Dictionary<string, DoubleSatisfactionRate>();
+
+			foreach (var goal in goals)
+			{
+				bestSR.Add(goal.Identifier, 0);
+			}
 
             var countermeasure_goals = _model.Resolutions ().Select (x => x.ResolvingGoalIdentifier).Distinct ();
             
@@ -105,19 +139,34 @@ namespace UCLouvain.KAOSTools.Optimizer
                 foreach (var resolution in activeResolutions) {
                     integrator.Integrate (resolution);
                 }
-                
-                var sr = (DoubleSatisfactionRate) propagator.GetESR (goal);
 
+				var all_goals_satisfied = true;
+				foreach (var goal in goals)
+				{
+					sr.Add(goal.Identifier, (DoubleSatisfactionRate)propagator.GetESR(goal));
+					all_goals_satisfied &= (sr[goal.Identifier].SatisfactionRate > goal.RDS);
+				}
+
+				if (all_goals_satisfied)
+				{
+					foreach (var goal in goals)
+					{
+						double satisfactionRate = sr[goal.Identifier].SatisfactionRate;
+						if (satisfactionRate > bestSR[goal.Identifier] + EPSILON)
+						{
+							bestSR[goal.Identifier] = satisfactionRate;
+							optimalSelections = new List<OptimalSelection>();
+							optimalSelections.Add(new OptimalSelection(activeResolutions, cost, satisfactionRate));
+						}
+						else if (Math.Abs(satisfactionRate - bestSR[goal.Identifier]) < EPSILON)
+						{
+							optimalSelections.Add(new OptimalSelection(activeResolutions, cost, satisfactionRate));
+						}
+					}
+				}
+				
                 foreach (var resolution in activeResolutions) {
                     integrator.Remove (resolution);
-                }
-                
-                if (sr.SatisfactionRate > bestSR + EPSILON) {
-                    bestSR = sr.SatisfactionRate;
-                    optimalSelections = new List<OptimalSelection> ();
-                    optimalSelections.Add (new OptimalSelection (activeResolutions, cost, sr.SatisfactionRate));
-                } else if (Math.Abs (sr.SatisfactionRate - bestSR) < EPSILON) {
-                    optimalSelections.Add (new OptimalSelection (activeResolutions, cost, sr.SatisfactionRate));
                 }
             }
             timer.Stop ();

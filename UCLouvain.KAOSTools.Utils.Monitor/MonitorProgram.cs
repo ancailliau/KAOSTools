@@ -28,7 +28,7 @@ namespace UCLouvain.KAOSTools.Utils.Monitor
 		static bool stop;
 		private static NaiveCountermeasureSelectionOptimizer optimizer;
 		private static KAOSModel optimization_model;
-		private static Goal root;
+		private static HashSet<Goal> roots;
 
 		static SoftResolutionIntegrator _integrator_model;
 		static IEnumerable<Resolution> _active_resolutions;
@@ -110,13 +110,28 @@ namespace UCLouvain.KAOSTools.Utils.Monitor
 				while (!stop) {
 					System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
 
-					if (modelMonitor.RootSatisfactionRate.SatisfactionRate > root.RDS) {
-						logger.Info("Current configuration is above RSR.");
-						continue;
+					bool optimization_required = false;
+					foreach (var root in roots)
+					{
+						var doubleSatisfactionRate = modelMonitor.RootSatisfactionRates[root.Identifier];
+						if (doubleSatisfactionRate == null) {
+							logger.Info($"Ignoring '{root.Identifier}', no satisfaction rate monitored.");
+							continue;
+						}
+						if (doubleSatisfactionRate.SatisfactionRate >= root.RDS)
+						{
+							logger.Info("Current configuration is above RSR for "+root.FriendlyName+".");
+						} else {
+							logger.Info("Current configuration is below RSR for "+root.FriendlyName+".");
+							optimization_required = true;
+						}
 					}
 
-					var minimalcost = optimizer.GetMinimalCost(root, _propagator_optimization);
-					var optimalSelections = optimizer.GetOptimalSelections(minimalcost, root, _propagator_optimization).FirstOrDefault();
+					if (!optimization_required)
+						continue;
+
+					var minimalcost = optimizer.GetMinimalCost(roots, _propagator_optimization);
+					var optimalSelections = optimizer.GetOptimalSelections(minimalcost, roots, _propagator_optimization).FirstOrDefault();
 
 					if (optimalSelections != null) {
 						// Update the model
@@ -161,7 +176,7 @@ namespace UCLouvain.KAOSTools.Utils.Monitor
             Console.WriteLine ("");
 
             string rootname = "root";
-            options.Add ("root=", "Specify the root goal for which to compute the satisfaction rate. (Default: root)", v => rootname = v);
+            options.Add ("roots=", "Specify the roots goal for which to compute the satisfaction rate. (Default: root)", v => rootname = v);
 
 			string outfile = null;
             options.Add ("outfile=", "Specify the output file for the satisfaction rates", v => outfile = v);
@@ -169,14 +184,14 @@ namespace UCLouvain.KAOSTools.Utils.Monitor
 			Init (args);
 			optimization_model = BuildModel();
             
-            root = model.Goal (rootname);
-            if (root == null) {
-                PrintError ("The goal '"+rootname+"' was not found");
+            roots = rootname.Split(',').Select(x => model.Goal (x)).ToHashSet();
+            if (roots.Count() == 0 || roots.Any(x => x == null)) {
+                PrintError ("A root goal among '"+rootname+"' was not found");
             }
 
             try {
 
-				modelMonitor = new ModelMonitor(model, root);
+				modelMonitor = new ModelMonitor(model, roots);
 				modelMonitor.SetOutputFile(outfile);
 
 				_active_resolutions = new HashSet<Resolution>();
@@ -184,7 +199,7 @@ namespace UCLouvain.KAOSTools.Utils.Monitor
 				optimizer = new NaiveCountermeasureSelectionOptimizer(optimization_model);
 				
 				var commands = new List<ICommand>();
-				commands.Add(new GetSatisfactionRateCommand(model, root, modelMonitor));
+				commands.Add(new GetSatisfactionRateCommand(model, roots, modelMonitor));
 				commands.Add(new ExportModelCommand(model));
 
 				stop = false;

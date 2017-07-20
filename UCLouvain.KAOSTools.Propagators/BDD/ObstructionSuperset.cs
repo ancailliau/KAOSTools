@@ -62,15 +62,37 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
             else if (cache.TryGetValue (node, out double cached))
                 return cached;
 
-            Obstacle obstacle = (Obstacle)_rmapping [node.Index];
+			if (_rmapping[node.Index] is Obstacle obstacle)
+			{
 
-            var v = samplingVector.ContainsKey (obstacle.Identifier) & !obstacle.Resolved ?
-                        samplingVector.Sample (obstacle) : 0;
+				var v = samplingVector.ContainsKey(obstacle.Identifier) & !obstacle.Resolved ?
+							samplingVector.Sample(obstacle) : 0;
 
-            double value = GetProbability (node.Low, samplingVector, cache) * (1 - v)
-                   + GetProbability (node.High, samplingVector, cache) * v;
-            cache [node] = value;
-            return value;
+				double value = GetProbability(node.Low, samplingVector, cache) * (1 - v)
+					   + GetProbability(node.High, samplingVector, cache) * v;
+				cache[node] = value;
+				return value;
+			} else if (_rmapping[node.Index] is DomainProperty domProp)
+			{
+				var v = samplingVector.ContainsKey(domProp.Identifier) ?
+							samplingVector.Sample(domProp) : 0;
+
+				double value = GetProbability(node.Low, samplingVector, cache) * (1 - v)
+					   + GetProbability(node.High, samplingVector, cache) * v;
+				cache[node] = value;
+				return value;
+			}  else if (_rmapping[node.Index] is DomainHypothesis domHyp)
+			{
+				var v = samplingVector.ContainsKey(domHyp.Identifier) ?
+							samplingVector.Sample(domHyp) : 0;
+
+				double value = GetProbability(node.Low, samplingVector, cache) * (1 - v)
+					   + GetProbability(node.High, samplingVector, cache) * v;
+				cache[node] = value;
+				return value;
+			} else {
+				throw new NotImplementedException("Type " + _rmapping[node.Index].GetType() + " is not yet supported.");
+			}
         }
 
         #endregion
@@ -83,7 +105,7 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
             IEnumerable<Obstruction> obstructions = goal.Obstructions ();
             
             if ((refinements.Count () + obstructions.Count ()) > 1)
-                throw new PropagationException (PropagationException.INVALID_MODEL);
+                throw new PropagationException (PropagationException.INVALID_MODEL + $". Check '{goal.Identifier}' for obstructions and refinements.");
 
             var r = refinements.SingleOrDefault ();
             
