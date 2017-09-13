@@ -345,7 +345,7 @@ namespace UCLouvain.KAOSTools.Parsing
                     return attribute;
 
                 } else if (pref.AttributeSignature is IdentifierExpression) {
-                    var attribute = entity.model.Attributes().SingleOrDefault(x => x.Identifier == pref.AttributeSignature.Value 
+                	var attribute = entity.model.Attributes().SingleOrDefault(x => x.Identifier == pref.AttributeSignature.Value 
                                                                               && x.EntityIdentifier == entity.Identifier);
                     if (attribute == null) {
                         attribute = new KAOSTools.Core.EntityAttribute(model) {

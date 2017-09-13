@@ -397,6 +397,18 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers
             Value = value;
         }
 	}
+    
+    public class ParsedDecimal : ParsedElement
+    {
+        public Decimal Value { get; set; }
+        public ParsedDecimal ()
+        {
+        }
+        public ParsedDecimal (Decimal value)
+        {
+            Value = value;
+        }
+	}
 
 	public class ParsedInteger : ParsedElement
 	{

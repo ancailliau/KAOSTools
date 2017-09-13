@@ -206,5 +206,10 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
         {
             Obstructions.Remove (obstruction.Identifier);
         }
+
+        public void Remove (ObstacleAssumption assumption)
+        {
+            ObstacleAssumptions.Remove (assumption.Identifier);
+        }
     }
 }

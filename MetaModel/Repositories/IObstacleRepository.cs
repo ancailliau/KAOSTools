@@ -37,14 +37,15 @@ namespace UCLouvain.KAOSTools.Core.Repositories
 		IEnumerable<ObstacleRefinement> GetObstacleRefinements();
         IEnumerable<Obstruction> GetObstructions();
 		IEnumerable<Resolution> GetResolutions();
-        void Remove (Resolution resolution);
-
-		IEnumerable<Obstacle> GetObstacles(Predicate<Obstacle> predicate);
+		
+        IEnumerable<Obstacle> GetObstacles(Predicate<Obstacle> predicate);
 		IEnumerable<ObstacleAssumption> GetObstacleAssumptions(Predicate<ObstacleAssumption> predicate);
 		IEnumerable<ObstacleRefinement> GetObstacleRefinements(Predicate<ObstacleRefinement> predicate);
 		IEnumerable<Obstruction> GetObstructions(Predicate<Obstruction> predicate);
 		IEnumerable<Resolution> GetResolutions(Predicate<Resolution> predicate);
         
-        void Remove(Obstruction obstruction);
+        void Remove (Resolution resolution);
+		void Remove (Obstruction obstruction);
+		void Remove (ObstacleAssumption assumption);
 	}
 }

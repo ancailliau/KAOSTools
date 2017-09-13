@@ -75,13 +75,34 @@ namespace UCLouvain.KAOSTools.ExpertCombination
 		void AddEstimates()
 		{
 			foreach (var o in _model.LeafObstacles()) {
-				var estimates = _model.satisfactionRateRepository.GetObstacleSatisfactionRates(o.Identifier)
-									.Where(x => x.ExpertIdentifier != null);
-				foreach (var estimate in estimates) {
-					if (estimate is QuantileList qd) {
-						ef.AddEstimate(estimate.ExpertIdentifier, o.Identifier, qd.Quantiles.ToArray());
-					} else {
-						throw new NotImplementedException("Distribution not supported");
+				var satRates = _model.satisfactionRateRepository.GetObstacleSatisfactionRates(o.Identifier);
+				if (satRates == null)
+				{
+					Console.WriteLine($"Obstacle '{o.Identifier}' not estimated.");
+				}
+				else
+				{
+					var estimates = satRates.Where(x => x.ExpertIdentifier != null);
+					foreach (var estimate in estimates)
+					{
+						if (estimate is QuantileList qd)
+						{
+							try
+							{
+								ef.AddEstimate(estimate.ExpertIdentifier, o.Identifier, qd.Quantiles.ToArray());
+							} catch (Exception e) {
+								Console.WriteLine("---");
+								Console.WriteLine($"An error occured while adding estimate for '{o.Identifier}' by expert '{estimate.ExpertIdentifier}'");
+								Console.WriteLine(e.Message);
+								Console.WriteLine(e.StackTrace);
+								Console.WriteLine("---");
+							
+							}
+						}
+						else
+						{
+							throw new NotImplementedException("Distribution not supported");
+						}
 					}
 				}
 			}
@@ -123,20 +144,32 @@ namespace UCLouvain.KAOSTools.ExpertCombination
 		{
 			foreach (var o in _model.LeafObstacles()) {
 				try {
-					var estimates = _model.satisfactionRateRepository
-									.GetObstacleSatisfactionRates(o.Identifier)
-									.Where(x => x.ExpertIdentifier != null);
-					if (estimates.Count() > 0) {
-						var dm = ef.Fit(o.Identifier);
-						if (dm is ExpertOpinionSharp.Distributions.QuantileDistribution quantileD) {
-							var distribution = new QuantileDistribution(quantileD.probabilities, quantileD.quantiles);
-							_model.satisfactionRateRepository.AddObstacleSatisfactionRate(o.Identifier, distribution);
-						} else if (dm is ExpertOpinionSharp.Distributions.MixtureDistribution mixtureD) {
-							var distribution = new MixtureDistribution(mixtureD.cummulativeWeight, mixtureD.distributions.Select(x => new QuantileDistribution(x.probabilities, x.quantiles)).ToArray());
-							_model.satisfactionRateRepository.AddObstacleSatisfactionRate(o.Identifier, distribution);
+					var satRates = _model.satisfactionRateRepository
+									.GetObstacleSatisfactionRates(o.Identifier);
+					if (satRates != null)
+					{
+						var estimates = satRates.Where(x => x.ExpertIdentifier != null);
+						if (estimates.Count() > 0)
+						{
+							var dm = ef.Fit(o.Identifier);
+							if (dm is ExpertOpinionSharp.Distributions.QuantileDistribution quantileD)
+							{
+								var distribution = new QuantileDistribution(quantileD.probabilities, quantileD.quantiles);
+								_model.satisfactionRateRepository.AddObstacleSatisfactionRate(o.Identifier, distribution);
+							}
+							else if (dm is ExpertOpinionSharp.Distributions.MixtureDistribution mixtureD)
+							{
+								var distribution = new MixtureDistribution(mixtureD.cummulativeWeight, mixtureD.distributions.Select(x => new QuantileDistribution(x.probabilities, x.quantiles)).ToArray());
+								_model.satisfactionRateRepository.AddObstacleSatisfactionRate(o.Identifier, distribution);
+							}
+						}
+						else
+						{
+							Console.WriteLine($"Obstacle '{o.Identifier}' not estimated by experts. Using 'probability' value.");
 						}
 					} else {
-						throw new NotImplementedException("'" + o.FriendlyName + "' is not estimated.");
+						Console.WriteLine($"Obstacle '{o.Identifier}' not estimated. Using 0 as satisfaction rate.");
+						_model.satisfactionRateRepository.AddObstacleSatisfactionRate(o.Identifier, new DoubleSatisfactionRate(0));
 					}
 				} catch (Exception e) {
 					//throw (e);

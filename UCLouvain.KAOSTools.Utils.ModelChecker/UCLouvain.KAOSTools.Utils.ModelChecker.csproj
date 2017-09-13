@@ -48,6 +48,10 @@
       <Project>{C96BDFB0-950D-4DF0-9BFB-27EA7C8CABD3}</Project>
       <Name>Utils</Name>
     </ProjectReference>
+    <ProjectReference Include="..\UCLouvain.KAOSTools.Integrator\UCLouvain.KAOSTools.Integrators.csproj">
+      <Project>{33A33908-CA6B-4869-A016-8D9274C65229}</Project>
+      <Name>UCLouvain.KAOSTools.Integrators</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

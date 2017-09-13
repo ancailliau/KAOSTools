@@ -56,6 +56,9 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers.Attributes
             } else if (v is ParsedInteger) {
                 esr = ((ParsedInteger)v).Value;
 
+            } else if (v is ParsedDecimal) {
+                esr = System.Convert.ToDouble(((ParsedDecimal)v).Value);
+
             } else if (v is ParsedPercentage) {
                 esr = ((ParsedPercentage)v).Value / 100d;
             } else {

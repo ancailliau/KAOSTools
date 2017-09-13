@@ -42,10 +42,11 @@ namespace UCLouvain.KAOSTools.Utils.SeverityDiagram
 				var criticalobstacle = new SingleValueCriticalObstacles (model, root);
 				var scores = criticalobstacle.GetObstacleScores(combination_size);
 
-				foreach (var item in scores) {
-					Console.WriteLine("{0}: vs = {1}",
+				foreach (var item in scores.Where(x => x.Value.ViolationSeverity > 0)) {
+					Console.WriteLine("{0}: vs = {1}, cp = {2}",
 									  string.Join(",", item.Key.Select(x => x.FriendlyName)),
-									  item.Value.ViolationSeverity);
+									  item.Value.ViolationSeverity,
+									  item.Value.CombinationProbability);
 				}
 
 				if (!string.IsNullOrEmpty(outfile)) {
@@ -58,7 +59,7 @@ namespace UCLouvain.KAOSTools.Utils.SeverityDiagram
 					
 					using (var f = File.CreateText(out_filename)) {
 						f.WriteLine("combination,combination_probability,violation_severity");
-						foreach (var item in scores) {
+						foreach (var item in scores.Where(x => x.Value.ViolationSeverity > 0)) {
 							f.WriteLine("{0},{2},{1}",
 											  string.Join(":", item.Key.Select(x => x.Name)),
 											  item.Value.ViolationSeverity,

@@ -61,7 +61,7 @@ namespace UCLouvain.KAOSTools.Parsing
         {
             if (model.Parameters.ContainsKey(element.Name))
             {
-                throw new BuilderException(string.Format("'{0}' is already defined", element.Name),
+                throw new BuilderException(string.Format("'{0}' is already defined.", element.Name),
                     element.Filename, element.Line, element.Col);
             }
 

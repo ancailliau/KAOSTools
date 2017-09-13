@@ -9,6 +9,8 @@ using UCLouvain.KAOSTools.Propagators;
 using UCLouvain.KAOSTools.Propagators.BDD;
 using System.IO;
 using UCLouvain.KAOSTools.Utils.FileExporter;
+using UCLouvain.KAOSTools.OmnigraffleExport.Omnigraffle;
+using UCLouvain.KAOSTools.OmnigraffleExport;
 
 namespace UCLouvain.KAOSTools.Utils.CMSelector
 {
@@ -31,7 +33,7 @@ namespace UCLouvain.KAOSTools.Utils.CMSelector
 
                     Console.Write ("> ");
                     var input = Console.ReadLine ().Trim ();
-                    if (input.Equals ("quit")) {
+                    if (input.Equals ("quit") | input.Equals("exit")) {
                         stop = true;
                         continue;
                     }
@@ -42,6 +44,16 @@ namespace UCLouvain.KAOSTools.Utils.CMSelector
                     if (match.Success) {
                         success = true;
                         var o_identifier = match.Groups [1].Value;
+						if (o_identifier.Equals("all")) {
+                            var integrator = new SoftResolutionIntegrator (model);
+							foreach (var resolution in model.Resolutions())
+							{
+								integrator.Integrate(resolution);
+							}
+							continue;
+						}
+                        
+                        
                         Obstacle o;
                         if ((o = model.Obstacle (o_identifier)) != null) {
                             var resolutions = o.Resolutions ().ToArray ();
@@ -84,6 +96,27 @@ namespace UCLouvain.KAOSTools.Utils.CMSelector
 
                         var e = new KAOSFileExporter (model);
                         File.WriteAllText (match.Groups [1].Value, e.Export ());
+                        Console.WriteLine ("Model exported to " + match.Groups [1].Value);
+                        continue;
+                    }
+                    
+                    regex = new Regex (@"export_diagram ([a-zA-Z0-9_\.-]+)");
+                    match = regex.Match (input);
+                    if (match.Success) {
+                        success = true;
+                        if (File.Exists (match.Groups [1].Value)) {
+                            Console.Write ($"Do you want to overwrite '{match.Groups [1].Value}' (yes/no)? ");
+                            var input_resp = Console.ReadLine ().Trim ();
+                            if (input_resp.Equals ("yes")) {
+                                File.Delete (match.Groups [1].Value);
+                            } else {
+                                continue;
+                            }
+                        }
+
+						Document document = OmnigraffleMainClass.ExportModel(model);
+						OmniGraffleGenerator.Export(document, match.Groups [1].Value);
+                        
                         Console.WriteLine ("Model exported to " + match.Groups [1].Value);
                         continue;
                     }

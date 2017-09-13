@@ -58,6 +58,7 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers
 			m_nonterminals.Add("String", new ParseMethod[]{this.DoParseStringRule});
 			m_nonterminals.Add("Float", new ParseMethod[]{this.DoParseFloatRule});
 			m_nonterminals.Add("Integer", new ParseMethod[]{this.DoParseIntegerRule});
+			m_nonterminals.Add("SciNumber", new ParseMethod[]{this.DoParseSciNumberRule});
 			m_nonterminals.Add("Percentage", new ParseMethod[]{this.DoParsePercentageRule});
 			m_nonterminals.Add("Bool", new ParseMethod[]{this.DoParseBoolRule});
 			m_nonterminals.Add("Star", new ParseMethod[]{this.DoParseStarRule});
@@ -340,7 +341,7 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers
 			return _state;
 		}
 		
-		// AttributeAtomicValue := Formula / Bool / QuotedString / Percentage / Float / Integer / Identifier / Star
+		// AttributeAtomicValue := Formula / Bool / QuotedString / Percentage / SciNumber / Float / Integer / Identifier / Star
 		private State DoParseAttributeAtomicValueRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -351,6 +352,7 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Bool");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "QuotedString");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Percentage");},
+			delegate (State s, List<Result> r) {return DoParse(s, r, "SciNumber");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Float");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Integer");},
 			delegate (State s, List<Result> r) {return DoParse(s, r, "Identifier");},
@@ -552,6 +554,40 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers
 			{
 				UCLouvain.KAOSTools.Parsing.Parsers.ParsedElement value = results.Count > 0 ? results[0].Value : default(UCLouvain.KAOSTools.Parsing.Parsers.ParsedElement);
 				value = BuildInteger(results);
+				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
+			}
+			else
+			{
+				string expected = null;
+				expected = "Integer";
+				if (expected != null)
+					_state = new State(_start.Index, false, ErrorSet.Combine(_start.Errors, new ErrorSet(_state.Errors.Index, expected)));
+			}
+			
+			return _state;
+		}
+		
+		// SciNumber := (Float / Integer) 'e' '-'? (Float / Integer)
+		private State DoParseSciNumberRule(State _state, List<Result> _outResults)
+		{
+			State _start = _state;
+			List<Result> results = new List<Result>();
+			
+			_state = DoSequence(_state, results,
+			delegate (State s, List<Result> r) {return DoChoice(s, r,
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Float");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Integer");});},
+			delegate (State s, List<Result> r) {return DoParseLiteral(s, r, "e");},
+			delegate (State s, List<Result> r) {return DoRepetition(s, r, 0, 1,
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "-");});},
+			delegate (State s, List<Result> r) {return DoChoice(s, r,
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Float");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "Integer");});});
+			
+			if (_state.Parsed)
+			{
+				UCLouvain.KAOSTools.Parsing.Parsers.ParsedElement value = results.Count > 0 ? results[0].Value : default(UCLouvain.KAOSTools.Parsing.Parsers.ParsedElement);
+				value = BuildSciNumber(results);
 				_outResults.Add(new Result(this, _start.Index, _state.Index - _start.Index, m_input, value));
 			}
 			else

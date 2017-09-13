@@ -9,13 +9,22 @@ namespace UCLouvain.KAOSTools.Propagators
     {
         KAOSModel _model;
 
+		IDictionary<Goal,ISatisfactionRate> goalCache;
+		IDictionary<Obstacle,ISatisfactionRate> obstacleCache;
+        
         public PatternBasedPropagator (KAOSModel model)
         {
             _model = model;
+
+			goalCache = new Dictionary<Goal, ISatisfactionRate>();
+			obstacleCache = new Dictionary<Obstacle, ISatisfactionRate>();
         }
 
         public ISatisfactionRate GetESR (Goal g)
         {
+			if (goalCache.ContainsKey(g))
+				return goalCache[g];
+        
             ISatisfactionRate cps = null;
             var refinements = _model.GoalRefinements (r => r.ParentGoalIdentifier == g.Identifier);
             if (refinements.Count () > 1)
@@ -35,6 +44,7 @@ namespace UCLouvain.KAOSTools.Propagators
             }
 
             _model.satisfactionRateRepository.AddGoalSatisfactionRate (g.Identifier, cps);
+            goalCache.Add(g, cps);
             return cps;
         }
 
@@ -95,6 +105,9 @@ namespace UCLouvain.KAOSTools.Propagators
 
         public ISatisfactionRate GetESR (Obstacle o)
         {
+			if (obstacleCache.ContainsKey(o))
+				return obstacleCache[o];
+				
             ISatisfactionRate esr;
             var refinements = _model.ObstacleRefinements (r => r.ParentObstacleIdentifier == o.Identifier);
             if (refinements.Count () > 0) {
@@ -104,6 +117,7 @@ namespace UCLouvain.KAOSTools.Propagators
                 esr = o.LatestEPS ();
             }
 
+			obstacleCache.Add(o, esr);
             return esr;
         }
 

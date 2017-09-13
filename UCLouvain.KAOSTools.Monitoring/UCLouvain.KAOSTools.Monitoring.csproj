@@ -74,10 +74,6 @@
       <Project>{DC8A0FE4-11CC-4B71-8F70-D9073F036A2E}</Project>
       <Name>UCLouvain.KAOSTools.Optimizer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Parsing\UCLouvain.KAOSTools.Parsing.csproj">
-      <Project>{52C948A2-30AD-40A7-89A3-9D66B2FCDD9F}</Project>
-      <Name>UCLouvain.KAOSTools.Parsing</Name>
-    </ProjectReference>
     <ProjectReference Include="..\UCLouvain.KAOSTools.Propagators\UCLouvain.KAOSTools.Propagators.csproj">
       <Project>{A8252078-D017-4CB4-92DE-3212F7C1FE77}</Project>
       <Name>UCLouvain.KAOSTools.Propagators</Name>

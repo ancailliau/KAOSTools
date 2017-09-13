@@ -5,29 +5,34 @@ using UCLouvain.KAOSTools.Core;
 using System.Linq;
 using UCLouvain.KAOSTools.Core.SatisfactionRates;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Attributes.Jobs;
+using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Jobs;
+using BenchmarkDotNet.Environments;
 
 namespace UCLouvain.KAOSTools.Propagators.Benchmark
 {
+	[MySuperJob()]
     public class PatternVSBDD
     {
         KAOSModel model;
         Goal root;
         BDDBasedPropagator p3;
         
-        [Params(10,100,1000,10000)]
+        [Params(/*10,100,*/1000,10000,100000)]
         public int NbGoals { get; set; }
         
-        [Params(10,100,1000)]
+        [Params(/*10,*/100,1000,10000)]
         public int NbObstructions { get; set; }
         
-        [Params(10,100,1000,10000)]
+        [Params(/*10,100,*/1000,10000,100000)]
         public int NbObstacles { get; set; }
 
         public PatternVSBDD ()
         {
         }
         
-        [Setup]
+        [GlobalSetup]
         public void Setup () {
             var options = new RandomModelOptions {
                 NbGoals = NbGoals,

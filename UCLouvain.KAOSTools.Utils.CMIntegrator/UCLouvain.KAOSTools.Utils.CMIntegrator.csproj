@@ -63,6 +63,10 @@
       <Project>{CB10E490-9539-441A-AE82-D6372C43725B}</Project>
       <Name>UCLouvain.KAOSTools.Utils.FileExporter</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OmnigraffleExport\OmnigraffleExport.csproj">
+      <Project>{DFAE4D76-E744-4F28-BFE6-7525C52AC6C2}</Project>
+      <Name>OmnigraffleExport</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

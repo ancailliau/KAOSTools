@@ -56,6 +56,7 @@
     <Compile Include="ReplacementDiagramGenerator.cs" />
     <Compile Include="AssumptionDiagramGenerator.cs" />
     <Compile Include="GoalAndObstacleModelGenerator.cs" />
+    <Compile Include="ExceptionModelGenerator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

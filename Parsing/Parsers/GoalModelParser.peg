@@ -45,7 +45,7 @@ AttributeDecoratedValue :=
     `value = BuildAttributeDecoratedValue(results);`
 
 AttributeAtomicValue := 
-    Formula / Bool / QuotedString / Percentage / Float / Integer / Identifier / Star
+    Formula / Bool / QuotedString / Percentage / SciNumber / Float / Integer / Identifier / Star
     `value = results[0].Value;`
 
 # Expressions                                
@@ -75,6 +75,10 @@ Float := ('.' [0-9]+) / ( [0-9]+ ('.' [0-9]+) )
 
 Integer := [0-9]+
     `value = BuildInteger(results)` 
+    `expected = "Integer"`
+
+SciNumber := ( Float / Integer ) 'e' ('-'?) ( Float / Integer )
+    `value = BuildSciNumber(results)` 
     `expected = "Integer"`
 
 Percentage := ( Float / Integer ) '%'

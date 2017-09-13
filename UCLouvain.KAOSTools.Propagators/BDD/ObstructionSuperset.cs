@@ -95,12 +95,24 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
 			}
         }
 
-        #endregion
+		#endregion
 
-        #region GetObstructionSet
+		#region GetObstructionSet
+
+		Dictionary<Goal, BDDNode> goalCache = new Dictionary<Goal, BDDNode>();
+		Dictionary<Obstacle, BDDNode> obstacleCache = new Dictionary<Obstacle, BDDNode>();
+		
+		public virtual void ResetCache ()
+		{
+			goalCache = new Dictionary<Goal, BDDNode>();
+			obstacleCache = new Dictionary<Obstacle, BDDNode>();
+		}
 
         public virtual BDDNode GetObstructionSet (Goal goal)
         {
+			if (goalCache.ContainsKey(goal))
+				return goalCache[goal];
+        
             IEnumerable<GoalRefinement> refinements = goal.Refinements ();
             IEnumerable<Obstruction> obstructions = goal.Obstructions ();
             
@@ -126,14 +138,20 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
                     var bDDNode = GetObstructionSet(r);
                     acc = _manager.Or(acc, bDDNode);
                 }
+                goalCache.Add(goal, acc);
                 return acc;
             }
             
             var o = obstructions.SingleOrDefault ();
 
-            if (o != null)
-                return GetObstructionSet (o);
+			if (o != null)
+			{
+				BDDNode bn = GetObstructionSet(o);
+                goalCache.Add(goal, bn);
+				return bn;
+			}
 
+			goalCache.Add(goal, _manager.Zero);
             return _manager.Zero;
         }
 
@@ -172,6 +190,9 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
 
         public BDDNode GetObstructionSet (Obstacle obstacle)
         {
+			if (obstacleCache.ContainsKey(obstacle))
+				return obstacleCache[obstacle];
+        
             BDDNode acc2 = null;
             foreach (var r in obstacle.Refinements ()) {
                 BDDNode acc = null;
@@ -219,6 +240,7 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
                 acc2 = _manager.Create(idx, _manager.One, _manager.Zero);
             }
 
+			obstacleCache.Add(obstacle, acc2);
             return acc2;
         }
 

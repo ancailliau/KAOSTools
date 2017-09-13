@@ -11,7 +11,7 @@ using System.Text;
 
 namespace UCLouvain.KAOSTools.OmnigraffleExport
 {
-    class MainClass : KAOSToolCLI
+	public class OmnigraffleMainClass : KAOSToolCLI
     {
         static Dictionary<Omnigraffle.Sheet, Dictionary<string, Omnigraffle.ShapedGraphic>> mapping;
         static ExportOptions exportOptions;
@@ -34,92 +34,76 @@ namespace UCLouvain.KAOSTools.OmnigraffleExport
             options.Add ("experimental", "Export experimental diagrams", v => experimental = true);
             options.Add ("i|identifier", "Display identifier in diagrams", v => exportOptions.DisplayIdentifiers = true);
 
-            try {
-            Init (args);
-            if (model == null) 
-                return;
+            try
+			{
+				Init(args);
+				if (model == null)
+					return;
 
-            mapping = new Dictionary<Omnigraffle.Sheet, Dictionary<string, Omnigraffle.ShapedGraphic>> ();
+				Document document = ExportModel(model);
 
-            var document   = new Omnigraffle.Document ();
+				if (string.IsNullOrEmpty(filename))
+					OmniGraffleGenerator.Export(document, Console.Out);
+				else
+					OmniGraffleGenerator.Export(document, filename);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine("<html>");
+				Console.WriteLine("<body>");
 
-            var canvas = new Omnigraffle.Sheet (1, string.Format ("Model"));
-            var shapes = new Dictionary<string, IList<Graphic>> ();
+				Console.WriteLine("<h1>" + e.Message + "</h1>");
+				Console.WriteLine("<pre>" + e.StackTrace + "</pre>");
 
-                Console.WriteLine ("<ul>");
-                foreach (var t in model.LeafObstacles ()) {
-                    Console.WriteLine ("<li>" + t.FriendlyName + "</li>");
-                }
-                Console.WriteLine ("</ul>");
+				Console.WriteLine("</body>");
+				Console.WriteLine("</html>");
+			}
+		}
 
-            var u = new GoalModelGenerator (canvas, shapes);
-                u.Render (model);
-                // var u2 = new ObstacleDiagramGenerator (canvas, shapes);
-                // u2.Render (model);
+		public static Document ExportModel(KAOSModel _model)
+		{
+			mapping = new Dictionary<Omnigraffle.Sheet, Dictionary<string, Omnigraffle.ShapedGraphic>>();
 
-            document.Canvas.Add (canvas);
+			var document = new Omnigraffle.Document();
+
+			var canvas = new Omnigraffle.Sheet(1, string.Format("Model"));
+			var shapes = new Dictionary<string, IList<Graphic>>();
+
+			var u = new GoalModelGenerator(canvas, shapes);
+			u.Render(_model);
+			document.Canvas.Add(canvas);
+
+			var s2 = new Omnigraffle.Sheet(1, "Goal and Obstacle Model");
+			var u2 = new GoalAndObstacleModelGenerator(s2, new Dictionary<string, IList<Graphic>>());
+			u2.Render(_model);
+
+			document.Canvas.Add(s2);
 
 
-                var s2 = new Omnigraffle.Sheet (1, "Goal and Obstacle Model");
-                var u2 = new GoalAndObstacleModelGenerator (s2, new Dictionary<string, IList<Graphic>> ());
-                u2.Render (model);
+			int i = 0;
+			foreach (var o in _model.Obstructions().Select(x => x.Obstacle()))
+			{
+				i++;
+				var s = new Omnigraffle.Sheet(1, string.Format($"Obstacle diagram for '{o.FriendlyName}'"));
+				var u3 = new ObstacleDiagramGenerator(s, new Dictionary<string, IList<Graphic>>());
+				u3.Render(o, _model);
+				document.Canvas.Add(s);
+			}
 
-                document.Canvas.Add (s2);
+			i = 0;
+			foreach (var goalWithException in _model.Exceptions().Select(x => x.AnchorGoal())
+				.Union(_model.Replacements().Select(x => x.ResolvingGoal()))
+				.Union(_model.ObstacleAssumptions().Select(x => x.Anchor()))
+				.Distinct())
+			{
+				i++;
+				var s = new Omnigraffle.Sheet(1, string.Format($"Exception diagram for '{goalWithException.FriendlyName}'"));
+				var u3 = new ExceptionDiagramGenerator(s, new Dictionary<string, IList<Graphic>>());
+				u3.Render(goalWithException, _model);
+				document.Canvas.Add(s);
+			}
 
-
-                int i = 0;
-                foreach (var o in model.Obstructions ().Select (x => x.Obstacle ())) {
-                    var s = new Omnigraffle.Sheet (1, string.Format ("Obstacle diagram " + (i++)));
-                    var u3 = new ObstacleDiagramGenerator (s, new Dictionary<string, IList<Graphic>> ());
-                    u3.Render (o, model);
-                    document.Canvas.Add (s);
-                }
-
-                i = 0;
-                foreach (var goalWithException in model.Exceptions ().Select (x => x.AnchorGoal ())
-                    .Union (model.Replacements ().Select (x => x.ResolvingGoal ()))
-                    .Union (model.ObstacleAssumptions ().Select (x => x.Anchor ()))
-                    .Distinct ()) {
-                    var s = new Omnigraffle.Sheet (1, string.Format ("Exception diagram " + (i++)));
-                    var u3 = new ExceptionDiagramGenerator (s, new Dictionary<string, IList<Graphic>> ());
-                    u3.Render (goalWithException, model);
-                    document.Canvas.Add (s);
-                }
-                /*
-                Console.WriteLine ("<pre>");
-
-                var lala0 = model.Obstacle (x => x.Name == "O");
-                Console.WriteLine (string.Join(";", lala0.Refinements ().SelectMany (x => x.SubObstacles()).Select (x => x.FriendlyName)));
-                Console.WriteLine (string.Join(";", lala0.Resolutions().Select (x => x.ResolvingGoal()).Select (x => x.FriendlyName)));
-                Console.WriteLine (string.Join(",", lala0.Obstacles ().Select (x => x.FriendlyName)));
-
-                Console.WriteLine ("</pre>");
-
-                Console.WriteLine ("<pre>");
-                foreach (var g in model.Goals().Where (x => x.Exceptions ().Count () > 0).OrderByDescending (x => x.Exceptions ().Count ()).ToArray()) {
-                    Console.WriteLine (g.FriendlyName + " : Exceptions = " + g.Exceptions().Count () );
-                }
-                Console.WriteLine ("----");
-
-                foreach (var g in model.Goals().Where (x => x.Provided ().Count () > 0).OrderByDescending (x => x.Provided ().Count ()).ToArray()) {
-                    Console.WriteLine (g.FriendlyName + " : Provided = " + g.Provided().Count () );
-                }
-                Console.WriteLine ("</pre>");
-*/
-            if (string.IsNullOrEmpty (filename)) 
-                OmniGraffleGenerator.Export (document, Console.Out);
-            else 
-                OmniGraffleGenerator.Export (document, filename);
-            } catch (Exception e) {
-                Console.WriteLine ("<html>");
-                Console.WriteLine ("<body>");
-
-                Console.WriteLine ("<h1>" + e.Message + "</h1>");
-                Console.WriteLine ("<pre>" + e.StackTrace + "</pre>");
-
-                Console.WriteLine ("</body>");
-                Console.WriteLine ("</html>");
-            }
-        }
-    }
+			return document;
+		}
+	}
 }

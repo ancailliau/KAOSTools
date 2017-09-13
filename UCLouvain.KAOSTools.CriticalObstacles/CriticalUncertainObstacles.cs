@@ -46,13 +46,13 @@ namespace UCLouvain.KAOSTools.CriticalObstacles
 			rsr = root.RDS;
 		}
 
-		public Dictionary<HashSet<Obstacle>, UncertaintyCriticalScore> GetObstacleScores ()
+		public Dictionary<HashSet<Obstacle>, UncertaintyCriticalScore> GetObstacleScores (int size)
 		{
 			var dict = new Dictionary<HashSet<Obstacle>, UncertaintyCriticalScore>();
 
 			var obstacles = _model.LeafObstacles().ToList();
 
-			foreach (var combination in GetAllCombinations(obstacles, 2)) {
+			foreach (var combination in GetAllCombinations(obstacles, size)) {
 				var d = (SimulatedSatisfactionRate)_propagator.GetESR(_root, combination);
 				var key = combination.ToHashSet();
 				var val = new UncertaintyCriticalScore (d.UncertaintySpread(rsr), d.ViolationUncertainty(rsr));

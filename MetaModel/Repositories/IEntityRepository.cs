@@ -14,7 +14,7 @@ namespace UCLouvain.KAOSTools.Core.Repositories
 		void Add(Link goal);
 		void Add(Relation goal);
 
-		bool EntityAttributeExists(string identifier);
+		bool EntityAttributeExists(string entity_indentier, string identifier);
 		bool EntityExists(string identifier);
 		bool GivenTypeExists(string identifier);
 		bool LinkExists(string identifier);

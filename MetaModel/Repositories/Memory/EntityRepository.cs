@@ -69,12 +69,12 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 				throw new ArgumentException(string.Format("Entity attribute identifier already exist: {0}", link.Identifier));
 			}
 
-			EntityAttributes.Add(link.Identifier, link);
+			EntityAttributes.Add(link.EntityIdentifier + "." + link.Identifier, link);
         }
 
-        public bool EntityAttributeExists(string identifier)
+        public bool EntityAttributeExists(string entity_identifier, string identifier)
         {
-            return EntityAttributes.ContainsKey(identifier);
+            return EntityAttributes.ContainsKey(entity_identifier + "." + identifier);
         }
 
         public bool EntityExists(string identifier)

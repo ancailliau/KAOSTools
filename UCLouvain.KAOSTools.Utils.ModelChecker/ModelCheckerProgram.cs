@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using UCLouvain.KAOSTools.Core;
+using UCLouvain.KAOSTools.Integrators;
 
 namespace UCLouvain.KAOSTools.Utils.ModelChecker
 {
@@ -28,6 +29,18 @@ namespace UCLouvain.KAOSTools.Utils.ModelChecker
             Console.WriteLine("Obstacle refinements: " + model.ObstacleRefinements().Count());
             Console.WriteLine();
 			Console.WriteLine("Resolutions: " + model.Resolutions().Count());
+			
+			var integrator = new SoftResolutionIntegrator (model);
+			foreach (var resolution in model.Resolutions())
+			{
+				integrator.Integrate(resolution);
+			}
+			
+            Console.WriteLine();
+			Console.WriteLine("Generated goal exceptions: " + model.Exceptions().Count());
+			Console.WriteLine(" (distributed over " + model.Exceptions().Select(x => x.AnchorGoalIdentifier).Distinct().Count() + " goals)");
+			Console.WriteLine("Generated provided assumption: " + model.ObstacleAssumptions().Count());
+			Console.WriteLine(" (distributed over " + model.ObstacleAssumptions().Select(x => x.AnchorGoalIdentifier).Distinct().Count() + " goals)");
 		}
 	}
 }

@@ -6,6 +6,7 @@ using System.IO;
 using UCLouvain.KAOSTools.Parsing.Parsers.Declarations;
 using System.Text.RegularExpressions;
 using UCLouvain.KAOSTools.Parsing.Parsers;
+using System.Globalization;
 
 namespace UCLouvain.KAOSTools.Parsing.Parsers {
     sealed partial class GoalModelParser
@@ -255,6 +256,17 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers {
             };
 		}
 
+		ParsedElement BuildSciNumber(List<Result> results)
+		{
+            return new ParsedDecimal
+			{
+				Value = decimal.Parse(string.Join("", results.Select(x => x.Text)), NumberStyles.Float),
+				Line = results[0].Line,
+				Col = results[0].Col,
+				Filename = m_file
+			};
+		}
+		
 		ParsedElement BuildInteger(List<Result> results)
 		{
             return new ParsedInteger

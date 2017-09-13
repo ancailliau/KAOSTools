@@ -75,11 +75,51 @@ namespace UCLouvain.KAOSTools.Integrators
             
             _model.Add (exception);
 
+			var anchor = _model.Goal(resolution.AnchorIdentifier);
+			Propagate (anchor, resolution.Obstacle());
+
             Obstacle obstacle = resolution.Obstacle ();
             obstacle.Resolved = true;
         }
+        
+        IEnumerable<Goal> GetAncestors (Goal g)
+        {
+			return g.ParentRefinements().SelectMany(x => GetAncestors (x.ParentGoal())).Union(new[] { g });
+        }
+        
+        IEnumerable<Goal> GetDescendants (Goal g)
+        {
+			return g.Refinements().SelectMany(x => x.SubGoals().SelectMany(y => GetDescendants(y))).Union(new[] { g });
+        }
+        
+        IEnumerable<Goal> GetObstructedGoals (Obstacle o)
+        {
+			return o.ParentRefinements().SelectMany(x => GetObstructedGoals (x.ParentObstacle()))
+				   .Union(o.model.Obstructions(x => x.ObstacleIdentifier == o.Identifier).Select(x => x.ObstructedGoal()));
+        }
 
-        void RemoveException (Resolution resolution)
+		IEnumerable<Goal> GetGoalsToPropagate(Goal anchor_goal, Obstacle obstacle)
+		{
+			var obstructed_goals = GetObstructedGoals(obstacle);
+			var ancestors = obstructed_goals.SelectMany(GetAncestors).Distinct();
+			var descendants = GetDescendants(anchor_goal);
+			var goals = ancestors.Intersect(descendants);
+			return goals;
+		}
+        
+        void Propagate (Goal anchor_goal, Obstacle obstacle)
+		{
+			IEnumerable<Goal> goals = GetGoalsToPropagate(anchor_goal, obstacle);
+			foreach (var goal in goals)
+			{
+				var assumption = new ObstacleAssumption(_model);
+				assumption.AnchorGoalIdentifier = goal.Identifier;
+				assumption.SetObstacle(obstacle);
+				_model.Add(assumption);
+			}
+		}
+
+		void RemoveException (Resolution resolution)
         {
             var e = _model.Exceptions ().Where (x => x.AnchorGoalIdentifier == resolution.AnchorIdentifier
             & x.ResolvedObstacleIdentifier == resolution.ObstacleIdentifier
@@ -87,8 +127,23 @@ namespace UCLouvain.KAOSTools.Integrators
 
             _model.goalRepository.Remove (e);
 
+			var anchor = _model.Goal(resolution.AnchorIdentifier);
+			PropagateRemove(anchor, resolution.Obstacle());
+
             Obstacle obstacle = resolution.Obstacle ();
             obstacle.Resolved = false;
+        }
+        
+        void PropagateRemove (Goal anchor_goal, Obstacle obstacle)
+        {
+			IEnumerable<Goal> goals = GetGoalsToPropagate(anchor_goal, obstacle);
+			foreach (var goal in goals)
+			{
+				var assumptions = _model.ObstacleAssumptions().Where(x => x.AnchorGoalIdentifier == goal.Identifier
+														& x.ResolvedObstacleIdentifier == obstacle.Identifier).ToArray();
+				foreach (var a in assumptions)
+					_model.obstacleRepository.Remove(a);
+			}
         }
 
         void RemoveObstructedGoal (Resolution resolution)

@@ -43,7 +43,10 @@ namespace UCLouvain.KAOSTools.Utils.ViolationDiagram
 					Environment.Exit(1);
 				}
 			});
-			
+
+			int size = 1;
+			options.Add("size=", "Specify the size of the combinations", v => size = int.Parse(v));
+
 			Init(args);
 			
 			try {
@@ -59,7 +62,7 @@ namespace UCLouvain.KAOSTools.Utils.ViolationDiagram
 				}
 
 				var criticalobstacle = new CriticalUncertainObstacles(model, root);
-				var scores = criticalobstacle.GetObstacleScores();
+				var scores = criticalobstacle.GetObstacleScores(size);
 
 				foreach (var item in scores) {
 					Console.WriteLine("{0}: us = {1}, vu = {2}",
