@@ -77,7 +77,7 @@ namespace UCLouvain.KAOSTools.Utils.Monitor
 	            };
 	            
 				channel.BasicConsume(queue: monitored_state_queue_name,
-	                                 noAck: true,
+	                                 autoAck: true,
 	                                 consumer: consumer);
 	                                 
 	            while(!stop) { Thread.Sleep(10); }

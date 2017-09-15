@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>UCLouvain.KAOSTools.Optimizer.Tests</RootNamespace>
     <AssemblyName>UCLouvain.KAOSTools.Optimizer.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,14 +29,11 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="nunit.framework">
-      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+      <HintPath>..\packages\NUnit.3.8.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TestCMSelection.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MetaModel\UCLouvain.KAOSTools.Core.csproj">
@@ -55,6 +52,9 @@
       <Project>{A8252078-D017-4CB4-92DE-3212F7C1FE77}</Project>
       <Name>UCLouvain.KAOSTools.Propagators</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
