@@ -48,6 +48,7 @@
     <Compile Include="TestBDDBasedPropagator.cs" />
     <Compile Include="TestPropagatorRandomModels.cs" />
     <Compile Include="RandomModelGenerator.cs" />
+    <Compile Include="TestBDDBasedWithResolutions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UCLouvain.KAOSTools.Propagators\UCLouvain.KAOSTools.Propagators.csproj">

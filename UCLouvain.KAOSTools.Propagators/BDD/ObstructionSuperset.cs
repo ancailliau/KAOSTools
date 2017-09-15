@@ -99,8 +99,8 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
 
 		#region GetObstructionSet
 
-		Dictionary<Goal, BDDNode> goalCache = new Dictionary<Goal, BDDNode>();
-		Dictionary<Obstacle, BDDNode> obstacleCache = new Dictionary<Obstacle, BDDNode>();
+		protected Dictionary<Goal, BDDNode> goalCache = new Dictionary<Goal, BDDNode>();
+		protected Dictionary<Obstacle, BDDNode> obstacleCache = new Dictionary<Obstacle, BDDNode>();
 		
 		public virtual void ResetCache ()
 		{

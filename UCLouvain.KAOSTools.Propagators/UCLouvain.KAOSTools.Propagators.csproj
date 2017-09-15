@@ -51,11 +51,11 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xml" />
-    <Reference Include="UCLouvain.BDDSharp">
-      <HintPath>..\packages\UCLouvain.BDDSharp.0.1.4\lib\net45\UCLouvain.BDDSharp.dll</HintPath>
-    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <Reference Include="UCLouvain.BDDSharp">
+      <HintPath>..\packages\UCLouvain.BDDSharp.0.1.5\lib\net45\UCLouvain.BDDSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
