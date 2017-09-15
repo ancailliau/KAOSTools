@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UCLouvain.KAOSTools.Core.Agents;
 using UCLouvain.KAOSTools.Core.SatisfactionRates;
+using UCLouvain.KAOSTools.Core.Goals;
 
 namespace UCLouvain.KAOSTools.Core
 {
@@ -57,6 +58,10 @@ namespace UCLouvain.KAOSTools.Core
             return from e in goal.model.ObstacleAssumptions ()
                     where e.AnchorGoalIdentifier == goal.Identifier
                 select e;
+        }
+
+        public static IEnumerable<GoalProvidedNot> ProvidedNotAnnotations (this Goal goal) {
+			return goal.model.goalRepository.GetGoalProvidedNotAnnotations(x => x.GoalIdentifier == goal.Identifier);
         }
 
         #endregion

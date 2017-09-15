@@ -129,6 +129,10 @@
     <Compile Include="GoalModelExport.cs" />
     <Compile Include="Parsers\Attributes\ExceptAttributeParser.cs" />
     <Compile Include="Builders\Attributes\ExceptAttributeBuilder.cs" />
+    <Compile Include="Builders\Attributes\ReplacesAttributeBuilder.cs" />
+    <Compile Include="Parsers\Attributes\ReplacesAttributeParser.cs" />
+    <Compile Include="Parsers\Attributes\ProvidedNotAttributeParser.cs" />
+    <Compile Include="Builders\Attributes\ProvidedNotAttributeBuilder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

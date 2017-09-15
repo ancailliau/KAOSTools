@@ -346,26 +346,26 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
         }
 
         [TestCase(@"declare goal [ test ]
-                        providednot obstacle
+                        providednot [obstacle] mycondition() and otherCondition()
                     end", "obstacle")]
         public void TestProvidedNotAttribute (string input, string expectedObstacle)
         {
             var model = parser.Parse (input);
             var g = model.Goals(x => x.Identifier == "test").ShallBeSingle ();
-            g.Exceptions().Count().ShallEqual(1);
+            g.ProvidedNotAnnotations().Count().ShallEqual(1);
 
-			var e = g.Provided().SingleOrDefault();
-			e.ResolvedObstacleIdentifier.ShallEqual(expectedObstacle);
-        }
+			var e = g.ProvidedNotAnnotations().SingleOrDefault();
+			e.ObstacleIdentifier.ShallEqual(expectedObstacle);
+		}
 
         [TestCase(@"declare goal [ test ]
-                        replaces test2
+                        replaces [ obstacle ] test2
                     end", "test2")]
         public void TestReplacesAttribute (string input, string expectedGoal)
         {
             var model = parser.Parse (input);
             var g = model.Goals(x => x.Identifier == "test").ShallBeSingle ();
-            g.Exceptions().Count().ShallEqual(1);
+            g.Replacements().Count().ShallEqual(1);
 
 			var e = g.Replacements().SingleOrDefault();
 			e.ResolvingGoalIdentifier.ShallEqual(expectedGoal);

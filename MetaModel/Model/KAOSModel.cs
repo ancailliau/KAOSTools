@@ -4,6 +4,7 @@ using System.Linq;
 using UCLouvain.KAOSTools.Core.Agents;
 using UCLouvain.KAOSTools.Core.Repositories;
 using UCLouvain.KAOSTools.Core.Repositories.Memory;
+using UCLouvain.KAOSTools.Core.Goals;
 
 namespace UCLouvain.KAOSTools.Core
 {
@@ -59,6 +60,11 @@ namespace UCLouvain.KAOSTools.Core
 
             Parameters = new Dictionary<string, string> ();
         }
+
+        public void Add(GoalProvidedNot providedNotAnnotation)
+        {
+			this.goalRepository.Add(providedNotAnnotation);
+		}
 
         public void Add(Agent agent)
         {

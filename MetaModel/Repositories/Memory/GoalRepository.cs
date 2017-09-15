@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UCLouvain.KAOSTools.Core;
+using UCLouvain.KAOSTools.Core.Goals;
 
 namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 {
@@ -12,6 +13,8 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 		IDictionary<string, SoftGoal> SoftGoals;
 		IDictionary<string, GoalException> GoalExceptions;
 		IDictionary<string, GoalReplacement> GoalReplacements;
+		
+		IDictionary<string, GoalProvidedNot> GoalProvidedNotAnnotations;
 
         public GoalRepository()
         {
@@ -20,6 +23,7 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
             SoftGoals = new Dictionary<string, SoftGoal>();
             GoalExceptions = new Dictionary<string, GoalException>();
             GoalReplacements = new Dictionary<string, GoalReplacement>();
+			GoalProvidedNotAnnotations = new Dictionary<string, GoalProvidedNot>();
         }
 
         public void Add(GoalReplacement replacement)
@@ -72,6 +76,16 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 			Goals.Add(goal.Identifier, goal);
         }
 
+        public void Add(GoalProvidedNot annotation)
+		{
+			if (GoalProvidedNotAnnotations.ContainsKey(annotation.Identifier))
+			{
+				throw new ArgumentException(string.Format("Goal ProvidedNot annotation identifier already exist: {0}", annotation.Identifier));
+			}
+
+			GoalProvidedNotAnnotations.Add(annotation.Identifier, annotation);
+        }
+
         public bool GoalExceptionExists(string identifier)
         {
             return GoalExceptions.ContainsKey(identifier);
@@ -95,6 +109,11 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
         public bool SoftGoalExists(string identifier)
 		{
 			return SoftGoals.ContainsKey(identifier);
+        }
+
+        public bool GoalProvidedNotAnnotationExists(string identifier)
+		{
+			return GoalProvidedNotAnnotations.ContainsKey(identifier);
         }
 
         public Goal GetGoal(string identifier)
@@ -122,6 +141,11 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 			return GoalReplacements.ContainsKey(identifier) ? GoalReplacements[identifier] : null;
         }
 
+        public GoalProvidedNot GetGoalProvidedNotAnnotation(string identifier)
+		{
+			return GoalProvidedNotAnnotations.ContainsKey(identifier) ? GoalProvidedNotAnnotations[identifier] : null;
+        }
+
         public IEnumerable<Goal> GetGoals()
         {
             return Goals.Values;
@@ -145,6 +169,11 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
         public IEnumerable<SoftGoal> GetSoftGoals()
         {
             return SoftGoals.Values;
+        }
+
+        public IEnumerable<GoalProvidedNot> GetGoalProvidedNotAnnotations()
+        {
+            return GoalProvidedNotAnnotations.Values;
         }
 
         public IEnumerable<Goal> GetGoals(Predicate<Goal> predicate)
@@ -172,6 +201,11 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
             return SoftGoals.Values.Where(x => predicate(x));
         }
 
+        public IEnumerable<GoalProvidedNot> GetGoalProvidedNotAnnotations(Predicate<GoalProvidedNot> predicate)
+		{
+            return GoalProvidedNotAnnotations.Values.Where(x => predicate(x));
+        }
+
         public Goal GetGoal(Predicate<Goal> predicate)
         {
             return Goals.Values.SingleOrDefault(x => predicate(x));
@@ -197,6 +231,11 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
             return GoalReplacements.Values.SingleOrDefault(x => predicate(x));
         }
 
+        public GoalProvidedNot GetGoalProvidedNotAnnotation(Predicate<GoalProvidedNot> predicate)
+		{
+            return GoalProvidedNotAnnotations.Values.SingleOrDefault(x => predicate(x));
+        }
+
         public void Remove (IEnumerable<GoalException> exceptions)
         {
             foreach (var e in exceptions.ToArray ())
@@ -207,6 +246,12 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
         {
             foreach (var e in replacement.ToArray ())
                 GoalExceptions.Remove (e.Identifier);
+        }
+
+        public void Remove (IEnumerable<GoalProvidedNot> annotation)
+        {
+            foreach (var e in annotation.ToArray ())
+                GoalProvidedNotAnnotations.Remove (e.Identifier);
         }
     }
 }

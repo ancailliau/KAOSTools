@@ -19,6 +19,8 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers.Declarations
 			Add(new AssignedToAttributeParser());
             Add(new FormalSpecAttributeParser());
 			Add(new ExceptAttributeParser());
+			Add(new ReplacesAttributeParser());
+			Add(new ProvidedNotAttributeParser());
             Add(new CustomAttributeParser());
         }
 

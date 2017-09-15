@@ -47,6 +47,7 @@ namespace UCLouvain.KAOSTools.Parsing
             attributeBuilders.Add(new ESRUncertainAttributeBuilder());
             
 			attributeBuilders.Add(new ExceptAttributeBuilder());
+			attributeBuilders.Add(new ReplacesAttributeBuilder());
         }
     }
 }
