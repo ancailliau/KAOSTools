@@ -105,7 +105,7 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers.Attributes
 
             default:
                 throw new InvalidAttributeValueException (identifier,
-                                                          InvalidAttributeValueException.INVALID_VALUE + " Received: " + distribution_name+" as a distribution name.");
+                                                          InvalidAttributeValueException.INVALID_VALUE);
             }
         }
 
