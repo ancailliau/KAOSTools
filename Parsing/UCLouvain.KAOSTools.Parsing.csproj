@@ -127,6 +127,8 @@
     <Compile Include="Exceptions\InvalidAttributeValueException.cs" />
     <Compile Include="Exceptions\InvalidParameterAttributeException.cs" />
     <Compile Include="GoalModelExport.cs" />
+    <Compile Include="Parsers\Attributes\ExceptAttributeParser.cs" />
+    <Compile Include="Builders\Attributes\ExceptAttributeBuilder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

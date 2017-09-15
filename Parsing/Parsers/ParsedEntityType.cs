@@ -266,8 +266,20 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers
         public string Key { get; set; }
     }
 
+    public class ParsedExceptAttribute          : ParsedAttribute {
+    	public string ObstacleIdentifier
+		{
+			get;
+			set;
+		}
+		public string CountermeasureIdentifier
+		{
+			get;
+			set;
+		}
+	}
 
-    public class ParsedRDSAttribute          : ParsedAttributeWithValue<double> {}
+	public class ParsedRDSAttribute          : ParsedAttributeWithValue<double> {}
 
     public class ParsedFormalSpecAttribute   : ParsedAttributeWithValue<ParsedElement> {}
 

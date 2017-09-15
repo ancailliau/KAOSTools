@@ -330,6 +330,64 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
             g.CustomData.Count.ShallEqual (1);
             g.CustomData["custom"].ShallEqual("My string");
         }
+
+        [TestCase(@"declare goal [ test ]
+                        except [obst] goal2
+                    end", "obst", "goal2")]
+        public void TestExceptAttribute (string input, string expectedObstacle, string expectedCM)
+        {
+            var model = parser.Parse (input);
+            var g = model.Goals(x => x.Identifier == "test").ShallBeSingle ();
+            g.Exceptions().Count().ShallEqual(1);
+
+			var e = g.Exceptions().SingleOrDefault();
+			e.ResolvingGoalIdentifier.ShallEqual(expectedCM);
+			e.ResolvedObstacleIdentifier.ShallEqual(expectedObstacle);
+        }
+
+        [TestCase(@"declare goal [ test ]
+                        providednot obstacle
+                    end", "obstacle")]
+        public void TestProvidedNotAttribute (string input, string expectedObstacle)
+        {
+            var model = parser.Parse (input);
+            var g = model.Goals(x => x.Identifier == "test").ShallBeSingle ();
+            g.Exceptions().Count().ShallEqual(1);
+
+			var e = g.Provided().SingleOrDefault();
+			e.ResolvedObstacleIdentifier.ShallEqual(expectedObstacle);
+        }
+
+        [TestCase(@"declare goal [ test ]
+                        replaces test2
+                    end", "test2")]
+        public void TestReplacesAttribute (string input, string expectedGoal)
+        {
+            var model = parser.Parse (input);
+            var g = model.Goals(x => x.Identifier == "test").ShallBeSingle ();
+            g.Exceptions().Count().ShallEqual(1);
+
+			var e = g.Replacements().SingleOrDefault();
+			e.ResolvingGoalIdentifier.ShallEqual(expectedGoal);
+        }
+
+        //[TestCase(@"declare goal [ test ]
+        //                provided formula
+        //            end")]
+        //public void TestProvidedAttribute (string input, string expectedObstacle)
+        //{
+        //    var model = parser.Parse (input);
+        //    var g = model.Goals(x => x.Identifier == "test").ShallBeSingle ();
+        //}
+
+        //[TestCase(@"declare goal [ test ]
+        //                relaxedTo formula
+        //            end")]
+        //public void TestRelaxedToAttribute (string input, string expectedObstacle)
+        //{
+        //    var model = parser.Parse (input);
+        //    var g = model.Goals(x => x.Identifier == "test").ShallBeSingle ();
+        //}
     }
 
 }
