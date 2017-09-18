@@ -305,6 +305,32 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers
 		}
 	}
 
+    public class ParsedProvidedAttribute          : ParsedAttribute {
+    	public string ObstacleIdentifier
+		{
+			get;
+			set;
+		}
+		public ParsedElement Formula
+		{
+			get;
+			set;
+		}
+	}
+
+    public class ParsedRelaxedToAttribute          : ParsedAttribute {
+    	public string ObstacleIdentifier
+		{
+			get;
+			set;
+		}
+		public ParsedElement Formula
+		{
+			get;
+			set;
+		}
+	}
+
 	public class ParsedRDSAttribute          : ParsedAttributeWithValue<double> {}
 
     public class ParsedFormalSpecAttribute   : ParsedAttributeWithValue<ParsedElement> {}

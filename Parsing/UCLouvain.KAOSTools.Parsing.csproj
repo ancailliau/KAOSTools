@@ -133,6 +133,10 @@
     <Compile Include="Parsers\Attributes\ReplacesAttributeParser.cs" />
     <Compile Include="Parsers\Attributes\ProvidedNotAttributeParser.cs" />
     <Compile Include="Builders\Attributes\ProvidedNotAttributeBuilder.cs" />
+    <Compile Include="Parsers\Attributes\ProvidedAttributeParser.cs" />
+    <Compile Include="Parsers\Attributes\RelaxedToAttributeParser.cs" />
+    <Compile Include="Builders\Attributes\ProvidedAttributeBuilder.cs" />
+    <Compile Include="Builders\Attributes\RelaxedToAttributeBuilder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

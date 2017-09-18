@@ -356,6 +356,7 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
 
 			var e = g.ProvidedNotAnnotations().SingleOrDefault();
 			e.ObstacleIdentifier.ShallEqual(expectedObstacle);
+			Assert.IsInstanceOf(typeof(And), e.Formula);
 		}
 
         [TestCase(@"declare goal [ test ]
@@ -371,23 +372,33 @@ namespace UCLouvain.KAOSTools.Parsing.Tests
 			e.ResolvingGoalIdentifier.ShallEqual(expectedGoal);
         }
 
-        //[TestCase(@"declare goal [ test ]
-        //                provided formula
-        //            end")]
-        //public void TestProvidedAttribute (string input, string expectedObstacle)
-        //{
-        //    var model = parser.Parse (input);
-        //    var g = model.Goals(x => x.Identifier == "test").ShallBeSingle ();
-        //}
+        [TestCase(@"declare goal [ test ]
+                        provided [obstacle] mycondition() and otherCondition()
+                    end", "obstacle")]
+        public void TestProvidedAttribute (string input, string expectedObstacle)
+        {
+            var model = parser.Parse (input);
+            var g = model.Goals(x => x.Identifier == "test").ShallBeSingle ();
+            g.ProvidedAnnotations().Count().ShallEqual(1);
 
-        //[TestCase(@"declare goal [ test ]
-        //                relaxedTo formula
-        //            end")]
-        //public void TestRelaxedToAttribute (string input, string expectedObstacle)
-        //{
-        //    var model = parser.Parse (input);
-        //    var g = model.Goals(x => x.Identifier == "test").ShallBeSingle ();
-        //}
+			var e = g.ProvidedAnnotations().SingleOrDefault();
+			e.ObstacleIdentifier.ShallEqual(expectedObstacle);
+			Assert.IsInstanceOf(typeof(And), e.Formula);
+        }
+
+        [TestCase(@"declare goal [ test ]
+                        relaxedTo [obstacle] mycondition() and otherCondition()
+                    end", "obstacle")]
+        public void TestRelaxedToAttribute (string input, string expectedObstacle)
+        {
+            var model = parser.Parse (input);
+            var g = model.Goals(x => x.Identifier == "test").ShallBeSingle ();
+            g.RelaxedToAnnotations().Count().ShallEqual(1);
+
+			var e = g.RelaxedToAnnotations().SingleOrDefault();
+			e.ObstacleIdentifier.ShallEqual(expectedObstacle);
+			Assert.IsInstanceOf(typeof(And), e.Formula);
+        }
     }
 
 }

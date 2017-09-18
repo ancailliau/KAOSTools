@@ -64,6 +64,14 @@ namespace UCLouvain.KAOSTools.Core
 			return goal.model.goalRepository.GetGoalProvidedNotAnnotations(x => x.GoalIdentifier == goal.Identifier);
         }
 
+        public static IEnumerable<GoalProvided> ProvidedAnnotations (this Goal goal) {
+			return goal.model.goalRepository.GetGoalProvidedAnnotations(x => x.GoalIdentifier == goal.Identifier);
+        }
+
+        public static IEnumerable<GoalRelaxedTo> RelaxedToAnnotations (this Goal goal) {
+			return goal.model.goalRepository.GetGoalRelaxedToAnnotations(x => x.GoalIdentifier == goal.Identifier);
+        }
+
         #endregion
 
         #region Obstacles

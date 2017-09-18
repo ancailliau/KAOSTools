@@ -32,6 +32,8 @@ namespace UCLouvain.KAOSTools.Parsing
             attributeBuilders.Add(new FormalSpecAttributeBuilder(fb));
             
             attributeBuilders.Add(new ProvidedNotAttributeBuilder(fb));
+            attributeBuilders.Add(new ProvidedAttributeBuilder(fb));
+            attributeBuilders.Add(new RelaxedToAttributeBuilder(fb));
 		}
     }
 }

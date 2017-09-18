@@ -66,6 +66,16 @@ namespace UCLouvain.KAOSTools.Core
 			this.goalRepository.Add(providedNotAnnotation);
 		}
 
+        public void Add(GoalProvided providedNotAnnotation)
+        {
+			this.goalRepository.Add(providedNotAnnotation);
+		}
+
+        public void Add(GoalRelaxedTo providedNotAnnotation)
+        {
+			this.goalRepository.Add(providedNotAnnotation);
+		}
+
         public void Add(Agent agent)
         {
 			this.agentRepository.Add(agent);
