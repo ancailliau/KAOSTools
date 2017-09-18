@@ -17,6 +17,21 @@ namespace UCLouvain.KAOSTools.Parsing.Builders.Attributes
 			exception.AnchorGoalIdentifier = element.Identifier;
 			exception.ResolvingGoalIdentifier = attribute.CountermeasureIdentifier;
 			exception.ResolvedObstacleIdentifier = attribute.ObstacleIdentifier;
+
+			if (!model.goalRepository.GoalExists(attribute.CountermeasureIdentifier)) {
+				model.Add(new Goal(model) {
+					Identifier = attribute.CountermeasureIdentifier,
+					Implicit = true
+				});
+			}
+			
+			if (!model.obstacleRepository.ObstacleExists(attribute.ObstacleIdentifier)) {
+				model.Add(new Obstacle(model) {
+					Identifier = attribute.ObstacleIdentifier,
+					Implicit = true
+				});
+			}
+			
 			model.Add(exception);
         }
     }

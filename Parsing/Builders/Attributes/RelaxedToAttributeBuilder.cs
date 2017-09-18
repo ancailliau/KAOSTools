@@ -22,6 +22,13 @@ namespace UCLouvain.KAOSTools.Parsing.Builders.Attributes
         										   element.Identifier, 
         										   attribute.ObstacleIdentifier, 
         										   fb.BuildFormula(attribute.Formula));
+			
+			if (!model.obstacleRepository.ObstacleExists(attribute.ObstacleIdentifier)) {
+				model.Add(new Obstacle(model) {
+					Identifier = attribute.ObstacleIdentifier,
+					Implicit = true
+				});
+			}
 			model.Add(relaxedTo);
         }
     }
