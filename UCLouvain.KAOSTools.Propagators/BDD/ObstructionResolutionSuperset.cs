@@ -17,10 +17,12 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
 
         public ObstructionResolutionSuperset (Goal goal) : base (goal)
         {
+        	this.ResetCache();
         }
 
         public ObstructionResolutionSuperset (Obstacle obstacle) : base (obstacle)
         {
+        	this.ResetCache();
         }
 
         #endregion
@@ -38,40 +40,21 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
 
             var r = refinements.SingleOrDefault ();
             
-            if (r != null) {
-                var bddForRefinement = GetObstructionSet(r);
+            if (r != null)
+			{
+				var bddForRefinement = GetObstructionSet(r);
+				bddForRefinement = AddExceptions(goal, bddForRefinement);
 
-				//if (goal.Exceptions().Count() > 0) {
-				//// Get the exception
-				//var singleException = goal.Exceptions().Single();
-				foreach (var singleException in goal.Exceptions()) {
-					// Get the BDD for the countermeasure goal
-					var bddForCountermeasure = GetObstructionSet(singleException.ResolvingGoal());
+				goalCache.Add(goal, bddForRefinement);
+				return bddForRefinement;
+			}
 
-					// Get the BDD for the sibling goal (i.e. remove the resolved obstacle)
-					Obstacle obstacle = singleException.Obstacle();
-					var obstacleVariableId = _mapping[obstacle];
-					var bddForPGprime = _manager.Restrict(bddForRefinement, -1, obstacleVariableId);					
-					
-					// Create a variable for the resolution
-					var idx = _manager.CreateVariable ();
-					_mapping.Add (singleException, idx);
-					_rmapping.Add (idx, singleException);
-
-					var bddWhenIntegrated = _manager.Or(bddForPGprime, bddForCountermeasure);
-
-					bddForRefinement = _manager.Create(idx, bddWhenIntegrated, bddForRefinement);
-				}
-                
-                goalCache.Add(goal, bddForRefinement);
-                return bddForRefinement;
-            }
-            
-            var o = obstructions.SingleOrDefault ();
+			var o = obstructions.SingleOrDefault ();
 
 			if (o != null)
 			{
 				BDDNode bn = GetObstructionSet(o);
+				bn = AddExceptions(goal, bn);
                 goalCache.Add(goal, bn);
 				return bn;
 			}
@@ -79,5 +62,33 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
 			goalCache.Add(goal, _manager.Zero);
             return _manager.Zero;
         }
-    }
+
+		private BDDNode AddExceptions(Goal goal, BDDNode bddForRefinement)
+		{
+			foreach (var singleException in goal.Exceptions())
+			{
+				// Get the BDD for the countermeasure goal
+				Goal cmGoal = singleException.ResolvingGoal();
+				if (cmGoal == null)
+					throw new ArgumentNullException($"Goal '{singleException.ResolvingGoalIdentifier}' not found.");
+				var bddForCountermeasure = GetObstructionSet(cmGoal);
+
+				// Get the BDD for the sibling goal (i.e. remove the resolved obstacle)
+				Obstacle obstacle = singleException.Obstacle();
+				var obstacleVariableId = _mapping[obstacle];
+				var bddForPGprime = _manager.Restrict(bddForRefinement, -1, obstacleVariableId);
+
+				// Create a variable for the resolution
+				var idx = _manager.CreateVariable();
+				_mapping.Add(singleException, idx);
+				_rmapping.Add(idx, singleException);
+
+				var bddWhenIntegrated = _manager.Or(bddForPGprime, bddForCountermeasure);
+
+				bddForRefinement = _manager.Create(idx, bddWhenIntegrated, bddForRefinement);
+			}
+
+			return bddForRefinement;
+		}
+	}
 }
