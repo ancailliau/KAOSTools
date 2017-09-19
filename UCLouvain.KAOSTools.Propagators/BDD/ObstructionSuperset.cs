@@ -15,7 +15,7 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
         protected readonly Dictionary<KAOSCoreElement, int> _mapping;
         protected readonly Dictionary<int, KAOSCoreElement> _rmapping;
         
-        BDDNode _root;
+        protected BDDNode _root;
 
         public int NodesNumber { get {
                 return _manager.nextId;
@@ -272,12 +272,14 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
 
         #endregion
         
-        public string ToDot (BDDNode node)
+        public virtual string ToDot (BDDNode node)
         {
-            return _manager.ToDot (node, (x) => _rmapping [x.Index].FriendlyName, false);
+            return _manager.ToDot (node, (arg) => {
+				return _rmapping[arg.Index].FriendlyName;
+            }, false);
         }
         
-        public string ToDot ()
+        public virtual string ToDot ()
         {
             return ToDot (_root);
         }

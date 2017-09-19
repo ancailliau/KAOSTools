@@ -67,6 +67,7 @@
     <Compile Include="BDD\BDDBasedPropagator.cs" />
     <Compile Include="BDD\ObstructionResolutionSuperset.cs" />
     <Compile Include="BDD\BDDBasedUncertaintyPropagator.cs" />
+    <Compile Include="BDD\BDDBasedResolutionPropagator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MetaModel\UCLouvain.KAOSTools.Core.csproj">
