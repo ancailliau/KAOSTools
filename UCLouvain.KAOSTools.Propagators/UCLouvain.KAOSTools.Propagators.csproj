@@ -54,7 +54,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
     <Reference Include="UCLouvain.BDDSharp">
-      <HintPath>..\packages\UCLouvain.BDDSharp.0.1.5\lib\net45\UCLouvain.BDDSharp.dll</HintPath>
+      <HintPath>..\packages\UCLouvain.BDDSharp.0.1.6\lib\net45\UCLouvain.BDDSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +68,8 @@
     <Compile Include="BDD\ObstructionResolutionSuperset.cs" />
     <Compile Include="BDD\BDDBasedUncertaintyPropagator.cs" />
     <Compile Include="BDD\BDDBasedResolutionPropagator.cs" />
+    <Compile Include="BDD\ObstructionCaseSuperset.cs" />
+    <Compile Include="BDD\BDDBasedCasePropagator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MetaModel\UCLouvain.KAOSTools.Core.csproj">

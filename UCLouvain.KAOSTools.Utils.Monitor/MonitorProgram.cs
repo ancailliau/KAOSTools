@@ -201,6 +201,7 @@ namespace UCLouvain.KAOSTools.Utils.Monitor
 				var commands = new List<ICommand>();
 				commands.Add(new GetSatisfactionRateCommand(model, roots, modelMonitor));
 				commands.Add(new ExportModelCommand(model));
+				commands.Add(new PrintDebugCommand(model, roots, modelMonitor));
 
 				stop = false;
 				

@@ -182,7 +182,11 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
 				{
 					return "Except " + e.ResolvingGoalIdentifier;
 				}
-				return _rmapping[arg.Index].FriendlyName;
+				else if (_rmapping[arg.Index] is KAOSCoreElement kce) {
+					return kce.FriendlyName;
+				} else {
+					return _rmapping[arg.Index].ToString();
+				}
             }, false);
         }
         

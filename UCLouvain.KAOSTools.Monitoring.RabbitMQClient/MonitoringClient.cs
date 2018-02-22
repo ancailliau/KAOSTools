@@ -4,11 +4,14 @@ using System.Threading;
 using RabbitMQ.Client;
 using System.Collections.Generic;
 using System.Web.Script.Serialization;
+using NLog;
 
 namespace UCLouvain.KAOSTools.Monitoring
 {
     public class MonitoringClient : IDisposable
     {
+		private static Logger logger = LogManager.GetCurrentClassLogger();
+		
         string monitored_state_queue_name;
 		TimeSpan _monitoring_delay;
 
@@ -21,8 +24,12 @@ namespace UCLouvain.KAOSTools.Monitoring
         						string queue_name, 
         						TimeSpan monitoring_delay)
         {
+        	Console.WriteLine("BLA");
+
 			monitored_state_queue_name = queue_name;
-			_monitoring_delay = monitoring_delay;	
+			_monitoring_delay = monitoring_delay;
+			
+			logger.Info("Monitoring delay: " + _monitoring_delay);
         
             Setup();
             GetState = getState;
@@ -59,7 +66,7 @@ namespace UCLouvain.KAOSTools.Monitoring
             while (!stop)
             {
                 Send();
-                Thread.Sleep(TimeSpan.FromSeconds(1));
+                Thread.Sleep(_monitoring_delay);
             }            
         }
         

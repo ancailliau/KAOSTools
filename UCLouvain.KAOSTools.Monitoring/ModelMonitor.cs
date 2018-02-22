@@ -52,14 +52,14 @@ namespace UCLouvain.KAOSTools.Monitoring
 		void Initialize ()
 		{
 			RootSatisfactionRates = new Dictionary<string, DoubleSatisfactionRate>();
-			TimeSpan monitoringDelay = TimeSpan.FromSeconds(1);
+			TimeSpan monitoringDelay = TimeSpan.FromMinutes(1);
 		
 			// Create the new obstacle monitors
 			foreach (var obstacle in _model_running.LeafObstacles()
 									      .Where(x => x.CustomData.ContainsKey("monitored") 
 									                  && x.CustomData["monitored"].Equals("true"))) {
 
-				IStateInformationStorage storage = new FiniteStateInformationStorage (400);
+				IStateInformationStorage storage = new FiniteStateInformationStorage (60);
 				var monitor = new ObstacleMonitor(obstacle, _model_running, storage, monitoringDelay);
 				obstacleMonitors.Add(obstacle.Identifier, monitor);
 			}

@@ -77,6 +77,7 @@ namespace UCLouvain.KAOSTools.Optimizer
                     integrator.Integrate (resolution);
                 }
 
+				sr = new Dictionary<string, DoubleSatisfactionRate>();
 				all_goals_satisfied = true;
 				foreach (var goal in goals)
 				{
@@ -93,7 +94,12 @@ namespace UCLouvain.KAOSTools.Optimizer
                     }
                 }
                 
-                foreach (var resolution in r) {
+                Console.WriteLine("Selection: " 
+                + string.Join(",", r.Select(x => x.ResolvingGoalIdentifier)) 
+                + " cost: " + cost 
+                + " " + string.Join(" ", goals.Select(x => x.Identifier + ": "  + sr[x.Identifier].SatisfactionRate)));
+
+				foreach (var resolution in r) {
                     integrator.Remove (resolution);
                 }
             }
@@ -140,6 +146,7 @@ namespace UCLouvain.KAOSTools.Optimizer
                     integrator.Integrate (resolution);
                 }
 
+				sr = new Dictionary<string, DoubleSatisfactionRate>();
 				var all_goals_satisfied = true;
 				foreach (var goal in goals)
 				{

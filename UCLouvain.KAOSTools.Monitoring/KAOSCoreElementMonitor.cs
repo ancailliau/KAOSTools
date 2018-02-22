@@ -84,7 +84,8 @@ namespace UCLouvain.KAOSTools.Monitoring
             {
                 Timestamp = now;
                 StateHash = GetProjectedHashCode (projection);
-            }
+                Console.WriteLine("Projecting on " + string.Join(",", projection) + " > " + StateHash);
+			}
 
             public int GetProjectedHashCode (HashSet<string> propositions)
             {
@@ -257,7 +258,11 @@ namespace UCLouvain.KAOSTools.Monitoring
         public void MonitorStep (MonitoredState currentState, DateTime now)
         {
             var cachedMs = new CachedHashMonitoredState (currentState, now, projection);
-            buffer.Post (cachedMs);
+			if (this is ObstacleMonitor om && om.Obstacle.Identifier == "a3_stopped_in_traffic_monitored")
+			{
+				Console.WriteLine("MonitorStep: " + cachedMs.StateHash + " " + string.Join(",", projection));
+			}
+			buffer.Post (cachedMs);
         }
 
         /// <summary>
@@ -268,7 +273,7 @@ namespace UCLouvain.KAOSTools.Monitoring
         CachedHashMonitoredState CreateNewMonitors (CachedHashMonitoredState ms)
         {
         	try {
-        		monitor.StartNew(ms.StateHash, ms);
+				monitor.StartNew(ms.StateHash, ms);
 			} catch (Exception e) {
 				logger.Error($"Fail to update monitor ({e.Message})");
 			}

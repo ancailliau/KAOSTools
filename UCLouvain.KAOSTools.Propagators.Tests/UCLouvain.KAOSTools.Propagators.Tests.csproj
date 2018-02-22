@@ -41,6 +41,11 @@
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.3.8.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="UCLouvain.BDDSharp">
+      <HintPath>..\packages\UCLouvain.BDDSharp.0.1.6\lib\net45\UCLouvain.BDDSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="TestPatternBasedPropagator.cs" />
@@ -49,6 +54,7 @@
     <Compile Include="TestPropagatorRandomModels.cs" />
     <Compile Include="RandomModelGenerator.cs" />
     <Compile Include="TestBDDBasedWithResolutions.cs" />
+    <Compile Include="TestBDDBasedWithCaseConditions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UCLouvain.KAOSTools.Propagators\UCLouvain.KAOSTools.Propagators.csproj">

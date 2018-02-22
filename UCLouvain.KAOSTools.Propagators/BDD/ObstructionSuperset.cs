@@ -12,8 +12,8 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
         static readonly Logger logger = LogManager.GetCurrentClassLogger();
         
         protected readonly BDDManager _manager;
-        protected readonly Dictionary<KAOSCoreElement, int> _mapping;
-        protected readonly Dictionary<int, KAOSCoreElement> _rmapping;
+        protected readonly Dictionary<object, int> _mapping;
+        protected readonly Dictionary<int, object> _rmapping;
         
         protected BDDNode _root;
 
@@ -27,8 +27,8 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
         ObstructionSuperset ()
         {
             _manager = new BDDManager (0);
-            _mapping = new Dictionary<KAOSCoreElement, int> ();
-            _rmapping = new Dictionary<int, KAOSCoreElement> ();
+            _mapping = new Dictionary<object, int> ();
+            _rmapping = new Dictionary<int, object> ();
         }
 
         public ObstructionSuperset (Goal goal) : this ()
@@ -275,7 +275,11 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
         public virtual string ToDot (BDDNode node)
         {
             return _manager.ToDot (node, (arg) => {
-				return _rmapping[arg.Index].FriendlyName;
+				if (_rmapping[arg.Index] is KAOSCoreElement kce) {
+					return kce.FriendlyName;
+				} else {
+					return _rmapping[arg.Index].ToString();
+				}
             }, false);
         }
         

@@ -33,9 +33,6 @@
     <Reference Include="NDesk.Options">
       <HintPath>..\packages\NDesk.Options.0.2.1\lib\NDesk.Options.dll</HintPath>
     </Reference>
-    <Reference Include="LtlSharp">
-      <HintPath>..\..\LtlSharp\LtlSharp\bin\Debug\LtlSharp.dll</HintPath>
-    </Reference>
     <Reference Include="System.Web.Extensions" />
     <Reference Include="Microsoft.Diagnostics.Tracing.EventSource">
       <HintPath>..\packages\Microsoft.Diagnostics.Tracing.EventSource.Redist.1.1.28\lib\net46\Microsoft.Diagnostics.Tracing.EventSource.dll</HintPath>
@@ -56,6 +53,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xml" />
+    <Reference Include="LtlSharp">
+      <HintPath>..\..\LtlSharp\LtlSharp\bin\Debug\LtlSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MonitorProgram.cs" />
@@ -63,6 +63,7 @@
     <Compile Include="GetSatisfactionRateCommand.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="ExportModelCommand.cs" />
+    <Compile Include="PrintDebugCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MetaModel\UCLouvain.KAOSTools.Core.csproj">

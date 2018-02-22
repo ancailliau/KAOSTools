@@ -18,6 +18,10 @@ namespace UCLouvain.KAOSTools.Monitoring
 		}
 
 		protected IStateInformationStorage storage;
+		
+		public IStateInformationStorage Storage {
+			get { return storage; }
+		}
 
         static Logger logger = LogManager.GetCurrentClassLogger();
 
@@ -68,5 +72,7 @@ namespace UCLouvain.KAOSTools.Monitoring
 		}
 
 		public IStateInformation MonitoredSatisfactionRate => monitor.Max;
+		
+		
 	}
 }
