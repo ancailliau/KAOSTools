@@ -28,8 +28,14 @@ namespace UCLouvain.KAOSTools.Core
         public Formula FormalSpec { get; set; }
 
         public double EPS { get; set; }
+        
+        public string ContextIdentifier
+		{
+			get;
+			set;
+		}
 
-        public UncertainSatisfactionRate SatisfactionUncertainty { get; set; }
+		public UncertainSatisfactionRate SatisfactionUncertainty { get; set; }
 
         public DomainHypothesis (KAOSModel model) : base(model)
         {

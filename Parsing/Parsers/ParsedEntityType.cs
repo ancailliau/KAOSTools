@@ -85,7 +85,24 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers
             Item = item;
             Parameter = parameter;
         }
-}
+	}
+
+	public class NParsedAttributeEqual : NParsedAttributeValue
+	{
+		public ParsedElement Left { get; set; }
+		public ParsedElement Right { get; set; }
+        public NParsedAttributeEqual ()
+        {
+            
+        }
+        public NParsedAttributeEqual (ParsedElement left, ParsedElement right)
+        {
+            Left = left;
+            Right = right;
+        }
+	}
+	
+	
     
 	public class NParsedAttributeList : NParsedAttributeValue
 	{
@@ -150,6 +167,9 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers
                                                                             
     public class ParsedConstraint : ParsedDeclare { public ParsedConstraint (string identifier) : base(identifier) {} }
 
+	public class ParsedContext : ParsedDeclare { public ParsedContext (string identifier) : base(identifier) {} }
+
+
     public class ParsedEntity : ParsedDeclare
     {
         public ParsedEntityType EntityType { get; set; }
@@ -179,6 +199,11 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers
             set;
         }
         public ParsedRefinementPattern RefinementPattern { get; set; }
+        public string ContextIdentifier
+		{
+			get;
+			set;
+		}
     }
     
     public class ParsedRefinedByAntiGoalAttribute : ParsedElement {
@@ -256,6 +281,8 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers
     public class ParsedDefinitionAttribute   : ParsedAttributeWithValue<ParsedString> {}
     public class ParsedSignatureAttribute    : ParsedAttributeWithValue<string> {}
     public class DefaultValueAttribute    : ParsedAttributeWithValue<bool> {}
+    
+    public class ParsedContextAttribute              : ParsedAttributeWithValue<dynamic> {}
 
 
     public class ParsedCostAttribute         : ParsedAttributeWithValue<ParsedFloat> {
@@ -750,5 +777,20 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers
 		}
     }
 
+	
+
+    public class ParsedMonitorsAttribute  : ParsedElement {
+        public List<string> ParsedPredicates {
+            get;
+            set;
+        }
+    }
+
+    public class ParsedControlsAttribute  : ParsedElement {
+        public List<string> ParsedPredicates {
+            get;
+            set;
+        }
+    }
 }
 

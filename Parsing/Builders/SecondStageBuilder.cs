@@ -26,6 +26,7 @@ namespace UCLouvain.KAOSTools.Parsing
 			declareBuilders.Add(new TypeDeclareBuilder());
 			declareBuilders.Add(new ObstacleDeclareBuilder());
             declareBuilders.Add(new PredicateDeclareBuilder());
+            declareBuilders.Add(new ContextDeclareBuilder());
 
 			attributeBuilders.Add(new AgentTypeAttributeBuilder());
             attributeBuilders.Add(new AssignedToAttributeBuilder());
@@ -48,6 +49,11 @@ namespace UCLouvain.KAOSTools.Parsing
             
 			attributeBuilders.Add(new ExceptAttributeBuilder());
 			attributeBuilders.Add(new ReplacesAttributeBuilder());
+			
+			attributeBuilders.Add(new ContextAttributeBuilder());
+			
+			attributeBuilders.Add(new ControlsAttributeBuilder());
+			attributeBuilders.Add(new MonitorsAttributeBuilder());
         }
     }
 }

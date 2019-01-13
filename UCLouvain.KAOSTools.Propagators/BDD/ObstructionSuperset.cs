@@ -64,9 +64,11 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
 
 			if (_rmapping[node.Index] is Obstacle obstacle)
 			{
-
+				//Console.WriteLine("Probability for " + obstacle.Identifier);
+				//Console.WriteLine("Obstacle resolved: " + obstacle.Resolved);
 				var v = samplingVector.ContainsKey(obstacle.Identifier) & !obstacle.Resolved ?
 							samplingVector.Sample(obstacle) : 0;
+				//Console.WriteLine(v);
 
 				double value = GetProbability(node.Low, samplingVector, cache) * (1 - v)
 					   + GetProbability(node.High, samplingVector, cache) * v;

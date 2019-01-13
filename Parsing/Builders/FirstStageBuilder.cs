@@ -36,6 +36,7 @@ namespace UCLouvain.KAOSTools.Parsing
 			declareBuilders.Add(new TypeDeclareBuilder());
 			declareBuilders.Add(new ObstacleDeclareBuilder());
             declareBuilders.Add(new PredicateDeclareBuilder());
+            declareBuilders.Add(new ContextDeclareBuilder());
         }
 
         public void BuildElementWithKeys (ParsedElements elements)

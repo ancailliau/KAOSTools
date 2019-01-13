@@ -34,6 +34,12 @@ namespace UCLouvain.KAOSTools.Core
                 throw new Exception (); 
             } 
         }
+        
+        public string ContextIdentifier
+		{
+			get;
+			set;
+		}
 
 		public DomainProperty(KAOSModel model) : base(model) { }
         public DomainProperty(KAOSModel model, string identifier) : base(model, identifier) { }

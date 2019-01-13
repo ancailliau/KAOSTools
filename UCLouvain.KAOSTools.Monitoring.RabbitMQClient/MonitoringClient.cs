@@ -24,9 +24,7 @@ namespace UCLouvain.KAOSTools.Monitoring
         						string queue_name, 
         						TimeSpan monitoring_delay)
         {
-        	Console.WriteLine("BLA");
-
-			monitored_state_queue_name = queue_name;
+        	monitored_state_queue_name = queue_name;
 			_monitoring_delay = monitoring_delay;
 			
 			logger.Info("Monitoring delay: " + _monitoring_delay);

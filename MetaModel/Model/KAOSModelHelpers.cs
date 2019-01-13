@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UCLouvain.KAOSTools.Core.Agents;
+using UCLouvain.KAOSTools.Core.Model;
 
 namespace UCLouvain.KAOSTools.Core
 {
@@ -248,6 +249,11 @@ namespace UCLouvain.KAOSTools.Core
 		{
 			return model.modelMetadataRepository.GetExperts(pred);
         }
+
+		public static IEnumerable<Context> Contexts(this KAOSModel model)
+		{
+            return model.modelMetadataRepository.GetContexts();
+		}
 
         #endregion
 

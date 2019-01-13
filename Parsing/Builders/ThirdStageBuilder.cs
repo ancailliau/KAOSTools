@@ -27,6 +27,7 @@ namespace UCLouvain.KAOSTools.Parsing
 			declareBuilders.Add(new TypeDeclareBuilder());
 			declareBuilders.Add(new ObstacleDeclareBuilder());
             declareBuilders.Add(new PredicateDeclareBuilder());
+            declareBuilders.Add(new ContextDeclareBuilder());
 
             attributeBuilders.Add(new ArgumentAttributeBuilder());
             attributeBuilders.Add(new FormalSpecAttributeBuilder(fb));

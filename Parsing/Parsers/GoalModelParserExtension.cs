@@ -27,6 +27,7 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers {
 			Add(new PredicateDeclareParser());
 			Add(new SoftGoalDeclareParser());
             Add(new TypeDeclareParser());
+            Add(new ContextDeclareParser());
         }
 
         ParsedElement BuildElements (List<Result> results)
@@ -179,6 +180,14 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers {
 				return new NParsedAttributeBracket() {
                     Item = results[0].Value,
                     Parameter = results[2].Value
+				};
+			}
+
+			if (results[1].Text == "=")
+			{
+				return new NParsedAttributeEqual() {
+                    Left = results[0].Value,
+                    Right = results[2].Value
 				};
 			}
 

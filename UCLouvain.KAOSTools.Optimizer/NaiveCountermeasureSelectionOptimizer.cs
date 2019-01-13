@@ -163,11 +163,11 @@ namespace UCLouvain.KAOSTools.Optimizer
 						{
 							bestSR[goal.Identifier] = satisfactionRate;
 							optimalSelections = new List<OptimalSelection>();
-							optimalSelections.Add(new OptimalSelection(activeResolutions, cost, satisfactionRate));
+							optimalSelections.Add(new OptimalSelection(activeResolutions, cost, satisfactionRate, new string[] {}));
 						}
 						else if (Math.Abs(satisfactionRate - bestSR[goal.Identifier]) < EPSILON)
 						{
-							optimalSelections.Add(new OptimalSelection(activeResolutions, cost, satisfactionRate));
+							optimalSelections.Add(new OptimalSelection(activeResolutions, cost, satisfactionRate, new string[] {}));
 						}
 					}
 				}

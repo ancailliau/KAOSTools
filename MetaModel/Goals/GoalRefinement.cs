@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Runtime.Serialization;
+using UCLouvain.KAOSTools.Core.Model;
 
 namespace UCLouvain.KAOSTools.Core
 {
@@ -29,8 +30,14 @@ namespace UCLouvain.KAOSTools.Core
         
         [DataMember]
         public ISet<GoalRefinee> DomainHypothesisIdentifiers { get; set; }
+        
+        public string ContextIdentifier
+		{
+			get;
+			set;
+		}
 
-        public bool IsEmpty {
+		public bool IsEmpty {
             get {
                 return SubGoalIdentifiers.Count 
                     + DomainPropertyIdentifiers.Count 

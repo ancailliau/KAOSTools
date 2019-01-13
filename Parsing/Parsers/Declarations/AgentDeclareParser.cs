@@ -14,6 +14,8 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers.Declarations
 			Add(new NameAttributeParser());
 			Add(new DefinitionAttributeParser());
             Add(new AgentTypeAttributeParser());
+            Add(new MonitorsAttributeParser());
+            Add(new ControlsAttributeParser());
 			Add(new CustomAttributeParser());
 		}
 

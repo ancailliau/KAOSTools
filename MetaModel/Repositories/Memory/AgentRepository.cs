@@ -10,11 +10,15 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
     {
 		IDictionary<string, Agent> Agents;
 		IDictionary<string, GoalAgentAssignment> GoalAgentAssignments;
+		IDictionary<string, AgentControlLink> AgentControlLinks;
+		IDictionary<string, AgentMonitoringLink> AgentMonitoringLinks;
 
         public AgentRepository()
         {
             Agents = new Dictionary<string, Agent>();
             GoalAgentAssignments = new Dictionary<string, GoalAgentAssignment>();
+			AgentControlLinks = new Dictionary<string, AgentControlLink>();
+			AgentMonitoringLinks = new Dictionary<string, AgentMonitoringLink>();
         }
 
         public void Add(GoalAgentAssignment assignment)
@@ -37,7 +41,27 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
             Agents.Add(agent.Identifier, agent);
         }
 
-        public bool Exists(string identifier)
+        public void Add(AgentMonitoringLink link)
+		{
+            if (AgentMonitoringLinks.ContainsKey(link.Identifier))
+            {
+                throw new ArgumentException(string.Format("Agent monitor link identifier already exist: {0}", link.Identifier));
+            }
+            
+			AgentMonitoringLinks.Add(link.Identifier, link);
+		}
+
+		public void Add(AgentControlLink link)
+		{
+            if (AgentControlLinks.ContainsKey(link.Identifier))
+            {
+                throw new ArgumentException(string.Format("Agent control link identifier already exist: {0}", link.Identifier));
+            }
+            
+			AgentControlLinks.Add(link.Identifier, link);
+		}
+
+		public bool Exists(string identifier)
         {
             return Agents.ContainsKey(identifier);
         }
@@ -67,7 +91,27 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 			return GoalAgentAssignments.Values.Where(x => predicate(x));
         }
 
-        public IEnumerable<Agent> GetAgents()
+        public IEnumerable<AgentControlLink> GetAgentControlLinks()
+		{
+			return AgentControlLinks.Values;
+		}
+
+		public IEnumerable<AgentControlLink> GetAgentControlLinks(Predicate<AgentControlLink> predicate)
+		{
+			return AgentControlLinks.Values.Where(x => predicate(x));
+		}
+
+		public IEnumerable<AgentMonitoringLink> GetAgentMonitoringLinks()
+		{
+			return AgentMonitoringLinks.Values;
+		}
+
+		public IEnumerable<AgentMonitoringLink> GetAgentMonitoringLinks(Predicate<AgentMonitoringLink> predicate)
+		{
+			return AgentMonitoringLinks.Values.Where(x => predicate(x));
+		}
+
+		public IEnumerable<Agent> GetAgents()
         {
             return Agents.Values;
         }
@@ -76,5 +120,15 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
         {
             return Agents.Values.Where(x => predicate(x));
         }
+
+		public AgentControlLink GetControlLink(Predicate<AgentControlLink> predicate)
+		{
+			return AgentControlLinks.Values.SingleOrDefault(x => predicate(x));
+		}
+
+		public AgentMonitoringLink GetMonitoringLink(Predicate<AgentMonitoringLink> predicate)
+		{
+			return AgentMonitoringLinks.Values.SingleOrDefault(x => predicate(x));
+		}
     }
 }

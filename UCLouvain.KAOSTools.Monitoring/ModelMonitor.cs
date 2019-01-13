@@ -16,7 +16,7 @@ namespace UCLouvain.KAOSTools.Monitoring
 	{
 		Dictionary<string, ObstacleMonitor> obstacleMonitors;
 
-		KAOSModel _model_running;
+		public KAOSModel _model_running;
 
 		HashSet<Goal> _roots;
 
@@ -59,7 +59,7 @@ namespace UCLouvain.KAOSTools.Monitoring
 									      .Where(x => x.CustomData.ContainsKey("monitored") 
 									                  && x.CustomData["monitored"].Equals("true"))) {
 
-				IStateInformationStorage storage = new FiniteStateInformationStorage (60);
+				IStateInformationStorage storage = new FiniteStateInformationStorage (100);
 				var monitor = new ObstacleMonitor(obstacle, _model_running, storage, monitoringDelay);
 				obstacleMonitors.Add(obstacle.Identifier, monitor);
 			}
@@ -75,6 +75,8 @@ namespace UCLouvain.KAOSTools.Monitoring
 		
 		public void Update (MonitoredState ms, DateTime datetime)
 		{
+			logger.Info("Update. " + _roots.Count);
+		
 			// Create the new monitors and update the existing ones accordingly
 			foreach (var m in obstacleMonitors.Values) {
 				try {
@@ -92,10 +94,11 @@ namespace UCLouvain.KAOSTools.Monitoring
 				}
 			}
 
-			// Compute the satisfaction rate for the root goal
+			// Compute the satisfaction rate for the root goals
 			foreach (var root in _roots)
 			{
 				RootSatisfactionRates[root.Identifier] = (DoubleSatisfactionRate)_propagator.GetESR(root);
+				logger.Info($"Satisfaction rate for {root.Identifier} = " + RootSatisfactionRates[root.Identifier]);
 			}
 
 			if (!string.IsNullOrEmpty(outputFilename)) {

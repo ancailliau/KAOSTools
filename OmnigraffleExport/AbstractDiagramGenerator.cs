@@ -159,7 +159,7 @@ namespace UCLouvain.KAOSTools.OmnigraffleExport
                                              50, 50, 175, 70);
             return graphic;
         }
-
+        
         protected ShapedGraphic GetCircle ()
         {
             var circle = new ShapedGraphic (NextId, Omnigraffle.Shape.Circle, 50, 50, 10, 10);
@@ -522,6 +522,19 @@ namespace UCLouvain.KAOSTools.OmnigraffleExport
                 var line = GetFilledArrow (circle, childGraphic, true);
                 AddText (line, @"Negative\par contribution");
                 sheet.GraphicsList.Add (line);
+            }
+
+			// Context label
+			if (!string.IsNullOrEmpty(refinement.ContextIdentifier)) {
+				string contextName = refinement.model.modelMetadataRepository.GetContext(refinement.ContextIdentifier).FriendlyName;
+				var contextGraphic = GetRectangle();
+				contextGraphic.Style.Stroke.CornerRadius = 3;
+				contextGraphic.Wrap = false;
+				AddText(contextGraphic, "Context " + contextName);
+				Add("context:" + refinement.Identifier, contextGraphic);
+                var topArrow = GetLine (circle, contextGraphic);
+				topArrow.Style.Stroke.Pattern = StrokePattern.Dashed;
+                sheet.GraphicsList.Add (topArrow);
             }
         }
 

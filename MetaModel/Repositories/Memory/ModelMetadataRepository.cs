@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UCLouvain.KAOSTools.Core;
+using UCLouvain.KAOSTools.Core.Model;
 
 namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 {
@@ -11,6 +12,7 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 		IDictionary<string, Expert> Experts;
 		IDictionary<string, CostVariable> CostVariables;
 		IDictionary<string, Constraint> Constraints;
+		IDictionary<string, Context> Contexts;
 
         public ModelMetadataRepository()
 		{
@@ -18,6 +20,7 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
             Experts = new Dictionary<string, Expert> ();
             CostVariables = new Dictionary<string, CostVariable> ();
             Constraints = new Dictionary<string, Constraint> ();
+			Contexts = new Dictionary<string, Context>();
         }
 
         public void Add(Calibration calibration)
@@ -54,11 +57,21 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 		{
 			if (Constraints.ContainsKey(constraint.Identifier))
 			{
-				throw new ArgumentException(string.Format("Constraints identifier already exist: {0}", constraint.Identifier));
+				throw new ArgumentException(string.Format("Constraint identifier already exist: {0}", constraint.Identifier));
 			}
 
 			Constraints.Add(constraint.Identifier, constraint);
         }
+        
+        public void Add(Context context)
+		{
+			if (Contexts.ContainsKey(context.Identifier))
+			{
+				throw new ArgumentException(string.Format("Context identifier already exist: {0}", context.Identifier));
+			}
+
+			Contexts.Add(context.Identifier, context);
+		}
 
         public bool CalibrationExists(string identifier)
 		{
@@ -78,6 +91,11 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
         public bool ExpertExists(string identifier)
 		{
             return Experts.ContainsKey(identifier);
+        }
+
+        public bool ContextExists(string identifier)
+		{
+            return Contexts.ContainsKey(identifier);
         }
 
         public Constraint GetConstraint(string identifier)
@@ -100,6 +118,11 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
 			return Calibrations.ContainsKey(identifier) ? Calibrations[identifier] : null;
         }
 
+        public Context GetContext(string identifier)
+		{
+			return Contexts.ContainsKey(identifier) ? Contexts[identifier] : null;
+        }
+
         public Constraint GetConstraint(Predicate<Constraint> predicate)
         {
             return Constraints.Values.SingleOrDefault(x => predicate(x));
@@ -118,6 +141,11 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
         public Calibration GetCalibration(Predicate<Calibration> predicate)
 		{
             return Calibrations.Values.SingleOrDefault(x => predicate(x));
+        }
+
+        public Context GetContext(Predicate<Context> predicate)
+		{
+            return Contexts.Values.SingleOrDefault(x => predicate(x));
         }
 
         public IEnumerable<CostVariable> GetCostVariables()
@@ -140,6 +168,11 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
             return Constraints.Values;
         }
 
+        public IEnumerable<Context> GetContexts()
+		{
+            return Contexts.Values;
+        }
+
         public IEnumerable<CostVariable> GetCostVariables(Predicate<CostVariable> predicate)
 		{
             return CostVariables.Values.Where (x => predicate(x));
@@ -158,6 +191,11 @@ namespace UCLouvain.KAOSTools.Core.Repositories.Memory
         public IEnumerable<Constraint> GetConstraints(Predicate<Constraint> predicate)
 		{
             return Constraints.Values.Where(x => predicate(x));
+        }
+
+        public IEnumerable<Context> GetContexts(Predicate<Context> predicate)
+		{
+            return Contexts.Values.Where(x => predicate(x));
         }
     }
 }

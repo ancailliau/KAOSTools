@@ -7,21 +7,18 @@ using UCLouvain.KAOSTools.Parsing.Parsers;
 
 namespace UCLouvain.KAOSTools.Parsing.Parsers.Declarations
 {
-	public class DomainPropertyDeclareParser : DeclareParser
+	public class ContextDeclareParser : DeclareParser
 	{
-		public DomainPropertyDeclareParser()
+		public ContextDeclareParser()
 		{
 			Add(new NameAttributeParser());
 			Add(new DefinitionAttributeParser());
-			Add(new FormalSpecAttributeParser());
-            Add(new ESRAttributeParser());
-			Add(new ContextAttributeParser());
 			Add(new CustomAttributeParser());
 		}
 
 		public override ParsedElement ParsedDeclare(string identifier, List<dynamic> attributes, bool @override)
 		{
-            return new ParsedDomainProperty(identifier)
+			return new ParsedContext(identifier)
 			{
 				Attributes = attributes,
                 Override = @override
@@ -30,7 +27,7 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers.Declarations
 
         public override string GetIdentifier()
 		{
-            return "(domainproperty|domprop)";
+			return "context";
 		}
 	}
 }

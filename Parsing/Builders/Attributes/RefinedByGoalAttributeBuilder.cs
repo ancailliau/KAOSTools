@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using UCLouvain.KAOSTools.Core;
 using UCLouvain.KAOSTools.Core.Agents;
 using UCLouvain.KAOSTools.Parsing.Parsers;
+using UCLouvain.KAOSTools.Core.Model;
 
 namespace UCLouvain.KAOSTools.Parsing.Builders.Attributes
 {
@@ -48,6 +49,19 @@ namespace UCLouvain.KAOSTools.Parsing.Builders.Attributes
                     model.goalRepository.Add (refinee);
                     refinement.Add (refinee);
                 }
+            }
+            
+            // Parse the context
+            if (!string.IsNullOrEmpty(attribute.ContextIdentifier)) {
+				var id = attribute.ContextIdentifier;
+				Context context;
+				
+				if ((context = model.modelMetadataRepository.GetContext(id)) == null) {
+					context = new Context(model, id);
+					model.modelMetadataRepository.Add(context);
+				}
+				
+				refinement.ContextIdentifier = context.Identifier;
             }
 
 			// Parse the refinement pattern provided

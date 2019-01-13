@@ -26,8 +26,11 @@ namespace UCLouvain.KAOSTools.Utils.Monitor
 		private static Logger logger = LogManager.GetCurrentClassLogger();
 
 		static bool stop;
-		private static NaiveCountermeasureSelectionOptimizer optimizer;
+		//private static MOCECountermeasureSelectionOptimizer optimizer;
+		
 		private static KAOSModel optimization_model;
+		//private static KAOSModel _model_2;
+		
 		private static HashSet<Goal> roots;
 
 		static SoftResolutionIntegrator _integrator_model;
@@ -106,9 +109,9 @@ namespace UCLouvain.KAOSTools.Utils.Monitor
 	                                 autoDelete: false,
 	                                 arguments: null);
 	
-	            var _propagator_optimization = new BDDBasedPropagator(optimization_model);
+	            var _propagator_optimization = new BDDBasedPropagator(model);
 				while (!stop) {
-					System.Threading.Thread.Sleep(TimeSpan.FromMinutes(2));
+					Thread.Sleep(TimeSpan.FromMinutes(1));
 
 					bool optimization_required = false;
 					foreach (var root in roots)
@@ -118,6 +121,7 @@ namespace UCLouvain.KAOSTools.Utils.Monitor
 							logger.Info($"Ignoring '{root.Identifier}', no satisfaction rate monitored.");
 							continue;
 						}
+						logger.Info($"RSR = " + root.RDS);
 						if (doubleSatisfactionRate.SatisfactionRate >= root.RDS)
 						{
 							logger.Info("Current configuration is above RSR for "+root.FriendlyName+".");
@@ -130,23 +134,66 @@ namespace UCLouvain.KAOSTools.Utils.Monitor
 					if (!optimization_required)
 						continue;
 
-					var minimalcost = optimizer.GetMinimalCost(roots, _propagator_optimization);
-					var optimalSelections = optimizer.GetOptimalSelections(minimalcost, roots, _propagator_optimization).FirstOrDefault();
+					//var minimalcost = optimizer.GetMinimalCost(roots, _propagator_optimization);
+					//var optimalSelections = optimizer.GetOptimalSelections(minimalcost, roots, _propagator_optimization).FirstOrDefault();
 
-					if (optimalSelections != null) {
+					var optimizer = new MOCECountermeasureSelectionOptimizer (optimization_model);
+					optimization_model.satisfactionRateRepository = modelMonitor._model_running.satisfactionRateRepository;
+					
+					Console.WriteLine("Computing optimization");
+
+					
+		            var propagator = new BDDBasedPropagator (optimization_model);
+					var enumerable = new HashSet<Goal> (optimization_model.Goals(x => roots.Select(y => y.Identifier).Contains(x.Identifier)));
+					var optimalSelections = optimizer.GetOptimalSelections(enumerable, propagator);
+		
+		            if (optimalSelections.Count() == 0)
+		            {
+		                Console.WriteLine("Optimal selections: No countermeasure to select.");
+		                Console.WriteLine();
+		            }
+		            else
+		            {
+		                Console.WriteLine($"Optimal selections ({optimalSelections.Count()}):");
+		                foreach (var o in optimalSelections.Distinct().OrderBy(x => x.Cost).ThenBy(x => x.SatisfactionRate))
+		                {
+		                    Console.WriteLine("* " + o);
+		                }
+		            }
+
+					if (optimalSelections.Count() > 0) {
+						var optimalSelection = optimalSelections
+							.Where(x => x.SatRoots.SetEquals(roots.Select(y => y.Identifier)))
+							.OrderBy(x => x.Cost)
+							.ThenByDescending(x => x.SatisfactionRate)
+							.FirstOrDefault();
+							
+						if (optimalSelection == null) {
+							optimalSelection = optimalSelections
+								.OrderByDescending(x => x.SatRoots.Count)
+								.ThenBy(x => x.Cost)
+								.ThenByDescending(x => x.SatisfactionRate)
+								.FirstOrDefault();
+						}
+						
+						if (optimalSelection == null) {
+							logger.Info("No optimal selection found!");
+							return;
+						}
+					
 						// Update the model
 						var deployment_methods = new List<string>();
-						foreach (var resolution in optimalSelections.Resolutions.Except(_active_resolutions)) {
+						foreach (var resolution in optimalSelection.Resolutions.Except(_active_resolutions)) {
 							_integrator_model.Integrate(resolution);
 							deployment_methods.Add(resolution.ResolvingGoal().CustomData["ondeploy"]);
 						}
-						foreach (var resolution in optimalSelections.Resolutions.Intersect(_active_resolutions)) {
+						foreach (var resolution in optimalSelection.Resolutions.Intersect(_active_resolutions)) {
 							_integrator_model.Remove(resolution);
 							deployment_methods.Add(resolution.ResolvingGoal().CustomData["onwithold"]);
 						}
 						modelMonitor.ModelChanged();
 						
-						_active_resolutions = optimalSelections.Resolutions.ToHashSet();
+						_active_resolutions = optimalSelection.Resolutions.ToHashSet();
 					
 						// Deploy the countermeasures in the running system
 						var json = new JavaScriptSerializer().Serialize(deployment_methods);
@@ -182,6 +229,7 @@ namespace UCLouvain.KAOSTools.Utils.Monitor
             options.Add ("outfile=", "Specify the output file for the satisfaction rates", v => outfile = v);
 
 			Init (args);
+			
 			optimization_model = BuildModel();
             
             roots = rootname.Split(',').Select(x => model.Goal (x)).ToHashSet();
@@ -196,7 +244,9 @@ namespace UCLouvain.KAOSTools.Utils.Monitor
 
 				_active_resolutions = new HashSet<Resolution>();
 				_integrator_model = new SoftResolutionIntegrator(model);
-				optimizer = new NaiveCountermeasureSelectionOptimizer(optimization_model);
+				
+				//optimizer = new MOCECountermeasureSelectionOptimizer(optimization_model);
+				//optimization_model.satisfactionRateRepository = modelMonitor._model_running.satisfactionRateRepository;
 				
 				var commands = new List<ICommand>();
 				commands.Add(new GetSatisfactionRateCommand(model, roots, modelMonitor));

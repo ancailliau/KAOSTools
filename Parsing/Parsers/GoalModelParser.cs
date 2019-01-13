@@ -308,7 +308,7 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers
 			return _state;
 		}
 		
-		// AttributeDecoratedValue := (AttributeAtomicValue S ':' S AttributeAtomicValue) / (AttributeAtomicValue S '[' S AttributeValue S ']') / AttributeAtomicValue
+		// AttributeDecoratedValue := (AttributeAtomicValue S ':' S AttributeAtomicValue) / (AttributeAtomicValue S '=' S AttributeAtomicValue) / (AttributeAtomicValue S '[' S AttributeValue S ']') / AttributeAtomicValue
 		private State DoParseAttributeDecoratedValueRule(State _state, List<Result> _outResults)
 		{
 			State _start = _state;
@@ -319,6 +319,12 @@ namespace UCLouvain.KAOSTools.Parsing.Parsers
 				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "AttributeAtomicValue");},
 				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
 				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, ":");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "AttributeAtomicValue");});},
+			delegate (State s, List<Result> r) {return DoSequence(s, r,
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "AttributeAtomicValue");},
+				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
+				delegate (State s2, List<Result> r2) {return DoParseLiteral(s2, r2, "=");},
 				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "S");},
 				delegate (State s2, List<Result> r2) {return DoParse(s2, r2, "AttributeAtomicValue");});},
 			delegate (State s, List<Result> r) {return DoSequence(s, r,

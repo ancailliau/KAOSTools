@@ -172,6 +172,9 @@ namespace UCLouvain.KAOSTools.Integrators
             // Adds the countermeasure goal to the refinement
             anchorRefinement.Add (resolution.ResolvingGoalIdentifier);
 
+			Console.WriteLine("Anchor goal : " + anchorRefinement.ParentGoalIdentifier);
+			Console.WriteLine("New refinement = " + string.Join(",", anchorRefinement.SubGoalIdentifiers.Select(x => x.Identifier)));
+
             // Add replacement annotation
             var replacement = new GoalReplacement (_model);
             replacement.AnchorGoalIdentifier = resolution.AnchorIdentifier;

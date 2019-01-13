@@ -41,12 +41,19 @@ namespace UCLouvain.KAOSTools.Propagators.BDD
         public virtual ISatisfactionRate GetESR (Goal goal)
         {
 			ObstructionSuperset os;
-			if (!obstructionSupersets.ContainsKey(goal.Identifier))
+			if (!obstructionSupersets.ContainsKey(goal.Identifier)) {
+				//Console.WriteLine("Computing new OS for " + goal.Identifier);
 				os = new ObstructionSuperset(goal);
-			else
+				//Console.WriteLine("---");
+				//Console.WriteLine(os.ToDot());
+				//Console.WriteLine("---");
+			} else
 				os = obstructionSupersets[goal.Identifier];
             var vector = new SamplingVector (_model);
-            return new DoubleSatisfactionRate (1.0 - os.GetProbability (vector));
+            
+			double v = os.GetProbability(vector);
+            //Console.WriteLine("Obstruction set probability: "  + v);
+			return new DoubleSatisfactionRate(1.0 - v);
         }
 
         public virtual ISatisfactionRate GetESR (Obstacle obstacle, IEnumerable<Resolution> activeResolutions)

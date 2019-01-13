@@ -196,6 +196,16 @@ namespace UCLouvain.KAOSTools.Core
             this.formalSpecRepository.Add(v);
         }
 
+        public void Add(AgentMonitoringLink v)
+		{
+			this.agentRepository.Add(v);
+        }
+
+        public void Add(AgentControlLink v)
+		{
+			this.agentRepository.Add(v);
+        }
+
         /*
 		private void Add (KAOSCoreElement element)
         {

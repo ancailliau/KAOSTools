@@ -137,6 +137,14 @@
     <Compile Include="Parsers\Attributes\RelaxedToAttributeParser.cs" />
     <Compile Include="Builders\Attributes\ProvidedAttributeBuilder.cs" />
     <Compile Include="Builders\Attributes\RelaxedToAttributeBuilder.cs" />
+    <Compile Include="Parsers\Declarations\ContextDeclareParser.cs" />
+    <Compile Include="Builders\Declarations\ContextDeclareBuilder.cs" />
+    <Compile Include="Parsers\Attributes\ContextAttributeParser.cs" />
+    <Compile Include="Builders\Attributes\ContextAttributeBuilder.cs" />
+    <Compile Include="Parsers\Attributes\MonitorsAttributeParser.cs" />
+    <Compile Include="Parsers\Attributes\ControlsAttributeParser.cs" />
+    <Compile Include="Builders\Attributes\MonitorsAttributeBuilder.cs" />
+    <Compile Include="Builders\Attributes\ControlsAttributeBuilder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

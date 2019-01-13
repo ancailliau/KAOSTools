@@ -18,16 +18,22 @@ namespace UCLouvain.KAOSTools.Optimizer
 
         }
         
+        public HashSet<string> SatRoots {
+			get;
+			set;
+        }
+        
         public double SatisfactionRate {
             get;
             set;
         }
     
-        public OptimalSelection (IEnumerable<Resolution> resolutions, int cost, double satisfactionRate)
+        public OptimalSelection (IEnumerable<Resolution> resolutions, int cost, double satisfactionRate, IEnumerable<string> satRoots)
         {
             Resolutions = resolutions;
             Cost = cost;
             SatisfactionRate = satisfactionRate;
+			SatRoots = new HashSet<string>(satRoots);
         }
         
         public override string ToString ()

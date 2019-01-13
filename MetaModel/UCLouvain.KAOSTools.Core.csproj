@@ -130,6 +130,9 @@
     <Compile Include="Goals\GoalProvidedNot.cs" />
     <Compile Include="Goals\GoalRelaxedTo.cs" />
     <Compile Include="Goals\GoalProvided.cs" />
+    <Compile Include="Model\Context.cs" />
+    <Compile Include="Agents\AgentMonitoringLink.cs" />
+    <Compile Include="Agents\AgentControlLink.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

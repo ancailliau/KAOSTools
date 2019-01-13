@@ -29,6 +29,8 @@ namespace UCLouvain.KAOSTools.Utils.ModelChecker
             Console.WriteLine("Obstacle refinements: " + model.ObstacleRefinements().Count());
             Console.WriteLine();
 			Console.WriteLine("Resolutions: " + model.Resolutions().Count());
+            Console.WriteLine();
+			Console.WriteLine("Contexts: " + model.Contexts().Count());
 			
 			var integrator = new SoftResolutionIntegrator (model);
 			foreach (var resolution in model.Resolutions())

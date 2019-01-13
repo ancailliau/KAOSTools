@@ -40,6 +40,7 @@ AttributeValue :=
 
 AttributeDecoratedValue := 
     ( AttributeAtomicValue S ':' S AttributeAtomicValue ) /
+    ( AttributeAtomicValue S '=' S AttributeAtomicValue ) /
     ( AttributeAtomicValue S '[' S AttributeValue S ']' ) /
     AttributeAtomicValue
     `value = BuildAttributeDecoratedValue(results);`
